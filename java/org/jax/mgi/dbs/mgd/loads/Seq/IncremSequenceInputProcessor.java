@@ -230,7 +230,6 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
           else {
               try {
                   eventDetector.detectMergeSplitEvent(seqInput);
-                  super.processInput(seqInput);
               }
               catch (MGIException e) {
                   SeqloaderException e1 =
@@ -238,6 +237,8 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
                       SeqloaderExceptionFactory.EventDetectionErr, e);
                   throw e1;
               }
+              // process as an add
+              super.processInput(seqInput);
           }
       }
 
