@@ -9,7 +9,7 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.lookup.JNumberLookup;
 import org.jax.mgi.dbs.mgd.dao.ACC_AccessionState;
-import org.jax.mgi.dbs.mgd.trans.TranslationException;
+import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
 /**
  * @is An object that resolves a AccessionRawAttribute object to a

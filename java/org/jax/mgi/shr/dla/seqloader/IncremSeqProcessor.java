@@ -15,7 +15,7 @@ import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
-import org.jax.mgi.dbs.mgd.trans.TranslationException;
+import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
