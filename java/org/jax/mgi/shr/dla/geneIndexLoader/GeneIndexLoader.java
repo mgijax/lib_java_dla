@@ -103,6 +103,19 @@ public class GeneIndexLoader extends FASTALoader
     }
 
     /**
+     * runs the delete of existing data for this load
+     * @assumes nothing
+     * @effects the existing records form previous runs of this load will be
+     * deleted
+     * @throws MGIException thrown if any MGOException occurs during the delete
+     */
+    public void preprocess() throws MGIException
+    {
+      logger.logdInfo("deleting existing load data from previous runs", true);
+      seqProcessor.deleteSequences();
+    }
+
+    /**
      * loads a fasta record into the database
      * @assumes the instance variables have been initialized
      * @effects the given fast record will be loaded into the database
