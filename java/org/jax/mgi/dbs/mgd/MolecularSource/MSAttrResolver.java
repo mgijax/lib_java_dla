@@ -33,66 +33,66 @@ import org.jax.mgi.shr.cache.CacheConstants;
  * @version 1.0
  */
 
-public class MSAttrResolver {
+public abstract class MSAttrResolver {
 
     /**
      * the following are lookups used by this class
      */
-    private TissueKeyLookup tissueLookup;
-    private OrganismKeyLookup organismLookup;
-    private GenderKeyLookup genderLookup;
-    private CellLineKeyLookup cellLineLookup;
-    private StrainKeyLookup strainLookup;
-    private SegmentKeyLookup segmentLookup;
-    private VectorKeyLookup vectorLookup;
-    private Translator organismToStrainTranslator;
+    protected TissueKeyLookup tissueLookup;
+    protected OrganismKeyLookup organismLookup;
+    protected GenderKeyLookup genderLookup;
+    protected CellLineKeyLookup cellLineLookup;
+    protected StrainKeyLookup strainLookup;
+    protected SegmentKeyLookup segmentLookup;
+    protected VectorKeyLookup vectorLookup;
+    protected Translator organismToStrainTranslator;
 
     /**
      * the following string constants that will be resolved and used
      * for organism
      */
-    private static final String NOT_SPECIFIED = "Not Specified";
-    private static final String NOT_APPLICABLE = "Not Applicable";
-    private static final String NOT_RESOLVED = "Not Resolved";
-    private static final String MOUSE = "mouse, laboratory";
-    private static final String HUMAN = "human";
-    private static final String RAT = "rat";
-    private static final String OTHER = "Other (see notes)";
+    protected static final String NOT_SPECIFIED = "Not Specified";
+    protected static final String NOT_APPLICABLE = "Not Applicable";
+    protected static final String NOT_RESOLVED = "Not Resolved";
+    protected static final String MOUSE = "mouse, laboratory";
+    protected static final String HUMAN = "human";
+    protected static final String RAT = "rat";
+    protected static final String OTHER = "Other (see notes)";
 
     // keys for organism
-    private Integer mouseKey = null;
-    private Integer humanKey = null;
-    private Integer ratKey = null;
-    private Integer otherKey = null;
-    private Integer orgNotApplicableKey = null;
+    protected Integer mouseKey = null;
+    protected Integer humanKey = null;
+    protected Integer ratKey = null;
+    protected Integer otherKey = null;
+    protected Integer orgNotApplicableKey = null;
     // keys for cellLine
-    private Integer cellNotApplicableKey = null;
-    private Integer cellNotSpecifiedKey = null;
-    private Integer cellNotResolvedKey = null;
+    protected Integer cellNotApplicableKey = null;
+    protected Integer cellNotSpecifiedKey = null;
+    protected Integer cellNotResolvedKey = null;
     // keys for gender
-    private Integer genNotApplicableKey = null;
-    private Integer genNotSpecifiedKey = null;
-    private Integer genNotResolvedKey = null;
+    protected Integer genNotApplicableKey = null;
+    protected Integer genNotSpecifiedKey = null;
+    protected Integer genNotResolvedKey = null;
     // keys for strain
-    private Integer strNotApplicableKey = null;
-    private Integer strNotSpecifiedKey = null;
-    private Integer strNotResolvedKey = null;
+    protected Integer strNotApplicableKey = null;
+    protected Integer strNotSpecifiedKey = null;
+    protected Integer strNotResolvedKey = null;
     // keys for tissue
-    private Integer tissNotApplicableKey = null;
-    private Integer tissNotSpecifiedKey = null;
-    private Integer tissNotResolvedKey = null;
+    protected Integer tissNotApplicableKey = null;
+    protected Integer tissNotSpecifiedKey = null;
+    protected Integer tissNotResolvedKey = null;
     // keys for segment type
-    private Integer segNotApplicableKey = null;
+    protected Integer segNotApplicableKey = null;
     // keys for vector type
-    private Integer vecNotApplicableKey = null;
+    protected Integer vecNotApplicableKey = null;
 
     /*
      * the following constant definitions are exceptions thrown by this class
      */
-    private static String MSAttrResolverInitErr =
+    protected static String MSAttrResolverInitErr =
         MSExceptionFactory.MSAttrResolverInitErr;
-    private static String AttrResolveErr = MSExceptionFactory.AttrResolveErr;
-    private static String NullOrganism = MSExceptionFactory.NullOrganism;
+    protected static String AttrResolveErr = MSExceptionFactory.AttrResolveErr;
+    protected static String NullOrganism = MSExceptionFactory.NullOrganism;
 
     public MSAttrResolver() throws MSException {
         /**
@@ -162,187 +162,6 @@ public class MSAttrResolver {
      * @throws MSException thrown if there is an error trying to resolve the
      * attributes
      */
-    public MolecularSource resolveAttributes(MSRawAttributes rawAttr) throws
-        MSException {
-        MolecularSource ms = new MolecularSource();
-        /**
-         * vector type and segment type are always not applicable
-         */
-        ms.setVectorTypeKey(this.vecNotApplicableKey);
-        ms.setSegmentTypeKey(this.segNotApplicableKey);
-        /**
-         * resolve organism
-         */
-        Integer organismKey = null;
-        String organism = rawAttr.getOrganism();
-        if (organism == null) { // throw an exception for null organism
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e = (MSException)
-                eFactory.getException(NullOrganism);
-            throw e;
-        }
-
-        try {
-            organismKey = this.organismLookup.lookup(organism);
-        }
-        catch (KeyNotFoundException e) {
-            organismKey = this.otherKey;
-            ms.setOrganismKey(this.otherKey);
-        }
-        catch (MGIException e) {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(AttrResolveErr, e);
-            e2.bind("organism");
-            throw e2;
-        }
-        /**
-         * Check organism value. If not in mouse, human or rat then map it to
-         * 'Other' and set all other values to 'Not Applicable'.
-         */
-        if (!organismKey.equals(this.mouseKey) &&
-            !organismKey.equals(this.humanKey) &&
-            !organismKey.equals(this.ratKey)) {
-            ms.setOrganismKey(this.otherKey);
-            ms.setCellLineKey(this.cellNotApplicableKey);
-            ms.setGenderKey(this.genNotApplicableKey);
-            ms.setStrainKey(this.strNotApplicableKey);
-            ms.setTissueKey(this.tissNotApplicableKey);
-            /**
-             * done
-             */
-            return ms;
-        }
-
-        /**
-         * Check organism value. If in human or rat, then set all other
-         * attributes to 'Not Applicable'
-         */
-        if (organismKey.equals(this.humanKey) ||
-            organismKey.equals(this.ratKey)) {
-            ms.setOrganismKey(organismKey);
-            ms.setCellLineKey(this.cellNotApplicableKey);
-            ms.setGenderKey(this.genNotApplicableKey);
-            ms.setStrainKey(this.strNotApplicableKey);
-            ms.setTissueKey(this.tissNotApplicableKey);
-            /**
-             * done
-             */
-            return ms;
-        }
-
-        /**
-         * Check organism value. If it translates top a known strain through
-         * the Organism to Strain Translator then use that value for strain
-         * in lieu of resolving the raw strain
-         */
-
-        // this boolean toggles to false if organism resolves to strain
-        boolean okToResolveStrain = true;
-        try {
-            Integer strainKey =
-                this.organismToStrainTranslator.translate(organism);
-            if (strainKey != null)
-            {
-                ms.setStrainKey(strainKey);
-                okToResolveStrain = false;
-            }
-        }
-        catch (MGIException e) {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(AttrResolveErr, e);
-            e2.bind("organism-to-strain");
-            throw e2;
-        }
-
-        /**
-         * all special cases have been handled at this point. Now just resolve
-         * all attributes in the typical way
-         */
-
-        ms.setOrganismKey(organismKey);
-        // resolve tissue
-        String rawValue = null;
-        try {
-            if ( (rawValue = rawAttr.getTissue()) != null)
-                ms.setTissueKey(this.tissueLookup.lookup(rawValue));
-            else
-                ms.setTissueKey(this.tissNotSpecifiedKey);
-        }
-        catch (KeyNotFoundException e) {
-            ms.setTissueKey(this.tissNotResolvedKey);
-        }
-        catch (MGIException e) {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(AttrResolveErr, e);
-            e2.bind("tissue");
-            throw e2;
-        }
-        // resolve gender
-        try {
-            if ( (rawValue = rawAttr.getGender()) != null)
-                ms.setGenderKey(this.genderLookup.lookup(rawValue));
-            else
-                ms.setGenderKey(this.genNotSpecifiedKey);
-        }
-        catch (KeyNotFoundException e) {
-            ms.setGenderKey(this.genNotResolvedKey);
-        }
-        catch (MGIException e) {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(AttrResolveErr, e);
-            e2.bind("gender");
-            throw e2;
-        }
-        // resolve cell line
-        try {
-            if ( (rawValue = rawAttr.getCellLine()) != null)
-                ms.setCellLineKey(this.cellLineLookup.lookup(rawValue));
-            else
-                ms.setCellLineKey(this.cellNotSpecifiedKey);
-        }
-        catch (KeyNotFoundException e) {
-            ms.setCellLineKey(this.cellNotResolvedKey);
-        }
-        catch (MGIException e) {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(AttrResolveErr, e);
-            e2.bind("cell line");
-            throw e2;
-        }
-        // resolve strain
-
-        // if organism didn't resolve to strain
-        if (okToResolveStrain) {
-            try {
-                // lookup rawStrain and set strain
-                if ( (rawValue = rawAttr.getStrain()) != null) {
-                    ms.setStrainKey(this.strainLookup.lookup(rawValue));
-                }
-                // rawStrain is null - set strain to 'Not Specified'
-                else {
-                    ms.setStrainKey(this.strNotSpecifiedKey);
-                }
-            }
-            // lookup failed = set strain to 'Not Resolved'
-            catch (KeyNotFoundException e) {
-                ms.setStrainKey(this.strNotResolvedKey);
-            }
-            catch (MGIException e) {
-                MSExceptionFactory eFactory = new MSExceptionFactory();
-                MSException e2 = (MSException)
-                    eFactory.getException(AttrResolveErr, e);
-                e2.bind("strain");
-                throw e2;
-            }
-
-        }
-        // set age
-        ms.setAge(rawAttr.getAge());
-        return ms;
-    }
+    public abstract MolecularSource resolveAttributes(MSRawAttributes rawAttr)
+        throws MSException;
 }
