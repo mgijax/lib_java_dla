@@ -234,8 +234,8 @@ public abstract class SeqLoader extends DLALoader {
      * @effects database records created within the RADAR and/or MGD
      * database. If stream is a BCP stream, creates bcp files which may be
      * temporary or persistent depending on configuration
-     * @throws MGIException throw if an error occurs while performing the
-     * load
+     * @throws MGIException throw if a fatal error occurs while performing the
+     * load.
      */
     protected void run()  throws MGIException {
         // throw an exception if subclass hasn't set the RecordDataIterator
@@ -258,7 +258,6 @@ public abstract class SeqLoader extends DLALoader {
                si = (SequenceInput)
                    iterator.next();
                String currentSeqid = si.getPrimaryAcc().getAccID();
-               //logger.logdDebug(currentSeqid);
                if (seqIdsAlreadyProcessed.contains(currentSeqid)) {
                    // we have a repeated sequence; count it, write it out,
                    // go on to next sequence in the input
@@ -296,6 +295,7 @@ public abstract class SeqLoader extends DLALoader {
                String message = e.getMessage() + " Sequence: " +
                    si.getPrimaryAcc().getAccID();
                logger.logdDebug(message, true);
+               processedSeqCtr++;
                errCtr++;
                continue;
            }
@@ -307,11 +307,14 @@ public abstract class SeqLoader extends DLALoader {
                    si.getPrimaryAcc().getAccID();
                logger.logdDebug(message, true);
                logger.logcInfo(message, true);
+               processedSeqCtr++;
                errCtr++;
                continue;
            }
-           // if we can't resolve the source for a sequence, log to curation log
-           // go to the next sequence
+           // UnresolvedAttributeException is thrown for those loaders that
+           // must resolve *all* source attributes or fail.
+           // For other loads if we can't resolve the source for a sequence,
+           // log to curation log and go to the next sequence
            catch (MSException e) {
                if (e instanceof UnresolvedAttributeException) {
                    throw new MGIException(e.getMessage(), true);
@@ -320,14 +323,24 @@ public abstract class SeqLoader extends DLALoader {
                    si.getPrimaryAcc().getAccID();
                logger.logdInfo(message, true);
                logger.logcInfo(message, true);
+               processedSeqCtr++;
                errCtr++;
                continue;
            }
            processedSeqCtr++;
-           int seqCtr = processedSeqCtr + errCtr;
+           int seqCtr = processedSeqCtr;
            if (seqCtr  > 0 && seqCtr % 100 == 0) {
                logger.logdInfo("Processed " + seqCtr + " sequences", false);
            }
+       }
+
+       // special handling for Incremental mode
+       if (loadMode.equals(SeqloaderConstants.INCREM_LOAD_MODE)) {
+           // process the last batch
+           ( (IncremSequenceInputProcessor) seqProcessor).finishUpdateBatch();
+           // any update errors to errCtr
+           errCtr += ( (IncremSequenceInputProcessor) seqProcessor).
+               getExistingSeqErrCtr();
        }
        loadStopWatch.stop();
        totalProcessTime = loadStopWatch.time();
@@ -399,7 +412,7 @@ public abstract class SeqLoader extends DLALoader {
     * @throws Nothing
     */
     private void reportLoadStatistics() {
-        int totalValidSeqs = processedSeqCtr + errCtr;
+        int totalValidSeqs = processedSeqCtr;
         String message = "Total Load time in minutes: " +
             (totalProcessTime/60);
         logger.logdInfo(message, false);
