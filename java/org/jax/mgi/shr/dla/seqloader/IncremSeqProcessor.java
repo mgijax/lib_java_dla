@@ -24,7 +24,7 @@ import org.jax.mgi.dbs.mgd.MolecularSource.MolecularSource;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceKey;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
-import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
+
 
 import java.util.Vector;
 import java.util.Iterator;
@@ -45,49 +45,8 @@ public class IncremSeqProcessor extends SeqProcessor {
     // lookup a sequence in MGI
     private SequenceLookup seqLookup;
 
-    /**
-     * Constructs a IncremSeqProcessor that handles event detection
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
-     * @throws CacheException
-     * @throws DBException
-     * @throws ConfigException
-     * @throws MSException
-     * @throws DLALoggingException
-     */
-
-    public IncremSeqProcessor(SQLStream mgdSqlStream,
-                              SQLStream radarSqlStream,
-                              SequenceAttributeResolver sar)
-        throws CacheException, DBException, ConfigException, MSException,
-               DLALoggingException {
-      /**
-      * Debug stuff
-      */
-      stopWatch = new Stopwatch();
-      runningLookupTime = 0.0;
-      highLookupTime = 0.0;
-      lowLookupTime = 0.0;
-      runningMSPTime = 0.0;
-      highMSPTime = 0.0;
-      lowMSPTime = 999.0;
-      sequenceCtr = 0;
-
-      mgdStream = mgdSqlStream;
-      seqResolver = sar;
-
-      // Create an Accession Attribute Resolver
-       accResolver = new AccAttributeResolver();
-
-       // Create a Reference Association Processor
-       refAssocProcessor = new SeqRefAssocProcessor();
-       logger = DLALogger.getInstance();
-
-        // Create a Molecular Source Processor
-       msProcessor = new MSProcessor (mgdSqlStream, radarSqlStream, logger);
-
-    }
+    // exception factory for seqloader exceptions
+    protected SeqloaderExceptionFactory eFactory;
 
     /**
      * Constructs a IncremSeqProcessor that handles adding sequences only; does
@@ -111,13 +70,24 @@ public class IncremSeqProcessor extends SeqProcessor {
                               BufferedWriter repeatSeqWriter)
         throws CacheException, DBException, ConfigException, MSException,
                DLALoggingException, KeyNotFoundException {
-        this(mgdSqlStream, radarSqlStream, sar);
+        super(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
-        config = new SequenceLoadCfg();
         seqLookup = new SequenceLookup(mgdSqlStream);
-        logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
+    }
+
+    /**
+    * incapacitates the superclass delete method
+    * @assumes Nothing
+    * @effects Nothing
+    * @param None
+    * @return nothing
+    * @throws
+    */
+
+    public void deleteSequences() {
+
     }
 
     /**
@@ -133,7 +103,7 @@ public class IncremSeqProcessor extends SeqProcessor {
      *     or create PRB_Source (See MSProcessor)
      * <LI>Already processed event writes the sequence to a file for later
      *     processing.
-     *  <LI>For merges and splits see MergeSplitProcessor)
+     *  <LI>For merges and splits see MergeSplitProcessor
      * </UL>
      * @assumes
      * @effects Depending on the stream, writes to bcp files, creates SQL batch,
@@ -153,11 +123,6 @@ public class IncremSeqProcessor extends SeqProcessor {
      * @throws ChangedLibraryException if input library != existing library
      */
 
-  // need to throw SeqloaderException here. Catch and bundle these exceptions in
-  // a seqloader exception from the factory - this method is promised by the
-  // abstract super class SeqProcessor. DRSeqProcessor will also inherit from
-  // htis super class and will not throw RepeatSequence, ChangedOrganism, ChangedLibrary
-  // exceptions
     public void processSequence(SequenceInput seqInput)
       throws ConfigException, CacheException, DBException, TranslationException,
           KeyNotFoundException, MSException, SeqloaderException,
@@ -198,7 +163,7 @@ public class IncremSeqProcessor extends SeqProcessor {
             //System.out.println("This is a Update Event");
         }
         else if (event == SeqloaderConstants.ADD) {
-            processAddEvent(seqInput);
+            addSequence(seqInput);
         }
         else if (event == SeqloaderConstants.DUMMY) {
             logger.logdDebug("Dummy Event Primary: " + primarySeqid);
@@ -385,7 +350,7 @@ public class IncremSeqProcessor extends SeqProcessor {
         existingSequence.sendToStream();
 
         // process seqInput as an add event
-        processAddEvent(seqInput);
+        addSequence(seqInput);
 
     }
 
