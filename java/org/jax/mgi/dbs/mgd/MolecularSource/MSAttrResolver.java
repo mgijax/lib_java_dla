@@ -7,8 +7,11 @@ import org.jax.mgi.dbs.mgd.lookup.GenderKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.CellLineKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.SegmentKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.VectorKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.Translator;
+import org.jax.mgi.dbs.mgd.TranslationTypeConstants;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.shr.cache.CacheConstants;
 
 /**
  * @is an object that resolves raw attributes for MolecularSource to their
@@ -42,6 +45,7 @@ public class MSAttrResolver {
     private StrainKeyLookup strainLookup;
     private SegmentKeyLookup segmentLookup;
     private VectorKeyLookup vectorLookup;
+    private Translator organismToStrainTranslator;
 
     /**
      * the following string constants that will be resolved and used
@@ -87,7 +91,7 @@ public class MSAttrResolver {
      */
     private static String MSAttrResolverInitErr =
         MSExceptionFactory.MSAttrResolverInitErr;
-    private static String ResolveErr = MSExceptionFactory.ResolveErr;
+    private static String AttrResolveErr = MSExceptionFactory.AttrResolveErr;
     private static String NullOrganism = MSExceptionFactory.NullOrganism;
 
     public MSAttrResolver() throws MSException {
@@ -102,6 +106,9 @@ public class MSAttrResolver {
             this.cellLineLookup = new CellLineKeyLookup();
             this.segmentLookup = new SegmentKeyLookup();
             this.vectorLookup = new VectorKeyLookup();
+            this.organismToStrainTranslator =
+                new Translator(TranslationTypeConstants.ORGANISM_TO_STRAIN,
+                               CacheConstants.FULL_CACHE);
             // set organism keys
             this.humanKey = this.organismLookup.lookup(HUMAN);
             this.mouseKey = this.organismLookup.lookup(MOUSE);
@@ -145,11 +152,11 @@ public class MSAttrResolver {
 
     /**
      * resolve the given molecular source raw attributes to a MolecularSource
-     * object from the database or to a new MolecularSource object to be added
-     * to the database
+     * object with all its attributes set to known database keys, but
+     * without the resolving of the actual MolecularSource object (see
+     * MSResolver for resolving MolecularSource objects)
      * @assumes nothing
-     * @effects a new MolecularSource object could be added to the internal
-     * cache
+     * @effects nothing
      * @param rawAttr the raw attributes
      * @return the MolecularSource object
      * @throws MSException thrown if there is an error trying to resolve the
@@ -185,7 +192,7 @@ public class MSAttrResolver {
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
-                eFactory.getException(ResolveErr, e);
+                eFactory.getException(AttrResolveErr, e);
             e2.bind("organism");
             throw e2;
         }
@@ -227,24 +234,27 @@ public class MSAttrResolver {
         }
 
         /**
-         * Check organism value. If it resolves to a known strain then use
-         * that value for strain in lieu of resolving the raw strain
+         * Check organism value. If it translates top a known strain through
+         * the Organism to Strain Translator then use that value for strain
+         * in lieu of resolving the raw strain
          */
+
         // this boolean toggles to false if organism resolves to strain
         boolean okToResolveStrain = true;
         try {
-            Integer strainKey = this.strainLookup.lookup(organism);
-            ms.setStrainKey(strainKey);
-            okToResolveStrain = false;
-        }
-        catch (KeyNotFoundException e) {
-            okToResolveStrain = true;
+            Integer strainKey =
+                this.organismToStrainTranslator.translate(organism);
+            if (strainKey != null)
+            {
+                ms.setStrainKey(strainKey);
+                okToResolveStrain = false;
+            }
         }
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
-                eFactory.getException(ResolveErr, e);
-            e2.bind("strain");
+                eFactory.getException(AttrResolveErr, e);
+            e2.bind("organism-to-strain");
             throw e2;
         }
 
@@ -268,7 +278,7 @@ public class MSAttrResolver {
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
-                eFactory.getException(ResolveErr, e);
+                eFactory.getException(AttrResolveErr, e);
             e2.bind("tissue");
             throw e2;
         }
@@ -285,7 +295,7 @@ public class MSAttrResolver {
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
-                eFactory.getException(ResolveErr, e);
+                eFactory.getException(AttrResolveErr, e);
             e2.bind("gender");
             throw e2;
         }
@@ -302,7 +312,7 @@ public class MSAttrResolver {
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
-                eFactory.getException(ResolveErr, e);
+                eFactory.getException(AttrResolveErr, e);
             e2.bind("cell line");
             throw e2;
         }
@@ -327,7 +337,7 @@ public class MSAttrResolver {
             catch (MGIException e) {
                 MSExceptionFactory eFactory = new MSExceptionFactory();
                 MSException e2 = (MSException)
-                    eFactory.getException(ResolveErr, e);
+                    eFactory.getException(AttrResolveErr, e);
                 e2.bind("strain");
                 throw e2;
             }
