@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<project name="lib_java_exception" default="compile" basedir=".">
+
+  <!-- The project name -->
+  <property name="proj.name" value="lib_java_exception"/>
+
+  <!-- The directory containing source code -->
+  <property name="src.dir" value="java"/>
+
+  <!-- The directory containing javadocs -->
+  <property name="doc.dir" value="javadoc"/>
+
+  <!-- Temporary build directories -->
+  <property name="build.dir" value="build"/>
+  <property name="build.classes" value="${build.dir}/classes"/>
+  <property name="build.lib" value="${build.dir}/lib"/>
+
+  <!-- Development directories -->
+  <property name="dev.dir" value="/usr/local/mgi/3.0/lib/java1.4"/>
+  <property name="dev.class.dir" value="${dev.dir}/class"/>
+  <property name="dev.doc.dir" value="${dev.dir}/javadoc"/>
+  <property name="dev.src.dir" value="${dev.dir}/src"/>
+
+  <!-- Target to create the build directories prior to the -->
+  <!-- compile target. -->
+  <target name="prepare">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.classes}"/>
+    <mkdir dir="${build.lib}"/>
+  </target>
+
+  <target name="clean" description="Remove all generated files.">
+    <delete dir="${build.dir}"/>
+    <delete dir="${doc.dir}"/>
+  </target>
+
+  <target name="compile" depends="prepare"
+          description="Compiles all source code.">
+    <echo>The classpath = ${java.class.path}</echo>
+    <javac srcdir="${src.dir}" destdir="${build.classes}"/>
+  </target>
+
+  <target name="dev.install" description="Compiles to the development shared directory.">
+    <mkdir dir="${dev.class.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${dev.class.dir}"/>
+     <copy todir="${dev.src.dir}">
+        <fileset dir="${src.dir}"/>
+     </copy>
+  </target>
+
+  <target name="jar" depends="compile"
+          description="Generates a jar in the 'lib' directory.">
+    <!-- Exclude unit tests from the final JAR file -->
+    <jar jarfile="${build.lib}/${proj.name}.jar"
+         basedir="${build.classes}"
+         excludes="**/*Test.class"/>
+  </target>
+
+  <target name="javadoc" depends="compile"
+          description="Generates the javadocs in the 'javadoc' directory.">
+     <mkdir dir="${doc.dir}"/>
+     <javadoc packagenames="org.jax.mgi.shr.*"
+              sourcepath="${src.dir}"
+              destdir="${doc.dir}"
+              author="true"
+              version="true"
+              use="true"/>
+  </target>
+
+  <target name="all" depends="clean,jar"
+          description="Cleans, compiles, then builds the JAR file."/>
+
+
+</project>
+
