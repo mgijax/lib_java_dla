@@ -29,7 +29,6 @@ public class OrganismCheckerCfg extends Configurator {
      * Constructs a OrganismCheckerCfg
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @throws ConfigException if a configuration manager cannot be obtained
      */
 
@@ -41,7 +40,6 @@ public class OrganismCheckerCfg extends Configurator {
      * Gets whether to load mouse sequence or not
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Boolean true if we are loading mouse
      * @throws ConfigException if "SEQ_LOAD_MOUSE" not found in configuration file
      */
@@ -54,7 +52,6 @@ public class OrganismCheckerCfg extends Configurator {
      * Gets whether to load rat sequence or not
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Boolean true if we are loading rat
      * @throws ConfigException if "SEQ_LLOAD_RAT" not found in configuration file
      */
@@ -66,7 +63,6 @@ public class OrganismCheckerCfg extends Configurator {
      * Gets whether to load human sequence or not
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Boolean true if we are loading human
      * @throws ConfigException if "LOAD_HUMAN" not found in configuration file
      */
@@ -78,6 +74,9 @@ public class OrganismCheckerCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.3  2004/06/30 17:26:35  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.2.4.1  2004/06/30 12:17:42  sc
 //  updated config var names
 //

@@ -61,7 +61,6 @@ public class SequenceUpdater {
      * constructs a SequenceUpdater
      * @assumes Nothing
      * @effects Queries a database
-     * @param None
      * @throws DBException if error creating Seq_SequenceAttrHistory,
      * or a LogicalDBLookup object
      * @throws ConfigException if error creating a SequencLoadCfg object,
@@ -381,7 +380,7 @@ public class SequenceUpdater {
                 }
             }
 
-	return update;
+        return update;
     }
 }
 // $Log

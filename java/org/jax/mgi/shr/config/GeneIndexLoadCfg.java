@@ -29,7 +29,6 @@ public class GeneIndexLoadCfg extends Configurator {
   * Constructs a sequence load configurator
   * @assumes Nothing
   * @effects Nothing
-  * @param None
   * @throws ConfigException if a configuration manager cannot be obtained
   */
 
@@ -41,7 +40,6 @@ public class GeneIndexLoadCfg extends Configurator {
    * Gets the Jobstream name
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the Jobstream name
    * @throws ConfigException if "SEQ_JOBSTREAM" not found in configuration file
    */

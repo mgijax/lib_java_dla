@@ -22,7 +22,6 @@ public class EMBLInputFile extends InputDataFile {
 
      /**
       * constructor
-      * @param None
       * @throws IOUException thrown if there is an error accessing the file
       * @throws ConfigException thrown if there is an error accessing the
       * configuration file

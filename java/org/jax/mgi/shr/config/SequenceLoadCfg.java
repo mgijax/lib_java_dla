@@ -30,7 +30,6 @@ public class SequenceLoadCfg extends Configurator {
     * Constructs a sequence load configurator
     * @assumes Nothing
     * @effects Nothing
-    * @param None
     * @throws ConfigException if a configuration manager cannot be obtained
     */
 
@@ -41,7 +40,6 @@ public class SequenceLoadCfg extends Configurator {
      * Gets the load mode e.g. 'incremental' or 'delete_reload'
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Theload mode
      * @throws ConfigException if "SEQ_LOAD_MODE" not found in configuration file
      */
@@ -53,7 +51,6 @@ public class SequenceLoadCfg extends Configurator {
      * Gets the "Virtualness" of the sequences in this load
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the String true or false
      * @throws ConfigException if "SEQ_VIRTUAL" not found in configuration file
      */
@@ -66,7 +63,6 @@ public class SequenceLoadCfg extends Configurator {
      * Gets the MGIType name for sequence table
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return MGIType for Sequence name
      * @throws ConfigException if "SEQ_MGITYPE" not found in configuration file
      */
@@ -78,7 +74,6 @@ public class SequenceLoadCfg extends Configurator {
      * Gets the logicalDB name for this load
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return logicalDB name
      * @throws ConfigException if "SEQ_LOGICALDB" not found in configuration file
      */
@@ -89,7 +84,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the reference association type for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return reference assoc typ name
    * @throws ConfigException if "SEQ_REF_ASSOC_TYPE" not found in configuration file
    */
@@ -102,7 +96,6 @@ public class SequenceLoadCfg extends Configurator {
     * Gets the provider name for this load
     * @assumes Nothing
     * @effects Nothing
-    * @param None
     * @return Provider name
     * @throws ConfigException if "SEQ_PROVIDER" not found in configuration file
     */
@@ -114,7 +107,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the repeat sequence file name
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return repeat sequence file name
    * @throws ConfigException if "SEQ_REPEAT_FILE" not found in configuration file
    */
@@ -125,7 +117,6 @@ public class SequenceLoadCfg extends Configurator {
   * Gets the sequence quality
   * @assumes Nothing
   * @effects Nothing
-  * @param None
   * @return sequence quality
   * @throws ConfigException if "SEQ_QUALITY" not found in configuration file
   */
@@ -136,7 +127,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence type
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return sequence quality
    * @throws ConfigException if "SEQ_TYPE" not found in configuration file
    */
@@ -148,7 +138,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the organism
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return organism
    * @throws ConfigException if "SEQ_ORGANISM" not found in configuration file
    */
@@ -160,7 +149,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the release number for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return release number
    * @throws ConfigException if "SEQ_RELEASE_NO" not found in configuration file
    */
@@ -172,7 +160,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence status for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence status
    * @throws ConfigException if "SEQ_STATUS" not found in configuration file
    */
@@ -184,7 +171,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence type for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence type
    * @throws ConfigException if "SEQ_TYPE" not found in configuration file
    */
@@ -196,7 +182,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence release data
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence release date
    * @throws ConfigException if "SEQ_RELEASE_DATE" not found in configuration file
    */
@@ -208,7 +193,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the jnumber for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the jnumber for this load
    * @throws ConfigException if "SEQ_JNUMBER" not found in configuration file
    */
@@ -221,7 +205,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the Jobstream name
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the Jobstream name
    * @throws ConfigException if "SEQ_JOBSTREAM" not found in configuration file
    */
@@ -231,6 +214,9 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.8  2004/04/02 19:07:33  mbw
+//  changed config parm name from SEQ_JOBSTREAM to JOB_STREAM
+//
 //  Revision 1.7  2004/04/02 18:39:24  mbw
 //  added a getJnumber method
 //
