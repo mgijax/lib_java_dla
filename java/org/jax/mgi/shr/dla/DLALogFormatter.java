@@ -15,7 +15,7 @@ import java.text.MessageFormat;
  * @has nothing.
  * @does Formats the content of a message record along with a standard
  * header stamp. An example illustrating the format is as follows:<br>
- * Nov 25, 2002 5:46:05 PM org.jax.mgi.log.TestDataLoadLogger testMethod<br>
+ * Tue Jul 13 10:14:56 EDT 2004 org.jax.mgi.log.TestDataLoadLogger testMethod<br>
  * INFO: this is a test message
  * @company The Jackson Lab
  * @author M Walker
@@ -28,7 +28,7 @@ public class DLALogFormatter extends Formatter{
   private static Date date = new Date();
   private static Object args[] = { date };
   private static MessageFormat format =
-      new MessageFormat("{0, date, \"EEE MMM dd HH:mm:ss z yyyy\"}");
+      new MessageFormat("{0, date, EEE MMM dd HH:mm:ss z yyyy}");
   private static final String LOGGER =
       "org.jax.mgi.logging.DataLoadLogger";
   private static final String FRAMEWORKS =
@@ -48,6 +48,7 @@ public class DLALogFormatter extends Formatter{
     StringBuffer dateString = new StringBuffer();
     date.setTime(record.getMillis());
     format.format( args, dateString, null );
+    dateString = dateString.deleteCharAt(0);
     buff.append(lineSeparator);
     buff.append(dateString);
     buff.append(" ");
@@ -88,6 +89,9 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.5  2004/06/30 19:45:39  mbw
+// changed timestamping format of log entries to match job stream format
+//
 // Revision 1.4  2003/10/28 21:00:17  mbw
 // fixed imports
 //
