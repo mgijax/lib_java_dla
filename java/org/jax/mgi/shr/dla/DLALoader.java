@@ -142,7 +142,7 @@ public abstract class DLALoader {
       this.qcStream = createSQLStream(config.getQCStreamName());
       this.inputConfig = new InputDataCfg();
     }
-    catch (MGIException e) {
+    catch (Exception e) {
       DLAException e2 = (DLAException)
           dlaExceptionFactory.getException(InitException);
       e2.setParent(e);
@@ -196,7 +196,7 @@ public abstract class DLALoader {
       initialize();
       run();
     }
-    catch (MGIException e) {
+    catch (Exception e) {
       DLAException e2 = (DLAException)
           dlaExceptionFactory.getException(RunException);
       e2.setParent(e);
@@ -209,7 +209,7 @@ public abstract class DLALoader {
       mgdDBMgr.closeResources();
       post();
     }
-    catch (MGIException e) {
+    catch (Exception e) {
       DLAException e2 = (DLAException)
           dlaExceptionFactory.getException(FinalizeException);
       e2.setParent(e);
