@@ -81,8 +81,8 @@ public class MolecularSource
   private static final String NOT_APPLICABLE = "Not Applicable";
   private static final String NOT_RESOLVED = "Not Resolved";
   private static final String NOT_SPECIFIED = "Not Specified";
-  private static final Float ageMin = new Float(-1.0);
-  private static final Float ageMax = new Float(-1.0);
+  private static final Double ageMin = new Double(-1.0);
+  private static final Double ageMax = new Double(-1.0);
 
   /*
    * the following constant definitions are exceptions thrown by this class
