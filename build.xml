@@ -1,25 +1,28 @@
 <?xml version="1.0"?>
 <!DOCTYPE definitions [
-  <!ENTITY build.targets SYSTEM "/home/mbw/build.targets.xml">
+  <!ENTITY build.targets SYSTEM "/usr/local/mgi/etc/build.lib.targets.xml">
+  <!ENTITY local.build.targets SYSTEM "build.targets.xml">
 ]>
 
 <!-- Enter the name of your current project here 
  -->
 <project name="lib_java_dla" default="compile" basedir=".">
 
-  <!-- Enter the name of your current project here 
+  <!-- Enter the name of your jar file here minus the dot jar suffix
    -->
-  <property name="proj.name" value="lib_java_dla"/>
+  <property name="jar.name" value="dla"/>
 
   <!-- To override property definitions in the following 
        properties file, add new definitions in preceding lines.
        The first definition of a property takes precedence 
    -->
-  <property file="/home/mbw/build.properties"/>
+  <property file="build.properties"/>
+  <property file="/usr/local/mgi/etc/build.lib.properties"/>
 
   <!-- Universal targets get included here  
    -->
   &build.targets;
+  &local.build.targets;
 
 </project>
 

@@ -1,0 +1,4 @@
+   <target name="buildall" description="Executes task 'all' and 'lib.install'"
+           depends="all, lib.install">
+   </target>
+
