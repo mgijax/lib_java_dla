@@ -1,6 +1,3 @@
-// $Header$
-// $Name$
-
 package org.jax.mgi.shr.dla.log;
 
 import java.util.logging.Handler;
@@ -489,7 +486,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logp);
       throw e2;
     }
@@ -516,7 +513,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logc);
       throw e2;
     }
@@ -547,7 +544,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logd);
       throw e2;
     }
@@ -575,7 +572,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logv);
       throw e2;
     }
