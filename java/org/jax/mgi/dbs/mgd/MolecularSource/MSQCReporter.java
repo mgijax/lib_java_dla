@@ -61,8 +61,11 @@ public class MSQCReporter
     {
       QC_MS_NameConflictState state = new QC_MS_NameConflictState();
       state.setAccid(accid);
-      state.setName(name);
-      state.setConflict(conflictName);
+      //state.setName(name);
+      state.setClone1Name(name);
+      //state.setConflict(conflictName);
+      state.setClone2Name(conflictName);
+
       try
       {
         stream.insert(new QC_MS_NameConflictDAO(state));
