@@ -23,12 +23,19 @@ public class SeqloaderConstants {
     public static final String SPC = " ";
     public static final String SLASH = "/";
     public static final String EQUAL = "=";
+    public static final String OPEN_PAREN = "(";
+    public static final String COMMA = ",";
+    public static final String SEMI_COLON = ";";
+
     // Yes, THREE escapes! your not seeing things - isn't Java fun
     public static final String DBL_QUOTE = "\\\"";
     public static final String EMPTY_STRING = "";
 
     // misc constants
     public static final String DUMMY_SEQ_STATUS = "Not Loaded";
+    public static final String NOT_APPLICABLE = "Not Applicable";
+
+    // load mode constants
     public static final String INCREM_LOAD_MODE = "incremental";
     public static final String INCREM_INITIAL_LOAD_MODE = "incremental_initial";
     public static final String DELETE_RELOAD_MODE = "delete_reload";
@@ -50,6 +57,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.4  2004/02/27 14:35:23  sc
+//  aded VOV_Vocab controlled vocab for sequence quality
+//
 //  Revision 1.3  2004/02/02 19:45:15  sc
 //  development since last tag
 //
