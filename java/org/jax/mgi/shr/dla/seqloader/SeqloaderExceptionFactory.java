@@ -139,6 +139,17 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
   }
 
   /**
+   * Error processing add event
+   */
+  public static final String ProcessAddErr =
+      "org.jax.mgi.shr.dla.seqloader.ProcessAddErr";
+  static {
+    exceptionsMap.put(ProcessAddErr, new SeqloaderException(
+        "Error processing add event for ??",
+        false));
+  }
+
+  /**
    * Error processing update event
    */
   public static final String ProcessUpdateErr =
