@@ -89,7 +89,7 @@ public class MSExceptionFactory extends ExceptionFactory {
   static {
     exceptionsMap.put(TooManyRows, new MSException(
         "More rows than the allocated limit of ?? were returned from the " +
-        "following query:\n??", false));
+        "following query:\n ??", false));
   }
 
   /**
@@ -169,6 +169,17 @@ public class MSExceptionFactory extends ExceptionFactory {
     exceptionsMap.put(NoKeyFound, new MSException(
         "The MolecularSource could not be updated since it has no key " +
         "assigned for the given state:\n ??", false));
+  }
+
+  /**
+   * could not add qc dao object to stream
+   */
+  public static final String QCErr =
+      "org.jax.mgi.dbs.mgd.QCErr";
+  static {
+    exceptionsMap.put(QCErr, new MSException(
+        "Could not add a new qc item to the qc reporting table named ??",
+        false));
   }
 
 
