@@ -22,11 +22,13 @@ public class DLALoaderHelper
        * @effects the list of tables will be truncated
        * @throws DBException thrown if there is an error accessing the database
        */
-      static public void truncateTables(String[] list, DBSchema schema)
+      static public void truncateTables(String[] list, DBSchema schema,
+                                        DLALogger logger)
       throws DBException
       {
           for (int i = 0; i < list.length; i++)
           {
+              logger.logdInfo("truncating table ... " + list[i], true);
               schema.truncateTable(list[i]);
           }
       }
