@@ -131,7 +131,6 @@ public abstract class SeqLoader extends DLALoader {
      *   call to getRecordDataIterator
      */
     protected void initialize() throws MGIException {
-        MGIException.setOkToStackTrace(true);
         loadCfg = new SequenceLoadCfg();
         loadMode = loadCfg.getLoadMode();
 
