@@ -32,6 +32,18 @@ public class DLALoaderCfg extends Configurator {
   }
 
   /**
+   * get the database prefix name used in the configuration file for
+   * configuring the load database.
+   * @return database prefix name.
+   * @assumes nothing
+   * @effects nothing
+   */
+  public String getLoadPrefix() {
+    return getConfigString("DLA_DB_PREFIX", "MGD");
+  }
+
+
+  /**
    * get the name of the SQLStream for loading data
    * @assumes nothing
    * @effects nothing
