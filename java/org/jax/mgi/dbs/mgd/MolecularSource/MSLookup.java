@@ -125,7 +125,8 @@ public class MSLookup {
      * @assumes nothing
      * @effects a new Vector will be created storing results from a query
      * and all MolecularSource objects put in the vector will have their
-     * inDatabase flag set to true
+     * inDatabase flag set to true and additionally the ResultsNavigator
+     * will be closed
      * @param sql the query string
      * @param nav the ResultsNavigator
      * @param limit the maximum number of rows to allow
@@ -155,6 +156,7 @@ public class MSLookup {
                 throw e;
             }
         }
+        nav.close();
         return v;
     }
 

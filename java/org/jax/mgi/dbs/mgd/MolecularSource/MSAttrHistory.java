@@ -190,11 +190,11 @@ public class MSAttrHistory
          * execute the query
          */
         ResultsNavigator nav = query.executeQuery();
+        boolean found = false;
         if (nav.next())  // indicates records were found in history
-            return true;
-        else
-            return false;
-
+            found = true;
+        nav.close();
+        return found;
     }
 
 

@@ -270,6 +270,7 @@ public class MSSeqAssoc extends DAO
             e.bind(sql);
             throw e;
         }
+        nav.close();
         return assoc;
     }
 
