@@ -19,7 +19,7 @@ import org.jax.mgi.shr.config.ConfigException;
  * from the system properties and the configuration file. It then provides
  * get methods for looking up parameter values that pertain to a
  * DataLoadLogger and provides set methods for overriding these values.
- * @company Jackson Laboratory
+ * @company Jackson Laboratory</p>
  * @author M. Walker
  * @version 1.0
  */
@@ -158,6 +158,9 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.5  2003/05/22 15:49:07  mbw
+// javadocs edits
+//
 // Revision 1.4  2003/05/16 15:09:37  mbw
 // fixed javadocs to be in sync with code
 //

@@ -9,8 +9,8 @@ import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is a base class which implements the DLA standards for all loaders.<p>
- * <p>ABSTRACT: this class provides the instantiation of the 'basic needs'
+ * @is a base class which implements the DLA standards for all loaders.
+ * @abstract this class provides the instantiation of the 'basic needs'
  * objects for performing database loads such as SQLDataManagers, loggers,
  * BCPManagers, DLA exception handlers and factories. It also provides the
  * main method. Sub classes would be required to implement the following
@@ -33,7 +33,6 @@ import org.jax.mgi.shr.exception.MGIException;
  * @does performs initialization of 'basic-needs' and instantiates
  * the subclass and calls the initialize(), run() and finale() methods
  * on the subclass.
- * <pre>
  * @author mbw, dbm
  * @version 1.0
  */
