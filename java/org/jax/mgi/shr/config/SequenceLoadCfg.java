@@ -1,4 +1,5 @@
 // $Header$                                                                                      //  $Header$
+// $Header$                                                                                      //  $Header$
 //  $Name$
 
 package org.jax.mgi.shr.config;
@@ -179,6 +180,66 @@ public class SequenceLoadCfg extends Configurator {
   }
 
   /**
+   * Gets the sequence strain for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence strain
+   * @throws ConfigException if "SEQ_STRAIN" not found in configuration file
+   */
+  public String getStrain() throws ConfigException {
+    return getConfigString("SEQ_STRAIN");
+  }
+
+  /**
+   * Gets the sequence tissue for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence tissue
+   * @throws ConfigException if "SEQ_TISSUE" not found in configuration file
+   */
+  public String getTissue() throws ConfigException {
+    return getConfigString("SEQ_TISSUE");
+  }
+
+  /**
+   * Gets the sequence age for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence age
+   * @throws ConfigException if "SEQ_AGE" not found in configuration file
+   */
+  public String getAge() throws ConfigException {
+    return getConfigString("SEQ_AGE");
+  }
+
+  /**
+   * Gets the sequence gender for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence gender
+   * @throws ConfigException if "SEQ_GENDER" not found in configuration file
+   */
+  public String getGender() throws ConfigException {
+    return getConfigString("SEQ_GENDER");
+  }
+
+  /**
+   * Gets the sequence cell line for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence cell lline
+   * @throws ConfigException if "SEQ_CELLLINE" not found in configuration file
+   */
+  public String getCellLine() throws ConfigException {
+    return getConfigString("SEQ_CELLLINE");
+  }
+
+  /**
    * Gets the sequence release data
    * @assumes Nothing
    * @effects Nothing
@@ -211,9 +272,30 @@ public class SequenceLoadCfg extends Configurator {
   public String getJobstreamName() throws ConfigException {
     return getConfigString("JOBSTREAM");
   }
+  /**
+   * get the interpreter to use.
+   * @return interpreter object.
+   * @assumes nothing
+   * @effects nothing
+   * @throws ConfigException thrown if interpreter object could not be created
+   * from the configuration
+   */
+  public Object getInterpreterClass() throws ConfigException {
+    return getConfigObject("SEQ_INTERPRETER");
+  }
+
 }
 
 //  $Log$
+//  Revision 1.9  2004/07/28 20:10:11  mbw
+//  javadocs only
+//
+//  Revision 1.8.8.2  2004/08/23 16:20:33  sc
+//  added several methods to get source info and getInterpreterClass()
+//
+//  Revision 1.8.8.1  2004/07/27 18:19:00  sc
+//  added getInterpreterClass method.
+//
 //  Revision 1.8  2004/04/02 19:07:33  mbw
 //  changed config parm name from SEQ_JOBSTREAM to JOB_STREAM
 //
