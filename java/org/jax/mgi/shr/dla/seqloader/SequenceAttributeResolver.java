@@ -8,10 +8,13 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.VocabKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.SequenceTypeKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.SequenceProviderKeyLookup;
+
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
-import org.jax.mgi.dbs.mgd.trans.Translator;
+import org.jax.mgi.dbs.mgd.lookup.Translator;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
-import org.jax.mgi.dbs.mgd.trans.TranslationException;
+import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
 /**
  * @is a class that defines an abstract resolveAttributes method to resolve a
@@ -37,9 +40,9 @@ import org.jax.mgi.dbs.mgd.trans.TranslationException;
 
 abstract public class SequenceAttributeResolver {
     // typeLookup and providerLookup use a translator
-    protected VocabKeyLookup typeLookup;
+    protected SequenceTypeKeyLookup typeLookup;
     protected VocabKeyLookup qualityLookup;
-    protected VocabKeyLookup providerLookup;
+    protected SequenceProviderKeyLookup providerLookup;
     protected VocabKeyLookup statusLookup;
 
     /**
@@ -58,12 +61,10 @@ abstract public class SequenceAttributeResolver {
     protected SequenceAttributeResolver() throws TranslationException,
         ConfigException, DBException, CacheException {
 
-        typeLookup = new VocabKeyLookup(
-            VocabularyTypeConstants.SEQUENCETYPE);
+        typeLookup = new SequenceTypeKeyLookup();
         qualityLookup = new VocabKeyLookup(
             VocabularyTypeConstants.SEQUENCEQUALITY);
-        providerLookup = new VocabKeyLookup(
-            VocabularyTypeConstants.SEQUENCEPROVIDER);
+        providerLookup = new SequenceProviderKeyLookup();
         statusLookup = new VocabKeyLookup(
             VocabularyTypeConstants.SEQUENCESTATUS);
     }
@@ -83,6 +84,9 @@ abstract public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:44  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:21  sc
 //  changes made from code review~
 //
