@@ -95,6 +95,7 @@ public class SeqEventDetector {
 
         // init event to 'Non Event'
         int event = SeqloaderConstants.NON_EVENT;
+
         // get the primary seqid
         String seqid = seqInput.getPrimaryAcc().getAccID();
 
@@ -105,7 +106,7 @@ public class SeqEventDetector {
         }
 
         // this is a dummy sequence
-        if (termNameLookup.lookup(
+        else if (termNameLookup.lookup(
             sequence.getSequenceState().getSequenceStatusKey()).equals(
                 SeqloaderConstants.DUMMY_SEQ_STATUS)) {
             event = SeqloaderConstants.DUMMY;
