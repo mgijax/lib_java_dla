@@ -2,11 +2,12 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 
 import junit.framework.*;
 import org.jax.mgi.shr.dbutils.*;
+import org.jax.mgi.dbs.mgd.hist.PRB_SourceAttrHistory;
 
 public class TestMSAttrHistory
     extends TestCase
 {
-    private MSAttrHistory history = null;
+    private PRB_SourceAttrHistory history = null;
     private SQLDataManager sqlMgr = null;
     private Integer sourceKey1 = new Integer(-20);
     private Integer sourceKey2 = new Integer(-30);
@@ -22,7 +23,7 @@ public class TestMSAttrHistory
         sqlMgr = new SQLDataManager();
         sqlMgr.executeUpdate("delete from mgi_attributeHistory " +
                              "where _object_key = -20");
-        history = new MSAttrHistory();
+        history = new PRB_SourceAttrHistory();
         BindableStatement stmt = sqlMgr.getBindableStatement(
             "insert into mgi_attributehistory " +
             "values (-20, 5, ?, 1111, " +
