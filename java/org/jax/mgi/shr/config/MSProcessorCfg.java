@@ -30,11 +30,29 @@ public class MSProcessorCfg extends Configurator {
    * not found
    * @return true if the lookup should be performed and false otherwise
    * @assumes nothing
-   * @effects if true then the lookup will be made and a full cache will be
-   * created to hold all the associated clone sources from the database
+   * @effects if true and if the lookup cache is configured to be full, a
+   * high performance hit is to be expected on the initial lookup
    */
   public Boolean getOkToSearchAssocClones() throws ConfigException {
     return getConfigBoolean("MS_OK_TO_SEARCH_ASSOC_CLONES", new Boolean(true));
   }
+
+  /**
+   * get the ok to use a full cache when looking up sources through the
+   * associated clones. With this option set to true, there will be a high
+   * overhead on the first lookup to fully load the cache. If this option is
+   * set to false then a lazy cache strategy will be used. The configuration
+   * variable is MS_USE_ASSOC_CLONES_FULL_CACHE and the default is true
+   * @return true if the assoc clone lookup should be fully cached or false
+   * if the lookup should be a lazy cache
+   * @assumes nothing
+   * @effects if true a high performance hit is to be expected on the
+   * initial lookup
+   */
+  public Boolean getUseAssocClonesFullCache() throws ConfigException {
+    return getConfigBoolean("MS_USE_ASSOC_CLONES_FULL_CACHE",
+                            new Boolean(true));
+  }
+
 
 }
