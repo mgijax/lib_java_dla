@@ -116,6 +116,8 @@ public class MSCollapsedCache
                      ms.getStrainKey() + " " +
             "AND " + MGD.prb_source._tissue_key + " = " +
                      ms.getTissueKey() + " " +
+            "AND " + MGD.prb_source.age + " = " +
+                     ms.getAge() + " " +
             "AND " + MGD.prb_source._gender_key + " = " +
                      ms.getGenderKey() + " " +
             "AND " + MGD.prb_source._cellline_key + " = " +
