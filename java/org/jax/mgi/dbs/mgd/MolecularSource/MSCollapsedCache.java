@@ -147,8 +147,8 @@ public class MSCollapsedCache
     protected void addToCache(MolecularSource ms)
     throws DBException, CacheException
     {
-        if (super.lookupNullsOk(ms.toString()) == null)
-            super.cache.put(ms.toString(), ms);
+        if (super.lookupNullsOk(ms.toString().toLowerCase()) == null)
+            super.cache.put(ms.toString().toLowerCase(), ms);
     }
 
     /**
