@@ -71,17 +71,17 @@ public class MergeSplitProcessor {
      * @throws
      */
 
-     public MergeSplitProcessor(String logicalDB)
+     public MergeSplitProcessor()
          throws KeyNotFoundException, DBException, CacheException,
          ConfigException {
-         mergeSplitHelper = new MergeSplitHelper(logicalDB);
+         mergeSplitHelper = new MergeSplitHelper();
          mergeSplitSeqs = new HashMap();
      }
      /**
       * Detects a Merge/Split event for a sequence by determining if any of the
       *       sequences secondary ids are in MGI as primary<BR>
-      * Stores primary seqid with its secondary seqid(s) that are merges or
-      *       splits for later processing.
+      * Maps primary seqid (String) to the  sequence keys (Vector of
+      *       Integers) that are merges or splits for later processing.
       * @assumes
       * @effects
       * @param logicalDB to create an AccessionLookup for Sequences
@@ -97,7 +97,7 @@ public class MergeSplitProcessor {
         }
     }
     /**
-     * Determines a Merge or Split even for a secondary seqid that is primary
+     * Determines a Merge or Split event for a secondary seqid that is primary
      *    in MGI and processes accordingly
      * @assumes
      * @effects
@@ -107,13 +107,13 @@ public class MergeSplitProcessor {
      */
 
     public void process() {
-        HashMap secondaryToPrimary =mergeSplitHelper.createHash(mergeSplitSeqs);
+        HashMap secondaryToPrimary = mergeSplitHelper.createHash(mergeSplitSeqs);
 
         for (Iterator mapI = secondaryToPrimary.keySet().iterator();
             mapI.hasNext();) {
                // get the key; a secondary id that is primary in MGI
-               String secondary = (String) mapI.next();
-               System.out.println("mapKey: " + secondary);
+               Integer secondary = (Integer) mapI.next();
+               //System.out.println("mapKey: " + secondary);
                // get the value; a Vector of primary ids
                Vector currentV = (Vector) secondaryToPrimary.get(secondary);
                if (currentV.isEmpty()) {

@@ -17,7 +17,7 @@ package org.jax.mgi.shr.dla.seqloader;
 
 public class SeqloaderConstants {
 
-    // Constants
+    // character Constants
     public static final String PERIOD = ".";
     public static final String CRT = "\n";
     public static final String SPC = " ";
@@ -25,7 +25,13 @@ public class SeqloaderConstants {
     public static final String EQUAL = "=";
     public static final String DBL_QUOTE = "\\\"";
     public static final String EMPTY_STRING = "";
+
+    // misc constants
     public static final String DUMMY_SEQ_STATUS = "Not Loaded";
+    public static final String INCREM_LOAD_MODE = "incremental";
+    public static final String INCREM_INITIAL_LOAD_MODE = "incremental_initial";
+    public static final String DELETE_RELOAD_MODE = "delete_reload";
+
     // Event constants
     public static final int ADD = 1;
     public static final int UPDATE = 2;
@@ -33,10 +39,22 @@ public class SeqloaderConstants {
     public static final int NON_EVENT = 4;
     public static final int MERGE = 6;
     public static final int SPLIT = 7;
+    public static final int DUMMY = 8;
+
+    // Provider vocabulary constants
+   // public static final String GENBANK_PROVIDER = "GenBank";
+   // public static final String SWISSPROT_PROVIDER = "SWISS-PROT";
+   // public static final String TREMBL_PROVIDER = "TrEMBL";
+   // public static final String REFSEQ_PROVIDER = "RefSeq";
+    //public static final String TIGR_PROVIDER =
+    //public static final String
 
 
 }
 //  $Log$
+//  Revision 1.2  2004/01/12 20:14:27  sc
+//  ongoing development
+//
 //  Revision 1.1  2004/01/06 20:09:43  mbw
 //  initial version imported from lib_java_seqloader
 //

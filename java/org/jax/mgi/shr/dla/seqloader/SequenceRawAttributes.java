@@ -42,6 +42,7 @@ public class SequenceRawAttributes {
     private String provider = null;
     private String quality = null;
     private String status = null;
+    private String seqRecord = null;
 
     /**
      * set the type attribute
@@ -274,6 +275,17 @@ public class SequenceRawAttributes {
     public void setStatus (String status) {this.status = status;}
 
     /**
+     * set the sequence record attribute
+     * @assumes Nothing
+     * @effects Nothing
+     * @param the sequence record
+     * @return Nothing
+     * @throws Nothing
+     */
+
+    public void setRecord (String seqRecord) {this.seqRecord = seqRecord;}
+
+    /**
      * get the sequence type
      * @assumes Nothing
      * @effects Nothing
@@ -496,6 +508,17 @@ public class SequenceRawAttributes {
 
      public String getStatus () {return status;}
 
+     /**
+      * get the sequence record attribute
+      * @assumes Nothing
+      * @effects Nothing
+      * @param the None
+      * @return the sequence record
+      * @throws Nothing
+      */
+
+     public String getRecord () {return seqRecord;}
+
     /**
      * Resets object values to null; number of organisms to 0
      * @assumes Nothing
@@ -530,6 +553,9 @@ public class SequenceRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:48  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:23  sc
 //  changes made from code review~
 //

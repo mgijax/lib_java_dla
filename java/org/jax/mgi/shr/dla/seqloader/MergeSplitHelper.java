@@ -16,6 +16,7 @@ import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
+import org.jax.mgi.shr.config.SequenceLoadCfg;
 
 /**
  * @is A helper class for the MergeSplitProcessor that:
@@ -64,12 +65,17 @@ public class MergeSplitHelper {
     // the sequence key of a 2ndary seqid found in MGI as primary
     Integer seqKey;
 
-    public MergeSplitHelper(String logicalDB) throws KeyNotFoundException,
+    public MergeSplitHelper() throws KeyNotFoundException,
         DBException, CacheException, ConfigException {
+        // configurator to get the logicalDB for the load
+        SequenceLoadCfg config = new SequenceLoadCfg();
+
+        // lookup the key for logical db
         LogicalDBLookup lookup = new LogicalDBLookup();
 
         // should we use an uncached accession lookup instead?
-        seqIdLookup = new AccessionLookup(lookup.lookup(logicalDB).intValue(),
+        seqIdLookup = new AccessionLookup(lookup.lookup(
+            config.getLogicalDB()).intValue(),
                 MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
     }
 
@@ -93,7 +99,8 @@ public class MergeSplitHelper {
         secondaries = seqInput.getSecondary();
         Iterator i = secondaries.iterator();
         while(i.hasNext()) {
-            seqKey = seqIdLookup.lookup((String)i.next());
+            seqKey = seqIdLookup.lookup(((AccessionRawAttributes)i.next()).getAccID());
+
             // this secondary is primary in MGI, add it the the merge/split set
             if (seqKey != null) {
                 v.add(seqKey);
@@ -125,7 +132,7 @@ public class MergeSplitHelper {
                // for each secondary map it to its primary
                for (Iterator vecI = currentV.iterator(); vecI.hasNext(); ) {
                    // add each secondary to the newMap with value=primary
-                   String secondary = (String) vecI.next();
+                   Integer secondary = (Integer) vecI.next();
                    System.out.println("mapValue: " + secondary);
                    // add a new mapping
                    if (!secondaryMap.containsKey(secondary)) {
@@ -140,7 +147,7 @@ public class MergeSplitHelper {
                    }
                }
            }
-           return null;
+           return secondaryMap;
        }
      }
  //  $Log

@@ -7,10 +7,16 @@ import java.util.*;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.config.ConfigException;
+import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.dbs.mgd.dao.*;
+import org.jax.mgi.shr.dla.DLALogger;
+import org.jax.mgi.shr.dla.DLALoggingException;
+import org.jax.mgi.dbs.mgd.MGITypeConstants;
+import org.jax.mgi.dbs.mgd.MGD;
 
-// CLASS header
+
     /**
      * @is An object that manages a set of DAOs representing a sequence.
      * @has
@@ -38,7 +44,16 @@ import org.jax.mgi.dbs.mgd.dao.*;
 
 public class Sequence {
     // the sequence
-    private SEQ_SequenceDAO sequenceDAO;
+    private SEQ_SequenceSeqloaderDAO sequenceDAO;
+
+    // the MGI_AttributeHistory for the Sequence type
+    //private MGI_AttributeHistoryDAO typeHistoryDAO;
+
+    // the stream used to accomplish the database inserts, updates, deletes
+    private SQLStream stream;
+
+    // the logger
+    DLALogger logger;
 
     // the primary seqid
     private ACC_AccessionDAO primaryAcc;
@@ -48,6 +63,11 @@ public class Sequence {
 
     // the set of reference associations for this sequence
     private Vector refAssociations = new Vector();
+
+    // the set of _ref_keys (Integer) for this sequence
+    // we use this in order to avoid compare between two
+    // MGI_Reference_AssocState objects
+    private HashSet refKeySet = new HashSet();
 
     // the set of source associations for this sequence
     private Vector seqSrcAssoc = new Vector();
@@ -73,11 +93,9 @@ public class Sequence {
     // an iterator to reuse
     Iterator i;
 
-    // Updates the SequenceState object
+    // Updates the SequenceState object. seqUpdater is not initialized if
+    // this is a new Sequence
     private SequenceUpdater seqUpdater;
-
-    // the stream used to accomplish the database inserts, updates, deletes
-    private SQLStream stream;
 
     // true if this object represents a new sequence (not in the database)
     private boolean isNewSequence = true;
@@ -85,6 +103,9 @@ public class Sequence {
     // true if this object represents an existing object in the database and
     // its SEQ_SequenceDAO state needs to be updated in the database
     private boolean isChangedSequence = false;
+
+    // true if this object represents a dummy sequence in MGI
+    private boolean isDummySequence = false;
 
 
     /**
@@ -98,10 +119,11 @@ public class Sequence {
      * @throws
      */
 
-    public Sequence(SEQ_SequenceState state, SQLStream stream)
-        throws ConfigException, DBException{
+    public Sequence(SEQ_SequenceState seqState, SQLStream stream)
+        throws ConfigException, DBException {
         this.stream = stream;
-        sequenceDAO = new SEQ_SequenceDAO(state);
+        sequenceDAO = new SEQ_SequenceSeqloaderDAO(seqState);
+        logger = DLALogger.getInstance();
     }
 
    /**
@@ -116,9 +138,11 @@ public class Sequence {
     */
 
     public Sequence(SEQ_SequenceState state, SEQ_SequenceKey key, SQLStream stream)
-        throws DBException {
+        throws DBException, ConfigException, DLALoggingException,
+            CacheException, KeyNotFoundException {
         this.stream = stream;
-        sequenceDAO = new SEQ_SequenceDAO(key, state);
+        sequenceDAO = new SEQ_SequenceSeqloaderDAO(key, state);
+        seqUpdater = new SequenceUpdater();
     }
 
     /**
@@ -132,9 +156,35 @@ public class Sequence {
 
     public SEQ_SequenceState getSequenceState() {
         //implement later, need a copy method in SEQ_SequenceState
-        return null;
+        return sequenceDAO.getState();
     }
 
+    /**
+     * sets the type attribute history
+     * @assumes Nothing
+     * @effects Nothing
+     * @param typeHistoryState the MGI_AttributeHistoryState for sequence type
+     * @return  nothing
+     * @throws Nothing
+     */
+/*
+    public void setTypeHistory(MGI_AttributeHistoryState typeHistoryState) {
+        typeHistoryDAO = new MGI_AttributeHistoryDAO(typeHistoryState);
+    }
+*/
+    /**
+    * gets a *copy* of the MGI_AttributeHistoryState for sequence type
+    * @assumes Nothing
+    * @effects Nothing
+    * @param None
+    * @return state a *copy* of the MGI_AttibuteHistoryState for sequence type
+    * @throws Nothing
+    */
+/*
+     public MGI_AttributeHistoryState getTypeHistory() {
+         return typeHistoryDAO.getState();
+     }
+*/
     /**
      * sets the primary accession of a new sequence
      * @assumes Nothing
@@ -147,7 +197,7 @@ public class Sequence {
     public void setAccPrimary(ACC_AccessionState primary)
         throws ConfigException, DBException {
         primaryAcc = new ACC_AccessionDAO(primary);
-        addAcc.add(primaryAcc);
+          addAcc.add(primaryAcc);
     }
 
     /**
@@ -179,7 +229,7 @@ public class Sequence {
 
     public ACC_AccessionState getAccPrimary() {
         // implement later - need a copy method in ACC_AccessionState
-        return null;
+        return primaryAcc.getState();
     }
 
 
@@ -232,8 +282,12 @@ public class Sequence {
      */
 
     public Vector getAccSecondary() {
-        // implement later
-        return null;
+        Vector v = new Vector();
+        Iterator i = secondaryAcc.iterator();
+        while (i.hasNext()) {
+            v.add(((ACC_AccessionDAO)i.next()).getState());
+        }
+        return v;
     }
 
     /**
@@ -252,7 +306,7 @@ public class Sequence {
 
     /**
      * Adds a MGI_Reference_AssocDAO to the set of reference associations of
-     * a new sequence
+     * a new sequence (if it does not already have an association for the reference).
      * @assumes Nothing
      * @effects Nothing
      * @param state MGI_Reference_AssocState from which to create a DAO to add to
@@ -263,8 +317,19 @@ public class Sequence {
 
     public void addRefAssoc(MGI_Reference_AssocState state)
         throws ConfigException, DBException {
-        refAssociations.add(new MGI_Reference_AssocDAO(state));
-        addRefAssoc.add(refAssociations.lastElement());
+
+        Integer refKey = state.getRefsKey();
+        // if we haven't already created an association for this reference
+        if(! refKeySet.contains(refKey)) {
+            // add a new DAO to the set of ref associations for this sequence
+            refAssociations.add(new MGI_Reference_AssocDAO(state));
+
+            // add the DAO to the add Vector too
+            addRefAssoc.add(refAssociations.lastElement());
+
+            // add the refs key to the set
+            refKeySet.add(refKey);
+        }
     }
 
     /**
@@ -280,9 +345,12 @@ public class Sequence {
      * @throws Nothing
      */
 
-    public void addRefAssoc(MGI_Reference_AssocKey key, MGI_Reference_AssocState state)
-        throws DBException {
+    public void addRefAssoc(MGI_Reference_AssocKey key, MGI_Reference_AssocState state) {
+        // add a new DAO to the set of ref associations for this sequence
         refAssociations.add(new MGI_Reference_AssocDAO(key, state));
+
+        // add the refs key to the set of refs for this sequence
+        refKeySet.add(state.getRefsKey());
     }
 
     /**
@@ -309,8 +377,13 @@ public class Sequence {
      */
 
     public Vector getRefAssoc() {
-        //implement later; need a copy method in MGI_Reference_AssocState
-        return null;
+      Vector v = new Vector();
+      Iterator i = refAssociations.iterator();
+      while (i.hasNext()) {
+          v.add(((MGI_Reference_AssocDAO)i.next()).getState());
+      }
+      return v;
+
     }
 
 
@@ -359,8 +432,12 @@ public class Sequence {
      */
 
     public Vector getSeqSrcAssoc() {
-        // implement later
-        return null;
+      Vector v = new Vector();
+      Iterator i = seqSrcAssoc.iterator();
+      while (i.hasNext()) {
+          v.add(((SEQ_Source_AssocDAO)i.next()).getState());
+      }
+      return v;
     }
 
     /**
@@ -401,8 +478,32 @@ public class Sequence {
      * @throws Nothing
      */
 
-    public void updateSequenceState(SEQ_SequenceState updateFrom) {
-        // pass updateFrom to the SequenceUpdater
+    public void updateSequenceState(SEQ_SequenceState updateFrom)
+        throws DBException, ConfigException {
+        isChangedSequence = seqUpdater.updateSeq( this.sequenceDAO.getState(),
+                                sequenceDAO.getKey().getKey(),
+                                updateFrom);
+    }
+
+    public void setIsNewSequence (boolean isNew) {
+        isNewSequence = isNew;
+    }
+    public boolean getIsNewSequence() {
+        return isNewSequence;
+    }
+
+    public void setIsChangedSequence (boolean isChanged) {
+        isChangedSequence = isChanged;
+    }
+    public boolean getIsChangedSequence() {
+        return isChangedSequence;
+    }
+
+    public void setIsDummySequence (boolean isDummy) {
+        isDummySequence = isDummy;
+    }
+    public boolean getIsDummySequence() {
+        return isDummySequence;
     }
 
     /**
@@ -420,9 +521,10 @@ public class Sequence {
      * @throws Nothing
      */
 
-    public void sendToStream() throws DBException{
+    public void sendToStream() throws DBException {
         // New sequence - insert it with its accession and source associations
-        if(isNewSequence == true) {
+        // if bcp insert MGI_AttributeHistory
+        if(isNewSequence) {
             stream.insert(sequenceDAO);
             i = addAcc.iterator();
             while(i.hasNext()) {
@@ -432,10 +534,26 @@ public class Sequence {
             while(i.hasNext()) {
                 stream.insert((SEQ_Source_AssocDAO)i.next());
             }
+            // If bcp trigger won't add when adding sequence
+            if (stream.isBCP()) {
+                MGI_AttributeHistoryState typeHistoryState = new MGI_AttributeHistoryState();
+                typeHistoryState.setObjectKey(sequenceDAO.getKey().getKey());
+                typeHistoryState.setMGITypeKey(new Integer(MGITypeConstants.SEQUENCE));
+                typeHistoryState.setColumnName(MGD.seq_sequence._sequencetype_key);
+                stream.insert(new MGI_AttributeHistoryDAO(typeHistoryState));
+            }
         }
-        // Existing sequence - update it
-        else {
+        // Existing sequence that needs updating - update it
+        else if (isChangedSequence ) {
             stream.update(sequenceDAO);
+        }
+        else if (isDummySequence ) {
+            stream.delete(sequenceDAO);
+        }
+        else {
+            // for debugging log to debug or print out
+            System.out.println("Unhandled case in Sequence.sendToStream");
+
         }
         // Whether existing or new sequence - add references
         i = addRefAssoc.iterator();
@@ -443,9 +561,14 @@ public class Sequence {
             stream.insert((MGI_Reference_AssocDAO)i.next());
         }
     }
+
+
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:44  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:21  sc
 //  changes made from code review~
 //
