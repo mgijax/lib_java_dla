@@ -51,7 +51,7 @@ public class SEQ_SequenceSeqloaderDAO extends SEQ_SequenceDAO{
        */
        public String getDeleteSQL() throws DBException
        {
-            StringBuffer sql = new StringBuffer("exec SEQ_DeleteDummy ");
+            StringBuffer sql = new StringBuffer("SEQ_DeleteDummy ");
             // Following for BCP_Inline_Stream
             //StringBuffer sql = new StringBuffer ("call SEQ_DeleteDummy " );
             sql.append(Converter.toSQLString(this.getKey().getKey()));
