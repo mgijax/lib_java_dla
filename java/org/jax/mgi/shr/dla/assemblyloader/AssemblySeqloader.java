@@ -20,7 +20,7 @@ import java.util.Iterator;
  *
  * @does
  * <UL>
- * <LI>implements superclass (Seqloader) getRecordDataIterator to set superclass
+ * <LI>implements superclass (Seqloader) getDataIterator to set superclass
  *      DataIterator from an EMBLInputFile
  * <LI>It has an empty implementation of the superclass (DLALoader)
  *     preProcess method
