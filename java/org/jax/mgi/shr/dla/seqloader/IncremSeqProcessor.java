@@ -339,7 +339,7 @@ public class IncremSeqProcessor extends SeqProcessor {
           throws RepeatSequenceException, SeqloaderException {
       try {
           // write sequence to file and throw RepeatFileException
-          repeatWriter.write(seqInput.getSeq().getRecord());
+          repeatWriter.write(seqInput.getSeq().getRecord() + SeqloaderConstants.CRT);
           throw new RepeatSequenceException();
         }
         catch (IOException e) {
