@@ -127,17 +127,18 @@ public abstract class DLALoader {
   public DLALoader() {
     try {
       this.logger = DLALogger.getInstance();
+      DLALoaderCfg config = new DLALoaderCfg();
+      String loadPrefix = config.getLoadPrefix();
       this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
       this.radarDBMgr.setLogger(logger);
-      this.mgdDBMgr = new SQLDataManager(new DatabaseCfg("MGD"));
+      this.mgdDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
       this.mgdDBMgr.setLogger(logger);
       this.radarBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
       this.radarBCPMgr.setLogger(logger);
       this.radarBCPMgr.setSQLDataManager(radarDBMgr);
-      this.mgdBCPMgr = new BCPManager(new BCPManagerCfg("MGD"));
+      this.mgdBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
       this.mgdBCPMgr.setLogger(logger);
       this.mgdBCPMgr.setSQLDataManager(mgdDBMgr);
-      DLALoaderCfg config = new DLALoaderCfg();
       this.loadStream = createSQLStream(config.getLoadStreamName());
       this.qcStream = createSQLStream(config.getQCStreamName());
       this.inputConfig = new InputDataCfg();
