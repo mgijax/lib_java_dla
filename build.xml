@@ -37,7 +37,7 @@
 
   <target name="compile" depends="prepare"
           description="Compiles all source code.">
-    <echo>The classpath = ${java.class.path}</echo>
+    <!--echo>The classpath = ${java.class.path}</echo-->
     <javac srcdir="${src.dir}" destdir="${build.classes}"/>
   </target>
 
