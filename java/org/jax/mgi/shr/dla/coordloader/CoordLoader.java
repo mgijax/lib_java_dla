@@ -14,7 +14,6 @@ import org.jax.mgi.dbs.mgd.MolecularSource.UnresolvedAttributeException;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
-import org.jax.mgi.shr.dla.seqloader.SeqloaderConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 
@@ -23,65 +22,37 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.Iterator;
+import java.util.HashSet;
 
 /**
  * a base class which extend DLALoader and implements the DLALoader methods
- * 'initialize' and 'run' to accomplish load initialization and processing.
- * It expects its subclasses to implement the DLALoader method
- * 'preprocess'. In addition it defines the abstract method
- * 'appPostProcess' so subclasses can add post-processing as desired.
- * @abstract this class provides the 'basic needs' objects for performing
- * Incremental OR delete/reload sequence loads such as a SeqProcessor (or
- * IncremSeqProcessor), MergeSplitProcessor, SequenceAttributeResolver,
- * SeqQCReporter, and a Writer for repeated sequences. <BR>
- * It implements the superclass 'initialize' and 'run' methods. <BR>
- * Sub classes would be required to implement the following
- * methods:<br>
+ * 'initialize', 'preprocess', 'run', and 'postprocess'
+ * @has a set of  objects for doing Coordinate loads<br>
  * <UL>
- *   <LI>preprocess - for performing pre processing
- *   <LI>getRecordDataIterator - to create an iterator for its input file with
- *       an appropriate interpreter. And create an optional OrganismChecker.
- *   <LI>appPostProcess - for any application specific post-processing
- * </UL>
- * @has a set of 'basic-needs' objects for doing DLA loads<br>
- * <UL>
- *   <LI>A RecordDataIterator
- *   <LI>The load mode
- *   <LI>A SeqProcessor
- *   <LI>A SequenceAttributeResolver
+ *   <LI>A DataIterator for iterating over an input file
+ *   <LI>A CoordProcessor for processing a CoordInput object
+ *   <LI>A BufferedWriter for writing out repeated coordinates
  *   <LI>A SeqQCReporter
- *   <LI>A SeqloaderExceptionFactory for Sequence load specific exceptions
- * </UL>
- * In addition, if incremental processing (loadMode=INCREMENTAL)
- * <UL>
- *   <LI>A ScriptWriter for updates
- *   <LI>A ScriptWriter for merges and splits
- *   <LI>A MergeSplitProcessor
- *   <LI>A BufferedWriter for repeated sequences
- *   <LI>A SequenceLookup for creating Sequence objects from a database query
  * </UL>
  *
- * @does performs initialization of 'basic-needs' objects for sequence loads, and
- *       processes sequences. Subclasses must provide a RecordDataIterator with
- *       an appropriate interpreter.
+ * @does performs initialization of objects for coordinate loads, and
+ *       processes coordinates. Keeps count of repeated coordinates in the input
+ *       and writes them out to a file.
+ * @note assumes it is iterating over a file; could subclass to set a different
+ *       kind of iterator e.g. a RowDataIterator over a ResultSet.
  * @author sc
  * @version 1.0
  */
 
 public class CoordLoader extends DLALoader {
-    /**
-    * must be defined and set by subclass by implementing the
-    * getRecordDataIterator method
-    */
 
     // iterator over an input file
     protected DataIterator iterator;
 
-
     // provides access to Configuration values
     protected CoordLoadCfg loadCfg;
 
-    // the number of valid sequences WITHOUT processing errors
+    // current number of coordinates processed
     int processedCtr;
 
     // total processing time for the load
@@ -90,6 +61,15 @@ public class CoordLoader extends DLALoader {
     // coordinate processor
     CoordProcessor coordProcessor;
 
+    //  cache of seqids we have already processed
+    private HashSet coordIdsAlreadyProcessed;
+
+    // count of sequence records whose seqids we have already processed
+    private int coordIdsAlreadyProcessedCtr;
+
+
+    // writer for all coordinates repeated in the input
+    private BufferedWriter repeatSeqWriter;
 
     /**
      * Initializes instance variables depending on load mode
@@ -107,12 +87,26 @@ public class CoordLoader extends DLALoader {
         iterator = inData.getIterator(
                 (RecordDataInterpreter)loadCfg.getInterpreterClass());
 
-        // number of valid sequences WITHOUT processing errors:
+        // writes repeated input coordinates to a file
+       try {
+             repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
+                 getRepeatFileName()));
+        }
+        catch (IOException e) {
+             throw new MGIException(e.getMessage());
+        }
+
+        // number of valid coordinates WITHOUT processing errors:
         processedCtr = 0;
 
         // create a CoordProcessor
         coordProcessor = new CoordProcessor(loadStream);
 
+        // create the set for storing coordinate ids we have already processed
+        coordIdsAlreadyProcessed = new HashSet();
+
+         // count of coordinate records whose coordinate ids we have already processed
+        coordIdsAlreadyProcessedCtr = 0;
     }
 
     /**
@@ -153,8 +147,28 @@ public class CoordLoader extends DLALoader {
        while(iterator.hasNext()) {
            input = (CoordinateInput)iterator.next();
            logger.logdDebug(input.getCoordMapFeatureRawAttributes().getObjectId());
-           coordProcessor.processInput(input);
+           try {
 
+               String currentSeqid = input.getCoordMapFeatureRawAttributes().getObjectId();
+               logger.logdDebug(currentSeqid, false);
+               if (coordIdsAlreadyProcessed.contains(currentSeqid)) {
+                   // we have a repeated coordinate; count it, write it out,
+                   // go on to next coordinate record in the input
+                   coordIdsAlreadyProcessedCtr++;
+                   repeatSeqWriter.write(input.getCoordMapFeatureRawAttributes().getRecord() +"\n");
+                   logger.logdDebug("Repeat Sequence: " + currentSeqid);
+                   continue;
+               }
+               else {
+                   // add the coordinate id to the set we have processed
+                   coordIdsAlreadyProcessed.add(currentSeqid);
+               }
+           }
+           catch (IOException e) {
+               throw new MGIException(e.getMessage());
+           }
+
+           coordProcessor.processInput(input);
            processedCtr++;
            if (processedCtr  > 0 && processedCtr % 100 == 0) {
                logger.logdInfo("Processed " + processedCtr + " coordinates", false);
@@ -166,9 +180,8 @@ public class CoordLoader extends DLALoader {
 
 
     /**
-     * closes the load and qc SQLStreams. Reports load statistics.
-     * In incremental_mode processes merges and splits, closes repeat sequence
-     * writer.
+     * closes the load SQLStreams, closes repeat coordinate writer.
+     * Reports load statistics.
      * @throws MGIException
      */
     public void postprocess() throws MGIException
@@ -177,13 +190,22 @@ public class CoordLoader extends DLALoader {
         logger.logdInfo("Closing load stream", false);
         this.loadStream.close();
 
+        // close the repeat coordinate writer
+        logger.logdInfo("Closing repeat coordinate writer", false);
+        try {
+            repeatSeqWriter.close();
+        }
+        catch (IOException e) {
+            throw new MGIException(e.getMessage());
+        }
+
         reportLoadStatistics();
         logger.logdInfo("CoordLoader complete", true);
-    }   /**
+    }
 
     /**
-    * Reports load statistics; event counts, organism counts, valid sequence count
-    * etc.
+    * Reports load statistics; load time, # coordinates processed, #
+    * repeated coordinates in the input etc.
     * @assumes nothing
     * @effects nothing
     * @throws Nothing
@@ -197,6 +219,11 @@ public class CoordLoader extends DLALoader {
         message = "Total Coordinates Processed = " + processedCtr;
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
+        logger.logdInfo("Total Repeat Coordinates written to repeat file: "
+                        + coordIdsAlreadyProcessedCtr, false);
+        logger.logpInfo("Total Repeat Coordinates written to repeat file: "
+                        + coordIdsAlreadyProcessedCtr, false);
+
 
     }
 
