@@ -12,7 +12,7 @@ import org.jax.mgi.shr.stringutil.StringLib;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 
     /**
-     * @is An object that parses a GenBank format sequence records and obtains
+     * An object that parses a GenBank format sequence records and obtains
      *     values from a Configurator to create a SequenceInput data object.<BR>
      *     Determines if a GenBank format sequence record is valid.<BR>
      *     Note that GenBank and RefSeq data providers both use this format, but
@@ -53,8 +53,9 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String MEDLINE = "MEDLINE";
     private static String PUBMED = "PUBMED";
     private static String FEATURES = "FEATURES";
+    private static String KEYWORDS = "KEYWORDS";
 
-    // this is the FEATURES sub-section keyword 'source' as opposed to keyword
+    // this is the FEATURES sub-section keyword 'source' as opposed to tag
     // 'SOURCE'
     private static String SOURCE = "source";
     private static String ORIGIN = "ORIGIN";
@@ -71,6 +72,8 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static int ANOTHER_REFERENCE_LINE = 8;
     private static int SOURCE_SECTION = 9;
     private static int ANOTHER_SOURCE_LINE = 10;
+    private static int KEYWORDS_SECTION = 11;
+    private static int ANOTHER_KEYWORDS_LINE = 12;
 
     // Strings to find GB seq record source qualifiers
     private static String LIBRARY = "/clone_lib";
@@ -106,6 +109,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private StringBuffer classification;
     private StringBuffer reference;
     private StringBuffer source;
+    private StringBuffer keywords;
 
     /**
     * Constructs a GenBankFormatInterpreter
@@ -129,6 +133,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         classification  = new StringBuffer();
         reference = new StringBuffer();
         source = new StringBuffer();
+        keywords = new StringBuffer();
     }
 
     /**
@@ -229,6 +234,9 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         if(reference.length() > 0) {
             parseReference(reference.toString());
         }
+        // Note: unannotated sequences do not have a KEYWORDS section
+        if (keywords.length() >0 )
+          parseKeywords(keywords.toString());
 
         // set attributes from Configuration (super class hold the values
         // of virtual, provider, and seqStatus)
@@ -265,13 +273,15 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         classification = new StringBuffer();
         reference = new StringBuffer();
         source = new StringBuffer();
+        keywords = new StringBuffer();
 
         // reset reused instance variables
         sequenceInput.reset();
         rawSeq.reset();
         ms.reset();
 
-        // set the record attribute of the SequenceRawAttributes
+        // set the record attribute of the SequenceRawAttributes - we use this
+        // to write out repeated sequences
         rawSeq.setRecord(rcd);
 
         // split the record into lines
@@ -339,13 +349,34 @@ public class GBFormatInterpreter extends SequenceInterpreter {
               accession.append(line + SeqloaderConstants.CRT);
             }
             // if 'line' is the VERSION line get it. Now we are looking for the
-            // ORGANISM line
+            // KEYWORDS line
             else {
-              // now we are looking for ORGANISM
+              // now we are looking for KEYWORDS
               version = line;
-              currentSection = ORGANISM_SECTION;
+              currentSection = KEYWORDS_SECTION;
             }
           }
+          else if (currentSection == KEYWORDS_SECTION) {
+             if (line.startsWith(KEYWORDS)) {
+                 // get the first keywords line
+                 keywords.append(line);
+                 // > 1 def line if first line does not end w/PERIOD
+                 if (!line.endsWith(SeqloaderConstants.PERIOD)) {
+                     currentSection = ANOTHER_KEYWORDS_LINE;
+                 }
+                 else {
+                     currentSection = ORGANISM_SECTION;
+                 }
+              }
+          }
+          // if we are currently looking for another keyword line
+          else if (currentSection == ANOTHER_KEYWORDS_LINE) {
+              keywords.append(SeqloaderConstants.SPC + line);
+              if (line.endsWith(SeqloaderConstants.PERIOD)) {
+                  currentSection = ORGANISM_SECTION;
+              }
+          }
+
           // if we are currently looking for the ORGANISM line check to see if
           // 'line is the ORGANISM line
           else if (currentSection == ORGANISM_SECTION) {
@@ -667,6 +698,25 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             fieldSplitter.nextToken(), SeqloaderConstants.PERIOD).get(1)).trim();
         rawSeq.setVersion(vers);
     }
+
+    /**
+    * Parses the keywords from the KEYWORDS section of a GenBank sequence
+    * record. Sets the misc attribute in the SequenceRawAttributes object.
+    * @assumes Nothing
+    * @effects Nothing
+    * @param keywords The KEYWORDS section of a GenBank sequence record
+    * <BR>
+    * Example of KEYWORDS section, note that this section can span multiple lines
+    * in a record, but 'keywords' does not contain newlines:
+    * KEYWORDS    Third Party Annotation; TPA.
+    * <BR>
+    */
+
+    protected void parseKeywords(String keywords) {
+         // remove the KEYWORDS tag
+         rawSeq.setMisc(keywords.substring(12));
+    }
+
 
     /**
      * Parses seqids from the ACCESSION section of a GenBank sequence record.
