@@ -37,7 +37,7 @@ import java.util.Iterator;
  * methods:<br>
  * <UL>
  *   <LI>preprocess - for performing pre processing
- *   <LI>getRecordDataIterator - to create an iterator for its input file with
+ *   <LI>getDataIterator - to create an iterator for its input file with
  *       an appropriate interpreter. And create an optional OrganismChecker.
  *   <LI>appPostProcess - for any application specific post-processing
  * </UL>
@@ -69,7 +69,7 @@ import java.util.Iterator;
 public abstract class SeqLoader extends DLALoader {
     /**
     * must be defined and set by subclass by implementing the
-    * getRecordDataIterator method
+    * getDataIterator method
     */
 
     // iterator over an input file
@@ -130,7 +130,7 @@ public abstract class SeqLoader extends DLALoader {
      * @effects instance variables will be instantiated
      * @throws MGIException if errors occur during initialization
      * @throws RuntimeException if RecordDataIterator is not set after
-     *   call to getRecordDataIterator
+     *   call to getDataIterator
      */
     protected void initialize() throws MGIException {
         loadCfg = new SequenceLoadCfg();
