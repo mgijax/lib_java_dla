@@ -13,8 +13,7 @@ import java.util.HashSet;
 
 public class SeqEventDetector {
 
-    // if Processor can be null - used when processing an initial
-    // incremental load
+    // MergeSplit Processor can be null - we are deferring testing for now
     private MergeSplitProcessor mergeSplitProcessor;
     private TermNameLookup termNameLookup;
     private HashSet seqIdsAlreadyAdded;
