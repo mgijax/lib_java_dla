@@ -1,10 +1,36 @@
+TAG: lib_java_dla-1-0-40
+DATE: 03/29/2005
+STAFF: sc
+RELEASE: prod
+CHANGES: Merge tr5421 branch to trunk
+
+TAG: lib_java_dla-tr5421-2
+DATE: 03/29/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+1) Added SeqIdInterpreter to interpret one seqid (no version) per line
+2) SeqDeleter - added some debug logging and logging all sequences
+   looked at, deleted, and not deleted because already deleted or split
+
+TAG: lib_java_dla-tr5421-1
+DATE: 03/02/2005
+STAFF: sc
+RELEASE: prod
+CHANGES: 
+1) New classes for this tr: SeqDeleter, SeqDeleterProcessor, 
+   SeqDeleterCfg.java, GBSeqDeleterInterpreter, RefSeqDeleterInterpreter
+2) SeqLoaderConstants - Added new sequence status constants (delete, split)
+3) SequenceUpdater.java - Added logic to update sequence status key 
+4) Sequence - updated the getState() method to return a *copy* of the SequenceState
+
 TAG: lib_java_dla-1-0-39
 DATE: 03/07/2005
 STAFF: sc
 RELEASE: prod
 CHANGES: IncremSeqProcessor patch. processInput throwing MGIException
 when sequence can't be resolving (fatal exception) This bug introduced
-with tr6473 tag lib_java_dla-1-0-38. 
+with tr6473 tag lib_java_dla-1-0-38.
 
 TAG: lib_java_dla-tr5421-BP
 DATE: 02/28/2005
