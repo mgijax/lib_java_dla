@@ -5,7 +5,6 @@ package org.jax.mgi.shr.dla;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;
-import java.lang.Character;
 import java.util.logging.LogRecord;
 import java.util.Date;
 import java.text.MessageFormat;
@@ -91,6 +90,9 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.3  2003/05/22 15:49:12  mbw
+// javadocs edits
+//
 // Revision 1.2  2003/05/08 20:40:02  mbw
 // incorporated changes from code reviews
 //

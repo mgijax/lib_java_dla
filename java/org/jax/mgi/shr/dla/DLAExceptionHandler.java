@@ -4,7 +4,6 @@
 package org.jax.mgi.shr.dla;
 
 import org.jax.mgi.shr.exception.MGIException;
-import org.jax.mgi.shr.config.ConfigException;
 
 /**
  * @is An object which handles exceptions of type MGIException
@@ -83,6 +82,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.5  2003/06/04 18:28:56  mbw
+// javadoc edits
+//
 // Revision 1.4  2003/05/22 15:49:11  mbw
 // javadocs edits
 //
