@@ -46,6 +46,7 @@ public class IncremSeqProcessor extends SeqProcessor {
     // lookup a sequence in MGI
     private SequenceLookup seqLookup;
 
+
     /**
      * Constructs a IncremSeqProcessor that handles adding sequences only; does
      * not do event detection/handling
@@ -200,7 +201,6 @@ public class IncremSeqProcessor extends SeqProcessor {
              SeqloaderExceptionFactory.ProcessDummyErr, e);
              throw e1;
            }
-
           }
 
           else if (event == SeqloaderConstants.NON_EVENT) {
@@ -208,12 +208,34 @@ public class IncremSeqProcessor extends SeqProcessor {
           }
           else {
             // raise error - unhandled case
-            logger.logdDebug("UNHANDLED Event Primary: " + primarySeqid);
+            logger.logdErr("UNHANDLED Event Primary: " + primarySeqid);
             System.err.println(
                 "Unhandled event in IncremSeqPrcessor.processSequence");
 
           }
         }
+
+    /**
+    * Gets a Vector of Strings reporting counts for a different events processed
+    * thus far
+    * @assumes nothing
+    * @effects nothing
+    * @param None
+    * @returns Vector of Strings reporting counts for different events processed
+    * thus far
+    * @throws Nothing
+    */
+     public Vector getProcessedReport() {
+         Vector report = new Vector();
+         report .add("Total Already Added Events: " + eventDetector.getAlreadyAddedEventCount());
+         report.add("Total Add Events: " + eventDetector.getAddEventCount());
+         report.add("Total Update Events: " + eventDetector.getUpdateEventCount());
+         report.add("Total Dummy Events: " + eventDetector.getDummyEventCount());
+         report.add("Total Non Events: " + eventDetector.getNonEventCount());
+         report.add("Total Merge Events: " + eventDetector.getMergeEventCount());
+         report.add("Total Split Events: " + eventDetector.getSplitEventCount());
+         return report;
+     }
 
       /**
       * processes AreadyAdded event by writing the sequence to a file for later
