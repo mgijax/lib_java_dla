@@ -351,6 +351,12 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     */
   public void logvErr(String msg) {
+    if (logvFormatter != STAMPED_FORMATTER) {
+      // swith the formatter to stamped
+      logvHandler.setFormatter(stampedFormatter);
+      // set indicator to stamped
+      logvFormatter = STAMPED_FORMATTER;
+    }
     setClassNameMethodName();
     // log the message with header stamp
     validationLogger.logp(Level.SEVERE, clientClass, clientMethod, msg);
@@ -364,6 +370,12 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     */
   public void logdErr(String msg) {
+    if (logdFormatter != STAMPED_FORMATTER) {
+      // swith the formatter to stamped
+      logdHandler.setFormatter(stampedFormatter);
+      // set indicator to stamped
+      logdFormatter = STAMPED_FORMATTER;
+    }
     setClassNameMethodName();
     // log the message with header stamp
     diagnosticsLogger.logp(Level.SEVERE, clientClass, clientMethod, msg);
@@ -381,6 +393,12 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     */
   public void logdDebug(String msg) {
+    if (logdFormatter != STAMPED_FORMATTER) {
+      // swith the formatter to stamped
+      logdHandler.setFormatter(stampedFormatter);
+      // set indicator to stamped
+      logdFormatter = STAMPED_FORMATTER;
+    }
     setClassNameMethodName();
     // log message to diagnostic log only if logging level is at FINEST
     diagnosticsLogger.logp(Level.FINEST, clientClass, clientMethod, msg);
@@ -398,7 +416,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     if (debugState)
       diagnosticsLogger.setLevel(Level.FINEST);
     else
-      diagnosticsLogger.setLevel(Level.FINE);
+      diagnosticsLogger.setLevel(Level.FINER);
   }
 
   /**
@@ -502,7 +520,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
       if (debugState)
         diagnosticsLogger.setLevel(Level.FINEST);
       else
-        diagnosticsLogger.setLevel(Level.FINE);
+        diagnosticsLogger.setLevel(Level.FINER);
     }
     catch (IOException e) {
       DLALoggingExceptionFactory eFactory =
@@ -613,6 +631,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.1  2003/05/08 20:40:03  mbw
+// incorporated changes from code reviews
+//
 // Revision 1.2  2003/04/29 19:31:42  mbw
 // call to newInstance no returns a DataLoadLogger not Logger and by default header stamping is turned off when logging messages through the Logger interface
 //
