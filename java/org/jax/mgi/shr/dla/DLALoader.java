@@ -18,7 +18,7 @@ import org.jax.mgi.shr.exception.MGIException;
  * <UL>
  *   <LI>initialize - for initializing sub class instance variables
  *   <LI>run - for performing a specific load
- *   <LI>cleanup - for closing resources and other finalizations
+ *   <LI>finale - for closing resources and other finalizations
  * </UL>
  * <p>HAS: a set of 'basic-needs' objects for doing DLA loads<br>
  * <UL>
@@ -31,7 +31,7 @@ import org.jax.mgi.shr.exception.MGIException;
  *   <LI>A BCPManager for the MGD database
  * </p>
  * <p>DOES: performs initialization of 'basic-needs' and instantiates
- * the subclass and calls the initialize(), run() and cleanup() methods
+ * the subclass and calls the initialize(), run() and finale() methods
  * on the subclass.</p>
  * <pre>
  * @author mbw, dbm
@@ -172,7 +172,7 @@ public abstract class DLALoader {
   }
 
   /**
-   * <p>Purpose: executes the initialize(), run() and cleanup() methods
+   * <p>Purpose: executes the initialize(), run() and finale() methods
    * of the subclass loader and performs standard logging and
    * system exiting.</p>
    * <p>Assumes: nothing.</p>
@@ -198,7 +198,7 @@ public abstract class DLALoader {
       logger.logdInfo("Performing finalization",true);
       radarDBMgr.closeResources();
       mgdDBMgr.closeResources();
-      cleanup();
+      finale();
     }
     catch (MGIException e) {
       DLAException e2 = (DLAException)
