@@ -3,38 +3,58 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-/**
- * Debug stuff
- */
-import org.jax.mgi.shr.timing.Stopwatch;
-
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
-import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
-import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.shr.dla.DLALoggingException;
-import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.MolecularSource.MolecularSource;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
-import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceKey;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.AccessionLib;
 
-
 import java.util.Vector;
 import java.util.Iterator;
 import java.io.BufferedWriter;
 import java.io.IOException;
+
+
+// Debug
+
+import org.jax.mgi.shr.timing.Stopwatch;
+
+/**
+ * @is an object that incrementally processes sequence by resolving a sequence, its
+ * accession ids, references, and molecular sources raw attributes
+ *     then adding or updating them in a database.
+ * @has
+ *   <UL>
+ *   <LI>an event detecter
+ *   <LI>a qc reporter
+ *   <LI>a logger
+ *   <LI>various lookups
+ *   <LI>a writer to write out repeated sequence records to a file
+ *   </UL>
+ * @does
+ *   <UL>
+ *   <LI>detects events
+ *   <LI>process events
+ *   <LI>does QC reporting
+ *   <LI>writes out repeated sequences to a file
+ *   <LI>keeps track of counts of each event
+ *   </UL>
+ * @company The Jackson Laboratory
+ * @author sc
+ * @version 1.0
+ */
 
 public class IncremSeqProcessor extends SeqProcessor {
 
@@ -64,13 +84,20 @@ public class IncremSeqProcessor extends SeqProcessor {
      * not do event detection/handling
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @throws CacheException
-     * @throws DBException
-     * @throws ConfigException
-     * @throws MSException
-     * @throws DLALoggingException
-     * @throws KeyNotFoundException
+     * @param mgdSqlStream an sql stream for processing updates to an MGD database
+     * @param radarSqlStream an sql stream for qc reporting to a RADAR database
+     * @param qcReporter for managing inserts to qc report tables
+     * @param sar a SequenceAttributeResolver to resolve SEQ_Sequence attributes
+     * @param msp a MergeSplitProcessor - handles determining and processing
+     *    merge and split events
+     * @param repeatSeqWriter - a BufferedWriter to handle writing repeated
+     *    sequences to a file for later processing
+     * @throws CacheException if error using lookups
+     * @throws DBException if lookup error querying a database
+     * @throws ConfigException if error reading config file
+     * @throws MSException if error creating an MSProcessor
+     * @throws DLALoggingException if error creating a logger
+     * @throws KeyNotFoundException if logicalDB not found in lookup
      */
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
@@ -79,7 +106,7 @@ public class IncremSeqProcessor extends SeqProcessor {
                               SequenceAttributeResolver sar,
                               MergeSplitProcessor msp,
                               BufferedWriter repeatSeqWriter)
-        throws CacheException, DBException, ConfigException, MSException,
+        throws CacheException, DBException, ConfigException,  MSException,
                DLALoggingException, KeyNotFoundException {
         super(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
@@ -107,40 +134,39 @@ public class IncremSeqProcessor extends SeqProcessor {
     /**
      * Does incremental processing on a sequence by detecting
      * add, update, already processed and non events. Also detects and processes
-     * merge and split events<BR>
+     * merge and split events under the covers<BR>
      * <UL>
-     * <LI>Add event creates a SEQ_Sequence and SEQ_Source_Assoc, and ACC_Accession
-     *    database objects, and may create MGI_Reference_Assoc (if there are
-     *    sequence reference(s), and may create PRB_Source object(s)
-     *    (See MSProcessor)
+     * <LI>Add event creates a SEQ_Sequence, one or more SEQ_Source_Assoc,
+     *     one or more ACC_Accession database objects, and may create
+     *     MGI_Reference_Assoc (if there are sequence reference(s)),
+     *     and may create PRB_Source object(s)(See MSProcessor)
      * <LI>Update event updates SEQ_Sequence database object and may update
      *     or create PRB_Source (See MSProcessor)
      * <LI>Already processed event writes the sequence to a file for later
      *     processing.
-     *  <LI>For merges and splits see MergeSplitProcessor
+     * <LI>Non event does nothing
+     * <LI>Dummy Event deletes the dummy sequence then processes as an add
+     * <LI>For merges and splits see MergeSplitProcessor
      * </UL>
      * @assumes
      * @effects Depending on the stream, writes to bcp files, creates SQL batch,
-     *  writes to SQL script, or does inline SQL
-     * @param seqInput - a set of raw attributes for a sequence,
-     *   including sequence, source, references, accessions
+     * writes to SQL script, or does inline SQL
+     * @param seqInput - a set of raw attributes for a Sequence,
+     *   including source(s), reference(s), accession(s)
      * @return Nothing
-     * @throws KeyNotFoundException
-     * @throws MSException
      * @throws SeqloaderException if there is an IO error with the repeat
      *    sequence file
      * @throws RepeatSequenceException if we have already processed the current
      *    sequence in the input
      * @throws SequenceResolverException if we are unable to resolve one or more
      *    SequenceRawAttributes attributes
-     * @throws ChangedOrganismException if input organism != existing organism
-     * @throws ChangedLibraryException if input library != existing library
+     * @throws ChangedOrganismException if input raw organism != existing raw organism
+     * @throws MSException if error processing molecular source
      */
 
     public void processInput(SequenceInput seqInput)
       throws SeqloaderException, RepeatSequenceException,
-          ChangedOrganismException,
-          SequenceResolverException, MSException {
+          ChangedOrganismException, SequenceResolverException, MSException {
 
           // get the primary seqid of the sequence we are processing
           String primarySeqId = seqInput.getPrimaryAcc().getAccID();
@@ -297,14 +323,14 @@ public class IncremSeqProcessor extends SeqProcessor {
      }
 
       /**
-      * processes AreadyAdded event by writing the sequence to a file for later
+      * processes AlreadyAdded event by writing the sequence to a file for later
       *    processing
       * @assumes Nothing
       * @effects writes sequence record to a file
       * @param seqInput SequenceInput object - a set of raw sequence attributes
       *        including references assoc, source assoc and accession
       * @return nothing
-      * @throws RepeatSequenceException
+      * @throws RepeatSequenceException if the sequence has already been processed
       * @throws SeqloaderException indicating an IO exception occurred writing
       *   to the repeat file
       */
@@ -333,14 +359,19 @@ public class IncremSeqProcessor extends SeqProcessor {
       *        and update a sequence
       * @param existingSequence Sequence object for the existing sequence to update
       * @return nothing
-      * @throws ConfigException
-      * @throws CacheException
-      * @throws DBException
-      * @throws TranslationException
-      * @throws KeyNotFoundException
-      * @throws MSException
-      * @throws SequenceResolverException
+      * @throws ConfigException if error reading config file
+      * @throws CacheException if error using lookups
+      * @throws DBException if lookup error querying database
+      * @throws TranslationException if translation error resolving raw sequence
+      * @throws KeyNotFoundException if error doing lookups
+      * @throws MSException if error processing molecular source
+      * @throws SequenceResolverException if can't resolve any SEQ_Sequence
+      *         attributes
+      * @throws SeqloaderException if error doing QCReporting
+      * @throws ChangedOrganismException if existing raw organism != incoming
+      *          raw organism
       */
+
       private void processUpdateEvent(SequenceInput seqInput, Sequence existingSequence)
           throws ConfigException, CacheException, DBException, TranslationException,
               KeyNotFoundException, MSException, SequenceResolverException,
@@ -468,3 +499,25 @@ public class IncremSeqProcessor extends SeqProcessor {
     }
 }
 // $Log
+/**************************************************************************
+*
+* Warranty Disclaimer and Copyright Notice
+*
+*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+*
+*  This software and data are provided to enhance knowledge and encourage
+*  progress in the scientific community and are to be used only for research
+*  and educational purposes.  Any reproduction or use for commercial purpose
+*  is prohibited without the prior express written permission of The Jackson
+*  Laboratory.
+*
+* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+*
+* All Rights Reserved
+*
+**************************************************************************/

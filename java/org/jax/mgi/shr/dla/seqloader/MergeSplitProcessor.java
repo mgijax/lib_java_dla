@@ -4,7 +4,6 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import org.jax.mgi.shr.dbutils.ScriptWriter;
-import org.jax.mgi.shr.dla.seqloader.SeqQCReporter;
 import org.jax.mgi.shr.dbutils.ScriptException;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
@@ -19,7 +18,7 @@ import java.util.HashMap;
 
 /**
  * @is an object that determines sequences that have been merged or split and
- *     reassociates merged or split sequences with their proper MGI sequence object
+ *     reassociates merged or split seqids with their proper MGI sequence object
  * @has
  *   <UL>
  *   <LI> Mapping of primary seqids to their secondary seqids that are primary
@@ -51,9 +50,9 @@ import java.util.HashMap;
  *      </UL>
  *   <LI>Process splits by:
  *     <UL>
- *       <LI>setting the MGI sequence status to ‘split'.
+ *       <LI>setting the MGI sequence status to 'split'.
  *       <LI>Make the primary seqid (and the secondary seqid(s) )of the split
- *           MGI sequence secondary seqid(s) of the ‘new’ Sequence
+ *           MGI sequence secondary seqid(s) of the 'new' Sequence
  *       <LI>only curators can move associations and mark the split sequence as
  *           deleted
  *     </UL>
@@ -75,8 +74,12 @@ public class MergeSplitProcessor {
      * Constructs a MergeSplitProcessor
      * @assumes Nothing
      * @effects Nothing
-     * @param logicalDBKey LogicalDB of load
-     * @throws
+     * @param reporter a SeqQCReporter
+     * @throws KeyNotFoundException if error creating MergeSplitHelper
+     * @throws DBException if error creating MergeSplitHelper
+     * @throws CacheException  if error creating MergeSplitHelper
+     * @throws ConfigException if error creating MergeSplitHelper
+     * @throws DLALoggingException if error creating logger
      */
 
      public MergeSplitProcessor(SeqQCReporter reporter)
@@ -87,6 +90,7 @@ public class MergeSplitProcessor {
          mergeSplitSeqs = new HashMap();
          logger = DLALogger.getInstance();
      }
+
      /**
       * Detects a Merge/Split event for a sequence by determining if any of the
       *       sequences secondary ids are in MGI as primary<BR>
@@ -94,9 +98,13 @@ public class MergeSplitProcessor {
       *       Integers) that are merges or splits for later processing.
       * @assumes
       * @effects
-      * @param logicalDB to create an AccessionLookup for Sequences
+      * @param aeqInput a SequenceInput object representing the raw attributes
+      *   of the sequence being processed
       * @return Nothing
-      * @throws
+      * @throws KeyNotFoundException - not actually thrown from MergeSplitHelper,
+      * AccessionLookup, but lookup interface requires it
+      * @throws DBException if error in MergeSplitHelper getting merge/split seqids
+      * @throws CacheException if lookup error in MergeSplitHelper
       */
 
     public void preProcess(SequenceInput seqInput)
@@ -111,16 +119,17 @@ public class MergeSplitProcessor {
      *    in MGI and processes accordingly
      * @assumes
      * @effects
-     * @param None
+     * @param writer a ScriptWriter for writing split and merge stored procedure commands
      * @return Nothing
-     * @throws
+     * @throws ScriptException if error writing to sql file
+     * @throws SeqloaderException if QCReporter error
      */
 
     public void process(ScriptWriter writer)
             throws ScriptException, SeqloaderException {
         HashMap secondaryToPrimary = mergeSplitHelper.createHash(mergeSplitSeqs);
-        // SEQ_Merge fromSeqid toSeqid
-        // SEQ_Split fromSeqid to Seqid
+
+        // Begin the stored procedure command
         String mergeProc = "SEQ_merge ";
         String splitProc= "SEQ_split ";
         for (Iterator mapI = secondaryToPrimary.keySet().iterator();
@@ -136,7 +145,7 @@ public class MergeSplitProcessor {
                                     "Vector of primary ids is empty");
                }
                else if (currentV.size() > 1) {
-                   // write out call to split stored procedure
+                   // create and write out call to split stored procedure
                    logger.logcInfo("Writing SEQ_split call(s):", false);
                    for (Iterator i = currentV.iterator(); i.hasNext();) {
                        String toSeqid = (String)i.next();
@@ -148,13 +157,15 @@ public class MergeSplitProcessor {
                            SeqloaderConstants.SGL_QUOTE + toSeqid +
                            SeqloaderConstants.SGL_QUOTE;
                        logger.logcInfo(cmd, false);
+                       // write out the command
                        writer.write(cmd);
+                       // write out the sql 'go' after the command
                        writer.go();
                        splitCtr++;
                    }
                }
                else {
-                   // write out call to merge stored procedure
+                   // create and write out call to merge stored procedure
                    logger.logcInfo("Writing SEQ_merge call:", false);
                    String toSeqid = (String)currentV.get(0);
                    String cmd = mergeProc +
@@ -167,7 +178,9 @@ public class MergeSplitProcessor {
 
                    logger.logcInfo(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
+                   // write out the command
                    writer.write(cmd);
+                   // write out the sql 'go' after the command
                    writer.go();
                    mergeCtr++;
                }
@@ -176,7 +189,7 @@ public class MergeSplitProcessor {
 
     /**
      * gets the current count of 'merge' events
-     * @assumes The split event counter is 0 unless the process method has been called
+     * @assumes Nothing
      * @effects Nothing
      * @return int current count of 'merge' events
      * @throws Nothing
