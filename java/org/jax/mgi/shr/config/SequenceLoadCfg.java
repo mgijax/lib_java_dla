@@ -226,11 +226,14 @@ public class SequenceLoadCfg extends Configurator {
    * @throws ConfigException if "SEQ_JOBSTREAM" not found in configuration file
    */
   public String getJobstreamName() throws ConfigException {
-    return getConfigString("SEQ_JOBSTREAM");
+    return getConfigString("JOBSTREAM");
   }
 }
 
 //  $Log$
+//  Revision 1.7  2004/04/02 18:39:24  mbw
+//  added a getJnumber method
+//
 //  Revision 1.6  2004/04/01 20:19:00  sc
 //  added JOBSTREAM
 //
