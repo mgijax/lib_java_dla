@@ -116,7 +116,8 @@ public class MergeSplitProcessor {
      * @throws
      */
 
-    public void process(ScriptWriter writer) throws ScriptException {
+    public void process(ScriptWriter writer)
+            throws ScriptException, SeqloaderException {
         HashMap secondaryToPrimary = mergeSplitHelper.createHash(mergeSplitSeqs);
         // SEQ_Merge fromSeqid toSeqid
         // SEQ_Split fromSeqid to Seqid
