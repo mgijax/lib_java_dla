@@ -81,17 +81,6 @@ public class SequenceLoadCfg extends Configurator {
     public String getLogicalDB() throws ConfigException {
         return getConfigString("SEQ_LOGICALDB");
     }
-    /**
-   * Gets the reference association type for this load
-   * @assumes Nothing
-   * @effects Nothing
-   * @return reference assoc typ name
-   * @throws ConfigException if "SEQ_REF_ASSOC_TYPE" not found in configuration file
-   */
-
-    public String getReferenceAssocType() throws ConfigException {
-        return getConfigString("SEQ_REF_ASSOC_TYPE");
-    }
 
     /**
     * Gets the provider name for this load
@@ -166,17 +155,6 @@ public class SequenceLoadCfg extends Configurator {
    */
   public String getStatus() throws ConfigException {
     return getConfigString("SEQ_STATUS");
-  }
-
-  /**
-   * Gets the sequence type for this load
-   * @assumes Nothing
-   * @effects Nothing
-   * @return the sequence type
-   * @throws ConfigException if "SEQ_TYPE" not found in configuration file
-   */
-  public String getType() throws ConfigException {
-    return getConfigString("SEQ_TYPE");
   }
 
   /**
@@ -287,6 +265,9 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.10  2004/10/13 11:59:28  sc
+//  added gets for assembly sequence load configuration values
+//
 //  Revision 1.9  2004/07/28 20:10:11  mbw
 //  javadocs only
 //
