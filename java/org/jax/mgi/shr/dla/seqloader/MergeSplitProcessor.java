@@ -12,6 +12,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 
 import java.util.Vector;
 import java.util.Iterator;
@@ -79,11 +80,11 @@ public class MergeSplitProcessor {
      * @throws
      */
 
-     public MergeSplitProcessor(SeqQCReporter reporter)
+     public MergeSplitProcessor(AccessionLookup seqidLookup, SeqQCReporter reporter)
          throws KeyNotFoundException, DBException, CacheException,
          ConfigException, DLALoggingException {
          qcReporter = reporter;
-         mergeSplitHelper = new MergeSplitHelper();
+         mergeSplitHelper = new MergeSplitHelper(seqidLookup);
          mergeSplitSeqs = new HashMap();
          logger = DLALogger.getInstance();
      }

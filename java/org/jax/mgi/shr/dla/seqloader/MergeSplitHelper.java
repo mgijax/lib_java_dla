@@ -65,7 +65,7 @@ public class MergeSplitHelper {
     // the sequence key of a 2ndary seqid found in MGI as primary
     Integer seqKey;
 
-    public MergeSplitHelper() throws KeyNotFoundException,
+    public MergeSplitHelper(AccessionLookup seqidLookup) throws KeyNotFoundException,
         DBException, CacheException, ConfigException {
         // configurator to get the logicalDB for the load
         SequenceLoadCfg config = new SequenceLoadCfg();
@@ -74,9 +74,10 @@ public class MergeSplitHelper {
         LogicalDBLookup lookup = new LogicalDBLookup();
 
         // should we use an uncached accession lookup instead?
-        seqIdLookup = new AccessionLookup(lookup.lookup(
-            config.getLogicalDB()).intValue(),
-                MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        this.seqIdLookup = seqidLookup;
+            //new AccessionLookup(lookup.lookup(
+            //config.getLogicalDB()).intValue(),
+            //    MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
     }
 
     /**

@@ -78,7 +78,8 @@ public class IncremSeqProcessor extends SeqProcessor {
                               SeqQCReporter qcReporter,
                               SequenceAttributeResolver sar,
                               MergeSplitProcessor msp,
-                              BufferedWriter repeatSeqWriter)
+                              BufferedWriter repeatSeqWriter,
+                              AccessionLookup sidLookup)
         throws CacheException, DBException, ConfigException, MSException,
                DLALoggingException, KeyNotFoundException {
         super(mgdSqlStream, radarSqlStream, sar);
@@ -86,8 +87,9 @@ public class IncremSeqProcessor extends SeqProcessor {
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-        seqIdLookup = new AccessionLookup(logicalDBKey,
-                MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        seqIdLookup = sidLookup;
+            //new AccessionLookup(logicalDBKey,
+              //  MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
         seqLookup = new SequenceLookup(mgdSqlStream);
     }
 
@@ -168,8 +170,10 @@ public class IncremSeqProcessor extends SeqProcessor {
               // the sequence is in MGI get its Sequence object
               sequenceCtr = sequenceCtr + 1;
               stopWatch.start();
+              logger.logdDebug("Seq in MGI, looking up Sequence", true);
               try {
                 existingSequence = seqLookup.findBySeqId(primarySeqId, logicalDBKey);
+                logger.logdDebug("Got Sequence " + primarySeqId);
               }
               catch (MGIException e) {
                 SeqloaderException e1 =
