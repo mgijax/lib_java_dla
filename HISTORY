@@ -1,3 +1,14 @@
+TAG: lib_java_dla-1-0-33
+DATE: 09/09/2004
+STAFF: sc
+RELEASE: production
+CHANGES: TR6176
+1) GBFormatInterpreter - Add test for FEATURES tag when looking for REFERENCE tag as some
+               RefSeq sequences do not have REFERENCE tag
+2) Seqloader - Seqloader.run method must catch MGIException (Not
+               RecordFormatException) then test to see if of type
+               RecordFormatException when calling iterator.next(). 
+
 TAG: lib_java_dla-1-0-32
 DATE: 09/01/2004
 STAFF: sc
