@@ -6,17 +6,14 @@ package org.jax.mgi.shr.dla.seqloader;
 import java.util.*;
 import java.util.regex.*;
 
-import org.jax.mgi.shr.dla.seqloader.SeqDecider;
-import org.jax.mgi.shr.dla.seqloader.SeqloaderConstants;
 import org.jax.mgi.shr.config.OrganismCheckerCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
-import org.jax.mgi.shr.dla.DLALogger;
-import org.jax.mgi.shr.dla.DLAException;
-import org.jax.mgi.shr.dla.DLAExceptionHandler;
 
 // DEBUG
+import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
+import org.jax.mgi.shr.timing.Stopwatch;
 
 /**
  * @is An object that, given a GenBank format sequence record determines if it
@@ -47,9 +44,9 @@ public class GBOrganismChecker {
     // Note the ? forces searching until the FIRST instance of REFERENCE is found
     // without the ? it will search until the LAST instance
     private static final String ORG_EXPRESSION = "ORGANISM([\\s\\S]*?)REFERENCE";
-    // this one works; all classifications end with a '.' - Actually it doesn't
-    // because in the case of organism being 'Mus sp.' it stops and does not
-    // get the full classification
+
+    // this one doesn't work because in the case of organism being 'Mus sp.'
+    // it stops and does not get the full classification
     //private static final String EXPRESSION = "ORGANISM([^.]+).*";
 
     private Pattern orgPattern;
@@ -79,18 +76,21 @@ public class GBOrganismChecker {
     // returns true if a given classification is for a given species
     private GBSeqInterrogator si;
 
-    // The logicalDB of the DataProvider that uses GenBank format
+    // The logicalDB name of the DataProvider that uses GenBank format
     private String logicalDB;
 
     // DEBUG
     private DLALogger logger;
+    //Stopwatch stopWatch = new Stopwatch();
+    Runtime runTime = Runtime.getRuntime();
 
     /**
     * Constructs an OrganismChecker with a set of deciders
     * @assumes nothing
     * @effects nothing
     * @param None
-    * @throws An exception if there are no deciders or unsupported provider
+    * @throws ConfigException if config file does not define mouse human and rat
+    *         decider vars
     */
 
     public GBOrganismChecker () throws ConfigException, DLALoggingException {
@@ -119,7 +119,7 @@ public class GBOrganismChecker {
     }
 
     /**
-    * Determines if a sequence record is an organismrepresented by the set
+    * Determines if a sequence record is an organism represented by a set
     * of deciders
     * @assumes Nothing
     * @effects Nothing
@@ -130,6 +130,10 @@ public class GBOrganismChecker {
     */
 
     public boolean checkOrganism(String record) {
+        //DEBUG
+        //stopWatch.reset();
+        //stopWatch.start();
+
         totalCtr++;
         // reset
         isA = false;
@@ -151,6 +155,8 @@ public class GBOrganismChecker {
                 }
             }
         }
+        // if we don't find the classification, try a different Matcher - this
+        // may be a refseq record
         else if (orgAltMatcher.find() == true) {
             // Determine if we are interested in this sequence
             while (i.hasNext()) {
@@ -162,13 +168,14 @@ public class GBOrganismChecker {
                     break;
                 }
             }
+        }
 
-        }
-        /*
         if (isA == false) {
-            logger.logdDebug("Not a valid record: " + record, true);
+            logger.logdDebug("Not a valid record", true);
         }
-        */
+        //stopWatch.stop();
+        //logger.logdDebug("checkOrganism time: " + stopWatch.time());
+        //logger.logdDebug("Free memory: " + runTime.freeMemory());
         return isA;
       }
 
@@ -384,6 +391,9 @@ public class GBOrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.2  2004/03/12 14:13:22  sc
+//  HISTORY
+//
 //  Revision 1.1  2004/02/27 14:32:36  sc
 //  initial commit having been moved from gbseqload
 //
