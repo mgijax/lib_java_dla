@@ -9,6 +9,7 @@ import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
+import org.jax.mgi.dbs.mgd.lookup.JNumberLookup;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
@@ -40,6 +41,9 @@ public class RefAssocAttributeResolver {
     // a lookup to resolve medline ids
     private AccessionLookup medlineLookup;
 
+    // a lookup to resolve mgi references
+    private JNumberLookup jnumberLookup;
+
     /**
      * Constructs a RefAssociationResolver object by creating the necessary
      * lookups
@@ -59,6 +63,7 @@ public class RefAssocAttributeResolver {
         medlineLookup = new AccessionLookup(LogicalDBConstants.MEDLINE,
                                            MGITypeConstants.REF,
                                            AccessionLib.PREFERRED);
+       jnumberLookup = new JNumberLookup();
     }
 
     /**
@@ -95,6 +100,10 @@ public class RefAssocAttributeResolver {
         else if(refLogicalDB == LogicalDBConstants.MEDLINE) {
 
             refKey = medlineLookup.lookup(raw.getRefId());
+        }
+        // the logical db indicates a mgi jnumber
+        else if(refLogicalDB == LogicalDBConstants.MGI) {
+            refKey = jnumberLookup.lookup(raw.getRefId());
         }
 
         // if we were able to resolve a reference id create a state
