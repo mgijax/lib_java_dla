@@ -131,7 +131,7 @@ public class SeqRefAssocProcessor {
         {
             // see if MGI has this reference, if not state=null;
             state = resolver.resolveAttributes(
-                raw, objectKey, LogicalDBConstants.MGI);
+                rawRef, objectKey, LogicalDBConstants.MGI);
         }
         // state could be null
         return state;
