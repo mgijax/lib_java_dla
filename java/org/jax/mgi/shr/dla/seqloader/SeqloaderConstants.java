@@ -62,10 +62,14 @@ public class SeqloaderConstants {
 
     // GenBank Third Party Annotation (TPA) KEYWORD String
     public static final String TPA = "Third Party Annotation";
+
     // Sequence quality VOC_Vocab term
     public static final String HIGH_QUAL = "High";
     public static final String MED_QUAL = "Medium";
     public static final String LOW_QUAL = "Low";
+
+    // Sequence type VOC_Vocab terms
+    public static final String DNA = "DNA";
 
     // Sequence status constants
     public static final String ACTIVE_STATUS = "ACTIVE";
@@ -76,6 +80,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.12  2004/07/08 15:03:49  sc
+//  javdocs changes
+//
 //  Revision 1.11  2004/06/30 17:25:36  sc
 //  merging sc2 branch to trunk
 //
