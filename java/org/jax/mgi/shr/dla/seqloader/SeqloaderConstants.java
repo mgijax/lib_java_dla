@@ -36,6 +36,9 @@ public class SeqloaderConstants {
     public static final String DUMMY_SEQ_STATUS = "Not Loaded";
     public static final String NOT_APPLICABLE = "Not Applicable";
 
+    // Name organism of non-mouse molecular source
+    public static final String OTHER = "Other";
+
     // load mode constants
     public static final String INCREM_LOAD_MODE = "incremental";
     public static final String INCREM_INITIAL_LOAD_MODE = "incremental_initial";
@@ -58,6 +61,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.6  2004/03/29 13:47:28  sc
+//  added SGL_QUOTE constant
+//
 //  Revision 1.5  2004/03/24 18:33:30  sc
 //  added constants for open paren, comma,semi-colon, and Not Applicable
 //
