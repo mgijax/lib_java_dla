@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<project name="lib_java_exception" default="compile" basedir=".">
+<project name="lib_java_dla" default="compile" basedir=".">
 
   <!-- The project name -->
-  <property name="proj.name" value="lib_java_exception"/>
+  <property name="proj.name" value="lib_java_dla"/>
 
   <!-- The directory containing source code -->
   <property name="src.dir" value="java"/>
