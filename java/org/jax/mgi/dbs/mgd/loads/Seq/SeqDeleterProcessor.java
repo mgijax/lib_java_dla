@@ -200,6 +200,11 @@ public class SeqDeleterProcessor {
                batchMap = new HashMap();
            }
        }
+       else {
+           logger.logdDebug("Sequence: " + seqIdToDelete + " is not in MGI");
+           logger.logcInfo("Sequence: " + seqIdToDelete + " is not in MGI", false);
+       }
+
    }
        /**
         * processes the last batch
@@ -253,6 +258,7 @@ public class SeqDeleterProcessor {
               throw e1;
           }
           // iterate thru the Sequence objects processing deletes
+          logger.logdDebug("Number of results returned from query: " + sequences.size());
           for (Iterator i = sequences.iterator(); i.hasNext(); ) {
               Sequence s = (Sequence) i.next();
               processDelete(s);
@@ -284,12 +290,18 @@ public class SeqDeleterProcessor {
                   s.updateSequenceState(newState);
                   //log the seqid
                   logger.logcInfo("DELETED " + SeqloaderConstants.TAB + s.getAccPrimary().getAccID(), false);
+                  logger.logdDebug("DELETED " + SeqloaderConstants.TAB + s.getAccPrimary().getAccID(), false);
                   // write out the update
                   s.sendToStream();
          }
          else {
              // increment the split counter
-             logger.logcInfo("NOT DELETED " + SeqloaderConstants.TAB + s.getAccPrimary().getAccID(), false);
+             logger.logcInfo("NOT DELETED " + SeqloaderConstants.TAB +
+                             s.getAccPrimary().getAccID() + " Status=" +
+                             statusString, false);
+             logger.logdDebug("NOT DELETED " + SeqloaderConstants.TAB +
+                              s.getAccPrimary().getAccID() + " Status=" +
+                              statusString, false);
              splitDelCtr++;
          }
       }
