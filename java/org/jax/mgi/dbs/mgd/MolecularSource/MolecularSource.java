@@ -727,4 +727,10 @@ public class MolecularSource
   {
       this.isInDatabase = bool;
   }
+
+  protected PRB_SourceDAO getSourceDAO()
+  {
+      return new PRB_SourceDAO(this.key, this.state);
+  }
+
 }
