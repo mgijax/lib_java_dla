@@ -109,7 +109,7 @@ public class TestMSAttrResolver
             mSAttrResolver.resolveAttributes(rawAttr);
         assertEquals(new Integer(-60), ms.getCellLineKey());
         assertEquals("Not Resolved", ms.getAge());
-        assertNull(ms.getCuratorEdited());
+        assertTrue(!(ms.getCuratorEdited().booleanValue()));
         assertEquals(new Integer(-50), ms.getGenderKey());
         assertNull(ms.getMSKey());
         assertEquals(segNotApplicableKey, ms.getSegmentTypeKey());
@@ -149,7 +149,7 @@ public class TestMSAttrResolver
             mSAttrResolver.resolveAttributes(rawAttr);
         assertEquals(this.cellNotSpecifiedKey, ms.getCellLineKey());
         assertEquals("Not Resolved", ms.getAge());
-        assertNull(ms.getCuratorEdited());
+        assertTrue(!(ms.getCuratorEdited().booleanValue()));
         assertEquals(this.genNotSpecifiedKey, ms.getGenderKey());
         assertNull(ms.getMSKey());
         assertEquals(segNotApplicableKey, ms.getSegmentTypeKey());
@@ -174,7 +174,7 @@ public class TestMSAttrResolver
             mSAttrResolver.resolveAttributes(rawAttr);
         assertEquals(this.cellNotResolvedKey, ms.getCellLineKey());
         assertEquals("Not Resolved", ms.getAge());
-        assertNull(ms.getCuratorEdited());
+        assertTrue(!(ms.getCuratorEdited().booleanValue()));
         assertEquals(this.genNotResolvedKey, ms.getGenderKey());
         assertNull(ms.getMSKey());
         assertEquals(segNotApplicableKey, ms.getSegmentTypeKey());
@@ -194,7 +194,7 @@ public class TestMSAttrResolver
             mSAttrResolver.resolveAttributes(rawAttr);
         assertEquals(this.cellNotApplicableKey, ms.getCellLineKey());
         assertEquals("Not Applicable", ms.getAge());
-        assertNull(ms.getCuratorEdited());
+        assertTrue(!(ms.getCuratorEdited().booleanValue()));
         assertEquals(this.genNotApplicableKey, ms.getGenderKey());
         assertNull(ms.getMSKey());
         assertEquals(segNotApplicableKey, ms.getSegmentTypeKey());
@@ -214,7 +214,7 @@ public class TestMSAttrResolver
             mSAttrResolver.resolveAttributes(rawAttr);
         assertEquals(this.cellNotApplicableKey, ms.getCellLineKey());
         assertEquals("Not Applicable", ms.getAge());
-        assertNull(ms.getCuratorEdited());
+        assertTrue(!(ms.getCuratorEdited().booleanValue()));
         assertEquals(this.genNotApplicableKey, ms.getGenderKey());
         assertNull(ms.getMSKey());
         assertEquals(segNotApplicableKey, ms.getSegmentTypeKey());
@@ -228,6 +228,7 @@ public class TestMSAttrResolver
 
     public void testOrganismToStrain() throws Exception
     {
+        // test one
         MSRawAttributes rawAttr = new MSRawAttributes();
         rawAttr.setOrganism("Mus musculus musculus");
         rawAttr.setStrain("CB100");
@@ -235,8 +236,17 @@ public class TestMSAttrResolver
             mSAttrResolver.resolveAttributes(rawAttr);
         assertEquals(organismLookup.lookup("mouse, laboratory"),
                      ms.getOrganismKey());
-        assertEquals(this.strainLookup.lookup("M. m. musculus"),
+        assertEquals(this.strainLookup.lookup("CB100"),
                      ms.getStrainKey());
+        // test two
+        rawAttr = new MSRawAttributes();
+        rawAttr.setOrganism("Mus abbotti test");
+        rawAttr.setStrain("CB100");
+        ms = mSAttrResolver.resolveAttributes(rawAttr);
+        assertEquals(organismLookup.lookup("mouse, laboratory"),
+                     ms.getOrganismKey());
+        assertEquals(new Integer(-120), ms.getStrainKey());
+
     }
 
     private void runInserts() throws Exception
@@ -247,7 +257,8 @@ public class TestMSAttrResolver
             "-1.0, 1, 1060, 1060, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-80, 1005, -50, " +
+            "insert into mgi_translation values (-80, " +
+            TranslationTypeConstants.LIBRARY + ", -50, " +
             "'RPCI/22 Clone Set', 1, 1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
@@ -255,7 +266,8 @@ public class TestMSAttrResolver
             "1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-70, 1001, -50, " +
+            "insert into mgi_translation values (-70, " +
+            TranslationTypeConstants.ORGANISM + ", -50, " +
             "'Mus musculus orgainsm', 1, 1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
@@ -263,7 +275,8 @@ public class TestMSAttrResolver
             "getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-50, 1006, -50, " +
+            "insert into mgi_translation values (-50, " +
+            TranslationTypeConstants.STRAIN + ", -50, " +
             "'CB/100 strain', 1, 1000, 1000, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
@@ -271,33 +284,61 @@ public class TestMSAttrResolver
             "1, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-50, 1003, -50, " +
+            "insert into mgi_translation values (-60, " +
+            TranslationTypeConstants.TISSUE + ", -50, " +
             "'placenta day 21', 1, 1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into voc_term values (-50, 15, 'Feminine', 'F', 1, 0, 1200, " +
-            "1200, getDate(), getDate())"
-            );
-        sqlMgr.executeUpdate(
-            "insert into voc_term values (-60, 17, 'B-cell', null, 113, 0, " +
+            "insert into voc_term values (-50, " +
+            VocabularyTypeConstants.GENDER + ", 'Feminine', 'F', 1, 0, " +
             "1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-90, 1000, -50, 'she', 1, " +
+            "insert into voc_term values (-60, " +
+            VocabularyTypeConstants.CELLLINE + ", 'B-cell', null, 113, 0, " +
             "1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-100, 1004, -60, " +
+            "insert into mgi_translation values (-90, " +
+            TranslationTypeConstants.GENDER + ", -50, 'she', 1, " +
+            "1200, 1200, getDate(), getDate())"
+            );
+        sqlMgr.executeUpdate(
+            "insert into mgi_translation values (-100, " +
+            TranslationTypeConstants.CELL + ", -60, " +
             "'B-cells', 1, 1200, 1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into voc_term values (-70,  21, 'DNA', 'D', 1, 0, 1200, " +
+            "insert into voc_term values (-70,  " +
+            VocabularyTypeConstants.SEQUENCETYPE + ", 'DNA', 'D', 1, 0, 1200, " +
             "1200, getDate(), getDate())"
             );
         sqlMgr.executeUpdate(
-            "insert into mgi_translation values (-110, 1002, -70, " +
+            "insert into mgi_translation values (-110, " +
+            TranslationTypeConstants.SEQUENCETYPE + ", -70, " +
             "'Deoxyribonucleic Acid', 1, 1200, 1200, getDate(), getDate())"
             );
+        sqlMgr.executeUpdate(
+            "insert into mgi_organism values (-130, 'mouse', 'Mus musculus', " +
+            "1200, 1200, getDate(), getDate())"
+            );
+
+        sqlMgr.executeUpdate(
+            "insert into prb_strain values (-120, 'Mus abbotti', 1, 0, 0, " +
+            "getDate(), getDate())"
+            );
+
+        sqlMgr.executeUpdate(
+            "insert into mgi_translation values (-120, " +
+            TranslationTypeConstants.ORGANISM_TO_STRAIN + ", -120, " +
+            "'Mus abbotti test', 1, 1200, 1200, getDate(), getDate())"
+            );
+        sqlMgr.executeUpdate(
+            "insert into mgi_translation values (-130, " +
+            TranslationTypeConstants.ORGANISM + ", 1, " +
+            "'Mus abbotti test', 1, 1200, 1200, getDate(), getDate())"
+            );
+
     }
 
     private void runDeletes() throws Exception
@@ -312,10 +353,16 @@ public class TestMSAttrResolver
             "delete from mgi_organism where _organism_key = -50"
             );
         sqlMgr.executeUpdate(
+            "delete from mgi_organism where _organism_key = -130"
+            );
+        sqlMgr.executeUpdate(
             "delete from mgi_translation where _translation_key = -70"
             );
         sqlMgr.executeUpdate(
             "delete prb_strain where _strain_key = -50"
+            );
+        sqlMgr.executeUpdate(
+            "delete prb_strain where _strain_key = -120"
             );
         sqlMgr.executeUpdate(
             "delete mgi_translation where _translation_key = -50"
@@ -324,7 +371,7 @@ public class TestMSAttrResolver
             "delete prb_tissue where _tissue_key = -50"
             );
         sqlMgr.executeUpdate(
-            "delete mgi_translation where _translation_key = -50"
+            "delete mgi_translation where _translation_key = -60"
             );
         sqlMgr.executeUpdate(
             "delete from voc_term where _term_key = -50"
@@ -344,6 +391,13 @@ public class TestMSAttrResolver
         sqlMgr.executeUpdate(
             "delete from mgi_translation where _translation_key = -110"
             );
+        sqlMgr.executeUpdate(
+            "delete from mgi_translation where _translation_key = -120"
+            );
+        sqlMgr.executeUpdate(
+            "delete from mgi_translation where _translation_key = -130"
+            );
+
     }
 
 }
