@@ -58,9 +58,14 @@ public class SeqloaderConstants {
     public static final String MED_QUAL = "Medium";
     public static final String LOW_QUAL = "Low";
 
+    // Sequence status constants
+    public static final String ACTIVE_STATUS = "ACTIVE";
 
 }
 //  $Log$
+//  Revision 1.7  2004/03/31 18:39:50  sc
+//  added OTHER - translatable value for organism - Other
+//
 //  Revision 1.6  2004/03/29 13:47:28  sc
 //  added SGL_QUOTE constant
 //
