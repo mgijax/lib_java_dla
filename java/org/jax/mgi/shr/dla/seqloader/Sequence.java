@@ -88,7 +88,7 @@ public class Sequence {
     private Vector deleteRefAssoc = new Vector();
 
     // the set of reference associations to add to the database
-    private Vector addRefAssoc = new Vector();
+    private Vector addReferenceAssoc = new Vector();
 
     // the set of source associations to delete from the databaase
     private Vector deleteSeqSrcAssoc = new Vector();
@@ -334,15 +334,15 @@ public class Sequence {
             refAssociations.add(new MGI_Reference_AssocDAO(state));
 
             // add the DAO to the add Vector too
-            addRefAssoc.add(refAssociations.lastElement());
+            addReferenceAssoc.add(refAssociations.lastElement());
 
             // add the refs key to the full set (existing and new) of refs
             // for the sequence
             currentRefKeySet.add(refKey);
-
-            // add the refs key to the set of new refs for the sequence
-            inputRefKeySet.add(refKey);
         }
+        // add the refs key to the set of new refs for the sequence
+        inputRefKeySet.add(refKey);
+
     }
 
     /**
@@ -596,7 +596,7 @@ public class Sequence {
 
         }
         // Whether existing or new sequence - add references
-        i = addRefAssoc.iterator();
+        i = addReferenceAssoc.iterator();
         while(i.hasNext()) {
             stream.insert((MGI_Reference_AssocDAO)i.next());
         }
@@ -606,6 +606,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.5  2004/03/12 14:13:23  sc
+//  HISTORY
+//
 //  Revision 1.4  2004/02/25 21:42:39  mbw
 //  fixed compiler warnings only
 //
