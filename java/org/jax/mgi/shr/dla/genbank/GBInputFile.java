@@ -21,7 +21,7 @@ import org.jax.mgi.shr.ioutils.IOUException;
  * @author dbm
  */
 
-public class GenBankFile extends InputDataFile
+public class GBInputFile extends InputDataFile
 {
     /**
      * Constructs a CloneTreeInfo object.
@@ -30,7 +30,7 @@ public class GenBankFile extends InputDataFile
      * @param None
      * @throws Nothing
      */
-    public GenBankFile()
+    public GBInputFile()
         throws ConfigException, IOUException
     {
         // Indicate that a record begins when the string "LOCUS" is found with
@@ -52,6 +52,9 @@ public class GenBankFile extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.1  2004/06/29 17:05:39  mbw
+//  renamed class
+//
 //  Revision 1.1  2004/06/29 16:55:09  mbw
 //  initial version
 //
