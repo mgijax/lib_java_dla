@@ -1,3 +1,8 @@
+DATE: 02/12/2004
+STAFF: mbw
+RELEASE:
+CHANGES: added calls to close() on all ResultsNavigator instances
+
 TAG: lib_java_dla-1-0-10
 DATE: 02/12/2004
 STAFF: mbw
