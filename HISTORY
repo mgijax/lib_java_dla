@@ -1,3 +1,10 @@
+DATE: 03/15/2004
+STAFF: sc
+CHANGES:
+1) Sequence.java - fixed bug in determining old references.
+2) MergeSplitHelper and MergeSplitProcessor - changed to map seqIds rather than seq keys 
+   of seqs that need to be merged or split
+
 DATE: 03/8/2004
 STAFF:sc
 CHANGES: additions and changes from implementing refseqload and
