@@ -3,7 +3,6 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
@@ -20,10 +19,10 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
  *  MGI_Reference_AssocState
  * @has
  *   <UL>
- *   <LI>Lookups to resolve attributes
- *   <LI>A MGI_Reference_AssocState
+ *   <LI>Lookups to resolve raw attributes
  *   <LI>A RefAssocRawAttributes
- *   <LI>A logical db for the reference
+ *   <LI>A MGI_Reference_AssocState
+ *   <LI>PubMed, Medline, and JNumber AccessionLookups
  *   </UL>
  * @does
  *   <UL>
@@ -35,10 +34,10 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
  */
 
 public class RefAssocAttributeResolver {
-    // a lookup to resolve pubmed ids
+    // a full cache lookup of pubmed ids
     private AccessionLookup pubmedLookup;
 
-    // a lookup to resolve medline ids
+    // a full cache lookup of  medline ids
     private AccessionLookup medlineLookup;
 
     // a lookup to resolve mgi references
@@ -48,12 +47,11 @@ public class RefAssocAttributeResolver {
      * Constructs a RefAssociationResolver object by creating the necessary
      * lookups
      * @assumes Nothing
-     * @effects Nothing
+     * @effects Queries a database to load the lookup caches (full cache)
      * @param None
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws TranslationException
-     * @throws DBException
+     * @throws CacheException if problem creating a lookup
+     * @throws ConfigException if problem creating a lookup
+     * @throws DBException if problem creating a lookup
      */
     public RefAssocAttributeResolver ()
         throws DBException, ConfigException, CacheException {
@@ -68,23 +66,24 @@ public class RefAssocAttributeResolver {
 
     /**
      * resolves RefAssocRawAttribute object to a MGI_Reference_AssocState
-     * @assumes refLogicalDB is for medline or pubmed; returns null otherwise
+     * @assumes refLogicalDB is for medline, pubmed, or MGI;
+     * returns null MGI_Reference_AssocState otherwise
      * @effects Nothing
-     * @param raw A RefAssocRawAttributes object
+     * @param raw the RefAssocRawAttributes object to be resolved
      * @param objectKey The object key with which to associate the reference
      * @param refLogicalDb - logicalDB key for the reference
      * @return an MGI_ReferenceAssocState which may be null if the reference is
      *         not in MGI
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws DBException
-     * @throws TranslationException
+     * @throws CacheException if error using lookup
+     * @throws DBException if error using lookup
      * @throws KeyNotFoundException - doesn't actually throw this because the
      * lookup has an option to return null instead, and we are using this option.
      */
 
     public MGI_Reference_AssocState resolveAttributes(
-        RefAssocRawAttributes raw, Integer objectKey, int refLogicalDB)
+                RefAssocRawAttributes raw,
+                Integer objectKey,
+                int refLogicalDB)
                 throws KeyNotFoundException, DBException, CacheException {
         // the reference key with which to create a state
         Integer refKey = null;

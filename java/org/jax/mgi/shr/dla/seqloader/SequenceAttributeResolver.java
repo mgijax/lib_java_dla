@@ -7,23 +7,20 @@ import org.jax.mgi.shr.config. ConfigException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.dbs.mgd.lookup.VocabKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.SequenceTypeKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.SequenceProviderKeyLookup;
 
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
-import org.jax.mgi.dbs.mgd.lookup.TranslationException;
-
 
  /**
  * @is An object that resolves a SequenceRawAttributes to a SEQ_SequenceState
- * Reports discrepancies to the validation log.
  * @has
  *   <UL>
  *   <LI> Sequence Type Lookup (uses a translator)
  *   <LI> Sequence Quality lookup
- *   <LI> User lookup
  *   <LI> Provider lookup (uses a translator)
  *   <LI> Sequence Status  Lookup
  *   <LI> A SEQ_SequenceState
@@ -31,8 +28,7 @@ import org.jax.mgi.dbs.mgd.lookup.TranslationException;
  *   </UL>
  * @does
  *   <UL>
- *   <LI>Expects concrete subclasses to implement the resolveAttributes method
- *   <LI>Initializes lookups
+ *   <LI>Resolves a SequenceRawAttributes object to a SEQ_SequenceState
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -41,6 +37,7 @@ import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
 public class SequenceAttributeResolver {
     // typeLookup and providerLookup use a translator
+    // all are full cached lookups
     protected SequenceTypeKeyLookup typeLookup;
     protected VocabKeyLookup qualityLookup;
     protected SequenceProviderKeyLookup providerLookup;
@@ -49,14 +46,13 @@ public class SequenceAttributeResolver {
      /**
      * Constructs a SequenceAttributeResolver
      * @assumes Nothing
-     * @effects Nothing
+     * @effects queries a database to load each lookup cache
      * @param None
-     * @throws TranslationException - If a translation error occurs in the type Lookup
-     * @throws ConfigException - if there  is an error accessing the
-     *         configuration file
-     * throws@ DBException - if there is an error accessing the database
-     * throws@ CacheException - if there is an error with the
-     *         vocabulary cache
+     * @throws TranslationException - if error creating type or provider lookups
+     *   (these lookups have translators)
+     * @throws ConfigException - if there a configuration error creating a lookup
+     * throws@ DBException - if there is a database error creating a lookup
+     * throws@ CacheException - if there is a caching error creating a lookup
      */
 
     public SequenceAttributeResolver() throws TranslationException,
@@ -74,9 +70,16 @@ public class SequenceAttributeResolver {
       * resolves a SequenceRawAttributes object to a SEQ_SequenceState
       * @assumes Nothing
       * @effects Nothing
-      * @param rawAttributes A SequenceRawAttributes object
+      * @param rawAttributes the SequenceRawAttributes object to resolve
       * @return sequenceState A SEQ_SequenceState
-      * @throws Nothing
+      * @throws KeyNotFoundException if any of the lookups fail to find a key
+      * @throws TranslationException if type or provider lookups have errors using
+      * their translators
+      * @throws DBException - since these lookups are full cache this exception
+      *     is not thrown
+      * @throws CacheException if error doing lookup
+      * @throws ConfigException - if error doing lookup
+      *
       */
     public SEQ_SequenceState resolveAttributes(
         SequenceRawAttributes rawAttributes) throws KeyNotFoundException,
@@ -187,6 +190,9 @@ public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.7  2004/04/26 12:21:08  sc
+//  Added code to truncate all attributes to table length and escape single quotes
+//
 //  Revision 1.6  2004/04/14 17:08:24  mbw
 //  added functionality to cleanse decscription data of single quotes and of lengths that are greater than 255
 //

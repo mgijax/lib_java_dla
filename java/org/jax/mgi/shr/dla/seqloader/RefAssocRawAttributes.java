@@ -26,7 +26,7 @@ public class RefAssocRawAttributes {
     private String createdModifiedBy = null;
 
     /**
-     * set the reference id
+     * set the reference id attribute
      * @assumes Nothing
      * @effects Nothing
      * @param a reference id
@@ -136,6 +136,9 @@ public class RefAssocRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:39  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.1  2003/12/08 18:40:39  sc
 //  initial commit
 //

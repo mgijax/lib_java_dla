@@ -3,11 +3,10 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-//import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
 
 /**
- * @is An object that represents raw PubMed and Medline reference associations
- *     for a sequence
+ * @is An object that holds two RefAsocRawAttributes for the same reference. One
+ *     Medline and one Pubmed.
  * @has
  *   <UL>
  *   <LI>A RefAssocRawAttributes representing a pubmed id
@@ -15,7 +14,7 @@ package org.jax.mgi.shr.dla.seqloader;
  *   </UL>
  * @does
  *   <UL>
- *   <LI>provides getters and setters for each id
+ *   <LI>provides getters and setters for each RefAssocRawAttributes
  *   <LI>resets itself
  *   </UL>
  * @company The Jackson Laboratory
@@ -25,16 +24,16 @@ package org.jax.mgi.shr.dla.seqloader;
 
 
 public class SeqRefAssocPair{
-    // pubmed reference association
+    // pubmed raw reference association
     private RefAssocRawAttributes pubmed = null;
 
-    // medline reference association
+    // medline raw reference association
     private RefAssocRawAttributes medline = null;
 
     /**
      * Constructs an empty SeqRefAssoc pair
-     * @assumes
-     * @effects
+     * @assumes Nothing
+     * @effects Nothing
      * @param None
      * @throws Nothing
      */
@@ -43,10 +42,10 @@ public class SeqRefAssocPair{
 
     /**
      * Constructs a SeqRefAssocPair with a PubMed and a Medline id
-     * @assumes
-     * @effects
-     * @param pubmed PubMed id for a sequence
-     * @param medline Medline id to associate for a sequence
+     * @assumes Nothing
+     * @effects Nothing
+     * @param pubmed PubMed id for a reference
+     * @param medline Medline id for the same reference
      * @throws
      */
 
@@ -60,7 +59,7 @@ public class SeqRefAssocPair{
      * sets the PubMed RefAssocRawAttributes object
      * @assumes Nothing
      * @effects Nothing
-     * @param pubmed a RefAssocRawAttributes
+     * @param pubmed a RefAssocRawAttributes for a pubmed reference
      * @return Nothing
      * @throws Nothing
      */
@@ -73,7 +72,7 @@ public class SeqRefAssocPair{
      * sets the Medline RefAssocRawAttributes object
      * @assumes Nothing
      * @effects Nothing
-     * @param medline a RefAssocRawAttributes
+     * @param medline a RefAssocRawAttributes for a medline reference
      * @return Nothing
      * @throws Nothing
      */
@@ -87,7 +86,7 @@ public class SeqRefAssocPair{
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @return the pubmed RefAssocRawAttributes
+     * @return the  RefAssocRawAttributes for a pubmed reference
      * @throws Nothing
      */
 
@@ -100,7 +99,7 @@ public class SeqRefAssocPair{
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @return the medline RefAssocRawAttributes
+     * @return the RefAssocRawAttributes for a medline reference
      * @throws Nothing
      */
 
@@ -122,6 +121,9 @@ public class SeqRefAssocPair{
      }
 }
  //  $Log$
+ //  Revision 1.2  2004/05/12 21:03:04  sc
+ //  removed an import
+ //
  //  Revision 1.1  2004/01/06 20:09:41  mbw
  //  initial version imported from lib_java_seqloader
  //

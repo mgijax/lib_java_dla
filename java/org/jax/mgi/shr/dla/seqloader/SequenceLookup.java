@@ -28,10 +28,13 @@ import java.util.*;
 import java.sql.Timestamp;
 
 /**
- * @is an object for looking up Sequence objects from the database
+ * @is an object for looking up Sequence objects from the database.
  * @has
  *   <UL>
  *   <LI> a query and an interpretor to build a Sequence object
+ *   <LI> a Sequence object has a SEQ_SequenceDAO, 1 or more SEQ_Source_AssocDAO's,
+ *        0 or more MGI_Reference_AssocDAO's, 1 ACC_AccessionDAO for the primary
+ *        seqid, 0 or more ACC_AccessionDAO's for any secondary seqids
  *   </UL>
  * @does
  *   <UL>
@@ -43,7 +46,7 @@ import java.sql.Timestamp;
  */
 
 public class SequenceLookup {
-    // an SQL stream with which to build the Sequence
+    // an SQL stream with which to the Sequence
     private SQLStream stream;
 
     // sql manager for performing queries
@@ -178,21 +181,6 @@ public class SequenceLookup {
             " as ACC2_creation_date, " +
             " aa." + MGD.acc_accession.modification_date +
             " as ACC2_modification_date " +
-            /*
-	    " his." + MGD.mgi_attributehistory._object_key +
-            " as HIS_Object_key, " +
-            " his." + MGD.mgi_attributehistory._mgitype_key +
-            " as HIS_MGItype_key, " +
-            " his." + MGD.mgi_attributehistory.columnname + ", " +
-            " his." + MGD.mgi_attributehistory._createdby_key +
-            " as HIS_CreatedBy_key, " +
-            " his." + MGD.mgi_attributehistory._modifiedby_key +
-            " as HIS_ModifiedBy_key, " +
-            " his." + MGD.mgi_attributehistory.creation_date +
-            " as HIS_creation_date, " +
-            " his." + MGD.mgi_attributehistory.modification_date +
-            " as HIS_modification_date " +a
-		*/
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.mgi_reference_assoc._name + " m, " +
@@ -208,14 +196,6 @@ public class SequenceLookup {
             " sa." + MGD.seq_source_assoc._sequence_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " m." + MGD.mgi_reference_assoc._object_key +
-	    /*
-            " AND s." + MGD.seq_sequence._sequence_key + " = " +
-            " his." + MGD.mgi_attributehistory._object_key +
-            " AND his." + MGD.mgi_attributehistory.columnname + " = " +
-            "'" + MGD.seq_sequence._sequencetype_key + "' " +
-            " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
-            MGITypeConstants.SEQUENCE +
-	    */
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -338,21 +318,6 @@ public class SequenceLookup {
             " as ACC2_creation_date, " +
             " aa." + MGD.acc_accession.modification_date +
             " as ACC2_modification_date " +
-	    /*
-            " his." + MGD.mgi_attributehistory._object_key +
-            " as HIS_Object_key, " +
-            " his." + MGD.mgi_attributehistory._mgitype_key +
-            " as HIS_MGItype_key, " +
-            " his." + MGD.mgi_attributehistory.columnname + ", " +
-            " his." + MGD.mgi_attributehistory._createdby_key +
-            " as HIS_CreatedBy_key, " +
-            " his." + MGD.mgi_attributehistory._modifiedby_key +
-            " as HIS_ModifiedBy_key, " +
-            " his." + MGD.mgi_attributehistory.creation_date +
-            " as HIS_creation_date, " +
-            " his." + MGD.mgi_attributehistory.modification_date +
-            " as HIS_modification_date " +
-	    */
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.seq_source_assoc._name + " sa, " +
@@ -365,14 +330,6 @@ public class SequenceLookup {
             " aa." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key  +
-	    /*
-            " AND s." + MGD.seq_sequence._sequence_key + " = " +
-            " his." + MGD.mgi_attributehistory._object_key +
-            " AND his." + MGD.mgi_attributehistory.columnname + " = " +
-            "'" + MGD.seq_sequence._sequencetype_key + "' " +
-            " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
-            MGITypeConstants.SEQUENCE +
-	    */
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -490,41 +447,17 @@ public class SequenceLookup {
             " ACC2_ModifiedBy_key=null, " +
             " ACC2_creation_date=null, " +
             " ACC2_modification_date=null " +
-	    /*
-            " his." + MGD.mgi_attributehistory._object_key +
-            " as HIS_Object_key, " +
-            " his." + MGD.mgi_attributehistory._mgitype_key +
-            " as HIS_MGItype_key, " +
-            " his." + MGD.mgi_attributehistory.columnname + ", " +
-            " his." + MGD.mgi_attributehistory._createdby_key +
-            " as HIS_CreatedBy_key, " +
-            " his." + MGD.mgi_attributehistory._modifiedby_key +
-            " as HIS_ModifiedBy_key, " +
-            " his." + MGD.mgi_attributehistory.creation_date +
-            " as HIS_creation_date, " +
-            " his." + MGD.mgi_attributehistory.modification_date +
-            " as HIS_modification_date " +
-	    */
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.mgi_reference_assoc._name + " m, " +
             MGD.seq_source_assoc._name + " sa, " +
             MGD.seq_sequence._name + " s " +
-            //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " m." + MGD.mgi_reference_assoc._object_key +
-	    /*
-            " AND s." + MGD.seq_sequence._sequence_key + " = " +
-            " his." + MGD.mgi_attributehistory._object_key +
-            " AND his." + MGD.mgi_attributehistory.columnname + " = " +
-            "'" + MGD.seq_sequence._sequencetype_key + "' " +
-            " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
-            MGITypeConstants.SEQUENCE +
-	    */
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -638,21 +571,6 @@ public class SequenceLookup {
             " ACC2_ModifiedBy_key=null, " +
             " ACC2_creation_date=null, " +
             " ACC2_modification_date=null " +
-	    /*
-            " his." + MGD.mgi_attributehistory._object_key +
-            " as HIS_Object_key, " +
-            " his." + MGD.mgi_attributehistory._mgitype_key +
-            " as HIS_MGItype_key, " +
-            " his." + MGD.mgi_attributehistory.columnname + ", " +
-            " his." + MGD.mgi_attributehistory._createdby_key +
-            " as HIS_CreatedBy_key, " +
-            " his." + MGD.mgi_attributehistory._modifiedby_key +
-            " as HIS_ModifiedBy_key, " +
-            " his." + MGD.mgi_attributehistory.creation_date +
-            " as HIS_creation_date, " +
-            " his." + MGD.mgi_attributehistory.modification_date +
-            " as HIS_modification_date " +
-	    */
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.seq_source_assoc._name + " sa, " +
@@ -662,14 +580,6 @@ public class SequenceLookup {
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key +
-	    /*
-            " AND s." + MGD.seq_sequence._sequence_key + " = " +
-            " his." + MGD.mgi_attributehistory._object_key +
-            " AND his." + MGD.mgi_attributehistory.columnname + " = " +
-            "'" + MGD.seq_sequence._sequencetype_key + "' " +
-            " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
-            MGITypeConstants.SEQUENCE +
-	    */
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -696,6 +606,17 @@ public class SequenceLookup {
         // create one query
         private String query = query1 + query2 + query3 + query4;
         private BindableStatement statement;
+
+        /**
+         * Constructs a SequenceLookup
+         * @assumes Nothing
+         * @effects Nothing
+         * @param stream SQL stream for the Sequence
+         * @throws DBException if error creating a SQLDataManager or getting
+         *         a bindable statement
+         * @throws ConfigException if config error creating a SQLDataManager
+         */
+
         public SequenceLookup(SQLStream stream) throws DBException, ConfigException {
             // the stream with which to build the Sequence
             this.stream = stream;
@@ -711,15 +632,16 @@ public class SequenceLookup {
      * create a Sequence object by querying the database by seqid
      * @assumes nothing
      * @effects a new connection could be opened to the database if one does
-     * not already exist
-     * @param seqid the seqid to use in the query
+     * not already exist. Queries a database.
+     * @param the seqid of the Sequence for which to query
+     * @param the logicalDBKey of the seqid
      * @return the Sequence object represented by the database query
      */
     public Sequence findBySeqId(String seqId, int logicalDBKey)
            throws DBException {
          // create Vector of values to bind to the query
          Vector v = new Vector();
-         // add three values for each select in the query
+         // add three values to bind to each select in the query
          for (int i = 0; i < 4; i++) {
              v.add(new Integer(logicalDBKey));
              v.add(seqId);
@@ -729,18 +651,17 @@ public class SequenceLookup {
          // execute the query, passing the values to bind
          resultsNav = statement.executeQuery(v);
 
-         //System.out.println("SequenceLookup executing query: " );
-         //resultsNav = sqlMgr.executeQuery(query);
-         //System.out.println("Done looking up seqid: " + seqId);
          // get a multi row iterator
          multiIterator = new MultiRowIterator(resultsNav, interpreter);
 
          // this iterator will have only one object
          Sequence s = (Sequence)multiIterator.next();
+
          // close the resource - does object cleanup
          multiIterator.close();
          return s;
     }
+
     /**
      * @is an object that knows how to build a Sequence object from
      * multiple rows of a result set. All rows with the same sequence key
@@ -789,7 +710,7 @@ public class SequenceLookup {
          * @assumes Nothing
          * @effects Nothing
          * @param row the current RowReference
-         * @throws DBException
+         * @throws DBException if error getting columns for a row reference
          */
 
         public Object interpret(RowReference row) throws DBException {
@@ -802,7 +723,7 @@ public class SequenceLookup {
          * @effects Nothing
          * @param row the current RowReference
          * @return the key to the given RowReference
-         * @throws DBException
+         * @throws DBException if error getting columns for a row reference
          */
 
         public Object interpretKey(RowReference row) throws DBException {
@@ -816,7 +737,7 @@ public class SequenceLookup {
          * @effects Nothing
          * @param v the Vector of RowData objects
          * @return a Sequence object, null if v is empty
-         * @throws DBException
+         * @throws InterpretException if error creating the Sequence object
          */
 
         public Object interpretRows( Vector v) throws InterpretException {
@@ -824,10 +745,9 @@ public class SequenceLookup {
             sequence = null;
             seqState = null;
             accState = null;
-            //typeHistoryState = null;
-
 
             Iterator i = v.iterator();
+
             // Create the sequence, primary accession, source assoc
             // and any references and 2ndary accessions from the first row
             if(i.hasNext()) {
@@ -871,18 +791,6 @@ public class SequenceLookup {
                 // flag Sequence as existing
                 sequence.setIsNewSequence(false);
 
-                // the sequence type MGI_AttributeHistory objects
-                /*
-                              typeHistoryState = new MGI_AttributeHistoryState();
-                              typeHistoryState.setObjectKey(rowData.HIS_Object_key);
-                              typeHistoryState.setColumnName(rowData.HIS_columnname);
-                     typeHistoryState.setCreatedByKey(rowData.HIS_CreatedBy_key);
-                     typeHistoryState.setModifiedByKey(rowData.HIS_ModifiedBy_key);
-                     typeHistoryState.setCreationDate(rowData.HIS_creation_date);
-                     typeHistoryState.setModificationDate(rowData.HIS_modification_date);
-                              // set the type history object
-                              sequence.setTypeHistory(typeHistoryState);
-                 */
                 // the primary accession state we are building
                 accState = new ACC_AccessionState();
 
@@ -938,7 +846,7 @@ public class SequenceLookup {
 
                 }
               }
-              catch (ConfigException e) {
+             catch (ConfigException e) {
                 throw new InterpretException(e);
               }
               catch (DLALoggingException e) {
@@ -958,17 +866,17 @@ public class SequenceLookup {
         }
 
         /**
-         * creates a seq source association object (from the current rowData
+         * creates a SEQ_Source_AssocState from the current rowData
          * object) and sets it in the Sequence
          * we are building
          * @assumes Nothing
          * @effects Nothing
          * @param None
          * @return Nothing
-         * @throws DBException
+         * @throws Nothing
          */
 
-        private void createSeqSrcAssoc() throws DBException {
+        private void createSeqSrcAssoc() {
 
             // the seq source association state we are building
             SEQ_Source_AssocState state = new SEQ_Source_AssocState();
@@ -991,18 +899,17 @@ public class SequenceLookup {
         }
 
         /**
-         * creates an accession state object (from the current rowData
+         * creates an ACC_AccessionState object (from the current rowData
          * object) and sets it in the Sequence
          * we are building
          * @assumes Nothing
          * @effects Nothing
          * @param None
          * @return Nothing
-         * @throws DBException
+         * @throws nothing
          */
 
-        private void create2ndaryAccession()
-            throws DBException {
+        private void create2ndaryAccession() {
 
             // the state we are building
             ACC_AccessionState state = new ACC_AccessionState();
@@ -1030,17 +937,16 @@ public class SequenceLookup {
         }
 
         /**
-         * creates a reference association object (from the current rowData
+         * creates a MGI_Reference_AssocState object (from the current rowData
          * object) and sets it in the Sequence
          * we are building
          * @assumes Nothing
          * @effects Nothing
          * @param None
          * @return Nothing
-         * @throws DBException
          */
 
-        private void createRefAssoc() throws DBException {
+        private void createRefAssoc() {
 
             // the reference association we are building
             MGI_Reference_AssocState state = new MGI_Reference_AssocState();
@@ -1145,15 +1051,6 @@ public class SequenceLookup {
             protected Integer ACC2_ModifiedBy_key;
             protected Timestamp ACC2_creation_date;
             protected Timestamp ACC2_modification_date;
-	    /*
-            protected Integer HIS_Object_key;
-            protected Integer HIS_MGItype_key;
-            protected String HIS_columnname;
-            protected Integer HIS_CreatedBy_key;
-            protected Integer HIS_ModifiedBy_key;
-            protected Timestamp HIS_creation_date;
-            protected Timestamp HIS_modification_date;
-	    */
 
             /**
              * Constructs a RowData object from a RowReference
@@ -1230,17 +1127,30 @@ public class SequenceLookup {
                 ACC2_ModifiedBy_key = row.getInt(64);
                 ACC2_creation_date = row.getTimestamp(65);
                 ACC2_modification_date = row.getTimestamp(66);
-		/*
-                HIS_Object_key = row.getInt(67);
-                HIS_MGItype_key = row.getInt(68);
-                HIS_columnname = row.getString(69);
-                HIS_CreatedBy_key = row.getInt(70);
-                HIS_ModifiedBy_key = row.getInt(71);
-                HIS_creation_date = row.getTimestamp(72);
-                HIS_modification_date = row.getTimestamp(73);
-		*/
             }
         }
     }
 }
 // $Log
+/**************************************************************************
+*
+* Warranty Disclaimer and Copyright Notice
+*
+*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+*
+*  This software and data are provided to enhance knowledge and encourage
+*  progress in the scientific community and are to be used only for research
+*  and educational purposes.  Any reproduction or use for commercial purpose
+*  is prohibited without the prior express written permission of The Jackson
+*  Laboratory.
+*
+* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+*
+* All Rights Reserved
+*
+**************************************************************************/

@@ -42,9 +42,6 @@ import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
      */
 
 public class GBFormatInterpreter extends SequenceInterpreter {
-    //////////////////////////////////////
-    // constants for String searching  //
-    /////////////////////////////////////
 
     // String constants to find GB seq record TAGS
     private static String LOCUS = "LOCUS";
@@ -87,7 +84,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     // A SequenceInput and its parts            //
     //////////////////////////////////////////////
 
-    // The object we are building. Represents a sequence,
+    // The object we are building. Represents raw attributes for a sequence,
     // its source, references, and accessions
     protected SequenceInput sequenceInput = new SequenceInput();
 
@@ -114,7 +111,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     * Constructs a GenBankFormatInterpreter
     * @assumes Nothing
     * @effects Nothing
-    * @param None
+    * @param oc a GBOrganismChecker
     * @throws ConfigException if can't find configuration file
     */
 

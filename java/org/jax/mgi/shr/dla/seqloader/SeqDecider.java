@@ -14,7 +14,8 @@ package org.jax.mgi.shr.dla.seqloader;
  *   </UL>
  * @does
  *   <UL>
- *   <LI>Calls the subclass isValid method to determines if the predicate is true
+ *   <LI>The public isA method calls the  is method implemented by the subclass
+ *       to determines if the predicate is true
  *   <LI>maintains and provides access to the counter
  *   </UL>
  * @company The Jackson Laboratory
@@ -34,12 +35,11 @@ public abstract class SeqDecider {
      * Constructs a SeqDecider object initializing its name
      * @assumes Nothing
      * @effects Nothing
-     * @param None
+     * @param name the name of this decider
      * @throws Nothing
      */
 
-    public SeqDecider(String name)
-    {
+    public SeqDecider(String name) {
         this.name = name;
     }
 
@@ -47,8 +47,8 @@ public abstract class SeqDecider {
      * Decides if a predicate is true for 's'. Increments counter
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @return boolean true or false
+     * @param s the String which to apply the predicate
+     * @return true if predicate is true when applied to 's'
      * @throws Nothing
      * this decider
      */
@@ -71,8 +71,7 @@ public abstract class SeqDecider {
      * @throws Nothing
      */
 
-     public int getTrueCtr()
-    {
+     public int getTrueCtr() {
         return trueCtr;
     }
 
@@ -85,15 +84,26 @@ public abstract class SeqDecider {
      * @throws Nothing
      */
 
-    public String getName( )
-    {
+    public String getName( ) {
         return name;
     }
 
-    protected abstract boolean is(String classification);
+    /**
+      * abstract method to be implemented to apply a predicate to a String
+      * @assumes Nothing
+      * @effects Nothing
+      * @param None
+      * @return s the String which to apply the predicate
+      * @throws Nothing
+      */
+
+    protected abstract boolean is(String s);
 }
 
 //  $Log$
+//  Revision 1.2  2004/02/25 21:42:38  mbw
+//  fixed compiler warnings only
+//
 //  Revision 1.1  2004/01/06 20:09:39  mbw
 //  initial version imported from lib_java_seqloader
 //

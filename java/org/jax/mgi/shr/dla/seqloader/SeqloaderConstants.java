@@ -7,7 +7,13 @@ package org.jax.mgi.shr.dla.seqloader;
 * @is An object that contains constant definitions for sequence loaders.
 * @has
 *   <UL>
-*   <LI> Constant definitions for database field values and parsing
+*   <LI> Constant definitions for:
+*   <UL>
+*       <LI> characters, e.g. tab
+*       <LI> lode modes
+ *      <LI> events
+ *      <LI> sequence quality and status vocabularies
+*   </UL>
 *   </UL>
 * @does Nothing
 * @company The Jackson Laboratory
@@ -68,6 +74,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.10  2004/04/26 12:11:16  sc
+//  added TAB
+//
 //  Revision 1.9  2004/04/15 14:13:01  sc
 //  added ORGANISM and LIBRARY as controlled vocab for QC_SEQ_RawSourceConflict.attrName
 //

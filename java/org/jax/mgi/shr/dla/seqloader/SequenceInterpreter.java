@@ -14,14 +14,13 @@ import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
      *     attributes needed by all Sequence Interpretors
      * @has
      *   <UL>
-     *   <LI>A configurator
-     *   <LI>sequence virtual bit
-     *   <LI>createdByModified by
-     *   <LI>load reference
-     *   <LI>sequence MGI type
-     *   <LI>sequence logical db
-     *   <LI>reference association type for the load
-     *   <LI>provider name
+     *   <LI>A configurator /
+     *   <LI>sequence virtual bit /
+     *   <LI>sequence status
+     *   <LI>sequence MGI type /
+     *   <LI>sequence logical db /
+     *   <LI>reference association type for the load /
+     *   <LI>provider name /
      *   </UL>
      * @does
      *   <UL>
@@ -57,10 +56,10 @@ public abstract class SequenceInterpreter implements RecordDataInterpreter {
     protected String seqStatus;
 
     /**
-     * Gets the configurable attributes needed by all
+     * Constructs a SequenceInterpreter getting the configurable attributes needed by all
      * implementing subclasses
-     * @assumes
-     * @effects
+     * @assumes Nothing
+     * @effects Nothing
      * @param None
      * @throws ConfigException if can't find the Configuration file
      */

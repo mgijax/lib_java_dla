@@ -16,12 +16,12 @@ import org.jax.mgi.shr.exception.MGIException;
  * @is An object that manages inserts to the seqloader QC reports tables
  * @has
  *   <UL>
- *   <LI>SQL stream for inserts
- *
+ *   <LI> a report* method for each Sequence QC report table
  *   </UL>
  * @does
  *   <UL>
- *   <LI>Provides a report* method for each QC report table
+ *   <LI>writes inserts to bcp file, jdbc batch, or script file depending
+ *       on the SQLStream.
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -37,19 +37,29 @@ public class SeqQCReporter
     */
     private static String QCErr = SeqloaderExceptionFactory.QCErr;
 
-
     /**
      * Constructs a SeqQCReporter
      * @assumes Nothing
      * @effects Nothing
-     * @param stream The SQLStream use to write to the QC tables
-     * @throws SeqloaderException
+     * @param stream The SQLStream used to write to the QC tables
+     * @throws Nothing
      */
 
     public SeqQCReporter(SQLStream stream) {
       this.stream = stream;
     }
 
+    /**
+    * Reports sequence reference in MGI, but no longer in a sequence record
+    * @assumes Nothing
+    * @effects writes to a bcp/sql file (or jdbc batch) or does an inline insert
+    *          depending on the type of stream
+    * @param sequenceKey key of the sequence that should no longer be associated
+    *        with 'refsKey'
+    * @return refsKey key of the reference that should no longer be associated
+    *        with 'sequenceKey'
+    * @throws SeqloaderException if error calling the insert method on the stream
+    */
     public void reportOldReferences(Integer sequenceKey, Integer refsKey)
         throws SeqloaderException {
         QC_SEQ_OldRefState state = new QC_SEQ_OldRefState();
@@ -67,6 +77,18 @@ public class SeqQCReporter
             throw e2;
       }
     }
+    /**
+    * Reports sequence raw source conflicts between a raw attribute in MGI and
+    *         the input sequence record
+    * @assumes Nothing
+    * @effects writes to a bcp/sql file (or jdbc batch) or does an inline insert
+    *          depending on the type of stream
+    * @param sequenceKey key of the sequence that has a conflict
+    * @param attrName name of the sequence attribute for which there is a conflict
+    * @param incomingValue the incoming attribute value that conflicts with MGI
+    * @return Nothing
+    * @throws SeqloaderException if error calling the insert method on the stream
+    */
 
     public void reportRawSourceConflicts(Integer sequenceKey, String attrName,
                                          String incomingValue)
@@ -86,6 +108,18 @@ public class SeqQCReporter
             throw e2;
       }
     }
+    /**
+    * Reports a sequence that has been merged
+    * @assumes Nothing
+    * @effects writes to a bcp/sql file (or jdbc batch) or does an inline insert
+    *          depending on the type of stream
+    * @param fromSeqid the seqid of the sequence that is merging with toSeqid
+    *        (fromSeqid will now be secondary id for toSeqid)
+    * @param toSeqid the seqid of the sequence that 'fromSeqid' should be merged
+    *         into
+    * @return Nothing
+    * @throws SeqloaderException if error calling the insert method on the stream
+    */
 
     public void reportMergedSeqs(String fromSeqid, String toSeqid)
               throws SeqloaderException {
@@ -105,3 +139,26 @@ public class SeqQCReporter
         }
     }
 }
+// $Log
+/**************************************************************************
+*
+* Warranty Disclaimer and Copyright Notice
+*
+*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+*
+*  This software and data are provided to enhance knowledge and encourage
+*  progress in the scientific community and are to be used only for research
+*  and educational purposes.  Any reproduction or use for commercial purpose
+*  is prohibited without the prior express written permission of The Jackson
+*  Laboratory.
+*
+* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+*
+* All Rights Reserved
+*
+**************************************************************************/
