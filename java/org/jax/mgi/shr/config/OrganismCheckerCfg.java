@@ -43,11 +43,11 @@ public class OrganismCheckerCfg extends Configurator {
      * @effects Nothing
      * @param None
      * @return Boolean true if we are loading mouse
-     * @throws ConfigException if "LOAD_MOUSE" not found in configuration file
+     * @throws ConfigException if "SEQ_LOAD_MOUSE" not found in configuration file
      */
 
     public Boolean getMouse() throws ConfigException {
-        return new Boolean(getConfigString("LOAD_MOUSE"));
+        return new Boolean(getConfigString("SEQ_LOAD_MOUSE"));
     }
 
     /**
@@ -56,11 +56,11 @@ public class OrganismCheckerCfg extends Configurator {
      * @effects Nothing
      * @param None
      * @return Boolean true if we are loading rat
-     * @throws ConfigException if "LOAD_RAT" not found in configuration file
+     * @throws ConfigException if "SEQ_LLOAD_RAT" not found in configuration file
      */
 
     public Boolean getRat() throws ConfigException {
-        return new Boolean(getConfigString("LOAD_RAT"));
+        return new Boolean(getConfigString("SEQ_LOAD_RAT"));
     }
     /**
      * Gets whether to load human sequence or not
@@ -72,12 +72,15 @@ public class OrganismCheckerCfg extends Configurator {
      */
 
     public Boolean getHuman() throws ConfigException {
-        return new Boolean(getConfigString("LOAD_HUMAN"));
+        return new Boolean(getConfigString("SEQ_LOAD_HUMAN"));
     }
 
 }
 
 //  $Log$
+//  Revision 1.2  2004/02/27 14:01:25  sc
+//  fixed comments
+//
 //  Revision 1.1  2004/01/06 20:09:29  mbw
 //  initial version imported from lib_java_seqloader
 //
