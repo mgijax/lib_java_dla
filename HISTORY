@@ -1,3 +1,10 @@
+DATE: 10/20/2004
+STAFF: mbw
+RELEASE: dev
+CHANGES: 
+1) removed getType() and getReferenceAssocType() methods from SequenceLoadCfg and changed calls to getType() 
+   on SequenceLoadCfg to be getSeqType() (see TR6135, item 3)
+
 TAG: lib_java_dla-1-0-34
 DATE: 09/09/2004
 STAFF: sc
