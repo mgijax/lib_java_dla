@@ -1,3 +1,10 @@
+DATE: 04/23/2004
+STAFF: sc
+CHANGES:
+1) SeqloaderConstants - added TAB
+2) SequenceAttributeResolver - Added code to truncate all attributes
+   to table length and escape single quotes.
+ 
 TAG: lib_java_dla-1-0-20
 STAFF: mbw
 RELEASE: dev
