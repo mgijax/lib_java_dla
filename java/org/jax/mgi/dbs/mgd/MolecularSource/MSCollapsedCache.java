@@ -139,17 +139,22 @@ public class MSCollapsedCache
     }
 
     /**
-     * add a MolecularSource object to the cache
+     * add a MolecularSource object to the cache if it does not already exist
+     * there
      * @assumes nothing
-     * @effects a new MolecularSource object will be added to the cache
+     * @effects a new MolecularSource object will be added to the cache if
+     * it does not already exist there
      * @param ms the MolecularSource to add
      */
     protected void addToCache(MolecularSource ms)
     throws DBException, CacheException
     {
-        logger.logDebug("adding to cache: " + ms +
+        if (super.lookupNullsOk(ms.toString()) == null)
+        {
+            super.cache.put(ms.toString(), ms);
+            logger.logDebug("adding to cache: " + ms +
                         "\ntotal ms cache size: " + cacheSize());
-        super.cache.put(ms.toString(), ms);
+        }
     }
 
     /**
