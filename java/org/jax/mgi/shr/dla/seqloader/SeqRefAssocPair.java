@@ -34,8 +34,6 @@ public class SeqRefAssocPair{
      * Constructs an empty SeqRefAssoc pair
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @throws Nothing
      */
 
     public SeqRefAssocPair() { }
@@ -46,7 +44,6 @@ public class SeqRefAssocPair{
      * @effects Nothing
      * @param pubmed PubMed id for a reference
      * @param medline Medline id for the same reference
-     * @throws
      */
 
     public SeqRefAssocPair(RefAssocRawAttributes pubmed,
@@ -60,8 +57,6 @@ public class SeqRefAssocPair{
      * @assumes Nothing
      * @effects Nothing
      * @param pubmed a RefAssocRawAttributes for a pubmed reference
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setPubmed(RefAssocRawAttributes pubmed) {
@@ -73,8 +68,6 @@ public class SeqRefAssocPair{
      * @assumes Nothing
      * @effects Nothing
      * @param medline a RefAssocRawAttributes for a medline reference
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setMedline(RefAssocRawAttributes medline) {
@@ -85,9 +78,7 @@ public class SeqRefAssocPair{
      * gets the PubMed RefAssocRawAttributes object
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the  RefAssocRawAttributes for a pubmed reference
-     * @throws Nothing
      */
 
     public RefAssocRawAttributes getPubmed() {
@@ -98,9 +89,7 @@ public class SeqRefAssocPair{
      * gets the Medline RefAssocRawAttributes object
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the RefAssocRawAttributes for a medline reference
-     * @throws Nothing
      */
 
     public RefAssocRawAttributes getMedline() {
@@ -111,9 +100,6 @@ public class SeqRefAssocPair{
      * Resets reference association objects to null
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @return Nothing
-     * @throws Nothing
      */
      public void reset () {
          pubmed = null;
@@ -121,6 +107,9 @@ public class SeqRefAssocPair{
      }
 }
  //  $Log$
+ //  Revision 1.3  2004/06/30 17:25:36  sc
+ //  merging sc2 branch to trunk
+ //
  //  Revision 1.2.2.1  2004/05/18 15:32:09  sc
  //  updated class/method headers
  //

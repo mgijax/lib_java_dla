@@ -48,9 +48,7 @@ public class SequenceRawAttributes {
      * set the type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the type attribut
-     * @return Nothing
-     * @throws Nothing
+     * @param type the type attribut
      */
 
     public void setType (String type) {this.type = type;}
@@ -59,9 +57,7 @@ public class SequenceRawAttributes {
      * set the length attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the length attribute
-     * @return Nothing
-     * @throws Nothing
+     * @param length the length attribute
      */
 
     public void setLength (String length) {this.length = length;}
@@ -70,9 +66,7 @@ public class SequenceRawAttributes {
      * set the description attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the description
-     * @return Nothing
-     * @throws Nothing
+     * @param description the description
      */
 
     public void setDescription (String description) {
@@ -83,9 +77,7 @@ public class SequenceRawAttributes {
      * set the version attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param  the version
-     * @return Nothing
-     * @throws Nothing
+     * @param  version the version
      */
 
     public void setVersion (String version) {this.version = version;}
@@ -94,9 +86,7 @@ public class SequenceRawAttributes {
      * set the division attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the division
-     * @return Nothing
-     * @throws Nothing
+     * @param division the division
      */
 
     public void setDivision (String division) {this.division = division;}
@@ -105,9 +95,7 @@ public class SequenceRawAttributes {
      * set the virtual attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param true if this is a virtual sequence
-     * @return Nothing
-     * @throws Nothing
+     * @param virtual true if this is a virtual sequence
      */
 
     public void setVirtual (String virtual) {this.virtual = new Boolean(virtual);}
@@ -116,9 +104,7 @@ public class SequenceRawAttributes {
      * set the raw organisms attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param raw organisms
-     * @return Nothing
-     * @throws Nothing
+     * @param rawOrganisms raw organisms
      */
 
     public void setRawOrganisms (String rawOrganisms) {
@@ -129,9 +115,7 @@ public class SequenceRawAttributes {
      * set the number of organism attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param number of non-mouse/human/rat organisms for this sequence
-     * @return Nothing
-     * @throws Nothing
+     * @param numberOfOrganisms number of non-mouse/human/rat organisms for this sequence
      */
 
     public void setNumberOfOrganisms (int numberOfOrganisms) {
@@ -142,9 +126,8 @@ public class SequenceRawAttributes {
      * set the CreatedModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the process/person that created or modified this sequence
-     * @return Nothing
-     * @throws Nothing
+     * @param createdModifiedBy the process/person that created or modified
+     * this sequence
      */
 
     public void setCreatedModifiedBy (String createdModifiedBy) {
@@ -155,9 +138,7 @@ public class SequenceRawAttributes {
      * set the sequence record date attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the sequence record date
-     * @return Nothing
-     * @throws Nothing
+     * @param seqRecDate the sequence record date
      */
 
     public void setSeqRecDate (Timestamp seqRecDate) {
@@ -168,9 +149,7 @@ public class SequenceRawAttributes {
      * set the sequence date attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the sequence date
-     * @return Nothing
-     * @throws Nothing
+     * @param seqDate the sequence date
      */
 
     public void setSeqDate (Timestamp seqDate) {this.seqDate = seqDate;}
@@ -179,9 +158,7 @@ public class SequenceRawAttributes {
      * set the raw library attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the raw library
-     * @return Nothing
-     * @throws Nothing
+     * @param library the raw library
      */
 
     public void setLibrary (String library) {this.library = library;}
@@ -190,9 +167,7 @@ public class SequenceRawAttributes {
      * set the raw strain attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the raw strain
-     * @return Nothing
-     * @throws Nothing
+     * @param strain the raw strain
      */
 
     public void setStrain (String strain) {this.strain = strain;}
@@ -201,9 +176,7 @@ public class SequenceRawAttributes {
      * set the raw tissue attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the raw tissue
-     * @return Nothing
-     * @throws Nothing
+     * @param tissue the raw tissue
      */
 
     public void setTissue (String tissue) {this.tissue = tissue;}
@@ -212,9 +185,7 @@ public class SequenceRawAttributes {
      * set the raw age attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the raw age
-     * @return Nothing
-     * @throws Nothing
+     * @param age the raw age
      */
 
     public void setAge (String age) {this.age = age;}
@@ -223,9 +194,7 @@ public class SequenceRawAttributes {
      * set the raw sex attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the raw sex
-     * @return Nothing
-     * @throws Nothing
+     * @param sex the raw sex
      */
 
     public void setSex (String sex) {this.sex = sex;}
@@ -234,9 +203,7 @@ public class SequenceRawAttributes {
      * set the raw cell line attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the raw cell line
-     * @return Nothing
-     * @throws Nothing
+     * @param cellLine the raw cell line
      */
 
     public void setCellLine (String cellLine) {this.cellLine = cellLine;}
@@ -245,9 +212,7 @@ public class SequenceRawAttributes {
      * set the sequence provider attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the sequence provider
-     * @return Nothing
-     * @throws Nothing
+     * @param provider the sequence provider
      */
 
     public void setProvider (String provider) {this.provider = provider;}
@@ -256,9 +221,7 @@ public class SequenceRawAttributes {
      * set the sequence quality attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the sequence quality
-     * @return Nothing
-     * @throws Nothing
+     * @param quality the sequence quality
      */
 
     public void setQuality (String quality) {this.quality = quality;}
@@ -267,9 +230,7 @@ public class SequenceRawAttributes {
      * set the sequence status attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the sequence status
-     * @return Nothing
-     * @throws Nothing
+     * @param status the sequence status
      */
 
     public void setStatus (String status) {this.status = status;}
@@ -278,9 +239,7 @@ public class SequenceRawAttributes {
      * set the sequence record attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the sequence record
-     * @return Nothing
-     * @throws Nothing
+     * @param seqRecord the sequence record
      */
 
     public void setRecord (String seqRecord) {this.seqRecord = seqRecord;}
@@ -289,9 +248,7 @@ public class SequenceRawAttributes {
      * get the sequence type
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence type
-     * @throws Nothing
      */
 
     public String getType () {return type;}
@@ -300,9 +257,7 @@ public class SequenceRawAttributes {
      * get the sequence length
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence length
-     * @throws Nothing
      */
 
     public String getLength () {return length;}
@@ -311,9 +266,7 @@ public class SequenceRawAttributes {
      * get the sequence description
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence description
-     * @throws Nothing
      */
 
     public String getDescription () {return description;}
@@ -322,9 +275,7 @@ public class SequenceRawAttributes {
      * get the sequence version
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence version
-     * @throws Nothing
      */
 
     public String getVersion () {return version;}
@@ -333,9 +284,7 @@ public class SequenceRawAttributes {
      * get the sequence division
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence division
-     * @throws Nothing
      */
 
     public String getDivision () {return division;}
@@ -344,9 +293,7 @@ public class SequenceRawAttributes {
      * get the virtual-ness of the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return true if this is a virtual sequence
-     * @throws Nothing
      */
 
     public Boolean getVirtual () {return virtual;}
@@ -355,9 +302,7 @@ public class SequenceRawAttributes {
      * get the raw organisms for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return raw organisms for the sequence
-     * @throws Nothing
      */
 
     public String getRawOrganisms () {return rawOrganisms;}
@@ -366,9 +311,7 @@ public class SequenceRawAttributes {
      * get the number of non-human/mouse/rat organisms for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the number of non-human/mouse/rat organisms for the sequence
-     * @throws Nothing
      */
 
     public int getNumberOfOrganisms () {return numberOfOrganisms;}
@@ -377,9 +320,7 @@ public class SequenceRawAttributes {
      * get the CreatedByModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the process/person that created/modified the sequence
-     * @throws Nothing
      */
 
     public String getCreatedModifiedBy () {return createdModifiedBy;}
@@ -388,9 +329,7 @@ public class SequenceRawAttributes {
      * get the sequence record date
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence record date
-     * @throws Nothing
      */
 
     public Timestamp getSeqRecDate () { return seqRecDate;}
@@ -399,9 +338,7 @@ public class SequenceRawAttributes {
      * get the sequence date
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence date
-     * @throws Nothing
      */
 
     public Timestamp getSeqDate () {
@@ -413,9 +350,7 @@ public class SequenceRawAttributes {
      * get the raw library for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the raw library for the sequence
-     * @throws Nothing
      */
 
     public String getLibrary () {return library;}
@@ -424,9 +359,7 @@ public class SequenceRawAttributes {
      * get the rawStrain for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the rawStrain for the sequence
-     * @throws Nothing
      */
 
     public String getStrain () {return strain;}
@@ -435,9 +368,7 @@ public class SequenceRawAttributes {
      * get the raw tissue for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the raw tissue for the sequence
-     * @throws Nothing
      */
 
     public String getTissue () {return tissue;}
@@ -446,9 +377,7 @@ public class SequenceRawAttributes {
      * get the raw age for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the raw age for the sequence
-     * @throws Nothing
      */
 
     public String getAge () {return age;}
@@ -457,9 +386,7 @@ public class SequenceRawAttributes {
      * get the raw sex for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the raw sex for the sequence
-     * @throws Nothing
      */
 
     public String getSex () {return sex;}
@@ -468,9 +395,7 @@ public class SequenceRawAttributes {
      * get the raw cell line for the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the raw cell line for the sequence
-     * @throws Nothing
      */
 
     public String getCellLine () {return cellLine;}
@@ -479,9 +404,7 @@ public class SequenceRawAttributes {
      * get the sequence provider
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence provider
-     * @throws Nothing
      */
 
     public String getProvider () {return provider;}
@@ -490,9 +413,7 @@ public class SequenceRawAttributes {
      * get the sequence quality
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence quality
-     * @throws Nothing
      */
 
     public String getQuality () {return quality;}
@@ -501,9 +422,7 @@ public class SequenceRawAttributes {
      * get the sequence status
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the sequence status
-     * @throws Nothing
      */
 
      public String getStatus () {return status;}
@@ -512,9 +431,7 @@ public class SequenceRawAttributes {
       * get the sequence record attribute
       * @assumes Nothing
       * @effects Nothing
-      * @param the None
       * @return the sequence record
-      * @throws Nothing
       */
 
      public String getRecord () {return seqRecord;}
@@ -523,9 +440,6 @@ public class SequenceRawAttributes {
      * Resets object values to null; number of organisms to 0
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void reset() {
@@ -553,6 +467,9 @@ public class SequenceRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.2  2004/02/02 19:45:17  sc
+//  development since last tag
+//
 //  Revision 1.1  2004/01/06 20:09:48  mbw
 //  initial version imported from lib_java_seqloader
 //

@@ -42,7 +42,6 @@ public class SeqRefAssocProcessor {
      * Constructs a SeqRefAssocProcessor object
      * @assumes Nothing
      * @effects Queries a database
-     * @param None
      * @throws CacheException if error creating RefAssocAttributeResolver
      * @throws ConfigException if error creating RefAssocAttributeResolver
      * @throws DBException if error creating RefAssocAttributeResolver

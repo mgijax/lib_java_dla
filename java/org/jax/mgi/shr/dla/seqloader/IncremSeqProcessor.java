@@ -122,9 +122,6 @@ public class IncremSeqProcessor extends SeqProcessor {
     * incapacitates the superclass delete method
     * @assumes Nothing
     * @effects Nothing
-    * @param None
-    * @return nothing
-    * @throws
     */
 
     public void deleteSequences() {
@@ -153,7 +150,6 @@ public class IncremSeqProcessor extends SeqProcessor {
      * writes to SQL script, or does inline SQL
      * @param seqInput - a set of raw attributes for a Sequence,
      *   including source(s), reference(s), accession(s)
-     * @return Nothing
      * @throws SeqloaderException if there is an IO error with the repeat
      *    sequence file
      * @throws RepeatSequenceException if we have already processed the current
@@ -307,10 +303,8 @@ public class IncremSeqProcessor extends SeqProcessor {
     * thus far
     * @assumes nothing
     * @effects nothing
-    * @param None
-    * @returns Vector of Strings reporting counts for different events processed
+    * @return Vector of Strings reporting counts for different events processed
     * thus far
-    * @throws Nothing
     */
      public Vector getProcessedReport() {
          Vector report = new Vector();
@@ -331,7 +325,6 @@ public class IncremSeqProcessor extends SeqProcessor {
       * @effects writes sequence record to a file
       * @param seqInput SequenceInput object - a set of raw sequence attributes
       *        including references assoc, source assoc and accession
-      * @return nothing
       * @throws RepeatSequenceException if the sequence has already been processed
       * @throws SeqloaderException indicating an IO exception occurred writing
       *   to the repeat file

@@ -10,9 +10,7 @@ import java.util.Vector;
  * processing information about SequenceInput objects processed and delete Sequences.
  * @has nothing
  * @does provides an interface for processing SequenceInputs
- * @copyright Jackson Labatory
  * @author sc
- * @version 1.0
  */
 public interface ProcessSequenceInput {
     /**
@@ -35,8 +33,6 @@ public interface ProcessSequenceInput {
     * objects processed
     * @assumes nothing
     * @effects Noting
-    * @param None
-    * @throws Nothing
     */
     public Vector getProcessedReport();
 
@@ -44,7 +40,6 @@ public interface ProcessSequenceInput {
     * method definition for deleting sequences
     * @assumes nothing
     * @effects Noting
-    * @param None
     * @throws Seqloader Exception if errors deleting sequences
     */
     public void deleteSequences() throws SeqloaderException;

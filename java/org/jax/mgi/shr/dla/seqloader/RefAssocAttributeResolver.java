@@ -48,7 +48,6 @@ public class RefAssocAttributeResolver {
      * lookups
      * @assumes Nothing
      * @effects Queries a database to load the lookup caches (full cache)
-     * @param None
      * @throws CacheException if problem creating a lookup
      * @throws ConfigException if problem creating a lookup
      * @throws DBException if problem creating a lookup

@@ -84,7 +84,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
     * Constructs an EMBLOrganismChecker with a set of deciders
     * @assumes nothing
     * @effects nothing
-    * @param None
     * @throws An exception if there are no deciders or unsupported provider
     */
 
@@ -160,7 +159,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
        * @effects Nothing
        * @param organism - an OS line from an EMBL format sequence record
        * @return true if OSString is for a mouse
-       * @throws Nothing
        */
 
       public boolean isMouse(String OSString) {
@@ -173,7 +171,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
        * @effects Nothing
        * @param organism - an OS line from an EMBL format sequence record
        * @return true if OSString is for a rat
-       * @throws Nothing
        */
 
       public boolean isRat(String OSString) {
@@ -186,7 +183,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
        * @effects Nothing
        * @param organism - an OS line from an EMBL format sequence record
        * @return true if OSString is for a human
-       * @throws Nothing
        */
 
       public boolean isHuman(String OSString) {
@@ -203,10 +199,8 @@ public class EMBLOrganismChecker implements OrganismChecker {
     *  returned true and the count of records for which each decider returned true.
     * @assumes Nothing
     * @effects Nothing
-    * @param None
     * @return Vector of Strings, each String contains the decider name
     *         and the count of records for which the decider returned true
-    * @throws Nothing
     */
 
     public Vector getDeciderCounts () {
@@ -253,8 +247,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
          * is controlled vocabulary used by the EMBLSeqInterrogator
          * @assumes Nothing
          * @effects Nothing
-         * @param None
-         * @throws Nothing
          */
 
         private EMBLMouseDecider() {
@@ -296,8 +288,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
          * is controlled vocabulary used by the EMBLSeqInterrogator
         * @assumes Nothing
         * @effects Nothing
-        * @param None
-        * @throws Nothing
         */
 
        private EMBLRatDecider() {
@@ -339,8 +329,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
            * is controlled vocabulary used by the EMBLSeqInterrogator
            * @assumes Nothing
            * @effects Nothing
-           * @param None
-           * @throws Nothing
            */
 
           private EMBLHumanDecider() {
@@ -389,8 +377,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
         * organism vocab keys to EMBL organism expressions
         * @assumes Nothing
         * @effects Nothing
-        * @param None
-        * @throws Nothing
         */
        private EMBLSeqInterrogator() {
            loadExpressions();
@@ -401,9 +387,6 @@ public class EMBLOrganismChecker implements OrganismChecker {
         * organism expression values
         * @assumes Nothing
         * @effects Nothing
-        * @param None
-        * @return Nothing
-        * @throws Nothing
         */
         protected void loadExpressions() {
             expressions.put("mouse", mouse);

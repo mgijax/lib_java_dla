@@ -27,8 +27,12 @@ public class GBInputFile extends InputDataFile
      * Constructs a CloneTreeInfo object.
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @throws Nothing
+     * @throws ConfigException thrown if there is an error accessing the
+     * configuration
+     * @throws ConfigException thrown if there is an error accessing the
+     * configuration
+     * @throws IOUException thrown if there is an error opening the
+     * configuration file
      */
     public GBInputFile()
         throws ConfigException, IOUException
@@ -52,6 +56,9 @@ public class GBInputFile extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.2  2004/06/29 17:07:01  mbw
+//  fixed class names in constructor to reflect filename
+//
 //  Revision 1.1  2004/06/29 17:05:39  mbw
 //  renamed class
 //

@@ -60,7 +60,6 @@ public abstract class SequenceInterpreter implements RecordDataInterpreter {
      * implementing subclasses
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @throws ConfigException if can't find the Configuration file
      */
 

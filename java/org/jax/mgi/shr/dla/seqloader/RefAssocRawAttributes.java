@@ -29,9 +29,7 @@ public class RefAssocRawAttributes {
      * set the reference id attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param a reference id
-     * @return Nothing
-     * @throws Nothing
+     * @param refId a reference id
      */
 
     public void setRefId(String refId) {this.refId = refId;}
@@ -40,9 +38,7 @@ public class RefAssocRawAttributes {
      * set the reference association type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the reference association type
-     * @return Nothing
-     * @throws Nothing
+     * @param refAssocType the reference association type
      */
 
     public void setRefAssocType(Integer refAssocType) {
@@ -53,9 +49,7 @@ public class RefAssocRawAttributes {
      * set the MGI type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the MGI type of the object to be associated with the reference
-     * @return Nothing
-     * @throws Nothing
+     * @param mgiType the MGI type of the object to be associated with the reference
      */
 
     public void setMgiType(Integer mgiType) {this.mgiType = mgiType;}
@@ -64,9 +58,7 @@ public class RefAssocRawAttributes {
      * set the CreatedByModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the CreatedByModifiedBy attribute
-     * @return Nothing
-     * @throws Nothing
+     * @param createdModifiedBy the CreatedByModifiedBy attribute
      */
 
     public void setCreatedModifiedBy(String createdModifiedBy) {
@@ -77,9 +69,7 @@ public class RefAssocRawAttributes {
      * get the reference id attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the reference id
-     * @throws Nothing
      */
 
 
@@ -89,9 +79,7 @@ public class RefAssocRawAttributes {
      * get the reference association type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the reference association type
-     * @throws Nothing
      */
 
     public Integer getRefAssocType() {return refAssocType;}
@@ -100,9 +88,7 @@ public class RefAssocRawAttributes {
      * get the MGI type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the MGI type of the object to be associated with the reference
-     * @throws Nothing
      */
 
     public Integer getmgiType() {return mgiType;}
@@ -111,9 +97,7 @@ public class RefAssocRawAttributes {
      * get the CreatedByModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the CreatedByModifiedBy attribute
-     * @throws Nothing
      */
 
     public String getCreatedModifiedBy() {return createdModifiedBy; }
@@ -122,9 +106,6 @@ public class RefAssocRawAttributes {
      * Resets object values to null
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void reset() {
@@ -136,6 +117,9 @@ public class RefAssocRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.2  2004/06/30 17:25:35  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.1.4.1  2004/05/18 15:32:08  sc
 //  updated class/method headers
 //

@@ -633,8 +633,8 @@ public class SequenceLookup {
      * @assumes nothing
      * @effects a new connection could be opened to the database if one does
      * not already exist. Queries a database.
-     * @param the seqid of the Sequence for which to query
-     * @param the logicalDBKey of the seqid
+     * @param seqId the seqid of the Sequence for which to query
+     * @param logicalDBKey the logicalDBKey of the seqid
      * @return the Sequence object represented by the database query
      */
     public Sequence findBySeqId(String seqId, int logicalDBKey)
@@ -871,9 +871,6 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
-         * @param None
-         * @return Nothing
-         * @throws Nothing
          */
 
         private void createSeqSrcAssoc() {
@@ -904,9 +901,6 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
-         * @param None
-         * @return Nothing
-         * @throws nothing
          */
 
         private void create2ndaryAccession() {
@@ -942,8 +936,6 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
-         * @param None
-         * @return Nothing
          */
 
         private void createRefAssoc() {

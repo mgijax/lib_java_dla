@@ -47,12 +47,11 @@ public class SequenceAttributeResolver {
      * Constructs a SequenceAttributeResolver
      * @assumes Nothing
      * @effects queries a database to load each lookup cache
-     * @param None
      * @throws TranslationException - if error creating type or provider lookups
      *   (these lookups have translators)
      * @throws ConfigException - if there a configuration error creating a lookup
-     * throws@ DBException - if there is a database error creating a lookup
-     * throws@ CacheException - if there is a caching error creating a lookup
+     * @throws DBException - if there is a database error creating a lookup
+     * @throws CacheException - if there is a caching error creating a lookup
      */
 
     public SequenceAttributeResolver() throws TranslationException,
@@ -190,6 +189,9 @@ public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.8  2004/06/30 17:25:36  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.7.4.1  2004/05/18 15:32:48  sc
 //  updated class/method headers
 //

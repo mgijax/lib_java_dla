@@ -37,8 +37,6 @@ public class AccessionRawAttributes {
      * @assumes Nothing
      * @effects Nothing
      * @param accid an accession id
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setAccid(String accid) {
@@ -54,8 +52,6 @@ public class AccessionRawAttributes {
      * @assumes Nothing
      * @effects Nothing
      * @param logicalDB the logical db for the accession id
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setLogicalDB(String logicalDB) {
@@ -67,8 +63,6 @@ public class AccessionRawAttributes {
      * @assumes Nothing
      * @effects Nothing
      * @param mgiType the MGI type for this accession
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setMgiType(Integer mgiType) {
@@ -80,8 +74,6 @@ public class AccessionRawAttributes {
      * @assumes Nothing
      * @effects Nothing
      * @param isPrivate true if this is a private accession id
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setIsPrivate(Boolean isPrivate) {
@@ -93,8 +85,6 @@ public class AccessionRawAttributes {
      * @assumes Nothing
      * @effects Nothing
      * @param isPreferred true if this is a preferred accession id
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setIsPreferred(Boolean isPreferred) {
@@ -105,9 +95,7 @@ public class AccessionRawAttributes {
      * sets the CreatedModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param createdModifiedBythe process/person which created or modified this accession
-     * @return Nothing
-     * @throws Nothing
+     * @param createdModifiedBy the process/person which created or modified this accession
      */
 
     public void setCreatedModifiedBy(String createdModifiedBy) {
@@ -118,9 +106,7 @@ public class AccessionRawAttributes {
      * gets the accession id attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the accession id
-     * @throws Nothing
      */
 
     public String getAccID() { return accid; }
@@ -129,9 +115,7 @@ public class AccessionRawAttributes {
      * gets the prefix part of the accession id
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the prefix part of the accession id
-     * @throws Nothing
      */
 
     public String getPrefixPart() { return prefixPart;}
@@ -140,9 +124,7 @@ public class AccessionRawAttributes {
      * Gets the numeric part of the accession id
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return  the numeric part of the accession id
-     * @throws Nothing
      */
 
     public Integer getNumericPart() { return numericPart;}
@@ -150,9 +132,7 @@ public class AccessionRawAttributes {
      * the logical db attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the logical db (key) of the accession id
-     * @throws Nothing
      */
 
     public String getLogicalDB() { return logicalDB;}
@@ -161,9 +141,7 @@ public class AccessionRawAttributes {
      * gets the MGI type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the MGIType (key) of the object_key
-     * @throws Nothing
      */
 
     public Integer getMgiType() { return mgiType;}
@@ -172,9 +150,7 @@ public class AccessionRawAttributes {
      * get the IsPrivate attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return true if this a private accession id
-     * @throws Nothing
      */
 
     public Boolean getIsPrivate() { return isPrivate;}
@@ -183,9 +159,7 @@ public class AccessionRawAttributes {
      * gets IsPreferred attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return true if this is a preferred accession id
-     * @throws Nothing
      */
 
 
@@ -195,9 +169,7 @@ public class AccessionRawAttributes {
      * gets the CreatedModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return the CreatedModifiedBy attribute
-     * @throws Nothing
      */
 
     public String getCreatedModifiedBy() { return createdModifiedBy;}
@@ -207,9 +179,6 @@ public class AccessionRawAttributes {
      *    objects to null
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @return Nothing
-     * @throws Nothing
      */
     public void reset() {
         accid = null;
@@ -224,6 +193,9 @@ public class AccessionRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.2  2004/06/30 17:25:34  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.1.4.1  2004/05/18 15:18:36  sc
 //  class/method headers updated
 //

@@ -66,9 +66,7 @@ public abstract class SeqDecider {
      * gets counter of records for which the predicate is true
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return trueCtr number of Strings for which the predicate is true
-     * @throws Nothing
      */
 
      public int getTrueCtr() {
@@ -79,9 +77,7 @@ public abstract class SeqDecider {
      * get the name of this decider
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return name name of this decider
-     * @throws Nothing
      */
 
     public String getName( ) {
@@ -92,15 +88,16 @@ public abstract class SeqDecider {
       * abstract method to be implemented to apply a predicate to a String
       * @assumes Nothing
       * @effects Nothing
-      * @param None
       * @return s the String which to apply the predicate
-      * @throws Nothing
       */
 
     protected abstract boolean is(String s);
 }
 
 //  $Log$
+//  Revision 1.3  2004/06/30 17:25:35  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.2.4.1  2004/05/18 15:32:08  sc
 //  updated class/method headers
 //

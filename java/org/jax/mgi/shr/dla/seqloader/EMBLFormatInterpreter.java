@@ -202,8 +202,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * @assumes Nothing
      * @effects Nothing
      * @param rcd An EMBL format sequence record
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseRecord(String rcd) {
@@ -268,8 +266,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * <BR>
      * Note that SequenceRawAttributes.seqRecDate is set to the later of
      * sequence update and annotation update
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseDT (String dtSection) {
@@ -326,8 +322,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * <PRE>
      * RX   MEDLINE=95372385; PubMed=7644510;
      * </PRE>
-     * @return nothing
-     * @throws Nothing
      */
 
     protected void parseRX(String rxSection) {
@@ -386,8 +380,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * OS   Bos taurus (Bovine), and
      * OS   Ovis aries (Sheep).
      * </PRE>
-     * @return nothing
-     * @throws Nothing
      */
 
     protected void parseOS(String osSection) {
@@ -460,8 +452,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * @assumes Nothing
      * @effects Nothing
      * @param organism an organism for the SequenceInput being created
-     * @return Nothing
-     * @throws Nothing
      */
 
     private void setOrganism(String organism) {
@@ -483,8 +473,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * <BR>
      * example of AC section. Note: secondary ids can span multiple AC lines:<BR>
      * AC   Q9CQV8; O70455;
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseAC(String acSection) {
@@ -554,8 +542,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * DE   14-3-3 protein beta/alpha (Protein kinase C inhibitor protein-1)
      * DE   (KCIP-1).
      * <BR>
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseDE(String deSection) {
@@ -589,8 +575,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * token 3 = Molecule type (PRT for protein records)<BR>
      * token 4 = sequence length<BR>
      * token 5 = sequence type (AA (amino acid) for protein)<BR>
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseID(String idLine) {
@@ -613,8 +597,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * @effects Nothing
      * @param pubmed Pubmed id for a reference or null
      * @param medline Medline id for the same reference or null
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void createReference (String pubmed, String medline) {
@@ -645,8 +627,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * @effects Nothing
      * @param accid Accession id of a sequence
      * @param preferred true, 'accid' is primary. false 'accid' is 2ndary
-     * @return nothing
-     * @throws Nothing
      */
 
     protected void createAccession(String accid, Boolean preferred) {

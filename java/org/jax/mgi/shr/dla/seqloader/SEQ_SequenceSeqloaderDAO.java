@@ -59,7 +59,6 @@ public class SEQ_SequenceSeqloaderDAO extends SEQ_SequenceDAO{
        * for this object.
        * @assumes Nothing
        * @effects Nothing
-       * @param None
        * @return A string representing the SQL statement.
        * @throws DBException
        */

@@ -250,8 +250,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * @assumes Nothing
      * @effects Nothing
      * @param rcd A sequence record
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseRecord(String rcd) {
@@ -444,8 +442,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     *      BASE COUNT      681 a    949 c    828 g    675 t
     *      ORIGIN
     * </PRE>
-    * @return nothing
-    * @throws Nothing
     */
 
     protected void parseSource(String source) {
@@ -572,8 +568,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      *   MEDLINE   92239361
      *   PUBMED    1571281
      * </PRE>
-     * @return nothing
-     * @throws Nothing
      */
 
     protected void parseReference(String reference) {
@@ -630,7 +624,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * <PRE>
      *   ORGANISM  Mus musculus
      * </PRE>
-     * @return nothing
      * @throws RecordFormatException if 'organism contains just the tag
      * "ORGANISM  "
      */
@@ -658,8 +651,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * <BR>
      * VERSION line example:<BR>
      * VERSION     AB000096.1  GI:1754585
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseVersion(String version) {
@@ -692,8 +683,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * secondary ids that span multiple lines:<BR>
      * ACCESSION   AB000098 AB000097 AB000096 AB000095 AB000094 AB000093 AB000092
      *             AB000091
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseAccession(String accession) {
@@ -748,8 +737,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * in a record, but 'definition' does not contain newlines:
      * DEFINITION  Mus musculus mRNA for GATA-2 protein, complete cds
      * <BR>
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseDefinition(String definition) {
@@ -779,8 +766,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * Example of protein RefSeq LOCUS line: <BR>
      * LOCUS       NP_035670                167 aa            linear   ROD 07-JAN-2002
      * <BR>
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void parseLocus(String locus) {
@@ -816,8 +801,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * @effects Nothing
      * @param pubmed Pubmed id for a reference or null
      * @param medline Medline id for the same reference or null
-     * @return Nothing
-     * @throws Nothing
      */
 
     protected void createReference (String pubmed, String medline) {
@@ -848,8 +831,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * @effects Nothing
      * @param accid Accession id of a sequence
      * @param preferred If true, 'accid' is primary, else 'accid' is 2ndary
-     * @return nothing
-     * @throws Nothing
      */
 
     protected void createAccession(String accid, Boolean preferred) {

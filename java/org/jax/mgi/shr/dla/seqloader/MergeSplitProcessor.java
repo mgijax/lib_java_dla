@@ -77,7 +77,6 @@ public class MergeSplitProcessor {
      * @assumes Nothing
      * @effects Nothing
      * @param logicalDBKey LogicalDB of load
-     * @throws
      */
 
      public MergeSplitProcessor(AccessionLookup seqidLookup, SeqQCReporter reporter)
@@ -96,8 +95,6 @@ public class MergeSplitProcessor {
       * @assumes
       * @effects
       * @param logicalDB to create an AccessionLookup for Sequences
-      * @return Nothing
-      * @throws
       */
 
     public void preProcess(SequenceInput seqInput)
@@ -112,9 +109,6 @@ public class MergeSplitProcessor {
      *    in MGI and processes accordingly
      * @assumes
      * @effects
-     * @param None
-     * @return Nothing
-     * @throws
      */
 
     public void process(ScriptWriter writer)
@@ -149,8 +143,7 @@ public class MergeSplitProcessor {
                            SeqloaderConstants.SGL_QUOTE + toSeqid +
                            SeqloaderConstants.SGL_QUOTE;
                        logger.logcInfo(cmd, false);
-                       writer.write(cmd);
-                       writer.go();
+                       writer.writeGo(cmd);
                        splitCtr++;
                    }
                }
@@ -168,8 +161,7 @@ public class MergeSplitProcessor {
 
                    logger.logcInfo(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
-                   writer.write(cmd);
-                   writer.go();
+                   writer.writeGo(cmd);
                    mergeCtr++;
                }
         }

@@ -68,7 +68,6 @@ public class SeqEventDetector {
     * Constructs a SeqEventDetector
     * @assumes Nothing
     * @effects Nothing
-    * @param None
     * @throws ConfigException if error creating VocabTermLookup()
     * @throws CacheException if error creating VocabTermLookup()
     * @throws DBException if error creating VocabTermLookup()

@@ -88,7 +88,6 @@ public class GBOrganismChecker implements OrganismChecker {
     * Constructs an OrganismChecker with a set of deciders
     * @assumes nothing
     * @effects nothing
-    * @param None
     * @throws ConfigException if config file does not define mouse human and rat
     * decider vars
     */
@@ -188,10 +187,8 @@ public class GBOrganismChecker implements OrganismChecker {
     *  returned true and the count of records for which each decider returned true.
     * @assumes Nothing
     * @effects Nothing
-    * @param None
     * @return Vector of Strings, each String contains the decider name
     *         and the count of records for which the decider returned true
-    * @throws Nothing
     */
     public Vector getDeciderCounts () {
       Vector v = new Vector();
@@ -235,8 +232,6 @@ public class GBOrganismChecker implements OrganismChecker {
          * is controlled vocabulary used by the GBSeqInterrogator
          * @assumes Nothing
          * @effects Nothing
-         * @param None
-         * @throws Nothing
          */
 
         private GBMouseDecider() {
@@ -277,8 +272,7 @@ public class GBOrganismChecker implements OrganismChecker {
          * is controlled vocabulary used by the GBSeqInterrogator
         * @assumes Nothing
         * @effects Nothing
-        * @param None
-        * @throws Nothing
+
         */
 
        private GBRatDecider() {
@@ -318,8 +312,7 @@ public class GBOrganismChecker implements OrganismChecker {
            * is controlled vocabulary used by the GBSeqInterrogator
            * @assumes Nothing
            * @effects Nothing
-           * @param None
-           * @throws Nothing
+
            */
 
           private GBHumanDecider() {
@@ -370,8 +363,6 @@ public class GBOrganismChecker implements OrganismChecker {
         * controlled vocab keys to GB organism expressions
         * @assumes Nothing
         * @effects Nothing
-        * @param None
-        * @throws Nothing
         */
        private GBSeqInterrogator() {
           loadExpressions();
@@ -382,9 +373,6 @@ public class GBOrganismChecker implements OrganismChecker {
         * organism expression values
         * @assumes Nothing
         * @effects Nothing
-        * @param None
-        * @return Nothing
-        * @throws Nothing
         */
         protected void loadExpressions() {
             expressions.put("mouse", mouse);
@@ -395,6 +383,9 @@ public class GBOrganismChecker implements OrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.4  2004/06/30 17:25:35  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.2.4.2  2004/06/30 13:04:47  sc
 //  now implements OrganismChecker interface, changed some statistic reporting.
 //

@@ -27,8 +27,10 @@ public class GBInputFileNoSeq extends InputDataFile
      * Constructs a CloneTreeInfo object.
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @throws Nothing
+     * @throws ConfigException thrown if there is an error accessing the
+     * configuration
+     * @throws IOUException thrown if there is an error opening the
+     * configuration file
      */
     public GBInputFileNoSeq()
         throws ConfigException, IOUException
@@ -52,6 +54,9 @@ public class GBInputFileNoSeq extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.2  2004/06/29 17:07:01  mbw
+//  fixed class names in constructor to reflect filename
+//
 //  Revision 1.1  2004/06/29 17:05:39  mbw
 //  renamed class
 //

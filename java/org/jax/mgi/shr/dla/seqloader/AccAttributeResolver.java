@@ -38,7 +38,6 @@ public class AccAttributeResolver {
      * lookups
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @throws CacheException if error creating a LogicalDBLookup cache
      * @throws ConfigException if error configuring a LogicalDBLookup's
      *          SQLDataManager

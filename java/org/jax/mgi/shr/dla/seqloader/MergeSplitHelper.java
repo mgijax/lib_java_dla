@@ -118,7 +118,6 @@ public class MergeSplitHelper {
          * @assumes nothing
          * @effects nothing
          * @param sequences
-         * @throws
          */
         public HashMap createHash(HashMap primaryMap) {
             HashMap secondaryMap = new HashMap();

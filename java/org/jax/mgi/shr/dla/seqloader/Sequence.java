@@ -112,7 +112,7 @@ public class Sequence {
      * for 'seqState'
      * @assumes state does not exist in the database
      * @effects queries a database for the next sequence key
-     * @param state a SequenceState representing a new sequence
+     * @param seqState a SequenceState representing a new sequence
      * @param stream the stream which to pass the DAO objects to perform database
      *        inserts, updates, and deletes
      * @throws ConfigException if error creating SEQ_SequenceSeqloaderDAO
@@ -152,9 +152,7 @@ public class Sequence {
      * gets a *copy* of the sequence state
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return state a *copy* of the sequence state
-     * @throws Nothing
      */
 
     public SEQ_SequenceState getSequenceState() {
@@ -166,7 +164,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Queries a database for the next Accession key
      * @param state a primary accession state
-     * @return  nothing
      * @throws ConfigException if error creating the DAO object
      * @throws DBException
      */
@@ -184,8 +181,6 @@ public class Sequence {
      * @param key the accession key for the primary accession of an
      * existing sequence
      * @param state a primary accession
-     * @return  nothing
-     * @throws Nothing
      */
 
     public void setAccPrimary(ACC_AccessionKey key,
@@ -197,9 +192,7 @@ public class Sequence {
      * gets a *copy* of the primary seqid state of the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return primaryAcc a *copy* of the primary seqid state of the sequence
-     * @throws Nothing
      */
 
     public ACC_AccessionState getAccPrimary() {
@@ -211,9 +204,8 @@ public class Sequence {
      * a new sequence
      * @assumes Nothing
      * @effects Queries a database for the next accession key
-     * @param accState ACC_AccessionState representing a 2ndary id of a new
+     * @param state ACC_AccessionState representing a 2ndary id of a new
      *        sequence
-     * @return Nothing
      * @throws ConfigException if error creating the DAO object
      * @throws DBException if error creating the DAO object
      */
@@ -232,8 +224,6 @@ public class Sequence {
      * @param accKey the ACC_AccessionKey of a 2ndary accession for an existing sequence
      * @param accState a ACC_AccessionState representing a 2ndary accession for an
      *        existing sequence
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void addAccSecondary(ACC_AccessionKey accKey, ACC_AccessionState accState) {
@@ -245,10 +235,8 @@ public class Sequence {
      * gets a *copy* of the set of secondary seqid states of the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector a set of *copies* of the secondary seqid states of the
      * sequence
-     * @throws Nothing
      */
 
     public Vector getAccSecondary() {
@@ -264,9 +252,7 @@ public class Sequence {
      * deletes 'accState' from the set of 2ndary seqids
      * @assumes Nothing
      * @effects Nothing
-     * @param accState a secondary seqid to be deleted
-     * @return Nothing
-     * @throws Nothing
+     * @param state a secondary seqid to be deleted
      */
 
     public void delete2ndaryAcc(ACC_AccessionState state) {
@@ -284,7 +270,6 @@ public class Sequence {
      * @effects Queries a database for the next reference assoc key
      * @param state MGI_Reference_AssocState from which to create a DAO to add to
      *        the set of reference associations of a new sequence
-     * @return Nothing
      * @throws ConfigException if error creating MGI_Reference_AssocDAO
      * @throws DBException if error creating MGI_Reference_AssocDAO
      */
@@ -319,8 +304,6 @@ public class Sequence {
      * sequence
      * @param state MGI_Reference_AssocState from which to create a DAO to add to
      *        the set of reference associations of an existing sequence
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void addRefAssoc(MGI_Reference_AssocKey key, MGI_Reference_AssocState state) {
@@ -336,8 +319,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Nothing
      * @param delRefAssoc the reference association to be deleted
-     * @return nothing
-     * @throws Nothing
      */
     public void deleteRefAssoc(MGI_Reference_AssocState delRefAssoc) {
         // implement later; need a equals method for MGI_Reference_AssocState
@@ -348,10 +329,8 @@ public class Sequence {
      * gets a *copy* of the set of reference association states of the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector set of *copies* of the reference association states
      * of the sequence
-     * @throws Nothing
      */
 
     public Vector getRefAssoc() {
@@ -368,10 +347,8 @@ public class Sequence {
      * referenced in the provider sequence record
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector of *copies* of the reference association states that
      * are not referenced in the provider sequence record
-     * @throws Nothing
      */
 
     public Vector getOldRefAssociations() {
@@ -395,7 +372,6 @@ public class Sequence {
     * @assumes Nothing
     * @effects Queries a database for the next source assoc key
     * @param state a SEQ_Source_AssocState for a new sequence
-    * @return Nothing
     * @throws ConfigException if error creating SEQ_Source_AssocDAO object
     * @throws DBException if error creating SEQ_Source_AssocDAO object
     */
@@ -413,8 +389,6 @@ public class Sequence {
     * @effects Nothing
     * @param key the SEQ_Source_AssocKey for an existing sequence
     * @param state a SEQ_Source_AssocState
-    * @return Nothing
-    * @throws Nothing
     */
 
     public void addSeqSrcAssoc(SEQ_Source_AssocKey key,
@@ -427,10 +401,8 @@ public class Sequence {
      * gets a copy of the set of source association states of the sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector set of *copies* of the source association states of
      * the sequence
-     * @throws Nothing
      */
 
     public Vector getSeqSrcAssoc() {
@@ -447,8 +419,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Nothing
      * @param delSrcAssoc the source association to be deleted
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void deleteSeqSrcAssoc(SEQ_Source_AssocState delSrcAssoc) {
@@ -461,9 +431,7 @@ public class Sequence {
      * gets the sequence key as an Integer
      * @assumes Nothing
      * @effects Nothing
-     * @param Nothing
      * @return Integer sequence key
-     * @throws Nothing
      */
 
     public Integer getSequenceKey() {
@@ -476,7 +444,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Nothing
      * @param updateFrom - the set of attributes from which to update the sequence
-     * @return Nothing
      * @throws DBException if error querying a database for attribute history
      */
 
@@ -492,8 +459,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Nothing
      * @param isNew true if this is a new sequence
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setIsNewSequence (boolean isNew) {
@@ -504,9 +469,7 @@ public class Sequence {
      * gets the isNewSequence attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return true if this is a new sequence
-     * @throws Nothing
      */
 
     public boolean getIsNewSequence() {
@@ -518,8 +481,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Nothing
      * @param isChanged true this is a sequence in MGI needs updating
-     * @return Nothing
-     * @throws nothing
      */
 
     public void setIsChangedSequence (boolean isChanged) {
@@ -530,9 +491,7 @@ public class Sequence {
      * gets the isChangedSequence attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return true if this is a sequence in MGI that needs updating
-     * @throws
      */
 
     public boolean getIsChangedSequence() {
@@ -544,8 +503,6 @@ public class Sequence {
      * @assumes Nothing
      * @effects Nothing
      * @param isDummy true if this sequence is in MGI and is a dummy sequence
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setIsDummySequence (boolean isDummy) {
@@ -556,9 +513,7 @@ public class Sequence {
      * gets the isDummySequence attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return true if this is a sequence in MGI and is a dummy sequence
-     * @throws
      */
 
     public boolean getIsDummySequence() {
@@ -575,8 +530,6 @@ public class Sequence {
      * Inserts and deletes 2ndary seqids.
      * @assumes Nothing
      * @effects Performs database Inserts, updates, and deletes.
-     * @param None
-     * @return Nothing
      * @throws DBException if error inserting, updating, or deleting in the database
      */
 
@@ -624,6 +577,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.7  2004/06/30 17:25:36  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.6.4.1  2004/05/18 15:32:48  sc
 //  updated class/method headers
 //

@@ -56,7 +56,7 @@ public class SeqQCReporter
     *          depending on the type of stream
     * @param sequenceKey key of the sequence that should no longer be associated
     *        with 'refsKey'
-    * @return refsKey key of the reference that should no longer be associated
+    * @param refsKey key of the reference that should no longer be associated
     *        with 'sequenceKey'
     * @throws SeqloaderException if error calling the insert method on the stream
     */
@@ -86,7 +86,6 @@ public class SeqQCReporter
     * @param sequenceKey key of the sequence that has a conflict
     * @param attrName name of the sequence attribute for which there is a conflict
     * @param incomingValue the incoming attribute value that conflicts with MGI
-    * @return Nothing
     * @throws SeqloaderException if error calling the insert method on the stream
     */
 
@@ -117,7 +116,6 @@ public class SeqQCReporter
     *        (fromSeqid will now be secondary id for toSeqid)
     * @param toSeqid the seqid of the sequence that 'fromSeqid' should be merged
     *         into
-    * @return Nothing
     * @throws SeqloaderException if error calling the insert method on the stream
     */
 

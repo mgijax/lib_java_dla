@@ -28,9 +28,6 @@ public abstract class Interrogator {
     * of expressions
     * @assumes Nothing
     * @effects Nothing
-    * @param None
-    * @return Nothing
-    * @throws Nothing
     */
     protected abstract void loadExpressions();
 

@@ -35,8 +35,9 @@ public class FASTAInputFile extends InputDataFile
     }
 
     /**
-     * get the RecordDataIterator for the file
-     * @return RecordDataIterator
+     * get the default RecordDataIterator for the file which returns a set of
+     * FASTAData objects
+     * @return RecordDataIterator containing FASTAData objects
      * @throws IOUException thrown if there is an error accessing the file
      */
     public RecordDataIterator getIterator() throws IOUException

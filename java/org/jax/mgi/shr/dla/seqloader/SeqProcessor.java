@@ -154,8 +154,6 @@ public class SeqProcessor implements ProcessSequenceInput  {
     * deletes all Sequences loaded by a given loader from a database
     * @assumes Nothing
     * @effects deletes sequences from a database
-    * @param None
-    * @return nothing
     * @throws SeqloaderException if error getting SQLDataManager or executing
     *         a delete.
     */
@@ -181,7 +179,6 @@ public class SeqProcessor implements ProcessSequenceInput  {
    * @effects queries and inserts into a database
    * @param seqInput SequenceInput object - a set of raw attributes to resolve
    *        and add to the database
-   * @return nothing
    * @throws SeqloaderException if there are configuration, cacheing, database,
    *         translation, io, or lookup errors. These errors cause load to fail
    * @throws RepeatSequenceException  provided for subclass
@@ -360,9 +357,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
    * Gets a Vector containing a String reporting count of Sequences added
    * @assumes nothing
    * @effects nothing
-   * @param None
-   * @returns Vector containing single string with count of Sequences added
-   * @throws Nothing
+   * @return Vector containing single string with count of Sequences added
    */
    public Vector getProcessedReport() {
        Vector report = new Vector(1);
@@ -376,7 +371,6 @@ public class SeqProcessor implements ProcessSequenceInput  {
     * @param sequence the Sequence which to add references
     * @param references Vector of SeqRefAssocPairs (pairs of pubmed/medline ids)
     *        for 'sequence'
-    * @return Nothing
     * @throws ConfigException - from Sequence.addRefAssoc
     * @throws CacheException - from SeqRefAssocProcessor
     * @throws DBException - from SeqRefAssocProcessor and Sequence.addRefAssoc

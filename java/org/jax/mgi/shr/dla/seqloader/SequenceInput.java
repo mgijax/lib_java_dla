@@ -54,8 +54,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param seq the value which to set the raw sequence
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setSeq (SequenceRawAttributes seq) {this.seq = seq;}
@@ -65,8 +63,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param mSources Vector of MSRawAttributes
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setMSources (Vector mSources) {this.mSources = mSources;}
@@ -76,8 +72,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param ms an MSRawAttributes to add to the set of raw MS's
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void addMSource (MSRawAttributes ms) {
@@ -89,8 +83,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param refs A Vector of RefAssocRawAttributes
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setRefs(Vector refs) {this.refs = refs;}
@@ -100,8 +92,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param ref a SeqRefAssocPair to add to the set of reference associations
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void addRef(SeqRefAssocPair ref) {refs.add(ref);}
@@ -111,8 +101,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param ref a RefAssocRawAttributes to add to the set of reference associations
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void addRef(RefAssocRawAttributes ref) {refs.add(ref);}
@@ -124,8 +112,6 @@ public class SequenceInput {
      * @effects Nothing
      * @param primaryAcc An AccessionRawAttributes representing the primary
      *        seqid
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setPrimaryAcc(AccessionRawAttributes primaryAcc) {
@@ -138,8 +124,6 @@ public class SequenceInput {
      * @effects Nothing
      * @param secondaryAcc A Vector of AccessionRawAttributes representing
      *        the set of 2ndary accession ids
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void setSecondary(Vector secondaryAcc) {
@@ -151,8 +135,6 @@ public class SequenceInput {
      * @assumes Nothing
      * @effects Nothing
      * @param secondary an AccessionRawAttributes
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void addSecondary(AccessionRawAttributes secondary) {
@@ -163,9 +145,7 @@ public class SequenceInput {
      * get the raw sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return SequenceRawAttributes
-     * @throws Nothing
      */
 
     public SequenceRawAttributes getSeq() {
@@ -176,9 +156,7 @@ public class SequenceInput {
      * get the set of raw sources
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector of MSRawAttributes
-     * @throws Nothing
      */
 
     public Vector getMSources() {
@@ -189,9 +167,7 @@ public class SequenceInput {
      * get the set of raw reference associations
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector of RefAssocRawAttributes
-     * @throws Nothing
      */
 
     public Vector getRefs() {
@@ -202,9 +178,7 @@ public class SequenceInput {
      * get the raw primary accession
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return AccessionRawAttributes representing the primary seqid
-     * @throws Nothing
      */
 
     public AccessionRawAttributes getPrimaryAcc() {
@@ -215,9 +189,7 @@ public class SequenceInput {
      *get the set of raw secondary accessions
      * @assumes Nothing
      * @effects Nothing
-     * @param None
      * @return Vector of AccessionRawAttributes representing the 2ndary seqid(s)
-     * @throws Nothing
      */
 
     public Vector getSecondary() {
@@ -228,9 +200,6 @@ public class SequenceInput {
      * clears Vectors and sets other objects to null
      * @assumes Nothing
      * @effects Nothing
-     * @param None
-     * @return Nothing
-     * @throws Nothing
      */
 
     public void reset() {
@@ -242,6 +211,9 @@ public class SequenceInput {
     }
 }
 //  $Log$
+//  Revision 1.4  2004/06/30 17:25:36  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.3.4.1  2004/05/18 15:32:48  sc
 //  updated class/method headers
 //
