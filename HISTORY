@@ -1,4 +1,13 @@
-TE: 05/17/2004
+TAG: lib_java_dla-1-0-24
+DATE: 06/08/2004
+STAFF: sc
+CHANGES:
+1) see changes since last tag
+2) IncremSeqProcessor - added SeqidLookup param to constructor
+3) MergeSplitHelper - added seqidLookup param to constructor
+4) MergeSplitProcessor - added seqidLookup param to constructor
+
+DATE: 05/17/2004
 STAFF: sc
 CHANGES: GBOrganismChecker - commented out some debug code/logging
 
