@@ -19,6 +19,8 @@ STAFF: sc
 CHANGES:
 1) GBFormatInterpreter - throw RecordFormatException if organism 
      not in sequence record
+2) Added ProcessSequenceInput interface
+3) SeqProcessor implements ProcessSequenceInput
 
 DATE: 05/03/2004
 STAFF: mbw
