@@ -471,7 +471,8 @@ public class MSProcessor
      * configuration or if more named sources are found than expected which
      * can be changed by calling MSProcessor.setMaxAssociatedClones(int)
      */
-    private MolecularSource findByCachedAssociatedClones(String accid) throws
+    private MolecularSource findByCachedAssociatedClones(String accid)
+        throws
         MSException
     {
         /**
