@@ -144,8 +144,10 @@ public abstract class DLALoader {
       this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
       this.loadBCPMgr.setLogger(logger);
       this.loadBCPMgr.setSQLDataManager(loadDBMgr);
-      this.loadStream = createSQLStream(config.getLoadStreamName());
-      this.qcStream = createSQLStream(config.getQCStreamName());
+      this.loadStream = createSQLStream(config.getLoadStreamName(),
+                                        loadDBMgr, loadBCPMgr);
+      this.qcStream = createSQLStream(config.getQCStreamName(),
+                                      qcDBMgr, qcBCPMgr);
       this.inputConfig = new InputDataCfg();
     }
     catch (Exception e) {
@@ -257,21 +259,21 @@ public abstract class DLALoader {
    * @param name the name of the SQLStream to create
    * @return the new SQLStream
    */
-  private SQLStream createSQLStream(String name) throws MGIException
+  private SQLStream createSQLStream(String name, SQLDataManager DBMgr,
+                                    BCPManager BCPMgr) throws MGIException
   {
       if (name.equals("org.jax.mgi.shr.dbutils.dao.Inline_Stream"))
-          return new Inline_Stream(this.loadDBMgr);
+          return new Inline_Stream(DBMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.Batch_Stream"))
-          return new Batch_Stream(this.loadDBMgr);
+          return new Batch_Stream(DBMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.Script_Stream"))
-          return new Script_Stream(this.loadDBMgr.getScriptWriter());
+          return new Script_Stream(DBMgr.getScriptWriter());
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream"))
-          return new BCP_Inline_Stream(this.loadDBMgr, this.loadBCPMgr);
+          return new BCP_Inline_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream"))
-          return new BCP_Batch_Stream(this.loadDBMgr, this.loadBCPMgr);
+          return new BCP_Batch_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream"))
-          return new BCP_Script_Stream(this.loadDBMgr.getScriptWriter(),
-                                       this.loadBCPMgr);
+          return new BCP_Script_Stream(DBMgr.getScriptWriter(), BCPMgr);
       else
       {
           DLAExceptionFactory factory = new DLAExceptionFactory();
