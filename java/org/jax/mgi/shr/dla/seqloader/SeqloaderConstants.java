@@ -54,7 +54,8 @@ public class SeqloaderConstants {
     // Event constants
     public static final int ADD = 1;
     public static final int UPDATE = 2;
-    public static final int ALREADY_ADDED = 3;
+    // No longer an event
+    //public static final int ALREADY_ADDED = 3;
     public static final int NON_EVENT = 4;
     public static final int MERGE = 6;
     public static final int SPLIT = 7;
@@ -80,6 +81,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.13  2004/07/19 18:03:38  sc
+//  added DNA constant
+//
 //  Revision 1.12  2004/07/08 15:03:49  sc
 //  javdocs changes
 //
