@@ -167,7 +167,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
             new DLALoggingExceptionFactory();
         DLALoggingException e2 =
             (DLALoggingException)eFactory.getException(ConfigurationErr, e);
-
+        throw e2;
       }
       instance.createLogp();
       instance.createLogv();
@@ -632,6 +632,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.5  2003/06/04 18:28:57  mbw
+// javadoc edits
+//
 // Revision 1.4  2003/05/22 15:49:13  mbw
 // javadocs edits
 //
