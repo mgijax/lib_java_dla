@@ -131,9 +131,35 @@ public class SequenceLoadCfg extends Configurator {
   public String getRepeatFileName() throws ConfigException {
       return getConfigString("REPEAT_FILE");
   }
+  /**
+  * Gets the sequence quality
+  * @assumes Nothing
+  * @effects Nothing
+  * @param None
+  * @return sequence quality
+  * @throws ConfigException if "QUALITY" not found in configuration file
+  */
+  public String getQuality() throws ConfigException {
+     return getConfigString("QUALITY");
+  }
+  /**
+   * Gets the sequence type
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return sequence quality
+   * @throws ConfigException if "SEQTYPE" not found in configuration file
+   */
+  public String getSeqType() throws ConfigException {
+    return getConfigString("SEQTYPE");
+  }
+
 }
 
 //  $Log$
+//  Revision 1.3  2004/02/27 13:57:16  sc
+//  removed getLoadReference
+//
 //  Revision 1.2  2004/02/02 19:42:27  sc
 //  Added repeat file name
 //
