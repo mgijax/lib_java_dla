@@ -1,3 +1,14 @@
+TAG: lib_java_dla-1-0-19
+DATE: 04/13/2004
+STAFF: sc
+RELEASE: dev
+CHANGES:
+1) EMBLFormatInterpretor - added code to prevent interpretation of more than
+   one human/mouse/rat source
+2) SequenceInterpretor - replaced hardcoding of sequence status with SeqloaderConstant value
+3) SeqloaderConstants - add ACTIVE_STATUS
+4) SequenceAttributeResolver - changed indentation
+
 TAG: lib_java_dla-1-0-17
 DATE: 04/09/2004
 STAFF: sc
