@@ -1,3 +1,8 @@
+DATE: 05/10/2004
+STAFF: mbw
+CHANGES:
+1) revised DLALoader class to make the load db prefix name to be configurable
+
 TAG: lib_java_dla-1-0-23
 DATE: 05/10/2004
 STAFF: mbw
