@@ -4,6 +4,9 @@ CHANGES:
 1) SeqloaderConstants - added constants
 2) SequenceLoadCfg - added get* methods
 3) SequenceInterpreter - changed visibility of the configurator to protected.
+4) SeqProcessor - Changed from abstract to concrete implementing 
+   ProcessSequenceInput, added a delete method and reorganized exceptions
+5) SeqloaderExceptionFactory - added more exceptions for the sequence processors
 
 TAG: lib_java_dla-1-0-15
 DATE: 03/19/2004

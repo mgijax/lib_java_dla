@@ -129,25 +129,27 @@ public class MergeSplitProcessor {
                Vector currentV = (Vector) secondaryToPrimary.get(fromSeqid);
                if (currentV.isEmpty()) {
                    //throw exception
-                   logger.logdDebug("Throw Exception in MergeSplitProcessor.process" +
+                   logger.logdErr("MergeSplitProcessor.process" +
                                     "Vector of primary ids is empty");
                }
                else if (currentV.size() > 1) {
-                   //call split stored procedure
-                   //System.out.println("Calling SEQ_split");
-                   logger.logdDebug("Calling SEQ_split");
+                   // write out call to split stored procedure
+                   logger.logcInfo("Writing SEQ_split call(s):", false);
                    for (Iterator i = currentV.iterator(); i.hasNext();) {
                        String toSeqid = (String)i.next();
-                       writer.write(splitSQL + fromSeqid + " " + toSeqid);
+                       String cmd = splitSQL + fromSeqid + " " + toSeqid;
+                       logger.logcInfo(cmd, false);
+                       writer.write(cmd);
                    }
                }
                else {
-                   // call merge stored procedure
-                   //System.out.println("Calling SEQ_merge");
+                   // write out call to merge stored procedure
+                   logger.logcInfo("Writing SEQ_merge call:", false);
                    String toSeqid = (String)currentV.get(0);
-                   logger.logdDebug("Calling SEQ_merge");
+                   String cmd = mergeSQL + fromSeqid + " " + toSeqid;
+                   logger.logcInfo(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
-                   writer.write(mergeSQL + fromSeqid + " " + toSeqid);
+                   writer.write(cmd);
                }
         }
     }
