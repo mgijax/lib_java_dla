@@ -4,17 +4,8 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.*;
-import java.util.regex.*;
 import java.sql.*;
 
-import org.jax.mgi.shr.dla.seqloader.SequenceInterpreter;
-import org.jax.mgi.shr.dla.seqloader.SequenceInput;
-import org.jax.mgi.shr.dla.seqloader.SeqloaderConstants;
-import org.jax.mgi.shr.dla.seqloader.SeqRefAssocPair;
-import org.jax.mgi.shr.dla.seqloader.DateConverter;
-import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.SequenceRawAttributes;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
