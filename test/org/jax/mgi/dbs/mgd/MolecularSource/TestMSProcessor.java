@@ -251,13 +251,6 @@ public class TestMSProcessor
         sqlMgr.executeUpdate(
             "delete prb_source where _source_key = " + ms.getMSKey()
             );
-        // check qc tables
-        String sql = "select count(*) from QC_MS_NoLibFound " +
-                     "where _jobstream_key = " + jobkey;
-        ResultsNavigator nav = radar.executeQuery(sql);
-        RowReference row = nav.getRowReference();
-        nav.next();
-        assertEquals(new Integer(1), row.getInt(1));
     }
 
 
@@ -322,6 +315,7 @@ public class TestMSProcessor
     {
       Integer seg = segmentLookup.lookup("Not Applicable");
       Integer vec = vectorLookup.lookup("Not Applicable");
+      Integer seg2 = segmentLookup.lookup("Not Specified");
       Integer strn = strainLookup.lookup("Not Specified");
       Integer tis = tissueLookup.lookup("Not Specified");
       Integer gen = genderLookup.lookup("Not Specified");
@@ -365,25 +359,25 @@ public class TestMSProcessor
         // a probe linked to a named source = name1
         sqlMgr.executeUpdate(
             "insert into prb_probe values (-20, 'clone1', null, -20, " +
-            seg + ", " + vec + ", null, null, null, null, null, null, null, " +
+            vec + ", " + seg2 + ", null, null, null, null, null, null, null, " +
             "null, 0, 1200, 1200, getDate(), getDate())"
             );
         // a probe linked to a named source = name2
         sqlMgr.executeUpdate(
             "insert into prb_probe values (-30, 'clone2', null, -30, " +
-            seg + ", " + vec + ", null, null, null, null, null, null, null, " +
+            vec + ", " + seg2 + ", null, null, null, null, null, null, null, " +
             "null, 0, 1200, 1200, getDate(), getDate())"
             );
         // a probe linked to an annoymous source
         sqlMgr.executeUpdate(
             "insert into prb_probe values (-40, 'clone3', null, -40, " +
-            seg + ", " + vec + ", null, null, null, null, null, null, null, " +
+            vec + ", " + seg2 + ", null, null, null, null, null, null, null, " +
             "null, 0, 1200, 1200, getDate(), getDate())"
             );
         // a probe linked to an annoymous source
         sqlMgr.executeUpdate(
             "insert into prb_probe values (-50, 'clone4', null, -50, " +
-            seg + ", " + vec + ", null, null, null, null, null, null, null, " +
+            vec + ", " + seg2 + ", null, null, null, null, null, null, null, " +
             "null, 0, 1200, 1200, getDate(), getDate())"
             );
         // accession linked to a probe without named source
@@ -447,8 +441,6 @@ public class TestMSProcessor
         radar.executeUpdate("delete from QC_MS_AttrEdit where " +
                             "_jobstream_key = " + jobkey);
         radar.executeUpdate("delete from QC_MS_NameConflict where " +
-                            "_jobstream_key = " + jobkey);
-        radar.executeUpdate("delete from QC_MS_NoLibFound where " +
                             "_jobstream_key = " + jobkey);
         sqlMgr.executeUpdate(
             "delete acc_accession where _accession_key = -200"
