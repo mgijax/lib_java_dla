@@ -1,3 +1,11 @@
+TAG: lib_java_dla-1-0-32
+DATE: 09/01/2004
+STAFF: sc
+RELEASE: production
+CHANGES: SequenceLookupbug fix - reset all caches (HashSet) with each invocation of interpretRows.
+         Since the cache not reset, sequences repeated in input were creating new references
+         since the refs key found in the cache.
+
 TAG: lib_java_dla-1-0-31
 DATE: 08/04/2004
 STAFF: mbw
