@@ -1,0 +1,28 @@
+package id4f8cie2hzjaige2jdbweo;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrcAssoc.MSSeqAssoc:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrcAssoc.MSSeqAssoc:oiref>=80,40,280,245,0:oigroup> 
+*/
+class __positions {
+}

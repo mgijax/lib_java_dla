@@ -1,0 +1,85 @@
+package id2qgq4e2hzjaige2j9kvk6;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSLookup:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference32 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference33 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSAttrResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference34 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSCollapsedCache:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference35 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.GBMSAttrResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference36 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.GenericMSAttrResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference37 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.NonGBMSAttrResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference38 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options filter.g.state = on
+option.detail = Implementation 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSAttrResolver:oiref>=760,240,393,101,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSCollapsedCache:oiref>=30,430,401,229,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.NonGBMSAttrResolver:oiref>=760,530,400,101,0:oigroup>
+<oigroup:<oiref:java#Extends#org.jax.mgi.dbs.mgd.loads.SeqSrc.NonGBMSAttrResolver#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSAttrResolver:oiref>=956,530,956,341:oigroup>
+<oigroup:<oiref:java#Extends#org.jax.mgi.dbs.mgd.loads.SeqSrc.GBMSAttrResolver#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSAttrResolver:oiref>=835,390,835,341:oigroup>
+<oigroup:<oiref:java#Extends#org.jax.mgi.dbs.mgd.loads.SeqSrc.GenericMSAttrResolver#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSAttrResolver:oiref>=1101,390,1101,341:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSResolver#attrResolver:oiref>=432,290,760,290:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSLookup:oiref>=810,20,350,117,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.GenericMSAttrResolver:oiref>=1010,390,410,101,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSResolver:oiref>=30,240,402,133,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSProcessor#resolver:oiref>=231,185,231,240:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSProcessor#msLookup:oiref>=707,78,810,78:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSResolver#msCollapsedCache:oiref>=230,373,230,430:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.GBMSAttrResolver:oiref>=520,390,390,101,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSProcessor:oiref>=20,20,687,165,0:oigroup> 
+*/
+class __positions {
+}

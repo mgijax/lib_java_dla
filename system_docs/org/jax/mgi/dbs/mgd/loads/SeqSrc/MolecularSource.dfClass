@@ -1,0 +1,35 @@
+package id1e69ze2hzjaige2jah55r;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference43 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes:oiref>=290,10,151,430,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource:oiref>=10,10,240,974,0:oigroup> 
+*/
+class __positions {
+}

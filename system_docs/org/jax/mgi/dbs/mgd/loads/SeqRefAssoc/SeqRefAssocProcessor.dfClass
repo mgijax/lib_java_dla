@@ -1,0 +1,53 @@
+package idxbjme2hzjaige2jd224u;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.RefAssocAttributeResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.RefAssocRawAttributes:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference81 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocPair:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference82 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference83 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocPair#pubmed:oiref>=290,320,390,320:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocProcessor#resolver:oiref>=390,60,340,60:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocPair#medline:oiref>=290,260,390,260:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocProcessor:oiref>=390,10,260,117,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocPair:oiref>=30,200,260,181,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.RefAssocRawAttributes:oiref>=390,200,188,213,1:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.RefAssocAttributeResolver:oiref>=40,10,300,101,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocProcessor#raw:oiref>=484,127,484,200:oigroup> 
+*/
+class __positions {
+}
