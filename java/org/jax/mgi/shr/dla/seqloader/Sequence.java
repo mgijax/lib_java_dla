@@ -11,7 +11,6 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.dbs.mgd.dao.*;
-import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.MGD;
@@ -566,6 +565,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.3  2004/02/02 20:38:07  sc
+//  removed logger
+//
 //  Revision 1.2  2004/02/02 19:45:16  sc
 //  development since last tag
 //

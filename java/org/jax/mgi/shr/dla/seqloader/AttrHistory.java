@@ -77,7 +77,6 @@ public class AttrHistory
     public AttrHistory(int mgiTypeKey)
     throws ConfigException, DBException
     {
-        this.mgiType = mgiType;
         sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         query = sqlMgr.getBindableStatement(sql);
     }

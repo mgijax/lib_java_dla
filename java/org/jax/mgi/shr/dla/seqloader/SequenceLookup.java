@@ -5,7 +5,6 @@ package org.jax.mgi.shr.dla.seqloader;
 
 import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
-import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.shr.dbutils.MultiRowInterpreter;
 import org.jax.mgi.shr.dbutils.MultiRowIterator;
@@ -14,10 +13,8 @@ import org.jax.mgi.shr.dbutils.RowReference;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
-import org.jax.mgi.shr.dbutils.DBExceptionFactory;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.config.ConfigException;
-import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceDAO;
 import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;

@@ -3,8 +3,6 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-import org.jax.mgi.shr.exception.MGIException;
-
 /**
  * @is an abstract class that expects its subclasses to implement the protected
  *   is method to apply a predicate to a String. Keeps counter of total records
@@ -96,6 +94,9 @@ public abstract class SeqDecider {
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:39  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:19  sc
 //  changes made from code review~
 //

@@ -4,12 +4,10 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
-import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryState;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
-import org.jax.mgi.shr.dla.DLALoggingExceptionFactory;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;

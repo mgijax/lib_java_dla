@@ -3,9 +3,7 @@
 
 package org.jax.mgi.shr.config;
 
-import java.util.Properties;
 import java.io.File;
-import org.jax.mgi.shr.config.ConfigurationManager;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
@@ -158,6 +156,9 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.6  2003/06/04 15:14:12  mbw
+// javadoc edits
+//
 // Revision 1.5  2003/05/22 15:49:07  mbw
 // javadocs edits
 //

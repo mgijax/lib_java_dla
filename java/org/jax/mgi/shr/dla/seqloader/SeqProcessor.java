@@ -5,14 +5,11 @@ package org.jax.mgi.shr.dla.seqloader;
  * Debug stuff
  */
 import org.jax.mgi.shr.timing.Stopwatch;
-import java.util.HashMap;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.dbs.mgd.dao.*;
-import org.jax.mgi.dbs.mgd.MGITypeConstants;
-import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;

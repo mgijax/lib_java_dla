@@ -12,7 +12,6 @@ import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
-import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
 
 /**

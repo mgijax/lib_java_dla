@@ -4,16 +4,12 @@ import java.util.Vector;
 
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceLookup;
-import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceInterpreter;
-import org.jax.mgi.dbs.mgd.dao.SEQ_Source_AssocDAO;
-import org.jax.mgi.dbs.mgd.dao.SEQ_Source_AssocInterpreter;
 import org.jax.mgi.dbs.mgd.lookup.NamedSourceLookup;
 import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.SchemaConstants;
-import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.shr.dbutils.ResultsNavigator;
@@ -22,7 +18,6 @@ import org.jax.mgi.shr.dbutils.RowDataInterpreter;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.CacheException;
-import org.jax.mgi.shr.types.Converter;
 
 /**
  * @is an object for looking up MolecularSource objects from the database

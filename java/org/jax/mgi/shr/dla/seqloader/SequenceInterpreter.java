@@ -4,7 +4,6 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
-import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;

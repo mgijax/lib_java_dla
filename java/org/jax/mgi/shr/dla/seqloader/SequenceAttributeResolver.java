@@ -12,7 +12,6 @@ import org.jax.mgi.dbs.mgd.lookup.SequenceTypeKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.SequenceProviderKeyLookup;
 
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
-import org.jax.mgi.dbs.mgd.lookup.Translator;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
@@ -84,6 +83,9 @@ abstract public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.2  2004/02/17 15:19:02  sc
+//  Changed to Specific Lookups for SequenceType and SeuqenceProvider, new package import for TranslationException
+//
 //  Revision 1.1  2004/01/06 20:09:44  mbw
 //  initial version imported from lib_java_seqloader
 //

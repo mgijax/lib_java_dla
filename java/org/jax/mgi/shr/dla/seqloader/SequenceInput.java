@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import org.jax.mgi.shr.dla.seqloader.SequenceRawAttributes;
 import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 
 /**
@@ -232,6 +231,9 @@ public class SequenceInput {
     }
 }
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:46  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:22  sc
 //  changes made from code review~
 //

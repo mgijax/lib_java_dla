@@ -2,14 +2,12 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 
 import junit.framework.*;
 import org.jax.mgi.shr.dbutils.*;
-import org.jax.mgi.shr.config.*;
 import org.jax.mgi.shr.exception.*;
 import java.util.*;
 
 public class TestMSLookup
     extends TestCase
 {
-    private MSLookup mSLookup = null;
     private SQLDataManager sqlMgr = null;
 
     public TestMSLookup(String name)
@@ -23,13 +21,11 @@ public class TestMSLookup
         sqlMgr = new SQLDataManager();
         runDeletes();
         runInserts();
-        mSLookup = new MSLookup();
     }
 
     protected void tearDown() throws Exception
     {
         runDeletes();
-        mSLookup = null;
         sqlMgr = null;
         super.tearDown();
     }
@@ -38,7 +34,7 @@ public class TestMSLookup
     {
         String accid = "T00613";
         int limit = 5;
-        Vector results = mSLookup.findAssocClonesByAccid(accid, limit);
+        Vector results = MSLookup.findAssocClonesByAccid(accid, limit);
         assertTrue(results.size() == 2);
         MolecularSource ms = (MolecularSource)results.get(0);
         assertEquals(new Integer(-30), ms.getMSKey());
@@ -49,7 +45,7 @@ public class TestMSLookup
     public void testFindBySourceKey() throws Exception
     {
         Integer key = new Integer(-20);
-        MolecularSource actualReturn = mSLookup.findBySourceKey(key);
+        MolecularSource actualReturn = MSLookup.findBySourceKey(key);
         assertEquals(new Integer(-20), actualReturn.getMSKey());
     }
 
@@ -59,7 +55,7 @@ public class TestMSLookup
         int limit = 1;
         try
         {
-            Vector results = mSLookup.findAssocClonesByAccid(accid, limit);
+            Vector results = MSLookup.findAssocClonesByAccid(accid, limit);
             // should not get here
             assertTrue(false);
             return;

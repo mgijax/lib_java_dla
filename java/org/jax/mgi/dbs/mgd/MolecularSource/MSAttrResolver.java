@@ -7,11 +7,7 @@ import org.jax.mgi.dbs.mgd.lookup.GenderKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.CellLineKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.SegmentKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.VectorKeyLookup;
-import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
-import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
-import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.exception.MGIException;
-import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 
 /**
@@ -205,7 +201,7 @@ public class MSAttrResolver {
             ms.setGenderKey(this.genNotApplicableKey);
             ms.setStrainKey(this.strNotApplicableKey);
             ms.setTissueKey(this.tissNotApplicableKey);
-            ms.setAge(this.NOT_APPLICABLE);
+            ms.setAge(NOT_APPLICABLE);
             /**
              * done
              */
@@ -223,7 +219,7 @@ public class MSAttrResolver {
             ms.setGenderKey(this.genNotApplicableKey);
             ms.setStrainKey(this.strNotApplicableKey);
             ms.setTissueKey(this.tissNotApplicableKey);
-            ms.setAge(this.NOT_APPLICABLE);
+            ms.setAge(NOT_APPLICABLE);
             /**
              * done
              */
@@ -338,7 +334,7 @@ public class MSAttrResolver {
 
         }
         // set age
-        ms.setAge(this.NOT_RESOLVED);
+        ms.setAge(NOT_RESOLVED);
         return ms;
     }
 }

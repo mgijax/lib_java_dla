@@ -6,8 +6,6 @@
  */
 package org.jax.mgi.dbs.mgd.MolecularSource;
 
-import java.util.Vector;
-
 import org.jax.mgi.dbs.rdr.dao.QC_MS_AttrEditDAO;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_AttrEditState;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_NameConflictDAO;
@@ -15,8 +13,6 @@ import org.jax.mgi.dbs.rdr.dao.QC_MS_NameConflictState;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_NoLibFoundDAO;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_NoLibFoundState;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
-import org.jax.mgi.shr.dbutils.DBException;
-import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
 
 public class MSQCReporter

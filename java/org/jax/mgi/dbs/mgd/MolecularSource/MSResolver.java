@@ -1,10 +1,6 @@
 package org.jax.mgi.dbs.mgd.MolecularSource;
 
-import java.util.HashMap;
-
 import org.jax.mgi.shr.exception.MGIException;
-import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
-import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.shr.cache.CacheConstants;
 import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;

@@ -5,11 +5,9 @@ import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceKey;
-import org.jax.mgi.dbs.mgd.dao.PRB_SourceLookup;
 import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryDAO;
 import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryState;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
-import org.jax.mgi.shr.dbutils.dao.SQLTranslatable;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
@@ -374,7 +372,7 @@ public class MolecularSource
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 =
-                (MSException)eFactory.getException(this.AttrHistoryErr, e);
+                (MSException)eFactory.getException(AttrHistoryErr, e);
             e2.bind("tissue");
             throw e2;
         }
@@ -416,7 +414,7 @@ public class MolecularSource
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 =
-                (MSException)eFactory.getException(this.AttrHistoryErr, e);
+                (MSException)eFactory.getException(AttrHistoryErr, e);
             e2.bind("age");
             throw e2;
         }
@@ -461,7 +459,7 @@ public class MolecularSource
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 =
-                (MSException)eFactory.getException(this.AttrHistoryErr, e);
+                (MSException)eFactory.getException(AttrHistoryErr, e);
             e2.bind("cellLine");
             throw e2;
         }
@@ -506,7 +504,7 @@ public class MolecularSource
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 =
-                (MSException)eFactory.getException(this.AttrHistoryErr, e);
+                (MSException)eFactory.getException(AttrHistoryErr, e);
             e2.bind("strain");
             throw e2;
         }
@@ -551,7 +549,7 @@ public class MolecularSource
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 =
-                (MSException)eFactory.getException(this.AttrHistoryErr, e);
+                (MSException)eFactory.getException(AttrHistoryErr, e);
             e2.bind("gender");
             throw e2;
         }
@@ -596,7 +594,7 @@ public class MolecularSource
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 =
-                (MSException)eFactory.getException(this.AttrHistoryErr, e);
+                (MSException)eFactory.getException(AttrHistoryErr, e);
             e2.bind("organism");
             throw e2;
         }

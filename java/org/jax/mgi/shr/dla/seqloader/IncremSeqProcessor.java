@@ -7,7 +7,6 @@ package org.jax.mgi.shr.dla.seqloader;
  * Debug stuff
  */
 import org.jax.mgi.shr.timing.Stopwatch;
-import java.util.HashMap;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.cache.CacheException;
@@ -28,7 +27,6 @@ import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import java.util.Vector;
 import java.util.Iterator;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 
 public class IncremSeqProcessor extends SeqProcessor {

@@ -3,14 +3,10 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 import java.util.Vector;
 import java.util.Iterator;
 
-import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
-import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;
-import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.dbs.mgd.lookup.AssocClonesLookup;
-import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
