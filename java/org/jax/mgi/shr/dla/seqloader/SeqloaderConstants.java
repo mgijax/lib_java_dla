@@ -61,8 +61,15 @@ public class SeqloaderConstants {
     // Sequence status constants
     public static final String ACTIVE_STATUS = "ACTIVE";
 
+    // QC_SEQ_SourceConflict attrName values
+    public static final String LIBRARY = "library";
+    public static final String ORGANISM = "organism";
+
 }
 //  $Log$
+//  Revision 1.8  2004/04/13 15:19:30  sc
+//  added ACTIVE_STATUS
+//
 //  Revision 1.7  2004/03/31 18:39:50  sc
 //  added OTHER - translatable value for organism - Other
 //
