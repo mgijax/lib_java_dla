@@ -14,6 +14,7 @@ public class TestMSProcessor
     private MSProcessor msProcessor = null;
     private SQLDataManager sqlMgr = null;
     private SQLDataManager radar = null;
+    private DBSchema dbSchema = null;
     private VocabKeyLookup segmentLookup;
     private VocabKeyLookup vectorLookup;
     private TissueKeyLookup tissueLookup;
@@ -46,6 +47,13 @@ public class TestMSProcessor
             new VocabKeyLookup(VocabularyTypeConstants.GENDER);
         this.cellLineLookup =
             new VocabKeyLookup(VocabularyTypeConstants.CELLLINE);
+        dbSchema = sqlMgr.getDBSchema();
+        try
+        {
+            dbSchema.dropTriggers("PRB_Source");
+        }
+        catch (MGIException e)
+        {} // if they are not there then ignore this error
         doDeletes();
         doInserts();
         msProcessor = new MSProcessor(new Inline_Stream(sqlMgr),
@@ -55,6 +63,8 @@ public class TestMSProcessor
     protected void tearDown() throws Exception
     {
         doDeletes();
+        dbSchema.createTriggers("PRB_Source");
+        dbSchema = null;
         sqlMgr = null;
         radar = null;
         msProcessor = null;
@@ -82,7 +92,7 @@ public class TestMSProcessor
         {
             msProcessor.processExistingSeqSrc("NoAccid",
                                               new Integer(-80) /* not in db */,
-                                              raw);
+                                              null, raw);
         }
         catch (MGIException e)
         {
@@ -108,14 +118,14 @@ public class TestMSProcessor
       raw.setOrganism("mouse, laboratory");
       raw.setCellLine("C30");
       Integer seqKey = new Integer(-200);
-      msProcessor.processExistingSeqSrc(accid, seqKey, raw);
+      msProcessor.processExistingSeqSrc(accid, seqKey, null, raw);
       nav = sqlMgr.executeQuery(sql);
       assertTrue(nav.next()); // assure a record was found
     }
 
     /**
      * test existing sequence with a changed named source which should not get
-     * updated in the database
+     * updated in the database but the association to new source should change
      * @throws Exception
      */
     public void testExistingSeqWithChangedNamedSrc() throws Exception
@@ -128,12 +138,18 @@ public class TestMSProcessor
       String accid = "T00313";
       MSRawAttributes raw = new MSRawAttributes();
       raw.setOrganism("mouse, laboratory");
-      raw.setLibraryName("name1");
+      raw.setLibraryName("name2");
       raw.setCellLine("C30");
       Integer seqKey = new Integer(-300);
-      msProcessor.processExistingSeqSrc(accid, seqKey, raw);
+      msProcessor.processExistingSeqSrc(accid, seqKey, "oldRaw", raw);
       nav = sqlMgr.executeQuery(sql);
       assertTrue(!nav.next()); // assure no records still not found
+      // the association should have changed
+      sql = "select _source_key from seq_source_assoc where " +
+          "_sequence_key = -300";
+      nav = sqlMgr.executeQuery(sql);
+      nav.next();
+      assertEquals(nav.getRowReference().getInt(1), new Integer(-30));
     }
 
     /**
@@ -151,7 +167,7 @@ public class TestMSProcessor
       raw.setOrganism("mouse, laboratory");
       raw.setCellLine("C57MG");
       Integer seqKey = new Integer(-200);
-      msProcessor.processExistingSeqSrc(accid, seqKey, raw);
+      msProcessor.processExistingSeqSrc(accid, seqKey, null, raw);
       ResultsNavigator nav = sqlMgr.executeQuery(sql);
       nav.next();
       RowReference row = nav.getRowReference();
@@ -181,7 +197,7 @@ public class TestMSProcessor
       raw.setOrganism("mouse, laboratory");
       raw.setCellLine("C30");
       Integer seqKey = new Integer(-200);
-      msProcessor.processExistingSeqSrc(accid, seqKey, raw);
+      msProcessor.processExistingSeqSrc(accid, seqKey, null, raw);
       nav = sqlMgr.executeQuery(sql);
       assertTrue(!nav.next()); // assure record was not edited
       sqlMgr.executeUpdate("delete MGI_AttributeHistory where _object_key = -40");

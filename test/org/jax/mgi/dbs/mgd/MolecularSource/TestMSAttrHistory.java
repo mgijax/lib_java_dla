@@ -21,25 +21,9 @@ public class TestMSAttrHistory
     {
         super.setUp();
         sqlMgr = new SQLDataManager();
-        sqlMgr.executeUpdate("delete from mgi_attributeHistory " +
-                             "where _object_key = -20");
         history = new PRB_SourceAttrHistory();
-        BindableStatement stmt = sqlMgr.getBindableStatement(
-            "insert into mgi_attributehistory " +
-            "values (-20, 5, ?, 1111, " +
-            "1111, getDate(), getDate())");
-        stmt.setString(1, "_CellLine_key");
-        stmt.executeUpdate();
-        stmt.setString(1, "_Gender_key");
-        stmt.executeUpdate();
-        stmt.setString(1, "_Organism_key");
-        stmt.executeUpdate();
-        stmt.setString(1, "_Strain_key");
-        stmt.executeUpdate();
-        stmt.setString(1, "_Tissue_key");
-        stmt.executeUpdate();
-        stmt.setString(1, "age");
-        stmt.executeUpdate();
+        doDeletes();
+        doInserts();
     }
 
     protected void tearDown() throws Exception
@@ -85,6 +69,48 @@ public class TestMSAttrHistory
     {
         assertTrue(history.isTissueCurated(sourceKey1));
         assertTrue(!history.isTissueCurated(sourceKey2));
+    }
+
+    private void doInserts() throws DBException
+    {
+        ResultsNavigator nav = sqlMgr.executeQuery(
+            "select _term_key from voc_term where term = 'Curator'");
+        nav.next();
+        RowReference row = nav.getRowReference();
+        int usertype = row.getInt("_term_key").intValue();
+        nav = sqlMgr.executeQuery(
+            "select _term_key from voc_term where term = 'Active'");
+        nav.next();
+        row = nav.getRowReference();
+        int userstatus = row.getInt("_term_key").intValue();
+        sqlMgr.executeUpdate(
+            "insert into MGI_User values (-10, " + usertype + ", " +
+            userstatus + ", 'testLoader', 'testLoader', 1111, 1111, " +
+            "getDate(), getDate())");
+        BindableStatement stmt = sqlMgr.getBindableStatement(
+            "insert into mgi_attributehistory " +
+            "values (-20, 5, ?, -10, " +
+            "-10, getDate(), getDate())");
+        stmt.setString(1, "_CellLine_key");
+        stmt.executeUpdate();
+        stmt.setString(1, "_Gender_key");
+        stmt.executeUpdate();
+        stmt.setString(1, "_Organism_key");
+        stmt.executeUpdate();
+        stmt.setString(1, "_Strain_key");
+        stmt.executeUpdate();
+        stmt.setString(1, "_Tissue_key");
+        stmt.executeUpdate();
+        stmt.setString(1, "age");
+        stmt.executeUpdate();
+
+    }
+
+    private void doDeletes() throws DBException
+    {
+        sqlMgr.executeUpdate("delete from mgi_user where _user_key = -10");
+        sqlMgr.executeUpdate("delete from mgi_attributeHistory " +
+                             "where _object_key = -20");
     }
 
 }

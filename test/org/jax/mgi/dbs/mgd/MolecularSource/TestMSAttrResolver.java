@@ -11,6 +11,7 @@ public class TestMSAttrResolver
 {
     private MSAttrResolver mSAttrResolver = null;
     private SQLDataManager sqlMgr = null;
+    private DBSchema dbSchema = null;
     private VocabKeyLookup segmentLookup;
     private VocabKeyLookup vectorLookup;
     private TissueKeyLookup tissueLookup;
@@ -48,6 +49,13 @@ public class TestMSAttrResolver
     {
         super.setUp();
         sqlMgr = new SQLDataManager();
+        dbSchema = sqlMgr.getDBSchema();
+        try
+        {
+            dbSchema.dropTriggers("VOC_Term");
+        }
+        catch (MGIException e)
+        {} // if they are not there then ignore this error
         runDeletes();
         runInserts();
         mSAttrResolver = new GBMSAttrResolver();
@@ -91,6 +99,7 @@ public class TestMSAttrResolver
     protected void tearDown() throws Exception
     {
         runDeletes();
+        dbSchema.createTriggers("VOC_Term");
         mSAttrResolver = null;
         sqlMgr = null;
         super.tearDown();
@@ -205,6 +214,25 @@ public class TestMSAttrResolver
         assertNull(ms.getName());
         assertEquals(this.tissNotApplicableKey, ms.getTissueKey());
     }
+
+    public void testUnresolvedrOrganism() throws Exception
+    {
+        MSRawAttributes rawAttr = new MSRawAttributes();
+        rawAttr.setOrganism("wookiee");
+        try
+        {
+            MolecularSource ms =
+                mSAttrResolver.resolveAttributes(rawAttr);
+        }
+        catch (Exception e)
+        {
+            assertTrue(e instanceof UnresolvedOrganismException);
+            return;
+        }
+        // should not get here
+        assertTrue(false);
+    }
+
 
     public void testHumanOrRat() throws Exception
     {
