@@ -176,7 +176,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
    * @param message the message to log
    */
   public void logInfo(String message) {
-    logdInfo(message, false);
+    logdInfo(message, true);
   }
 
   /**
@@ -650,6 +650,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.7  2003/10/28 21:07:41  mbw
+// added new method to control whether to include timestamping on debug messages
+//
 // Revision 1.5  2003/06/04 18:28:57  mbw
 // javadoc edits
 //
