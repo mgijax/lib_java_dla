@@ -4,7 +4,7 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 /**
-* @is An object that contains constant definitions for sequence loaders.
+* An object that contains constant definitions for sequence loaders.
 * @has
 *   <UL>
 *   <LI> Constant definitions for:
@@ -60,6 +60,8 @@ public class SeqloaderConstants {
     public static final int SPLIT = 7;
     public static final int DUMMY = 8;
 
+    // GenBank Third Party Annotation (TPA) KEYWORD String
+    public static final String TPA = "Third Party Annotation";
     // Sequence quality VOC_Vocab term
     public static final String HIGH_QUAL = "High";
     public static final String MED_QUAL = "Medium";
@@ -74,6 +76,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.11  2004/06/30 17:25:36  sc
+//  merging sc2 branch to trunk
+//
 //  Revision 1.10.4.1  2004/05/18 15:32:47  sc
 //  updated class/method headers
 //

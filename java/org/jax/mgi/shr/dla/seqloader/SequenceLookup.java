@@ -28,7 +28,7 @@ import java.util.*;
 import java.sql.Timestamp;
 
 /**
- * @is an object for looking up Sequence objects from the database.
+ * an object for looking up Sequence objects from the database.
  * @has
  *   <UL>
  *   <LI> a query and an interpretor to build a Sequence object

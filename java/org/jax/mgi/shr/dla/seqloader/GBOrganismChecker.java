@@ -16,7 +16,7 @@ import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.shr.timing.Stopwatch;
 
 /**
- * @is An object that, given a GenBank format sequence record determines if it
+ * An object that, given a GenBank format sequence record determines if it
  *     is an organism we are interested in. It uses deciders that represent
  *     a configurable set of organisms.  e.g. Given three deciders, mouse, human,
  *     and rat, determines if the sequence record is a mouse, or a human, or rat.
@@ -383,6 +383,9 @@ public class GBOrganismChecker implements OrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.5  2004/06/30 19:28:46  mbw
+//  javadocs only
+//
 //  Revision 1.4  2004/06/30 17:25:35  sc
 //  merging sc2 branch to trunk
 //

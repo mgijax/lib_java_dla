@@ -10,7 +10,7 @@ import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
 
     /**
-     * @is An abstract Sequence Interpreter class that gets the configurable
+     * An abstract Sequence Interpreter class that gets the configurable
      *     attributes needed by all Sequence Interpretors
      * @has
      *   <UL>

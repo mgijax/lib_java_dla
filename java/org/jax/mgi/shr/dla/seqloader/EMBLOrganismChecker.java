@@ -19,7 +19,7 @@ import org.jax.mgi.shr.dla.DLAExceptionHandler;
 import org.jax.mgi.shr.dla.DLALoggingException;
 
 /**
- * @is An object that determines if a EMBL sequence record is an organism represented
+ * An object that determines if a EMBL sequence record is an organism represented
  *      by a configurable set of organisms represented by deciders. e.g.
  *     Given a set of deciders, mouse, human, and rat, returns true if the sequence
  *      record is for an organism in that set.<BR>

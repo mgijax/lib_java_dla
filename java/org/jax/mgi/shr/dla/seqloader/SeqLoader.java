@@ -21,7 +21,7 @@ import java.util.Vector;
 import java.util.Iterator;
 
 /**
- * @is a base class which extend DLALoader and implements the DLALoader methods
+ * a base class which extend DLALoader and implements the DLALoader methods
  * 'initialize' and 'run' to accomplish load initialization and processing.
  * It expects its subclasses to implement the DLALoader method
  * 'preprocess'. In addition it defines the abstract method
@@ -231,6 +231,7 @@ public abstract class SeqLoader extends DLALoader {
            try {
                si = (SequenceInput)
                    iterator.next();
+               logger.logdDebug(si.getPrimaryAcc().getAccID());
            }
            catch (RecordFormatException e) {
                logger.logdErr(e.getMessage());

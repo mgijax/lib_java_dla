@@ -13,7 +13,7 @@ import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is An object that manages inserts to the seqloader QC reports tables
+ * An object that manages inserts to the seqloader QC reports tables
  * @has
  *   <UL>
  *   <LI> a report* method for each Sequence QC report table

@@ -8,7 +8,7 @@ import java.util.*;
 
 public class DateConverter {
     /**
-     * @is An object that provides a static method to convert GenBank and EMBL
+     * An object that provides a static method to convert GenBank and EMBL
      * sequence record dates to a Java Timestamp.
      * @has
      *   <UL>
@@ -68,6 +68,9 @@ public class DateConverter {
     }
 }
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:35  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.1  2003/12/08 18:40:37  sc
 //  initial commit
 //

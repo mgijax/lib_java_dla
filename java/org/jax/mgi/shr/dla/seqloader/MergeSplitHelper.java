@@ -19,7 +19,7 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 
 /**
- * @is A helper class for the MergeSplitProcessor that:
+ * A helper class for the MergeSplitProcessor that:
  * <UL>
  * <LI> determines which seqids in a given seqid set are in MGI as primary seqids.
  * <LI> remaps each secondary seqid to its set of primary seqids from a map of

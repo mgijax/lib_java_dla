@@ -11,7 +11,7 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 
 /**
- * @is An object that resolves PubMed and MedLine RefAssocRawAttributes
+ * An object that resolves PubMed and MedLine RefAssocRawAttributes
  *     to a MGI_Reference_AssocState
  * @has
  *   <UL>

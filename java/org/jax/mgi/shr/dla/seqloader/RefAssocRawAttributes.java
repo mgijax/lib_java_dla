@@ -4,7 +4,7 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 /**
- * @is An object that represents raw values for MGI_Reference_Assoc
+ * an object that represents raw values for MGI_Reference_Assoc
  * @has
  *   <UL>
  *   <LI>MGI_Reference_Assoc column attributes
@@ -117,6 +117,9 @@ public class RefAssocRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.3  2004/06/30 19:35:42  mbw
+//  javadocs only
+//
 //  Revision 1.2  2004/06/30 17:25:35  sc
 //  merging sc2 branch to trunk
 //

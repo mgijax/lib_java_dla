@@ -32,7 +32,7 @@ import java.io.IOException;
 import org.jax.mgi.shr.timing.Stopwatch;
 
 /**
- * @is an object that incrementally processes sequence by resolving a sequence, its
+ * an object that incrementally processes sequence by resolving a sequence, its
  * accession ids, references, and molecular sources raw attributes
  *     then adding or updating them in a database.
  * @has
@@ -435,8 +435,6 @@ public class IncremSeqProcessor extends SeqProcessor {
               for (Iterator i = oldReferences.iterator(); i.hasNext();) {
                   refState = (MGI_Reference_AssocState)i.next();
                   refsKey = refState.getRefsKey();
-                  logger.logcInfo("Old _refs_key: " +
-                      refsKey + " for seqid: " + primarySeqid, false);
                   qcReporter.reportOldReferences(existingSeqKey, refsKey);
                   }
           }
@@ -459,9 +457,6 @@ public class IncremSeqProcessor extends SeqProcessor {
     *         translation, or lookup errors. These errors cause load to fail
     * @throws RepeatSequenceException errors writing to repeat sequence file -
     *         meant to be caught in order to skip current sequence
-    * @throws ChangedLibrary if raw library for existing sequence is different
-    *         than for current sequence being processed. Meant to be caught
-    *         in order to skip current sequence
     * @throws ChangedOrganismException if raw organism for existing sequence is
     *         different than for current sequence being processed. Meant to be
     *         caught in order to skip current sequence
@@ -474,8 +469,7 @@ public class IncremSeqProcessor extends SeqProcessor {
     private void processDummyEvent(SequenceInput seqInput,
                                    Sequence existingSequence)
         throws SeqloaderException, RepeatSequenceException,
-           ChangedLibraryException, ChangedOrganismException,
-           MSException, SequenceResolverException {
+           ChangedOrganismException, MSException, SequenceResolverException {
 
         // send dummy sequence to stream to be deleted
         try {

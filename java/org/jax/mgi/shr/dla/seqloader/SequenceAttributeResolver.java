@@ -16,7 +16,7 @@ import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
 
  /**
- * @is An object that resolves a SequenceRawAttributes to a SEQ_SequenceState
+ * An object that resolves a SequenceRawAttributes to a SEQ_SequenceState
  * @has
  *   <UL>
  *   <LI> Sequence Type Lookup (uses a translator)
@@ -189,6 +189,9 @@ public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.9  2004/06/30 19:35:01  mbw
+//  javadocs only
+//
 //  Revision 1.8  2004/06/30 17:25:36  sc
 //  merging sc2 branch to trunk
 //

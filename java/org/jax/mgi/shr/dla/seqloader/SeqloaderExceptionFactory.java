@@ -5,7 +5,7 @@ package org.jax.mgi.shr.dla.seqloader;
 import org.jax.mgi.shr.exception.ExceptionFactory;
 
 /**
- * @is An ExceptionFactory for SeqloaderExceptions
+ * An ExceptionFactory for SeqloaderExceptions
  * @has a hashmap of predefined SeqloaderExceptions stored by a name key
  * @does looks up SeqloaderExceptions by name
  * @company The Jackson Laboratory

@@ -8,7 +8,7 @@ import java.util.Vector;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 
 /**
- * @is An object that represents data from a DataProvider sequence record
+ * An object that represents data from a DataProvider sequence record
  *     and/or Configuration in its raw form. (SequenceRawAttributes,
  *     AccessionRawAttributes (for primary and 2ndary ids),
  *     RefAssocRawAttributes (for PubMed and Medline reference associations), and
@@ -211,6 +211,9 @@ public class SequenceInput {
     }
 }
 //  $Log$
+//  Revision 1.5  2004/06/30 19:35:21  mbw
+//  javadocs only
+//
 //  Revision 1.4  2004/06/30 17:25:36  sc
 //  merging sc2 branch to trunk
 //

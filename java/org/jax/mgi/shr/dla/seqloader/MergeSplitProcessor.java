@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.HashMap;
 
 /**
- * @is an object that determines sequences that have been merged or split and
+ * an object that determines sequences that have been merged or split and
  *     reassociates merged or split sequences with their proper MGI sequence object
  * @has
  *   <UL>
@@ -132,7 +132,7 @@ public class MergeSplitProcessor {
                }
                else if (currentV.size() > 1) {
                    // write out call to split stored procedure
-                   logger.logcInfo("Writing SEQ_split call(s):", false);
+                   logger.logdDebug("Writing SEQ_split call(s):", false);
                    for (Iterator i = currentV.iterator(); i.hasNext();) {
                        String toSeqid = (String)i.next();
                        String cmd = splitProc +
@@ -142,7 +142,7 @@ public class MergeSplitProcessor {
                            SeqloaderConstants.COMMA +
                            SeqloaderConstants.SGL_QUOTE + toSeqid +
                            SeqloaderConstants.SGL_QUOTE;
-                       logger.logcInfo(cmd, false);
+                       logger.logdDebug(cmd, false);
                        writer.write(cmd);
                        writer.go();
                        splitCtr++;
@@ -150,7 +150,7 @@ public class MergeSplitProcessor {
                }
                else {
                    // write out call to merge stored procedure
-                   logger.logcInfo("Writing SEQ_merge call:", false);
+                   logger.logdDebug("Writing SEQ_merge call:", false);
                    String toSeqid = (String)currentV.get(0);
                    String cmd = mergeProc +
                        SeqloaderConstants.SPC +
@@ -160,7 +160,7 @@ public class MergeSplitProcessor {
                        SeqloaderConstants.SGL_QUOTE + toSeqid +
                        SeqloaderConstants.SGL_QUOTE;
 
-                   logger.logcInfo(cmd, false);
+                   logger.logdDebug(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
                    writer.write(cmd);
                    writer.go();

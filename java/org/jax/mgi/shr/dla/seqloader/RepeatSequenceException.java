@@ -5,7 +5,7 @@ package org.jax.mgi.shr.dla.seqloader;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is An MGIException which indicates a repeated sequence was found in the input
+ * An MGIException which indicates a repeated sequence was found in the input
  * sequences
  * @has nothing
  * @does nothing

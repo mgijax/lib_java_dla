@@ -11,7 +11,7 @@ import org.jax.mgi.dbs.mgd.dao.ACC_AccessionState;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
 /**
- * @is An object that resolves a AccessionRawAttribute object to a
+ * An object that resolves a AccessionRawAttribute object to a
  *     ACC_AccessionState
  * @has
  *   <UL>

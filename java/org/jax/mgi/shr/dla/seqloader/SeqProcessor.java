@@ -30,7 +30,7 @@ import java.util.Vector;
 import java.util.Iterator;
 
 /**
- * @is an object that resolves raw sequence attributes and adds a sequence, its
+ * an object that resolves raw sequence attributes and adds a sequence, its
  * accession ids, references, and molecular sources to a database.
  * Deletes all sequences created by a given load.
  * @has

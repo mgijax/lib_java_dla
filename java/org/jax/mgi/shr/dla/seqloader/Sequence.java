@@ -17,7 +17,7 @@ import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.MGD;
 
     /**
-     * @is An object that manages a set of DAOs representing a sequence.
+     * An object that manages a set of DAOs representing a sequence.
      * @has
      *   <UL>
      *   <LI>SEQ_SequenceDAO
@@ -577,6 +577,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.8  2004/06/30 19:34:41  mbw
+//  javadocs only
+//
 //  Revision 1.7  2004/06/30 17:25:36  sc
 //  merging sc2 branch to trunk
 //

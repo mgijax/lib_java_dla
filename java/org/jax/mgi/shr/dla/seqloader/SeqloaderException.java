@@ -5,7 +5,7 @@ package org.jax.mgi.shr.dla.seqloader;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is An MGIException which represents exceptions occuring while processing
+ * An MGIException which represents exceptions occuring while processing
  * sequences
  * @has nothing
  * @does nothing

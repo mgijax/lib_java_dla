@@ -6,7 +6,7 @@ package org.jax.mgi.shr.dla.seqloader;
 import java.util.*;
 
 /**
-   * @is abstract class that provides the loadExpressions method signature
+   * abstract class that provides the loadExpressions method signature
    * to load a map of controlled vocab keys to String expressions.
    * Provides a method to determine if a mapped expression matches a given String
    * @has a Mapping of controlled vocab to String expressions

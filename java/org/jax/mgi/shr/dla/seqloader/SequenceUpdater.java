@@ -18,7 +18,7 @@ import org.jax.mgi.dbs.mgd.hist.Seq_SequenceAttrHistory;
 import java.sql.Timestamp;
 
 /**
- * @is An object that updates a SEQ_SequenceState representing an existing sequence
+ * An object that updates a SEQ_SequenceState representing an existing sequence
  *     and an MGI_AttributeHistoryState object representing the sequence type
  *     attribute history in preparation for a database update based on input
  *     sequence values

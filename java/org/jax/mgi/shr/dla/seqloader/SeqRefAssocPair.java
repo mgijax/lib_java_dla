@@ -5,7 +5,7 @@ package org.jax.mgi.shr.dla.seqloader;
 
 
 /**
- * @is An object that holds two RefAsocRawAttributes for the same reference. One
+ * An object that holds two RefAsocRawAttributes for the same reference. One
  *     Medline and one Pubmed.
  * @has
  *   <UL>
@@ -107,6 +107,9 @@ public class SeqRefAssocPair{
      }
 }
  //  $Log$
+ //  Revision 1.4  2004/06/30 19:33:58  mbw
+ //  javadocs only
+ //
  //  Revision 1.3  2004/06/30 17:25:36  sc
  //  merging sc2 branch to trunk
  //

@@ -4,7 +4,7 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 /**
- * @is an abstract class that expects its subclasses to implement the protected
+ * an abstract class that expects its subclasses to implement the protected
  *   is method to apply a predicate to a String. Keeps counter of total records
  *   for which the predicate is true.
  * @has
@@ -95,6 +95,9 @@ public abstract class SeqDecider {
 }
 
 //  $Log$
+//  Revision 1.4  2004/06/30 19:32:43  mbw
+//  javadocs only
+//
 //  Revision 1.3  2004/06/30 17:25:35  sc
 //  merging sc2 branch to trunk
 //

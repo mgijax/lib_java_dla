@@ -10,7 +10,7 @@ import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.types.Converter;
 
 /**
- * @is An object that represents a record in the SEQ_Sequence table. Overrides
+ * An object that represents a record in the SEQ_Sequence table. Overrides
  *     the superclass getDeleteSQL() method
  * @has
  *   <UL>

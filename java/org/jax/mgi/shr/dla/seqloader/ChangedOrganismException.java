@@ -6,7 +6,7 @@ package org.jax.mgi.shr.dla.seqloader;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is An MGIException thrown when a sequences raw organism in the database
+ * An MGIException thrown when a sequences raw organism in the database
  *     does not match the incoming raw organism
  * @has an exception message, a data related indicator and a parent
  * exception which can be null.

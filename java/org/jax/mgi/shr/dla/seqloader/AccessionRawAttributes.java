@@ -7,7 +7,7 @@ import java.util.Vector;
 import org.jax.mgi.dbs.mgd.AccessionLib;
 
     /**
-     * @is An object that represents raw values for ACC_Accession
+     * An object that represents raw values for ACC_Accession
      * @has
      *   <UL>
      *   <LI>ACC_Accession column attributes
@@ -193,6 +193,9 @@ public class AccessionRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.3  2004/06/30 19:25:06  mbw
+//  javadocs only
+//
 //  Revision 1.2  2004/06/30 17:25:34  sc
 //  merging sc2 branch to trunk
 //
