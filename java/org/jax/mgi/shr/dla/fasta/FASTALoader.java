@@ -77,11 +77,22 @@ public abstract class FASTALoader extends DLALoader
   }
 
   /**
-   * performs post processing such as closing SQLStreams
+   * performs pre processing which is an empty method and is intended to be
+   * overridden by the subclass
+   * @throws MGIException thrown if an MGIException is thrown during pre
+   * processing
+   */
+  protected void preprocess() throws MGIException
+  {
+  }
+
+
+  /**
+   * closes the SQLStreams
    * @throws MGIException thrown if an MGIException is thrown during post
    * processing
    */
-  protected void post() throws MGIException
+  protected void postprocess() throws MGIException
   {
       logger.logdInfo("FASTALoader beginning post process", true);
       this.loadStream.close();
