@@ -53,7 +53,7 @@ public class Sequence {
     private SQLStream stream;
 
     // the logger
-    DLALogger logger;
+    //DLALogger logger;
 
     // the primary seqid
     private ACC_AccessionDAO primaryAcc;
@@ -123,7 +123,7 @@ public class Sequence {
         throws ConfigException, DBException {
         this.stream = stream;
         sequenceDAO = new SEQ_SequenceSeqloaderDAO(seqState);
-        logger = DLALogger.getInstance();
+        //logger = DLALogger.getInstance();
     }
 
    /**
@@ -566,6 +566,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.2  2004/02/02 19:45:16  sc
+//  development since last tag
+//
 //  Revision 1.1  2004/01/06 20:09:44  mbw
 //  initial version imported from lib_java_seqloader
 //
