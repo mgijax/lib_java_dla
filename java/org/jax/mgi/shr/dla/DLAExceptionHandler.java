@@ -26,7 +26,7 @@ public class DLAExceptionHandler {
     catch (DLALoggingException e) {
       System.err.print("Cannot obtain a Logger for the following reason. " +
                        "This is really bad news. " +
-                       "Exiting program unequivocally\n" + e.toString());
+                       "Exiting program unequivocally.\n" + e.toString());
       System.exit(DLASystemExit.FATAL_ERROR);
     }
   }
@@ -83,6 +83,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.7  2004/03/29 20:17:46  mbw
+// fixed message printed when logger can not be instantiated
+//
 // Revision 1.6  2003/10/28 20:56:33  mbw
 // fixed imports
 //
