@@ -3,7 +3,7 @@ package org.jax.mgi.shr.dla;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * <p>IS: An MGIException which represents exceptions withing the a DLA
+ * <p>IS: An MGIException which represents errors occuring within a DLA
  * application.</p>
  * <p>HAS: an exception message, a data related indicator and a parent
  * exception which can be null.</p>
