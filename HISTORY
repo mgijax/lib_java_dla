@@ -8,6 +8,7 @@ CHANGES:
 4) ProcessSequenceInput interface - added this interface for sequence loaders.
    provide method definitions for  processing sequence Inputs, deleting 
    sequences, and getting information about processed sequences
+5) SeqloaderExceptionFactory, SeqProcessor - added new exception
 
 DATE: 03/24/2004
 STAFF: sc

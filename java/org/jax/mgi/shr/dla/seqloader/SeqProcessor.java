@@ -141,11 +141,10 @@ public class SeqProcessor implements ProcessSequenceInput  {
       catch (MGIException e) {
         SeqloaderException e1 =
             (SeqloaderException) eFactory.getException(
-         SeqloaderExceptionFactory.CreateSequenceErr, e);
+         SeqloaderExceptionFactory.ProcessDeletesErr, e);
         throw e1;
       }
     }
-
 
    /**
    * Adds a sequence to the database

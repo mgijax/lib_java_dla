@@ -159,5 +159,17 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
         "Error processing dummy event for ??",
         false));
   }
+
+  /**
+   * Error deleting sequences
+   */
+  public static final String ProcessDeletesErr =
+      "org.jax.mgi.shr.dla.seqloader.ProcessDeletesErr";
+  static {
+    exceptionsMap.put(ProcessDeletesErr, new SeqloaderException(
+        "Error deleting sequences for the load",
+        false));
+  }
+
 }
 // $Log
