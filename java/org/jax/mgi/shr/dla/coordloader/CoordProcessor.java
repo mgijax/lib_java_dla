@@ -76,9 +76,10 @@ public class CoordProcessor {
     }
 
     /**
-     * deletes all Coordinates loaded by a given loader from a database
+     * deletes the coordinate collection and all coordinates and features for that
+     * collection
      * @assumes Nothing
-     * @effects deletes coordinates from a database
+     * @effects deletes records from a database
      * @throws CoordLoaderException if error getting SQLDataManager or executing
      *         a delete.
      */
