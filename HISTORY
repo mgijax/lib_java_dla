@@ -1,5 +1,25 @@
 DATE: 07/23/2004
 STAFF: sc
+CHANGES: SequenceAttributeResolver.java - truncate rawOrganism to 255.
+CHANGES:TR5395
+1) Added org.jax.mgi.dbs.mgd.MolecularSource.GenericMSAttrResolver
+2) Added org.jax.mgi.shr.dla.assemblyloader.AssemblyFormatInterpreter.java and
+   AssemblySeqloader.java
+3) MSCollapsedCache.java - Added age to the PRB_Source query. Age needs to be 
+   part of the cache (lookup) key
+4) MSRawAttributes.java - Added age attribute and getAge and setAge methods
+5) MSResolver.java - Added checking for ncbi and ensembl to the if-then-else
+   which checks logicalDB to determine which MSAttrResolver to create.
+6) MolecularSource.java - Added age to the toStringMethod. Added checking for 
+   `Not Specified' in setAge when determining how to set ageMin and ageMax.
+7) SequenceLoadCfg.java - Added getInterpreterClass method.
+8) SeqLoader.java - Changed RecordDataIterator to interface DataIterator. run()
+   run() method catch block now tests MSException to see if it is an instance 
+   of UnresolvedAttributeException - new exception for assembly load as all 
+   source attributes must resolve; other seqloads simply skip the sequence 
+   and report. 
+DATE: 07/23/2004
+STAFF: sc
 CHANGES:
 1) added changes needed because of changes to lib_java_core
    addressed in TR5965. Classes copied from trunk:
