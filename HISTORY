@@ -1,4 +1,4 @@
-lib_java_dla-1-0-
+lib_java_dla-1-0-36
 DATE: 10/22/2004
 STAFF: sc
 RELEASE: dev
@@ -10,12 +10,11 @@ CHANGES:TR5395 General javadoc cleanup and the following:
 4) CoordLoadCfg - removed getSeqRetrievalParam(); removed from schema
 5) CoordMapInterpreter - renamed to CoordinateInterpreter 
             - removed call to CoordLoadCfg.getSeqRetrievalParam()
-6)CoordMapFeatureRawAttributes - removed following get/set methods:
+6) CoordMapFeatureRawAttributes - removed following get/set methods:
    LogicalDB, Map, MGIType
 7) MGSCoordMapFormatInterpreter - renamed to MGSCoordinateFormatInterpreter
     - removed setting of sequence retrieval param
     - removed call to setLogicalDB, setMGIType in CoordMapFeatureRawAttributes
-8) 
 
 TAG: lib_java_dla-1-0-35
 DATE: 10/21/2004
