@@ -3,7 +3,7 @@ package org.jax.mgi.shr.dla;
 import org.jax.mgi.shr.config.DatabaseCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.config.DLALoaderCfg;
-import org.jax.mgi.shr.dbutils.BCPManager;
+import org.jax.mgi.shr.dbutils.bcp.BCPManager;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
