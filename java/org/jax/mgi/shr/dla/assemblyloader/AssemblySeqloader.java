@@ -55,10 +55,7 @@ public class AssemblySeqloader extends SeqLoader {
 
         // Create a DataInput File
         InputDataFile inData = new InputDataFile();
-
-        // get an iterator for the InputDataFile with a AssemblyFormatInterpreter
-        //super.iterator = inData.getIterator(new AssemblyFormatInterpreter());
-
+        // get an iterator over the input file
         super.iterator = inData.getIterator((RecordDataInterpreter)loadCfg.getInterpreterClass());
 
     }
