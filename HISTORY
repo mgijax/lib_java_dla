@@ -1,3 +1,13 @@
+
+TAG: lib_java_dla-tr5421-2
+DATE: 03/29/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+1) Added SeqIdInterpreter to interpret one seqid (no version) per line
+2) SeqDeleter - added some debug logging and logging all sequences
+   looked at, deleted, and not deleted because already deleted or split
+
 TAG: lib_java_dla-tr5421-1
 DATE: 03/02/2005
 STAFF: sc
