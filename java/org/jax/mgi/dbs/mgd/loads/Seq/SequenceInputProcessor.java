@@ -61,7 +61,6 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
    */
     protected Stopwatch stopWatch;
     public double runningLookupTime;
-    public int sequenceCtr;
     public double highLookupTime;
     public double lowLookupTime;
 
@@ -133,7 +132,6 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
       runningMSPTime = 0.0;
       highMSPTime = 0.0;
       lowMSPTime = 999.0;
-      sequenceCtr = 0;
 
       mgdStream = mgdSqlStream;
       seqResolver = sar;
@@ -187,7 +185,6 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
    *        and add to the database
    * @throws SeqloaderException if there are configuration, cacheing, database,
    *         translation, io, or lookup errors. These errors cause load to fail
-   * @throws RepeatSequenceException  provided for subclass
    * @throws ChangedOrganismException provided for subclass
    * @throws SequenceResolverException if errors resolving a sequence
    * @throws MSException if errors resolving a sequences source
@@ -366,7 +363,7 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
    * @return Vector containing single string with count of Sequences added
    */
    public Vector getProcessedReport() {
-       Vector report = new Vector(1);
+       Vector report = new Vector();
        report.add("Total sequences added: " + addCtr);
        return report;
    }
