@@ -4,6 +4,9 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.cache.CacheConstants;
 import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;
+import org.jax.mgi.shr.config.SequenceLoadCfg;
+import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
+import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 
 /**
  * @is an object for resolving MolecularSource raw attributes into
@@ -169,7 +172,15 @@ public class MSResolver {
         {
             msCollapsedCache = new MSCollapsedCache(logger,
                 CacheConstants.FULL_CACHE);
-            attrResolver = new MSAttrResolver();
+            // instantiate the correct MSAttrResolver based on logicalDB
+            SequenceLoadCfg cfg = new SequenceLoadCfg();
+            LogicalDBLookup lookup = new LogicalDBLookup();
+            int logicalDB = lookup.lookup(cfg.getLogicalDB()).intValue();
+            if (logicalDB == LogicalDBConstants.REFSEQ ||
+                logicalDB == LogicalDBConstants.SEQUENCE)
+                attrResolver = new GBMSAttrResolver();
+            else
+                attrResolver = new NonGBMSAttrResolver();
         }
         catch (MGIException e)
         {
