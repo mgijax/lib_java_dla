@@ -202,8 +202,7 @@ public class MSProcessor
                                       MSRawAttributes attr)
     throws MSException
     {
-        MSAttrResolver attrResolver = new MSAttrResolver();
-        MolecularSource incomingSrc = attrResolver.resolveAttributes(attr);
+        MolecularSource incomingSrc = this.resolver.resolveAttrsOnly(attr);
         /**
          * first find the existing source for this sequence that
          * has an organism that matches the organism from the incoming
