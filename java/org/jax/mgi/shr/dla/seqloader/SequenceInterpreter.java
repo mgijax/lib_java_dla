@@ -79,8 +79,8 @@ public abstract class SequenceInterpreter implements RecordDataInterpreter {
         // get Reference association type for sequence references
         refAssocType = new Integer(MGIRefAssocTypeConstants.PROVIDER);
 
-        // default value for all loaded sequences
-        seqStatus = "ACTIVE";
+        // status value for all loaded sequences
+        seqStatus = SeqloaderConstants.ACTIVE_STATUS;
     }
 }
 
