@@ -149,11 +149,10 @@ public class MSProcessor
         {
             // look for a source from the associated clones that is named
             // and use that one instead
-            //logger.logDebug("looking up named associated clones");
-            //ms = findByCachedAssociatedClones(accid);
+            logger.logDebug("looking up named associated clones");
+            ms = findByCachedAssociatedClones(accid);
 
         }
-        /*
         if (logger.isDebug())
         {
             if (ms != null)
@@ -165,7 +164,6 @@ public class MSProcessor
                 logger.logDebug("no named source from assoiciated clones found");
             }
         }
-*/
         /**
          * if no molecular source was found then just resolve the raw
          * attributes to a new source or an existing source (using the
