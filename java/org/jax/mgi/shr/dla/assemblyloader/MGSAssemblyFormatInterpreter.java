@@ -150,16 +150,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         sequenceInput.reset();
         rawSeq.reset();
         rawAcc.reset();
-        /*
-        // process header line if we haven't already
-        if (headerProcessed == false) {
-          // get the header information - this method creates the
-          // MSRawAttributes object and the RefAssocRawAttributes object for
-          // all sequences
-           parseHeader(header);
-           headerProcessed = true;
-        }
-        */
+
         // get seqid, start/end BP,  and description from the record
         parseRecord(rcd);
 
@@ -205,63 +196,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         rawRefAssoc.setMgiType(seqMGIType);
         rawRefAssoc.setRefAssocType(refAssocType);
     }
- /*
-   private void parseHeader(String header) throws RecordFormatException {
-     ArrayList splitHeader = StringLib.split(header, SeqloaderConstants.TAB);
-           if (splitHeader.size() != 6) {
-               RecordFormatException e = new RecordFormatException();
-               e.bindRecord("The header record is not formatted correctly, " +
-                      "6 tab delimited elements expected.\n" + header);
-               throw e;
-           }
-           // we need this in the config file for Seqloader and MSP
-           //logicalDBName = (String) splitHeader.get(0);
-           version = ((String) splitHeader.get(1)).trim();
-           jNum = ((String) splitHeader.get(2)).trim();
-           //loadName = (String) splitHeader.get(4);
-           String source = ((String) splitHeader.get(5)).trim();
 
-           // parse the source and create the MSRawAttributes object
-           ArrayList splitSource = StringLib.split(source,
-               SeqloaderConstants.SEMI_COLON);
-           if (splitSource.size() != 6) {
-               RecordFormatException e = new RecordFormatException();
-               e.bindRecord("The header source is not formatted correctly, " +
-                            "6 semi-colon delimited elements expected.\n" + source);
-               throw e;
-           }
-           //MSProcessor resolves based on logicalDB 'Sequence DB' and 'Refseq'
-           // use GBMSAttributeResolver. The rest use NonGBMSAttributeResolver
-
-           // must be resolved.
-           rawMS.setOrganism( ((String)splitSource.get(0)).trim() );
-
-           // GBMSAttributeResolver may use organism for strain other values
-           // 'Not Resolved or Not Specified'.
-           // NonGBMSAttribute resolver assumes 'Not Applicable'
-           rawMS.setStrain( ((String)splitSource.get(1)).trim() );
-           // GBMSAttributeResolver resolves else Not Resolved or Not Specified
-          // NonGBMSAttribute resolver assumes 'Not applicable'
-           rawMS.setTissue( ((String)splitSource.get(2)).trim() );
-
-           rawMS.setAge( ((String)splitSource.get(3)).trim() );
-           //System.out.println("AssemblyFormatInterpreter raw age: " + rawMS.getAge());
-
-           // GBMSAttributeREsolver either resolves or 'Not Specified' or
-           // 'Not Resolved'. NonGBMSAttributeResolver assumes "Not Applicable'
-           rawMS.setGender( ((String)splitSource.get(4)).trim() );
-           rawMS.setCellLine( ((String)splitSource.get(5)).trim() );
-
-           // library is null, don't need to set anything
-
-           // create the RefAssocRawAttributes object
-           // set the jnumber in the RefAssocRawAttributes object
-           rawRefAssoc.setRefId(jNum);
-           rawRefAssoc.setMgiType(seqMGIType);
-           rawRefAssoc.setRefAssocType(refAssocType);
-
-   }
-      */
    private void  parseRecord(String rcd) throws RecordFormatException {
        // get the seqid and description from the non-header record
        ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
