@@ -1,7 +1,6 @@
 package org.jax.mgi.shr.dla;
 
 import org.jax.mgi.shr.log.Logger;
-import org.jax.mgi.shr.log.LoggingException;
 
 /**
  * <p>IS: A static class which assigns names to a set of constants defined
