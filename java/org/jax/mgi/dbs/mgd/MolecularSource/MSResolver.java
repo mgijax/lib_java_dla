@@ -170,8 +170,7 @@ public class MSResolver {
     {
         try
         {
-            msCollapsedCache = new MSCollapsedCache(logger,
-                CacheConstants.FULL_CACHE);
+            msCollapsedCache = new MSCollapsedCache(CacheConstants.FULL_CACHE);
             // instantiate the correct MSAttrResolver based on logicalDB
             SequenceLoadCfg cfg = new SequenceLoadCfg();
             LogicalDBLookup lookup = new LogicalDBLookup();
