@@ -59,6 +59,8 @@ public class AttrHistory
             "trm." + MGD.voc_term._term_key + " " +
         "AND trm." + MGD.voc_term.term + " != '" + DATALOAD_USER + "'";
 
+
+
     /**
      * constant definition for the voc_term value which
      * is used to join voc_term to mgi_user to identify a dataloads user
@@ -106,10 +108,12 @@ public class AttrHistory
          * execute the query
          */
         ResultsNavigator nav = query.executeQuery();
+        boolean found = false;
         if (nav.next())  // indicates records were found in history
-            return true;
-        else
-            return false;
+            found = true;
+        nav.close();
+        return found;
+
     }
 }
 // $ Log
