@@ -166,10 +166,15 @@ public class IncremSeqProcessor extends SeqProcessor {
 
         else if (event == SeqloaderConstants.NON_EVENT) {
             //System.out.println("This is a Non-event");
+            logger.logdDebug("NON Event Primary: " +
+                           seqInput.getPrimaryAcc().getAccID());
+
         }
         else {
           // raise error - unhandled case
           System.err.println("Unhandled event in IncremSeqPrcessor.processSequence");
+          logger.logdDebug("UNHANDLED Event Primary: " +
+                           seqInput.getPrimaryAcc().getAccID());
         }
       }
 
@@ -189,6 +194,8 @@ public class IncremSeqProcessor extends SeqProcessor {
       private void processAlreadyAddedEvent(SequenceInput seqInput)
           throws RepeatSequenceException, SeqloaderException {
       try {
+          logger.logdDebug("Already Added Event Primary: " +
+                           seqInput.getPrimaryAcc().getAccID());
           // write sequence to file and throw RepeatFileException
           repeatWriter.write(seqInput.getSeq().getRecord());
           throw new RepeatSequenceException();
@@ -229,11 +236,12 @@ public class IncremSeqProcessor extends SeqProcessor {
         String existingRawOrganism = existingSeqState.getRawOrganism();
         String inputRawLibrary = rawSeq.getLibrary();
         String existingRawLibrary = existingSeqState.getRawLibrary();
-
+        logger.logdDebug("Update Event Primary: " +
+                           seqInput.getPrimaryAcc().getAccID());
         // if input rawOrganism and existing rawOrganism don't match - QC
         if (!inputRawOrganism.equals(existingRawOrganism)) {
           // QC report and throw an exception
-          logger.logcInfo("Sequence: " + seqInput.getPrimaryAcc().getAccID() +
+          logger.logdInfo("Sequence: " + seqInput.getPrimaryAcc().getAccID() +
                           " MGI rawOrganism: " +
                           existingSequence.getSequenceState().getRawOrganism() +
                           " Input rawOrganism: " +
@@ -311,7 +319,8 @@ public class IncremSeqProcessor extends SeqProcessor {
                                    Sequence existingSequence)
         throws ConfigException, CacheException, DBException, TranslationException,
           KeyNotFoundException, MSException, SequenceResolverException {
-
+        logger.logdDebug("Dummy Event Primary: " +
+                           seqInput.getPrimaryAcc().getAccID());
         // send dummy sequence to stream to be deleted
         existingSequence.sendToStream();
 
