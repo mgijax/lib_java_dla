@@ -42,7 +42,7 @@ import org.jax.mgi.shr.exception.MGIException;
 public abstract class DLALoader {
 
   /**
-   * A DataLoadLogger instance for sending messages to the four standard
+   * A DataLoadLogger instance for sending messages to the three standard
    * log files.
    */
   protected DLALogger logger = null;
@@ -239,6 +239,6 @@ public abstract class DLALoader {
    * @throws MGIException throw if an error occurs while performing
    * finalization</p>
    */
-  protected abstract void cleanup() throws MGIException;
+  protected abstract void finale() throws MGIException;
 
 }
