@@ -673,6 +673,9 @@ public class MolecularSource
       state.setColumnName(MGD.prb_source._cellline_key);
       stream.insert(new MGI_AttributeHistoryDAO(state));
 
+      state.setColumnName(MGD.prb_source._gender_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
       state.setColumnName(MGD.prb_source._refs_key);
       stream.insert(new MGI_AttributeHistoryDAO(state));
 
