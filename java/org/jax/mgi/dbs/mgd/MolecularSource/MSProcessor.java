@@ -16,16 +16,16 @@ import org.jax.mgi.shr.exception.MGIException;
  * sequence object.
  * @has
  * <ul>
- * <li>a SQLStream for doing database inserts of new MolecularSources</li>
+ * <li>a SQLStream for doing database inserts of new MolecularSources or
+ * updating existing MolecularSources</li>
  * <li>a MSResolver for resolving molecular source raw attributes to a
- * record in the database</li>
- * <li>a MSQCReporter for reporting discrepancies between changes to a source
- * attribute for a sequence and the curration of that attribute</li>
+ * MolecularSource represented by a record in the database</li>
+ * <li>a MSQCReporter for reporting various discrepancies</li>
  * </ul>
  * @does discovers the proper MolecularSource for a set of molecular source
- * raw attributes to associate with a new sequence and determines if any
- * updates are to to made on existing MolecularSource records for a existing
- * Sequence.
+ * raw attributes and associates it with a new sequence or determines if any
+ * updates are to be made on a MolecularSource for a existing Sequence and
+ * performs those updates.
  *
  */
 
@@ -56,6 +56,8 @@ public class MSProcessor
      * the following constant definitions are exceptions thrown by this class
      */
     private static String LookupErr = MSExceptionFactory.LookupErr;
+    private static String SQLStreamErr = MSExceptionFactory.SQLStreamErr;
+    private static String NoSourceFound = MSExceptionFactory.NoSourceFound;
 
     /**
      * constructor
@@ -70,12 +72,14 @@ public class MSProcessor
     }
 
     /**
-     * discovers the MolecularSource object to use for the given sequence. if the
-     * attributes are named then it looks up the source in the database by name
-     * and if it annonymous then it will look at the sources for the associated
-     * clone to see if it can derive the name and then lookup the source. if the
-     * attrinutes are annonymous and the name could not be derived then a
-     * collapsing algorithm is used for sharing molecular source objects.
+     * discovers the MolecularSource object to use for the given sequence by
+     * resolving the raw attributes. if the attributes are a named source
+     * then it looks up the source in the database by name. if it is
+     * annonymous then it will look at the sources for the associated clones
+     * to see if it can discover a named source that way. if the attributes
+     * are annonymous and no named source was found through clone association
+     * then a collapsing algorithm is used for sharing molecular source
+     * objects.
      * @param accid the sequence accid
      * @param attr the ms raw attributes
      * @return the MolecularSource that is resolved
@@ -87,19 +91,39 @@ public class MSProcessor
         // MolecularSource object to be returned
         MolecularSource ms = null;
 
-        if (attr.getLibraryName() != null)
+        if (attr.getLibraryName() != null) // represents a named source
         {
             ms = processByLibraryName(attr);
         }
-        else
+        if (ms == null) // represents an annonymous source or a named
+                        // which was not found in the database
         {
-            // looks for a source from the associated clones
+            // look for a source from the associated clones that is named
+            // and use that one instead
             ms = processByAssociatedClones(accid);
         }
+        /**
+         * if no molecular source was found then just resolve the raw
+         * attributes to a new source or an existing source (using the
+         * source collapsing algorithm)
+         */
+
         if (ms == null) // then just use the MSResolver
         {
             ms = this.resolver.resolve(attr);
-            //ms.insert(this.stream);
+            try
+            {
+                if (!ms.isInDatabase && !ms.isInBatch)
+                    ms.insert(this.stream);
+            }
+            catch (MGIException e)
+            {
+                MSExceptionFactory eFactory = new MSExceptionFactory();
+                MSException e2 = (MSException)
+                    eFactory.getException(SQLStreamErr, e);
+                e2.bind(ms.toString());
+                throw e2;
+            }
         }
 
         return ms;
@@ -127,36 +151,40 @@ public class MSProcessor
          * has an organism that matches the organism from the incoming
          * attributes
          */
+        MSSeqAssoc existingSrcAssoc = null;
         MolecularSource existingSrc = null;
-/*
         try
         {
-            //existingSrc =
-                //MSLookup.findBySeqKeyOrganism(seqKey,
-                                              //incomingSrc.getOrganismKey());
+            existingSrcAssoc =
+                MSSeqAssoc.findBySeqKeyOrganism(seqKey,
+                                                incomingSrc.getOrganismKey());
+            if (existingSrcAssoc == null)
+            {
+                MSExceptionFactory eFactory = new MSExceptionFactory();
+                MSException e = (MSException)
+                    eFactory.getException(NoSourceFound);
+                e.bind(seqid);
+                e.bind(incomingSrc.getOrganismKey().intValue());
+                throw e;
+            }
+            existingSrc = existingSrcAssoc.getMolecularSource();
         }
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException) eFactory.getException(LookupErr);
+            MSException e2 = (MSException)
+                eFactory.getException(LookupErr, e);
             e2.bind(MSLookup.class.getName());
             throw e2;
-        }
-*/
-        if (existingSrc == null)
-        {
-            // what do I do ??
         }
         if (existingSrc.getName() == null) // annonymous source
         {
             // compare incoming source to existing source, perform qc reporting
             // and make changes to existing source if appropriate
-            boolean isCuratorEdited = false;
-                //existingSrc.getCuratedEdited().booleanValue();
             boolean srcHasChanged = false; // track if the existing ms changes
             if (existingSrc.getStrainKey() != incomingSrc.getStrainKey())
             {
-                if (!isCuratorEdited || !existingSrc.isStrainCurated())
+                if (!existingSrc.isStrainCurated())
                 {
                     existingSrc.setStrainKey(incomingSrc.getStrainKey());
                     srcHasChanged = true;
@@ -167,7 +195,7 @@ public class MSProcessor
 
             if (existingSrc.getCellLineKey() != incomingSrc.getCellLineKey())
             {
-                if (!isCuratorEdited || !existingSrc.isCellLineCurated())
+                if (!existingSrc.isCellLineCurated())
                 {
                     existingSrc.setCellLineKey(incomingSrc.getCellLineKey());
                     srcHasChanged = true;
@@ -178,7 +206,7 @@ public class MSProcessor
 
             if (existingSrc.getAge() != incomingSrc.getAge())
             {
-                if (!isCuratorEdited || !existingSrc.isAgeCurated())
+                if (!existingSrc.isAgeCurated())
                 {
                     existingSrc.setAge(incomingSrc.getAge());
                     srcHasChanged = true;
@@ -189,7 +217,7 @@ public class MSProcessor
 
             if (existingSrc.getGenderKey() != incomingSrc.getGenderKey())
             {
-                if (!isCuratorEdited || !existingSrc.isGenderCurated())
+                if (!existingSrc.isGenderCurated())
                 {
                     existingSrc.setGenderKey(incomingSrc.getGenderKey());
                     srcHasChanged = true;
@@ -200,7 +228,7 @@ public class MSProcessor
 
             if (existingSrc.getTissueKey() != incomingSrc.getTissueKey())
             {
-                if (!isCuratorEdited || !existingSrc.isTissueCurated())
+                if (!existingSrc.isTissueCurated())
                 {
                     existingSrc.setTissueKey(incomingSrc.getTissueKey());
                     srcHasChanged = true;
@@ -237,10 +265,12 @@ public class MSProcessor
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException) eFactory.getException(LookupErr);
+            MSException e2 = (MSException)
+                eFactory.getException(LookupErr, e);
             e2.bind(LibraryKeyLookup.class.getName());
             throw e2;
         }
+        // now get a molecular source with this library key
         try
         {
             ms = MSLookup.findBySourceKey(sourceKey);
@@ -248,7 +278,8 @@ public class MSProcessor
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException) eFactory.getException(LookupErr);
+            MSException e2 = (MSException)
+                eFactory.getException(LookupErr, e);
             e2.bind(MSLookup.class.getName());
             throw e2;
         }
@@ -258,7 +289,6 @@ public class MSProcessor
     private MolecularSource processByAssociatedClones(String accid) throws
         MSException
     {
-        MolecularSource ms = null; // the MolecularSource object to return
         /**
          * get the sources for the associated clones of this sequence
          */
@@ -270,20 +300,22 @@ public class MSProcessor
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException) eFactory.getException(LookupErr);
+            MSException e2 = (MSException)
+                eFactory.getException(LookupErr, e);
             e2.bind(MSLookup.class.getName());
             throw e2;
         }
-        // try and find a name to assign from the associated clones.
+        // try and find a named source from the associated clones.
         // all the names must agree...if they dont then send to qc report.
+        MolecularSource ms = null; // the MolecularSource object to return
         String agreedUponName = null;
         for (Iterator i = v.iterator(); i.hasNext(); )
         {
             MolecularSource thisMS = (MolecularSource) i.next();
             String thisName = thisMS.getName();
-            if (thisName != null) // named source
+            if (thisName != null) // it is a named source
             {
-                if (agreedUponName == null) // agree on this name
+                if (agreedUponName == null) // then agree on this name
                 {
                     agreedUponName = thisName;
                     ms = thisMS; // this is the molecular source to return
@@ -293,12 +325,14 @@ public class MSProcessor
                     if (!thisName.equals(agreedUponName))
                     {
                         qcReporter.reportCloneNameDiscrepancy(v);
+                        // do not use any of the sources
                         return null;
                     }
                 }
             }
         }
-        return ms; // can be null if a named source was never found
+        return ms; // can be null if a named source was never found or
+                   // two named sources were found with different names
     }
 
 }
