@@ -88,35 +88,38 @@ public class SequenceAttributeResolver {
       // lookup all the foreign keys  //
       //////////////////////////////////
 
-      // set the foreign keys
-      state.setSequenceTypeKey(typeLookup.lookup(rawAttributes.getType()));
-      state.setSequenceQualityKey(qualityLookup.lookup(rawAttributes.getQuality()));
-      state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
-      state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
+        // set the foreign keys
+        state.setSequenceTypeKey(typeLookup.lookup(rawAttributes.getType()));
+        state.setSequenceQualityKey(qualityLookup.lookup(rawAttributes.getQuality()));
+        state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
+        state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.
+            getProvider()));
 
-      // copy remaining raw attributes to the sequence state
-      state.setLength(new Integer(rawAttributes.getLength()));
-      state.setDescription(rawAttributes.getDescription());
-      state.setVersion(rawAttributes.getVersion());
-      state.setDivision(rawAttributes.getDivision());
-      state.setVirtual(rawAttributes.getVirtual());
-      state.setRawType(rawAttributes.getType());
-      state.setRawLibrary(rawAttributes.getLibrary());
-      state.setRawOrganism(rawAttributes.getRawOrganisms());
-      state.setRawStrain(rawAttributes.getStrain());
-      state.setRawTissue(rawAttributes.getTissue());
-      state.setRawAge(rawAttributes.getAge());
-      state.setRawSex(rawAttributes.getSex());
-      state.setRawCellLine(rawAttributes.getCellLine());
-      state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
-      state.setSeqrecordDate(rawAttributes.getSeqRecDate());
-      state.setSequenceDate(rawAttributes.getSeqDate());
-      return state;
-
+        // copy remaining raw attributes to the sequence state
+        state.setLength(new Integer(rawAttributes.getLength()));
+        state.setDescription(rawAttributes.getDescription());
+        state.setVersion(rawAttributes.getVersion());
+        state.setDivision(rawAttributes.getDivision());
+        state.setVirtual(rawAttributes.getVirtual());
+        state.setRawType(rawAttributes.getType());
+        state.setRawLibrary(rawAttributes.getLibrary());
+        state.setRawOrganism(rawAttributes.getRawOrganisms());
+        state.setRawStrain(rawAttributes.getStrain());
+        state.setRawTissue(rawAttributes.getTissue());
+        state.setRawAge(rawAttributes.getAge());
+        state.setRawSex(rawAttributes.getSex());
+        state.setRawCellLine(rawAttributes.getCellLine());
+        state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
+        state.setSeqrecordDate(rawAttributes.getSeqRecDate());
+        state.setSequenceDate(rawAttributes.getSeqDate());
+        return state;
     }
 }
 
 //  $Log$
+//  Revision 1.4  2004/03/29 17:20:12  sc
+//  no longer abstract - this class now doe the interpreting
+//
 //  Revision 1.3  2004/02/25 21:42:40  mbw
 //  fixed compiler warnings only
 //
