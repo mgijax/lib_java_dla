@@ -40,7 +40,6 @@ public class SeqloaderConstants {
     public static final String EMPTY_STRING = "";
 
     // misc constants
-    public static final String DUMMY_SEQ_STATUS = "Not Loaded";
     public static final String NOT_APPLICABLE = "Not Applicable";
 
     // Name organism of non-mouse molecular source
@@ -74,6 +73,9 @@ public class SeqloaderConstants {
 
     // Sequence status constants
     public static final String ACTIVE_STATUS = "ACTIVE";
+    public static final String DUMMY_SEQ_STATUS = "Not Loaded";
+    public static final String SPLIT_STATUS  = "SPLIT";
+    public static final String DELETE_STATUS = "DELETED";
 
     // QC_SEQ_SourceConflict attrName values
     public static final String LIBRARY = "library";
@@ -81,6 +83,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.2  2004/12/07 20:10:46  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:06:44  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //
