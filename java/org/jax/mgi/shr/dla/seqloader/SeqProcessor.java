@@ -70,6 +70,9 @@ public class SeqProcessor implements ProcessSequenceInput  {
     // exception factory for seqloader exceptions
     protected SeqloaderExceptionFactory eFactory;
 
+    // current number of sequences added
+    int addCtr = 0;
+
     /**
      * Constructs a SeqProcessor that adds and deleting sequence to/from
      * a database
@@ -306,6 +309,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
        // send the new sequence to its stream
        try {
          inputSequence.sendToStream();
+         addCtr++;
        }
        catch (MGIException e) {
          SeqloaderException e1 =
@@ -314,12 +318,23 @@ public class SeqProcessor implements ProcessSequenceInput  {
          throw e1;
        }
    }
-
-
+   /**
+   * Gets a Vector containing a String reporting count of Sequences added
+   * @assumes nothing
+   * @effects nothing
+   * @param None
+   * @returns Vector containing single string with count of Sequences added
+   * @throws Nothing
+   */
+   public Vector getProcessedReport() {
+       Vector report = new Vector(1);
+       report.add("Total sequences added: " + addCtr);
+       return report;
+   }
    /**
     * Processes sequence references associations and sets them in the Sequence
-    * @assumes
-    * @effects
+    * @assumes nothing
+    * @effects nothing
     * @param sequence the Sequence we to which to add references
     * @param references Vector of SeqRefAssocPairs for 'sequence'
     * @return Nothing
