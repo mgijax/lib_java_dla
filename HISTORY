@@ -1,3 +1,8 @@
+DATE: 04/26/2004
+STAFF: mbw
+CHANGES:
+1) no longer using a debug logger in the MSCollapsedCache
+
 DATE: 04/23/2004
 STAFF: sc
 CHANGES:
