@@ -40,15 +40,26 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
   }
 
   /**
-   * database error querying for a Sequence
+   * database error querying for a sequence key
    */
-  public static final String SeqQueryErr =
-      "org.jax.mgi.shr.dla.seqloader.SeqQueryErr";
+  public static final String SeqKeyQueryErr =
+      "org.jax.mgi.shr.dla.seqloader.SeqKeyQueryErr";
   static {
-    exceptionsMap.put(SeqQueryErr, new SeqloaderException(
-        "Error querying for the Sequence ??",
+    exceptionsMap.put(SeqKeyQueryErr, new SeqloaderException(
+        "Error querying for sequence key for ??",
         false));
   }
+
+  /**
+    * database error querying for a Sequence
+    */
+   public static final String SeqQueryErr =
+       "org.jax.mgi.shr.dla.seqloader.SeqQueryErr";
+   static {
+     exceptionsMap.put(SeqQueryErr, new SeqloaderException(
+         "Error querying for the Sequence object for ??",
+         false));
+   }
 
   /**
    * Error resolving a sequence
