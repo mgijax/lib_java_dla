@@ -9,11 +9,14 @@ import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.dao.Inline_Stream;
 import org.jax.mgi.shr.dbutils.dao.Batch_Stream;
 import org.jax.mgi.shr.dbutils.dao.Script_Stream;
+import org.jax.mgi.shr.dbutils.dao.BCP_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
+import org.jax.mgi.shr.dbutils.DBSchema;
 import org.jax.mgi.shr.dbutils.ScriptWriter;
+import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 
@@ -94,6 +97,11 @@ public abstract class DLALoader {
   protected InputDataCfg inputConfig = null;
 
   /**
+   * configurator for all DLA parameters
+   */
+  protected DLALoaderCfg dlaConfig = null;
+
+  /**
    * An exception handler for handling MGIExceptions
    */
   protected DLAExceptionHandler exceptionHandler =
@@ -132,8 +140,8 @@ public abstract class DLALoader {
   public DLALoader() {
     try {
       this.logger = DLALogger.getInstance();
-      DLALoaderCfg config = new DLALoaderCfg();
-      String loadPrefix = config.getLoadPrefix();
+      this.dlaConfig = new DLALoaderCfg();
+      String loadPrefix = dlaConfig.getLoadPrefix();
       this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
       this.qcDBMgr.setLogger(logger);
       this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
@@ -142,9 +150,9 @@ public abstract class DLALoader {
       this.qcBCPMgr.setLogger(logger);
       this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
       this.loadBCPMgr.setLogger(logger);
-      this.loadStream = createSQLStream(config.getLoadStreamName(),
+      this.loadStream = createSQLStream(dlaConfig.getLoadStreamName(),
                                         loadDBMgr, loadBCPMgr);
-      this.qcStream = createSQLStream(config.getQCStreamName(),
+      this.qcStream = createSQLStream(dlaConfig.getQCStreamName(),
                                       qcDBMgr, qcBCPMgr);
       this.inputConfig = new InputDataCfg();
     }
@@ -166,8 +174,16 @@ public abstract class DLALoader {
    * available if they were configured to remain after executing them.
    */
   public void load() {
+    String[] loadTables = this.dlaConfig.getTruncateLoadTables();
+    String[] qcTables = this.dlaConfig.getTruncateQCTables();
     try {
       logger.logdInfo("Performing load initialization",true);
+      if (loadTables != null)
+          DLALoaderHelper.truncateTables(loadTables,
+                                         this.loadDBMgr.getDBSchema());
+      if (qcTables != null)
+          DLALoaderHelper.truncateTables(qcTables,
+                                         this.qcDBMgr.getDBSchema());
       initialize();
     }
     catch (Exception e) {
@@ -256,8 +272,8 @@ public abstract class DLALoader {
    * @param name the name of the SQLStream to create
    * @return the new SQLStream
    */
-  private SQLStream createSQLStream(String name, SQLDataManager DBMgr,
-                                    BCPManager BCPMgr) throws MGIException
+  protected SQLStream createSQLStream(String name, SQLDataManager DBMgr,
+                                      BCPManager BCPMgr) throws MGIException
   {
       if (name.equals("org.jax.mgi.shr.dbutils.dao.Inline_Stream"))
           return new Inline_Stream(DBMgr);
@@ -265,6 +281,8 @@ public abstract class DLALoader {
           return new Batch_Stream(DBMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.Script_Stream"))
           return new Script_Stream(DBMgr.getScriptWriter());
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Stream"))
+          return new BCP_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream"))
           return new BCP_Inline_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream"))
@@ -281,5 +299,7 @@ public abstract class DLALoader {
       }
 
   }
+
+
 
 }
