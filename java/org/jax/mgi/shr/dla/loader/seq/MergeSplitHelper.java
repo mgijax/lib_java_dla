@@ -88,6 +88,8 @@ public class MergeSplitHelper {
     * @assumes nothing
     * @effects queries a database
     * @param seqInput object representing raw values of a Sequence
+    * @returns a Vector of 2ndary seqids from the current sequence being processed
+    * that are in MGI as primary
     * @throws KeyNotFoundException
     * @throws DBException
     * @throws CacheException
@@ -101,8 +103,8 @@ public class MergeSplitHelper {
         // this sequences secondary seqids
         secondaries = seqInput.getSecondary();
         Iterator i = secondaries.iterator();
-        while(i.hasNext()) {
-            String seqId = ((AccessionRawAttributes)i.next()).getAccID();
+        while (i.hasNext()) {
+            String seqId = ( (AccessionRawAttributes) i.next()).getAccID();
             seqKey = seqIdLookup.lookup(seqId);
 
             // this secondary is primary in MGI, add it the the merge/split set
@@ -111,7 +113,7 @@ public class MergeSplitHelper {
             }
         }
         return v;
-        }
+    }
 
         /**
          * Create a HashMap of secondary seqid keys (that are primary in MGI) with
@@ -119,7 +121,10 @@ public class MergeSplitHelper {
          *  and 2ndary seqid values (that are primary in MGI)
          * @assumes nothing
          * @effects nothing
-         * @param sequences
+         * @param primaryMap Primary seqid keys and 2ndary seqid values
+         * (that are primary in MGI)
+         * @return a HashMap of secondary seqid keys (that are primary in MGI) with
+         *  primary seqids values
          */
         public HashMap createHash(HashMap primaryMap) {
             HashMap secondaryMap = new HashMap();
@@ -135,7 +140,7 @@ public class MergeSplitHelper {
                for (Iterator vecI = currentV.iterator(); vecI.hasNext(); ) {
                    // add each secondary to the newMap with value=primary
                    String secondary = (String) vecI.next();
-                   //System.out.println("mapValue: " + secondary);
+
                    // add a new mapping
                    if (!secondaryMap.containsKey(secondary)) {
                        Vector x = new Vector();
