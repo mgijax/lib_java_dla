@@ -50,7 +50,7 @@ public class TestMSAttrResolver
         sqlMgr = new SQLDataManager();
         runDeletes();
         runInserts();
-        mSAttrResolver = new MSAttrResolver();
+        mSAttrResolver = new GBMSAttrResolver();
         this.segmentLookup =
             new VocabKeyLookup(VocabularyTypeConstants.SEGMENTTYPE);
         this.vectorLookup =

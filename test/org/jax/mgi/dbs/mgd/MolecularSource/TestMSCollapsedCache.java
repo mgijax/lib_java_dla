@@ -138,7 +138,7 @@ public class TestMSCollapsedCache
     MSRawAttributes raw = new MSRawAttributes();
     raw.setOrganism("mouse, laboratory");
     raw.setTissue("brain");
-    MSAttrResolver attrResolver = new MSAttrResolver();
+    MSAttrResolver attrResolver = new GBMSAttrResolver();
     MolecularSource unresolvedMS = attrResolver.resolveAttributes(raw);
     MolecularSource foundMS = lookup.lookup(unresolvedMS);
     assertEquals(new Integer(-70), foundMS.getMSKey());
