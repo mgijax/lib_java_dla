@@ -19,26 +19,7 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
   }
 
   /**
-   * Found a repeated sequence in the input
-   */
-  /*
-  public static final String RepeatSequenceException =
-      "org.jax.mgi.shr.dla.seqloader.RepeatSequenceException";
-  static {
-    exceptionsMap.put(RepeatSequenceException, new SeqloaderException(
-        "This sequence is repeated in the input", false));
-  }
-  */
-  /**
-   * Cannot resolve one or more SequenceRawAttributes
-   */
-  /*
-  public static final String SequenceResolverException =
-      "org.jax.mgi.shr.dla.seqloader.SequenceResolverException";
-  static {
-    exceptionsMap.put(SequenceResolverException, new SeqloaderException(
-        "Cannot resolve one or more SequenceRawAttributes", true));
-  }
+  * Repeat file IOException
   */
  public static final String RepeatFileIOException =
      "org.jax.mgi.shr.dla.seqloader.RepeatFileIOException";
@@ -46,5 +27,17 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
    exceptionsMap.put(RepeatFileIOException, new SeqloaderException(
         "Repeat file IOException", false));
  }
+
+ /**
+ * could not add qc dao object to stream
+ */
+public static final String QCErr =
+    "org.jax.mgi.dbs.mgd.QCErr";
+static {
+  exceptionsMap.put(QCErr, new SeqloaderException(
+      "Could not add a new qc item to the qc reporting table named ??",
+      false));
+}
+
 }
 // $Log
