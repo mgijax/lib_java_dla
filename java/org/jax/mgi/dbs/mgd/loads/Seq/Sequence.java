@@ -49,9 +49,6 @@ public class Sequence {
     // the stream used to accomplish the database inserts, updates, deletes
     private SQLStream stream;
 
-    // the logger
-    //DLALogger logger;
-
     // the primary seqid
     private ACC_AccessionDAO primaryAcc;
 
@@ -146,7 +143,7 @@ public class Sequence {
             CacheException, KeyNotFoundException {
         this.stream = stream;
         sequenceDAO = new SEQ_SequenceSeqloaderDAO(key, state);
-        seqUpdater = new SequenceUpdater();
+        seqUpdater = SequenceUpdater.getInstance();
     }
 
     /**
@@ -579,6 +576,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.2  2004/12/07 20:09:46  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:10:15  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //
