@@ -113,9 +113,8 @@ public class IncremSeqProcessor extends SeqProcessor {
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-        seqIdLookup = sidLookup;
-            //new AccessionLookup(logicalDBKey,
-              //  MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        seqIdLookup = new AccessionLookup(logicalDBKey,
+              MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
         seqLookup = new SequenceLookup(mgdSqlStream);
     }
 
