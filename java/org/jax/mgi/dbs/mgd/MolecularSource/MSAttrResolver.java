@@ -22,7 +22,10 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
  * <li>TissueKeyLookup</li>
  * <li>OrganismKeyLookup</li>
  * <li>StrainKeyLookup</li>
- * <li>VocabKeyLookup</li>
+ * <li>GenderKeyLookup</li>
+ * <li>CellLineKeyLookup</li>
+ * <li>SegmentKeyLookup</li>
+ * <li>VectorKeyLookup</li>
  * </ul>
  * @does looks up the key values in the database for each attribute of a
  * MSRawAttributes using the lookup objects.
