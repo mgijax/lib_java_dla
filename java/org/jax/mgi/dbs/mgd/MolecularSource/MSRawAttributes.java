@@ -25,6 +25,7 @@ public class MSRawAttributes
   private String strain;
   private String gender;
   private String cellLine;
+  private String age;
 
   /**
    * get the library name
@@ -102,6 +103,21 @@ public class MSRawAttributes
   public void setCellLine(String cellLine) {
     this.cellLine = cellLine;
   }
+
+  /**
+   * get the age
+   * @return the age
+   */
+  public String getAge(){ return age; }
+
+  /**
+   * set the age
+   * @param age the age value
+   */
+  public void setAge(String age) {
+    this.age = age;
+  }
+
 
   /**
    * rest the object attributes in order to reuse this object
