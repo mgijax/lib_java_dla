@@ -91,19 +91,20 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String SEX = "/sex";
     private static String CELLINE = "/cell_line";
 
-    ///////////////////////////////////////////////
-    // A SequenceInput and its parts            //
-    //////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    // A SequenceInput, rawSeq and ms declared here so multiple methods
+    // may have access to them
+    ////////////////////////////////////////////////////////////////////////
 
     // The object we are building. Represents raw attributes for a sequence,
     // its source, references, and accessions
-    protected SequenceInput sequenceInput = new SequenceInput();
+    protected SequenceInput sequenceInput;
 
-    // raw attributes for a sequence - reused by calling reset()
-    private SequenceRawAttributes rawSeq = new SequenceRawAttributes();
+    // raw attributes for a sequence
+    private SequenceRawAttributes rawSeq;
 
-    // raw attributes for a sequences source - reused by calling reset()
-    private MSRawAttributes ms = new MSRawAttributes();
+    // raw attributes for a sequences source
+    private MSRawAttributes ms;
 
     // checks a sequence record to see if it is an organism we want to load
     private GBOrganismChecker organismChecker;
@@ -269,6 +270,11 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      */
 
     protected void parseRecord(String rcd) {
+        // objects we are building
+        sequenceInput = new SequenceInput();
+        rawSeq = new SequenceRawAttributes();
+        ms = new MSRawAttributes();
+
         // the current section we are looking for
         int currentSection = LOCUS_SECTION;
 
@@ -282,11 +288,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         reference = new StringBuffer();
         source = new StringBuffer();
         keywords = new StringBuffer();
-
-        // reset reused instance variables
-        sequenceInput.reset();
-        rawSeq.reset();
-        ms.reset();
 
         // set the record attribute of the SequenceRawAttributes - we use this
         // to write out repeated sequences
