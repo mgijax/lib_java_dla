@@ -3,7 +3,7 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
+//import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
 
 /**
  * @is An object that represents raw PubMed and Medline reference associations
@@ -122,6 +122,9 @@ public class SeqRefAssocPair{
      }
 }
  //  $Log$
+ //  Revision 1.1  2004/01/06 20:09:41  mbw
+ //  initial version imported from lib_java_seqloader
+ //
  //  Revision 1.2  2003/12/20 16:25:20  sc
  //  changes made from code review~
  //
