@@ -107,6 +107,9 @@ public class SeqProcessor implements ProcessSequenceInput  {
       mgdStream = mgdSqlStream;
       seqResolver = sar;
 
+      // create an exception factory
+      eFactory = new SeqloaderExceptionFactory();
+
       // Create an Accession Attribute Resolver
        accResolver = new AccAttributeResolver();
 
