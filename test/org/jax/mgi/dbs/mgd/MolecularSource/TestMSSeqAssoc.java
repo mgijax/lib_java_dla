@@ -62,7 +62,7 @@ public class TestMSSeqAssoc
         assertEquals(new Integer(-100), assoc.getAssocKey());
     }
 
-    public void testGetMolecularSource()
+    public void testGetMolecularSource() throws Exception
     {
         MolecularSource ms = assoc.getMolecularSource();
         assertEquals(new Integer(63474), ms.getSegmentTypeKey());
@@ -77,7 +77,7 @@ public class TestMSSeqAssoc
         assertEquals(new Boolean(true), ms.getCuratorEdited());
     }
 
-    public void testGetUpdateSQL()
+    public void testGetUpdateSQL() throws Exception
     {
         String expectedResults =
             "execute PRB_processSeqLoaderSource -100, -200, -20, " +
