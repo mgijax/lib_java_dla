@@ -1,5 +1,12 @@
+TAG: lib_java_dla-tr6473-1
+DATE: 01/24/2005
+STAFF: sc
+RELEASE: dev
+TR6473 changes to address batch processing of sequence determined
+to be in MGI (Update, Dummy, Non events)
+
 TAG: lib_java_dla-tr6473-BP
-DATE: 01/12/2004
+DATE: 01/12/2005
 STAFF: sc
 RELEASE: dev
 
