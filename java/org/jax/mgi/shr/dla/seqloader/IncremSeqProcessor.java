@@ -367,8 +367,6 @@ public class IncremSeqProcessor extends SeqProcessor {
               for (Iterator i = oldReferences.iterator(); i.hasNext();) {
                   refState = (MGI_Reference_AssocState)i.next();
                   refsKey = refState.getRefsKey();
-                  // use SeqQCReporter here to report sequenceKey and refs_key
-                  // existingSequence.getSequenceKey();
                   logger.logcInfo("Old _refs_key: " +
                       refsKey + " for seqid: " + primarySeqid, true);
                   qcReporter.reportOldReferences(existingSeqKey, refsKey);
