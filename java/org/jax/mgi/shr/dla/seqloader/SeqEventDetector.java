@@ -9,22 +9,18 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 
-import java.util.HashSet;
-
 /**
  * @is an object that determines sequence events
  * @has
  *   <UL>
  *   <LI>A MergeSplitProcessor to handle merge and split events
  *   <LI>A VocabTermLookup to help determine Dummy events
- *   <LI>A list of sequences that have already been processed
  *   <LI>Counters for each event
  *   </UL>
  * @does
  *   <UL>
  *   <LI>Determines the following events for a sequence:
  *   <UL>
- *       <LI>Already Added Event
  *       <LI>Update Event
  *       <LI>Add Event
  *       <LI>Dummy Event
@@ -32,7 +28,7 @@ import java.util.HashSet;
  *       <LI>Merges and Splits - See MergeSplitProcessor
  *   </UL>
  *   <LI>Keeps counts of each event
- *   <LI>Processes merge and split events - See MergSplitProcessor
+ *   <LI>Processes merge and split events - See MergeSplitProcessor
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -47,14 +43,10 @@ public class SeqEventDetector {
     // Lookup to help determine Dummy Events - this is a lazy cache
     private VocabTermLookup termNameLookup;
 
-    // cache of seqids we have already processed
-    private HashSet seqIdsAlreadyProcessed;
     /**
      * Event counters
      */
 
-    // current count of already added events
-    private int alreadyAddedCtr = 0;
     // current count of update events
     private int updateCtr = 0;
     // current count of add events
@@ -77,7 +69,6 @@ public class SeqEventDetector {
          throws ConfigException, CacheException, DBException {
         this.mergeSplitProcessor = mergeSplitProcessor;
         termNameLookup = new VocabTermLookup();
-        seqIdsAlreadyProcessed = new HashSet();
     }
 
     /**
@@ -103,16 +94,9 @@ public class SeqEventDetector {
         // get the primary seqid
         String seqid = seqInput.getPrimaryAcc().getAccID();
 
-        // we've already processed this sequence
-        if (seqIdsAlreadyProcessed.contains(seqid)) {
-          event = SeqloaderConstants.ALREADY_ADDED;
-          alreadyAddedCtr++;
-        }
-
         // this is a new sequence
-        else if ( sequence == null ) {
+        if ( sequence == null ) {
               event = SeqloaderConstants.ADD;
-              seqIdsAlreadyProcessed.add(seqid);
               addCtr++;
         }
 
@@ -123,41 +107,26 @@ public class SeqEventDetector {
             event = SeqloaderConstants.DUMMY;
             dummyCtr++;
             sequence.setIsDummySequence(true);
-
-            // dummy seqs are deleted then processed as adds
-            seqIdsAlreadyProcessed.add(seqid);
         }
 
-        // this sequence may need to be updated
+        // this sequence needs to be updated
         else if (sequence.getSequenceState().getSeqrecordDate().before(
                  seqInput.getSeq().getSeqRecDate())) {
           event = SeqloaderConstants.UPDATE;
-          seqIdsAlreadyProcessed.add(seqid);
           updateCtr++;
         }
-        // don't add to the already added seqid cache
+        // sequence already in database as it is
         else {
             nonCtr++;
         }
 
         // find merge/split sequences;
-        if( event != SeqloaderConstants.NON_EVENT &&
-                event != SeqloaderConstants.ALREADY_ADDED) {
+        if( event != SeqloaderConstants.NON_EVENT) {
             mergeSplitProcessor.preProcess(seqInput);
         }
 
         return event;
     }
-    /**
-    * gets the current count of 'already added' events
-    * @assumes Nothing
-    * @effects Nothing
-    * @return int current count of 'already added' events
-    * @throws Nothing
-    */
-      public int getAlreadyAddedEventCount() {
-          return alreadyAddedCtr;
-      }
 
     /**
     * gets the current count of 'update' events
