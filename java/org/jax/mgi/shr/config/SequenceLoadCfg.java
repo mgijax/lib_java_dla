@@ -3,6 +3,8 @@
 
 package org.jax.mgi.shr.config;
 
+import java.sql.Timestamp;
+
 import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
@@ -41,10 +43,10 @@ public class SequenceLoadCfg extends Configurator {
      * @effects Nothing
      * @param None
      * @return Theload mode
-     * @throws ConfigException if "LOAD_MODE" not found in configuration file
+     * @throws ConfigException if "SEQ_LOAD_MODE" not found in configuration file
      */
     public String getLoadMode() throws ConfigException {
-        return getConfigString("LOAD_MODE");
+        return getConfigString("SEQ_LOAD_MODE");
     }
 
     /**
@@ -53,23 +55,11 @@ public class SequenceLoadCfg extends Configurator {
      * @effects Nothing
      * @param None
      * @return the String true or false
-     * @throws ConfigException if "VIRTUAL" not found in configuration file
+     * @throws ConfigException if "SEQ_VIRTUAL" not found in configuration file
      */
 
     public String getVirtual() throws ConfigException {
-        return getConfigString("VIRTUAL");
-    }
-
-    /**
-     * Gets the jobstream name for this load
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
-     * @return The jobstream name
-     * @throws ConfigException if "JOBSTREAM" not found in configuration file
-     */
-    public String getJobStreamName() throws ConfigException {
-        return getConfigString("JOBSTREAM");
+        return getConfigString("SEQ_VIRTUAL");
     }
 
     /**
@@ -90,10 +80,10 @@ public class SequenceLoadCfg extends Configurator {
      * @effects Nothing
      * @param None
      * @return logicalDB name
-     * @throws ConfigException if "LOGICALDB" not found in configuration file
+     * @throws ConfigException if "SEQ_LOGICALDB" not found in configuration file
      */
     public String getLogicalDB() throws ConfigException {
-        return getConfigString("LOGICALDB");
+        return getConfigString("SEQ_LOGICALDB");
     }
     /**
    * Gets the reference association type for this load
@@ -101,11 +91,11 @@ public class SequenceLoadCfg extends Configurator {
    * @effects Nothing
    * @param None
    * @return reference assoc typ name
-   * @throws ConfigException if "REF_ASSOC_TYPE" not found in configuration file
+   * @throws ConfigException if "SEQ_REF_ASSOC_TYPE" not found in configuration file
    */
 
     public String getReferenceAssocType() throws ConfigException {
-        return getConfigString("REF_ASSOC_TYPE");
+        return getConfigString("SEQ_REF_ASSOC_TYPE");
     }
 
     /**
@@ -114,10 +104,10 @@ public class SequenceLoadCfg extends Configurator {
     * @effects Nothing
     * @param None
     * @return Provider name
-    * @throws ConfigException if "PROVIDER" not found in configuration file
+    * @throws ConfigException if "SEQ_PROVIDER" not found in configuration file
     */
    public String getProvider() throws ConfigException {
-       return getConfigString("PROVIDER");
+       return getConfigString("SEQ_PROVIDER");
    }
 
    /**
@@ -126,10 +116,10 @@ public class SequenceLoadCfg extends Configurator {
    * @effects Nothing
    * @param None
    * @return repeat sequence file name
-   * @throws ConfigException if "REPEAT_FILE" not found in configuration file
+   * @throws ConfigException if "SEQ_REPEAT_FILE" not found in configuration file
    */
   public String getRepeatFileName() throws ConfigException {
-      return getConfigString("REPEAT_FILE");
+      return getConfigString("SEQ_REPEAT_FILE");
   }
   /**
   * Gets the sequence quality
@@ -137,10 +127,10 @@ public class SequenceLoadCfg extends Configurator {
   * @effects Nothing
   * @param None
   * @return sequence quality
-  * @throws ConfigException if "QUALITY" not found in configuration file
+  * @throws ConfigException if "SEQ_QUALITY" not found in configuration file
   */
   public String getQuality() throws ConfigException {
-     return getConfigString("QUALITY");
+     return getConfigString("SEQ_QUALITY");
   }
   /**
    * Gets the sequence type
@@ -148,15 +138,83 @@ public class SequenceLoadCfg extends Configurator {
    * @effects Nothing
    * @param None
    * @return sequence quality
-   * @throws ConfigException if "SEQTYPE" not found in configuration file
+   * @throws ConfigException if "SEQ_TYPE" not found in configuration file
    */
   public String getSeqType() throws ConfigException {
-    return getConfigString("SEQTYPE");
+    return getConfigString("SEQ_TYPE");
   }
+
+  /**
+   * Gets the organism
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return organism
+   * @throws ConfigException if "SEQ_ORGANISM" not found in configuration file
+   */
+  public String getOrganism() throws ConfigException {
+    return getConfigString("SEQ_ORGANISM");
+  }
+
+  /**
+   * Gets the release number for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return release number
+   * @throws ConfigException if "SEQ_RELEASE_NO" not found in configuration file
+   */
+  public String getReleaseNo() throws ConfigException {
+    return getConfigString("SEQ_RELEASE_NO");
+  }
+
+  /**
+   * Gets the sequence status for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence status
+   * @throws ConfigException if "SEQ_STATUS" not found in configuration file
+   */
+  public String getStatus() throws ConfigException {
+    return getConfigString("SEQ_STATUS");
+  }
+
+  /**
+   * Gets the sequence type for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence type
+   * @throws ConfigException if "SEQ_TYPE" not found in configuration file
+   */
+  public String getType() throws ConfigException {
+    return getConfigString("SEQ_TYPE");
+  }
+
+
+  /**
+   * Gets the sequence release data
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the sequence release date
+   * @throws ConfigException if "SEQ_RELEASE_DATE" not found in configuration file
+   */
+  public Timestamp getReleaseDate() throws ConfigException {
+    return getConfigDate("SEQ_RELEASE_DATE");
+  }
+
+
+
+
 
 }
 
 //  $Log$
+//  Revision 1.4  2004/03/24 18:31:31  sc
+//  added getQuality and getSeqType
+//
 //  Revision 1.3  2004/02/27 13:57:16  sc
 //  removed getLoadReference
 //
