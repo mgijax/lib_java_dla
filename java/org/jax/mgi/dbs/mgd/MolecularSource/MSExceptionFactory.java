@@ -182,6 +182,18 @@ public class MSExceptionFactory extends ExceptionFactory {
         false));
   }
 
+  /**
+   * could not access the configuration file
+   */
+  public static final String ConfigErr =
+      "org.jax.mgi.dbs.mgd.ConfigErr";
+  static {
+    exceptionsMap.put(ConfigErr, new MSException(
+        "The MSProcessor could not access the configuration file",
+        false));
+  }
+
+
 
 
 
