@@ -4,6 +4,7 @@ import org.jax.mgi.shr.config.DatabaseCfg;
 import org.jax.mgi.shr.config.DLALoaderCfg;
 import org.jax.mgi.shr.config.InputDataCfg;
 import org.jax.mgi.shr.dbutils.bcp.BCPManager;
+import org.jax.mgi.shr.config.BCPManagerCfg;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.dao.Inline_Stream;
 import org.jax.mgi.shr.dbutils.dao.Batch_Stream;
@@ -111,8 +112,6 @@ public abstract class DLALoader {
       DLAExceptionFactory.RunException;
   private static final String FinalizeException =
       DLAExceptionFactory.FinalizeException;
-  private static final String InstanceException =
-      DLAExceptionFactory.InstanceException;
   private static final String SQLStreamNotSupported =
       DLAExceptionFactory.SQLStreamNotSupported;
 
@@ -125,16 +124,14 @@ public abstract class DLALoader {
   public DLALoader() {
     try {
       this.logger = DLALogger.getInstance();
-      this.logger.logdInfo("Performing initialization",true);
-      this.logger.logpInfo("Beginning load processing",true);
       this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
       this.radarDBMgr.setLogger(logger);
       this.mgdDBMgr = new SQLDataManager(new DatabaseCfg("MGD"));
       this.mgdDBMgr.setLogger(logger);
-      this.radarBCPMgr = new BCPManager();
+      this.radarBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
       this.radarBCPMgr.setLogger(logger);
       this.radarBCPMgr.setSQLDataManager(radarDBMgr);
-      this.mgdBCPMgr = new BCPManager();
+      this.mgdBCPMgr = new BCPManager(new BCPManagerCfg("MGD"));
       this.mgdBCPMgr.setLogger(logger);
       this.mgdBCPMgr.setSQLDataManager(mgdDBMgr);
       DLALoaderCfg config = new DLALoaderCfg();
@@ -152,36 +149,6 @@ public abstract class DLALoader {
   }
 
   /**
-   * The main routine which dynamically instantiates an instance
-   * of the configured loader class and executes the load() method.
-   * @assumes a specific loader has been specified on the command line
-   * or within a configuration file or java system properties.
-   * @effects the four dla standrad log files and records within the
-   * RADAR and/or MGD database. If bcp is being used then bcp files may be
-   * available if they were configured to remain after executing them.
-   * @param args command line argument specifying which loader to run. This
-   * argument can be alternatively placed in the configuration file.
-   */
-  public static void main(String[] args) {
-    DLAExceptionFactory eFactory = new DLAExceptionFactory();
-    DLALoader loader = null;
-    try
-    {
-        DLALoaderCfg cfg = new DLALoaderCfg();
-        loader = (DLALoader)cfg.getLoaderClass();
-    }
-    catch (Exception e)
-    {
-        DLAException e2 = (DLAException)
-            eFactory.getException(InstanceException, e);
-        DLAExceptionHandler.handleException(e2);
-        DLASystemExit.fatalExit();
-    }
-    loader.load();
-    DLASystemExit.exit();
-  }
-
-  /**
    * executes the initialize(), run() and post() methods
    * of the subclass loader and performs standard logging and
    * system exiting.
@@ -192,32 +159,40 @@ public abstract class DLALoader {
    */
   public void load() {
     try {
-      logger.logdInfo("Beginning load processing",true);
+      logger.logdInfo("Performing load initialization",true);
       initialize();
-      run();
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
-          dlaExceptionFactory.getException(RunException);
-      e2.setParent(e);
+          dlaExceptionFactory.getException(InitException, e);
       DLAExceptionHandler.handleException(e2);
       DLASystemExit.fatalExit();
     }
     try {
-      logger.logdInfo("Performing finalization",true);
-      radarDBMgr.closeResources();
-      mgdDBMgr.closeResources();
-      post();
+      logger.logdInfo("Performing load processing",true);
+      run();
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
-          dlaExceptionFactory.getException(FinalizeException);
-      e2.setParent(e);
+          dlaExceptionFactory.getException(RunException, e);
+      DLAExceptionHandler.handleException(e2);
+      DLASystemExit.fatalExit();
+    }
+
+    try {
+      logger.logdInfo("Performing post process",true);
+      post();
+      radarDBMgr.closeResources();
+      mgdDBMgr.closeResources();
+    }
+    catch (Exception e) {
+      DLAException e2 = (DLAException)
+          dlaExceptionFactory.getException(FinalizeException, e);
       DLAExceptionHandler.handleException(e2);
       DLASystemExit.fatalExit();
     }
     logger.logdInfo("Load completed",true);
-    logger.logpInfo("Load completed",true);
+    logger.logpInfo("Load completed",false);
   }
 
   /**
