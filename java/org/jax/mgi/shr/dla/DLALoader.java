@@ -21,13 +21,14 @@ import org.jax.mgi.shr.exception.MGIException;
  * @is a base class which implements the DLA standards for all loaders.
  * @abstract this class provides the instantiation of the 'basic needs'
  * objects for performing database loads such as SQLDataManagers, loggers,
- * BCPManagers, DLA exception handlers and factories. It also provides the
- * main method. Sub classes would be required to implement the following
+ * BCPManagers, SQLJobstreams and DLA exception handlers and factories.
+ * Sub classes would be required to implement the following
  * methods:<br>
  * <UL>
  *   <LI>initialize - for initializing sub class instance variables
- *   <LI>run - for performing a specific load
- *   <LI>finale - for closing resources and other finalizations
+ *   <LI>preprocess - for performing pre processing
+ *   <LI>run - for performing a load
+ *   <LI>postprocess - for closing resources and other finalizations
  * </UL>
  * @has a set of 'basic-needs' objects for doing DLA loads<br>
  * <UL>
@@ -110,10 +111,12 @@ public abstract class DLALoader {
       DLAExceptionFactory.InitException;
   private static final String RunException =
       DLAExceptionFactory.RunException;
-  private static final String FinalizeException =
-      DLAExceptionFactory.FinalizeException;
+  private static final String PostProcessException =
+      DLAExceptionFactory.PostProcessException;
   private static final String SQLStreamNotSupported =
       DLAExceptionFactory.SQLStreamNotSupported;
+  private static final String PreProcessException =
+      DLAExceptionFactory.PreProcessException;
 
   /**
    * @is a default constructor
@@ -169,6 +172,16 @@ public abstract class DLALoader {
       DLASystemExit.fatalExit();
     }
     try {
+      logger.logdInfo("Performing load pre processing",true);
+      preprocess();
+    }
+    catch (Exception e) {
+      DLAException e2 = (DLAException)
+          dlaExceptionFactory.getException(PreProcessException, e);
+      DLAExceptionHandler.handleException(e2);
+      DLASystemExit.fatalExit();
+    }
+    try {
       logger.logdInfo("Performing load processing",true);
       run();
     }
@@ -178,16 +191,15 @@ public abstract class DLALoader {
       DLAExceptionHandler.handleException(e2);
       DLASystemExit.fatalExit();
     }
-
     try {
-      logger.logdInfo("Performing post process",true);
-      post();
+      logger.logdInfo("Performing post processing",true);
+      postprocess();
       radarDBMgr.closeResources();
       mgdDBMgr.closeResources();
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
-          dlaExceptionFactory.getException(FinalizeException, e);
+          dlaExceptionFactory.getException(PostProcessException, e);
       DLAExceptionHandler.handleException(e2);
       DLASystemExit.fatalExit();
     }
@@ -204,6 +216,15 @@ public abstract class DLALoader {
   protected abstract void initialize() throws MGIException;
 
   /**
+   * to perform load pre processing
+   * @assumes nothing
+   * @effects any preprocessing will be performed
+   * @throws MGIException if errors occur during preprocessing
+   */
+  protected abstract void preprocess() throws MGIException;
+
+
+  /**
    * to perform a database load into the RADAR and/or MGD
    * database
    * @assumes nothing
@@ -217,13 +238,13 @@ public abstract class DLALoader {
 
   /**
    * to perform any finalization routines such as closing
-   * resources opened during initialization
+   * SQLStreams
    * @assumes nothing
-   * @effects all resources will be closed
+   * @effects post processing will be performed
    * @throws MGIException throw if an error occurs while performing
-   * finalization
+   * post processing
    */
-  protected abstract void post() throws MGIException;
+  protected abstract void postprocess() throws MGIException;
 
   /**
    * create a new SQLStream based on the given name
