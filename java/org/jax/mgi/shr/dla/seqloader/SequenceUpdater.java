@@ -130,16 +130,16 @@ public class SequenceUpdater {
         if (! inputSeqTypeKey.equals(existingSeqTypeKey) ) {
             // check type attribute history
             if( ! attrHistory.isTypeCurated(existingSeqKey)) {
-
+                logger.logdDebug("Updating Sequence Type");
                 existingSeqState.setSequenceTypeKey(inputSeqTypeKey);
             }
             else {
                // log the sequence key, seqid, new rawType existing rawType
-               logger.logvInfo("Cannot update sequence type key due to curation. " +
+               logger.logdDebug("Cannot update sequence type key due to curation. " +
                                "Existing _Sequence_key: " + existingSeqKey +
                                "has rawType: " + existingSeqState.getRawType() +
                                ". input rawType is: " +
-                               inputSeqState.getRawType(), true);
+                               inputSeqState.getRawType());
             }
             existingSeqState.setRawType(inputSeqRawType);
             update = true;
@@ -147,6 +147,7 @@ public class SequenceUpdater {
 
         // update sequence record date
         if ( inputSeqrecordDate.after(existingSeqrecordDate) ) {
+            logger.logdDebug("Updating Sequence record date");
             existingSeqState.setSeqrecordDate(inputSeqrecordDate);
             update = true;
         }
@@ -173,6 +174,7 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqVersion.equals(existingSeqVersion) ) {
+              logger.logdDebug("Updating Sequence Version");
               existingSeqState.setVersion(inputSeqVersion);
 
               // if GenBank also update seqeunceDate from seqrecord date
@@ -180,6 +182,7 @@ public class SequenceUpdater {
               // > existingSeqRecordDate AND inputVersion > existingVersion
               if ( (logicalDB.intValue()) == (LogicalDBConstants.SEQUENCE)) {
                   existingSeqState.setSequenceDate(inputSeqrecordDate);
+                  logger.logdDebug("Updating Sequence Date");
               }
               update = true;
             }
@@ -197,6 +200,7 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
              if( !inputSeqLength.equals(existingSeqLength)) {
+               logger.logdDebug("Updating Sequence Length");
                existingSeqState.setLength(inputSeqLength);
                update = true;
              }
@@ -214,6 +218,7 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqDivision.equals(existingSeqDivision) ) {
+              logger.logdDebug("Updating Sequence Division");
               existingSeqState.setDivision(inputSeqDivision);
               update = true;
             }
@@ -224,6 +229,7 @@ public class SequenceUpdater {
         if (inputSeqRawLibrary == null || existingSeqRawLibrary == null) {
               // if just one is null - update
               if ( ! (inputSeqRawLibrary == null && existingSeqRawLibrary == null) ) {
+                  logger.logdDebug("Updating Sequence Raw Library - one value null");
                   existingSeqState.setRawLibrary(inputSeqRawLibrary);
                   update = true;
               }
@@ -231,6 +237,7 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqRawLibrary.equals(existingSeqRawLibrary) ) {
+              logger.logdDebug("Updating Sequence Raw Library");
               existingSeqState.setRawLibrary(inputSeqRawLibrary);
               update = true;
             }
@@ -241,6 +248,7 @@ public class SequenceUpdater {
         if (inputSeqRawStrain == null || existingSeqRawStrain == null) {
               // if just one is null - update
               if ( ! (inputSeqRawStrain == null && existingSeqRawStrain == null) ) {
+                  logger.logdDebug("Updating Sequence Raw Strain - one value null");
                   existingSeqState.setRawStrain(inputSeqRawStrain);
                   update = true;
               }
@@ -248,6 +256,7 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqRawStrain.equals(existingSeqRawStrain) ) {
+              logger.logdDebug("Updating Sequence Raw strain");
               existingSeqState.setRawStrain(inputSeqRawStrain);
               update = true;
             }
@@ -258,6 +267,7 @@ public class SequenceUpdater {
         if (inputSeqRawTissue == null || existingSeqRawTissue == null) {
               // if just one is null - update
               if ( ! (inputSeqRawTissue == null && existingSeqRawTissue == null) ) {
+                  logger.logdDebug("Updating Sequence Raw Tissue - one value null");
                   existingSeqState.setRawTissue(inputSeqRawTissue);
                   update = true;
               }
@@ -265,6 +275,7 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqRawTissue.equals(existingSeqRawTissue) ) {
+              logger.logdDebug("Updating Sequence Raw Tissue");
               existingSeqState.setRawTissue(inputSeqRawTissue);
               update = true;
             }
@@ -275,6 +286,7 @@ public class SequenceUpdater {
             if (inputSeqRawAge == null || existingSeqRawAge == null) {
                   // if just one is null - update
                   if ( ! (inputSeqRawAge == null && existingSeqRawAge == null) ) {
+                      logger.logdDebug("Updating Sequence Raw Age - one value null");
                       existingSeqState.setRawAge(inputSeqRawAge);
                       update = true;
                   }
@@ -282,6 +294,7 @@ public class SequenceUpdater {
             // Do a string compare, if not equal - update
             else {
                 if ( ! inputSeqRawAge.equals(existingSeqRawAge) ) {
+                  logger.logdDebug("Updating Sequence Raw Age");
                   existingSeqState.setRawAge(inputSeqRawAge);
                   update = true;
                 }
@@ -292,6 +305,7 @@ public class SequenceUpdater {
             if (inputSeqRawSex == null || existingSeqRawSex == null) {
                   // if just one is null - update
                   if ( ! (inputSeqRawSex == null && existingSeqRawSex == null) ) {
+                      logger.logdDebug("Updating Sequence Raw Sex - one value null");
                       existingSeqState.setRawSex(inputSeqRawSex);
                       update = true;
                   }
@@ -299,6 +313,7 @@ public class SequenceUpdater {
             // Do a string compare, if not equal - update
             else {
                 if ( ! inputSeqRawSex.equals(existingSeqRawSex) ) {
+                  logger.logdDebug("Updating Sequence Raw Sex");
                   existingSeqState.setRawSex(inputSeqRawSex);
                   update = true;
                 }
@@ -309,6 +324,7 @@ public class SequenceUpdater {
             if (inputSeqRawCellLine == null || existingSeqRawCellLine == null) {
                   // if just one is null - update
                   if ( ! (inputSeqRawCellLine == null && existingSeqRawCellLine == null) ) {
+                      logger.logdDebug("Updating Sequence Raw CellLine - one value null");
                       existingSeqState.setRawCellLine(inputSeqRawCellLine);
                       update = true;
                   }
@@ -316,6 +332,7 @@ public class SequenceUpdater {
             // Do a string compare, if not equal - update
             else {
                 if ( ! inputSeqRawCellLine.equals(existingSeqRawCellLine) ) {
+                  logger.logdDebug("Updating Sequence Raw CellLine");
                   existingSeqState.setRawCellLine(inputSeqRawCellLine);
                   update = true;
                 }
@@ -333,6 +350,7 @@ public class SequenceUpdater {
             // Do a string compare, if not equal - update
             else {
                 if ( ! inputSeqDescription.equals(existingSeqDescription) ) {
+                  logger.logdDebug("Updating Sequence Description");
                   existingSeqState.setDescription(inputSeqDescription);
                   update = true;
                 }
