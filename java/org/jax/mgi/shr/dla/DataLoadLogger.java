@@ -21,9 +21,6 @@ import java.lang.Throwable;
 
 import org.jax.mgi.shr.config.DLALoggerCfg;
 import org.jax.mgi.shr.config.ConfigException;
-import org.jax.mgi.shr.log.MessageOnlyFormatter;
-import org.jax.mgi.shr.log.LoggingException;
-import org.jax.mgi.shr.log.LoggingExceptionFactory;
 
 /**
  * <p>IS: an object that logs messages of various severity levels to a set of
@@ -150,7 +147,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
   * @return singleton instance of DataLoadLogger
   */
 
-  public static synchronized org.jax.mgi.shr.log.Logger getInstance()
+  public static synchronized DataLoadLogger getInstance()
   throws LoggingException {
     if (instance == null) {
       try {
@@ -178,7 +175,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
    * @param message the message to log
    */
   public void logInfo(String message) {
-    logd(message, true);
+    logd(message, false);
   }
 
   /**
@@ -626,6 +623,9 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.1  2003/04/22 22:31:59  mbw
+// initial version
+//
 // Revision 1.3.2.9  2003/04/08 21:11:16  mbw
 // removed use of MessageCount class, removed checks for log creation, removed secondary constructor
 //
