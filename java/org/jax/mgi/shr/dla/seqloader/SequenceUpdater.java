@@ -13,6 +13,7 @@ import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
+import org.jax.mgi.dbs.mgd.hist.Seq_SequenceAttrHistory;
 
 
 
@@ -42,7 +43,7 @@ import java.sql.Timestamp;
 
 public class SequenceUpdater {
 
-    SeqAttrHistory attrHistory;
+    Seq_SequenceAttrHistory attrHistory;
     DLALogger logger;
     LogicalDBLookup logicalDBLookup;
     Integer logicalDB;
@@ -64,7 +65,7 @@ public class SequenceUpdater {
     public SequenceUpdater()
         throws DBException, ConfigException, DLALoggingException,
             KeyNotFoundException, CacheException {
-        attrHistory = new SeqAttrHistory();
+        attrHistory = new Seq_SequenceAttrHistory();
         logger = DLALogger.getInstance();
         loadCfg = new SequenceLoadCfg();
         logicalDBLookup = new LogicalDBLookup();
