@@ -117,8 +117,9 @@ public class MSSeqAssoc extends DAO
     }
 
     /**
-     * get the bcp tables supported. currently this is not implemented and
-     * a runtime exception is thrown when this method is called
+     * get the bcp tables supported.
+     * currently this is not implemented and a runtime exception is thrown when
+     * this method is called
      * @assumes nothing
      * @effects a runtime exception is thrown
      * @return the insert sql for this instance once the implementation is
@@ -130,8 +131,9 @@ public class MSSeqAssoc extends DAO
     }
 
     /**
-     * get the bcp vector for a given table supported. currently this is not
-     * implemented and a runtime exception is thrown when this method is called
+     * get the bcp vector for a given table supported.
+     * currently this is not implemented and a runtime exception is thrown
+     * when this method is called
      * @assumes nothing
      * @effects a runtime exception is thrown
      * @return the insert sql for this instance once the implementation is
@@ -144,8 +146,9 @@ public class MSSeqAssoc extends DAO
 
 
     /**
-     * get the sql for doing inserts. currently this is not implemented and
-     * a runtime exception is thrown when this method called
+     * get the sql for doing inserts.
+     * currently this is not implemented and a runtime exception is thrown
+     * when this method called
      * @assumes nothing
      * @effects a runtime exception is thrown
      * @return the insert sql for this instance once the implementation is
@@ -158,7 +161,8 @@ public class MSSeqAssoc extends DAO
 
     /**
      * get the sql for updating the PRB_Source and SEQ_Source_Assoc tables
-     * with data from this instance. this method is typically called by a
+     * with data from this instance.
+     * this method is typically called by a
      * SQLStrategy class when performing updates
      * @assumes nothing
      * @effects nothing
@@ -204,8 +208,9 @@ public class MSSeqAssoc extends DAO
     }
 
     /**
-     * get the sql for doing deletes. currently this is not implemented and
-     * a runtime exception is thrown when this method called
+     * get the sql for doing deletes.
+     * currently this is not implemented and a runtime exception is thrown when
+     * this method called
      * @assumes nothing
      * @effects a runtime exception is thrown
      * @return the insert sql for this instance once the implementation is

@@ -13,7 +13,7 @@ import org.jax.mgi.shr.config.MSProcessorCfg;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @IS an object for processing raw molecular source attributes for a given
+ * an object for processing raw molecular source attributes for a given
  * sequence object.
  * @has
  * <ul>
@@ -140,13 +140,13 @@ public class MSProcessor
 
     /**
      * discovers the MolecularSource object to use for the given sequence by
-     * resolving the raw attributes. if the attributes are a named source
-     * then it looks up the source in the database by name. if it is
-     * annonymous then it will look at the sources for the associated clones
-     * to see if it can discover a named source that way. if the attributes
-     * are annonymous and no named source was found through clone association
-     * then a collapsing algorithm is used for sharing molecular source
-     * objects.
+     * resolving the raw attributes.
+     * if the attributes are a named source then it looks up the source in the
+     * database by name. if it i annonymous then it will look at the sources
+     * for the associated clones to see if it can discover a named source that
+     * way. if the attributes are annonymous and no named source was found
+     * through clone association then a collapsing algorithm is used for
+     * sharing molecular source objects.
      * @param accid the sequence accid
      * @param attr the ms raw attributes
      * @return the MolecularSource that is resolved

@@ -3,10 +3,11 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * <p>@is </p>
- * <p>@has </p>
- * <p>@does </p>
- * <p>@company The Jackson Laboratory</p>
+ * is an exception for not being able to resolve an organism name to an
+ * organism key.
+ * @has nothing
+ * @does nothing
+ * @company The Jackson Laboratory
  * @author not attributable
  *
  */
