@@ -22,12 +22,36 @@ public class DLALoaderCfg extends Configurator {
   /**
    * get the loader name to run.
    * @return loader name.
+   * @assumes nothing
+   * @effects nothing
    * @throws ConfigException thrown if loader name could not be obtained
    * from the configuration
    */
-  public String getLoaderClass() throws ConfigException {
-    return getConfigString("DLA_LOADER");
+  public Object getLoaderClass() throws ConfigException {
+    return getConfigObject("DLA_LOADER");
   }
 
+  /**
+   * get the name of the SQLStream for loading data
+   * @assumes nothing
+   * @effects nothing
+   * @return the name of the SQLStream
+   */
+  public String getLoadStreamName()
+  {
+      return getConfigString("DLA_LOAD_STREAM",
+                             "org.jax.mgi.shr.dbutils.dao.Inline_Stream");
+  }
 
+  /**
+   * get the name of the SQLStream for qc data
+   * @assumes nothing
+   * @effects nothing
+   * @return the name of the SQLStream
+   */
+  public String getQCStreamName()
+  {
+      return getConfigString("DLA_QC_STREAM",
+                             "org.jax.mgi.shr.dbutils.dao.Inline_Stream");
+  }
 }
