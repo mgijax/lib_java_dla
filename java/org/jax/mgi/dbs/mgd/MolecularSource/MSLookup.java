@@ -8,6 +8,7 @@ import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceInterpreter;
 import org.jax.mgi.dbs.mgd.dao.SEQ_Source_AssocDAO;
 import org.jax.mgi.dbs.mgd.dao.SEQ_Source_AssocInterpreter;
+import org.jax.mgi.dbs.mgd.lookup.NamedSourceLookup;
 import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
@@ -20,6 +21,7 @@ import org.jax.mgi.shr.dbutils.RowReference;
 import org.jax.mgi.shr.dbutils.RowDataInterpreter;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
+import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.types.Converter;
 
 /**
@@ -32,6 +34,11 @@ import org.jax.mgi.shr.types.Converter;
 
 public class MSLookup {
 
+    /**
+     * a lookup for finding prb_sourceDAO objects by name
+     */
+    private NamedSourceLookup namedSrcLookup = null;
+
   /**
    * the SQLDataManager to use for performing queries
    */
@@ -41,6 +48,7 @@ public class MSLookup {
    * the following constant definitions are exceptions thrown by this class
    */
   private static String TooManyRows = MSExceptionFactory.TooManyRows;
+
 
   /**
    * create a MolecularSource object by quering a record in the database by key
@@ -63,6 +71,18 @@ public class MSLookup {
     MolecularSource ms = new MolecularSource(src);
     ms.setInDatabase(true);
     return ms;
+  }
+
+  public MolecularSource findByName(String name)
+  throws DBException, ConfigException, CacheException
+  {
+      if (this.namedSrcLookup == null)
+          this.namedSrcLookup = new NamedSourceLookup();
+      PRB_SourceDAO dao = this.namedSrcLookup.lookup(name);
+      if (dao == null)
+          return null;
+      else
+          return new MolecularSource(dao);
   }
 
   /**
