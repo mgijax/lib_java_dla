@@ -61,9 +61,6 @@ public class IncremSeqProcessor extends SeqProcessor {
     // detects add/update/non/already_added events for sequences
     private SeqEventDetector eventDetector;
 
-    // writer for repeated sequences
-    private BufferedWriter repeatWriter;
-
     // QCReporter to manage writing to seqloader QC tables
     private SeqQCReporter qcReporter;
 
@@ -90,8 +87,6 @@ public class IncremSeqProcessor extends SeqProcessor {
      * @param sar a SequenceAttributeResolver to resolve SEQ_Sequence attributes
      * @param msp a MergeSplitProcessor - handles determining and processing
      *    merge and split events
-     * @param repeatSeqWriter - a BufferedWriter to handle writing repeated
-     *    sequences to a file for later processing
      * @throws CacheException if error using lookups
      * @throws DBException if lookup error querying a database
      * @throws ConfigException if error reading config file
@@ -104,14 +99,12 @@ public class IncremSeqProcessor extends SeqProcessor {
                               SQLStream radarSqlStream,
                               SeqQCReporter qcReporter,
                               SequenceAttributeResolver sar,
-                              MergeSplitProcessor msp,
-                              BufferedWriter repeatSeqWriter)
+                              MergeSplitProcessor msp)
         throws CacheException, DBException, ConfigException,  MSException,
                DLALoggingException, KeyNotFoundException {
         super(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
-        repeatWriter = repeatSeqWriter;
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
         seqIdLookup = new AccessionLookup(logicalDBKey,
               MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
@@ -130,7 +123,7 @@ public class IncremSeqProcessor extends SeqProcessor {
 
     /**
      * Does incremental processing on a sequence by detecting
-     * add, update, already processed and non events. Also detects and processes
+     * add, update, and non events. Also detects and processes
      * merge and split events under the covers<BR>
      * <UL>
      * <LI>Add event creates a SEQ_Sequence, one or more SEQ_Source_Assoc,
@@ -139,8 +132,6 @@ public class IncremSeqProcessor extends SeqProcessor {
      *     and may create PRB_Source object(s)(See MSProcessor)
      * <LI>Update event updates SEQ_Sequence database object and may update
      *     or create PRB_Source (See MSProcessor)
-     * <LI>Already processed event writes the sequence to a file for later
-     *     processing.
      * <LI>Non event does nothing
      * <LI>Dummy Event deletes the dummy sequence then processes as an add
      * <LI>For merges and splits see MergeSplitProcessor
@@ -152,8 +143,6 @@ public class IncremSeqProcessor extends SeqProcessor {
      *   including source(s), reference(s), accession(s)
      * @throws SeqloaderException if there is an IO error with the repeat
      *    sequence file
-     * @throws RepeatSequenceException if we have already processed the current
-     *    sequence in the input
      * @throws SequenceResolverException if we are unable to resolve one or more
      *    SequenceRawAttributes attributes
      * @throws ChangedOrganismException if input raw organism != existing raw organism
@@ -161,8 +150,8 @@ public class IncremSeqProcessor extends SeqProcessor {
      */
 
     public void processInput(SequenceInput seqInput)
-      throws SeqloaderException, RepeatSequenceException,
-          ChangedOrganismException, SequenceResolverException, MSException {
+      throws SeqloaderException, ChangedOrganismException,
+          SequenceResolverException, MSException {
 
           // get the primary seqid of the sequence we are processing
           String primarySeqId = seqInput.getPrimaryAcc().getAccID();
@@ -229,12 +218,7 @@ public class IncremSeqProcessor extends SeqProcessor {
             SeqloaderExceptionFactory.EventDetectionErr, e);
             throw e1;
           }
-
-          if (event == SeqloaderConstants.ALREADY_ADDED) {
-            logger.logdDebug("Already Added Event Primary: " + primarySeqId);
-            processAlreadyAddedEvent(seqInput);
-          }
-          else if (event == SeqloaderConstants.UPDATE) {
+          if (event == SeqloaderConstants.UPDATE) {
             logger.logdDebug("Update Event Primary: " + primarySeqId);
             try {
               processUpdateEvent(seqInput, existingSequence);
@@ -308,7 +292,6 @@ public class IncremSeqProcessor extends SeqProcessor {
     */
      public Vector getProcessedReport() {
          Vector report = new Vector();
-         report .add("Total Already Added Events (repeated sequences): " + eventDetector.getAlreadyAddedEventCount());
          report.add("Total Add Events: " + eventDetector.getAddEventCount());
          report.add("Total Update Events: " + eventDetector.getUpdateEventCount());
          report.add("Total Dummy Events: " + eventDetector.getDummyEventCount());
@@ -317,33 +300,6 @@ public class IncremSeqProcessor extends SeqProcessor {
          report.add("Total Split Events: " + eventDetector.getSplitEventCount());
          return report;
      }
-
-      /**
-      * processes AlreadyAdded event by writing the sequence to a file for later
-      *    processing
-      * @assumes Nothing
-      * @effects writes sequence record to a file
-      * @param seqInput SequenceInput object - a set of raw sequence attributes
-      *        including references assoc, source assoc and accession
-      * @throws RepeatSequenceException if the sequence has already been processed
-      * @throws SeqloaderException indicating an IO exception occurred writing
-      *   to the repeat file
-      */
-
-      private void processAlreadyAddedEvent(SequenceInput seqInput)
-          throws RepeatSequenceException, SeqloaderException {
-      try {
-          // write sequence to file and throw RepeatFileException
-          repeatWriter.write(seqInput.getSeq().getRecord() + SeqloaderConstants.CRT);
-          throw new RepeatSequenceException();
-        }
-        catch (IOException e) {
-          SeqloaderException e1 =
-              (SeqloaderException) eFactory.getException(
-                  SeqloaderExceptionFactory.RepeatFileIOException, e);
-          throw e1;
-        }
-      }
 
       /**
       * processes Update events
