@@ -154,7 +154,7 @@ public class Sequence {
      */
 
     public SEQ_SequenceState getSequenceState() {
-        return sequenceDAO.getState();
+        return ((SEQ_SequenceDAO)sequenceDAO.clone()).getState();
     }
 
     /**
@@ -444,10 +444,11 @@ public class Sequence {
      * @effects Nothing
      * @param updateFrom - the set of attributes from which to update the sequence
      * @throws DBException if error querying a database for attribute history
+     * @throws CacheException if error using a lookup
      */
 
     public void updateSequenceState(SEQ_SequenceState updateFrom)
-        throws DBException {
+        throws DBException, CacheException {
         isChangedSequence = seqUpdater.updateSeq( this.sequenceDAO.getState(),
                                 sequenceDAO.getKey().getKey(),
                                 updateFrom);
@@ -576,6 +577,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.3  2005/02/09 14:52:35  sc
+//  tr6473
+//
 //  Revision 1.2.8.1  2005/01/24 19:09:18  sc
 //  now call SequenceUpdater.getInstance
 //
