@@ -100,13 +100,15 @@ public class CoordLoader extends DLALoader {
     }
 
     /**
-     * Deletes this load's collection and all members of that collection
+     * Deletes this load's collection and all members of that collection in
+     * a database. Creates a new collection in the database.
      * @effects deletes collection, map, and feature objects from a database
      * @throws MGIException if errors occur while deleting
      */
 
     public void preprocess() throws MGIException {
         coordProcessor.deleteCoordinates();
+        coordProcessor.createCollection();
     }
 
     /**
