@@ -29,6 +29,7 @@ public class SeqloaderConstants {
 
     // Yes, THREE escapes! your not seeing things - isn't Java fun
     public static final String DBL_QUOTE = "\\\"";
+    public static final String SGL_QUOTE = "'";
     public static final String EMPTY_STRING = "";
 
     // misc constants
@@ -57,6 +58,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.5  2004/03/24 18:33:30  sc
+//  added constants for open paren, comma,semi-colon, and Not Applicable
+//
 //  Revision 1.4  2004/02/27 14:35:23  sc
 //  aded VOV_Vocab controlled vocab for sequence quality
 //
