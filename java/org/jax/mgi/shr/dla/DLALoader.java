@@ -9,6 +9,7 @@ import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.dao.Inline_Stream;
 import org.jax.mgi.shr.dbutils.dao.Batch_Stream;
 import org.jax.mgi.shr.dbutils.dao.Script_Stream;
+import org.jax.mgi.shr.dbutils.dao.BCP_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream;
@@ -270,6 +271,8 @@ public abstract class DLALoader {
           return new Batch_Stream(DBMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.Script_Stream"))
           return new Script_Stream(DBMgr.getScriptWriter());
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Stream"))
+          return new BCP_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream"))
           return new BCP_Inline_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream"))
