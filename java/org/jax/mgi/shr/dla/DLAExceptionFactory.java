@@ -43,7 +43,7 @@ public class DLAExceptionFactory extends ExceptionFactory {
       "org.jax.mgi.shr.shrdbutils.FinalizeException";
   static {
     exceptionsMap.put(FinalizeException, new DLAException(
-        "Exception occured while cleaning up loader resources", false));
+        "Exception occured during post processing", false));
   }
 
   /**
