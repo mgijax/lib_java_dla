@@ -219,6 +219,18 @@ public class CoordLoadCfg extends Configurator {
    public String getLogicalDB() throws ConfigException {
      return getConfigString("COORD_LOGICALDB");
    }
+   /**
+  * get the logicalDB name for the coordIds
+  * @return logicalDB
+  * @assumes nothing
+  * @effects nothing
+  * @throws ConfigException thrown if error reading config file
+  * from the configuration
+  */
+ public String getRepeatFileName() throws ConfigException {
+   return getConfigString("COORD_REPEAT_FILE");
+ }
+
 }
 
 
