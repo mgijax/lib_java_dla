@@ -80,7 +80,7 @@ public class TestMSCollapsedCache
             "getDate(), getDate())"
 
             );
-    lookup = new MSCollapsedCache(new ConsoleLogger(), CacheConstants.FULL_CACHE);
+    lookup = new MSCollapsedCache(CacheConstants.FULL_CACHE);
   }
 
   protected void tearDown() throws Exception {
