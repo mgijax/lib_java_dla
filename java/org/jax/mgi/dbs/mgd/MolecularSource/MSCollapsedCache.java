@@ -82,7 +82,7 @@ public class MSCollapsedCache
             "SELECT * " +
             "FROM PRB_Source " +
             "WHERE isCuratorEdited = 0 " +
-            "AND name = null"
+            "AND name is null"
             );
     }
 
