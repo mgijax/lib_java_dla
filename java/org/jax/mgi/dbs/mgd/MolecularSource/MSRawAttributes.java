@@ -104,20 +104,6 @@ public class MSRawAttributes
     this.cellLine = cellLine;
   }
 
-  /**
-   * get the age
-   * @return the age
-   */
-  public String getAge(){ return age; }
-
-  /**
-   * set the age
-   * @param age the age value
-   */
-  public void setAge(String age) {
-    this.age = age;
-  }
-
 
   /**
    * rest the object attributes in order to reuse this object
