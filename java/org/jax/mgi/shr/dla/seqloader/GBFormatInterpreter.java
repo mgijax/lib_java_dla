@@ -21,7 +21,6 @@ import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 
-
     /**
      * @is An object that parses a GenBank format sequence records and obtains
      *     values from a Configurator to create a SequenceInput data object.<BR>
@@ -130,6 +129,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     */
 
     public GBFormatInterpreter(GBOrganismChecker oc) throws ConfigException {
+
         // Create an organism checker for GenBank
         this.organismChecker = oc;
 
@@ -384,13 +384,16 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     *        * sequence record<BR>
     * FEATURES source section example, note that the first and last lines
     * (FEATURES and ORIGIN are not included in the text of 'source' but added
-    *  here for clarity. Note also that this is a contrived source section
-    *  used in testing:<BR>
-    *        * <PRE>
+    *  here for clarity. Source 'qualifiers' start with '/'. Only '/organism' and
+    *  '/mol_type' are required. There is no guarantee of order for source
+    *  qualifiers. Qualifier values may span multiple lines.The following is is a contrived source section used in
+    *  testing:<BR>
+    * <PRE>
     * FEATURES             Location/Qualifiers
     *      source          1..3133
     *                      /organism="Mus musculus"
     *                      /db_xref="taxon:10090"
+    *                      /mol_type="mRNA"
     *                      /tissue_type="placenta day 20"
     *                      /dev_stage="dpc 14.5"
     *                      /strain="129SJVMus"
@@ -427,48 +430,83 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 
         // value of the source qualifier
         String value = null;
-
         while(lineSplitter.hasMoreTokens()) {
             line = lineSplitter.nextToken().trim();
+
             // all qualifiers start with '/'
             if (line.startsWith(SeqloaderConstants.SLASH)) {
                 // split the qualifier line on '='
                 splitLine = StringLib.split(line, SeqloaderConstants.EQUAL);
 
-                // there will always be qualifier, but not necessarily a value
-                // go figure ?!
-                qualifier = (String) splitLine.get(0);
+                // not all qualifiers require values (no '=') and not all
+                // qualifiers that require values have values (these do have '=').
+                // The qualifiers we are looking for *should* all have values.
                 if (splitLine.size() == 2) {
-                    // get the qualifier
-                    value = (String)splitLine.get(1);
-                    // remove quotes
-                    value = value.replaceAll(SeqloaderConstants.DBL_QUOTE,
-                                             SeqloaderConstants.EMPTY_STRING);
+                    // get the qualifier e.g. "/strain" and value e.g. "BALB/c"
+                    qualifier = (String) splitLine.get(0);
+                    value = (String) splitLine.get(1);
+
+                    // The values we are interested are surrounded by double quotes
+                    // Note some values don't have dbl quotes which would cause
+                    if(value.charAt(0) != '"' ) {
+                      continue;
+                    }
+                    // get the first line which is all we originally parsed
+                    // need to map new translations
+                    // covers this case:
+                    //       /strain="
+                    //       BALB/c"
+                    char lastchar;
+                    if (value.length() == 1) {
+                       // set lastchar to anything but '"'
+                       lastchar = 'x';
+                    }
+                    // Note: using char because testing for doubleQuote did not work
+                    // if last char is not double quote - value is multi-line
+                    else {
+                        lastchar = value.charAt(value.length()-1);
+                    }
+
+                    // double quote signals end of value, but just in case there
+                    // is no ending double quote set a ctr to avoid infinite loop
+                    int ctr = 0;
+                    while( lastchar != '"' && ctr < 10) {
+                        ctr++;
+                        if(lineSplitter.hasMoreTokens()) {
+                             value = value + " " + lineSplitter.nextToken().trim();
+                             lastchar = value.charAt(value.length()-1);
+                        }
+                    }
+
+                    // remove leading and trailing quote
+                    value = value.substring(1, value.length()-1);
+
+                    // set source and raw sequence attributes
+                    if (qualifier.startsWith(LIBRARY)) {
+                        ms.setLibraryName(value);
+                        rawSeq.setLibrary(value);
+                    }
+                    else if (qualifier.startsWith(STRAIN)) {
+                      ms.setStrain(value);
+                      rawSeq.setStrain(value);
+                    }
+                    else if (qualifier.startsWith(TISSUE)) {
+                        ms.setTissue(value);
+                        rawSeq.setTissue(value);
+                    }
+                    else if (qualifier.startsWith(AGE)) {
+                        rawSeq.setAge(value);
+                    }
+                    else if (qualifier.startsWith(SEX)) {
+                        ms.setGender(value);
+                        rawSeq.setSex(value);
+                    }
+                    else if (qualifier.startsWith(CELLINE)) {
+                        ms.setCellLine(value);
+                        rawSeq.setCellLine(value);
+                    }
                 }
-                // set source and raw sequence attributes
-                if (qualifier.startsWith(LIBRARY)) {
-                    ms.setLibraryName(value);
-                    rawSeq.setLibrary(value);
-                }
-                else if (qualifier.startsWith(STRAIN)) {
-                    ms.setStrain(value);
-                    rawSeq.setStrain(value);
-                }
-                else if (qualifier.startsWith(TISSUE)) {
-                    ms.setTissue(value);
-                    rawSeq.setTissue(value);
-                }
-                else if (qualifier.startsWith(AGE)) {
-                    rawSeq.setAge(value);
-                }
-                else if (qualifier.startsWith(SEX)) {
-                    ms.setGender(value);
-                    rawSeq.setSex(value);
-                }
-                else if (qualifier.startsWith(CELLINE)) {
-                    ms.setCellLine(value);
-                    rawSeq.setCellLine(value);
-                }
+
             }
         }
     }
