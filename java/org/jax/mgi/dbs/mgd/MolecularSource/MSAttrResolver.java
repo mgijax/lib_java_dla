@@ -208,7 +208,6 @@ public class MSAttrResolver {
             ms.setGenderKey(this.genNotApplicableKey);
             ms.setStrainKey(this.strNotApplicableKey);
             ms.setTissueKey(this.tissNotApplicableKey);
-            ms.setAge(NOT_APPLICABLE);
             /**
              * done
              */
@@ -226,7 +225,6 @@ public class MSAttrResolver {
             ms.setGenderKey(this.genNotApplicableKey);
             ms.setStrainKey(this.strNotApplicableKey);
             ms.setTissueKey(this.tissNotApplicableKey);
-            ms.setAge(NOT_APPLICABLE);
             /**
              * done
              */
@@ -344,7 +342,7 @@ public class MSAttrResolver {
 
         }
         // set age
-        ms.setAge(NOT_RESOLVED);
+        ms.setAge(rawAttr.getAge());
         return ms;
     }
 }
