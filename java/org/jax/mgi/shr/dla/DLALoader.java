@@ -228,6 +228,7 @@ public abstract class DLALoader {
     }
     logger.logdInfo("Load completed",true);
     logger.logpInfo("Load completed",false);
+    DLASystemExit.exit();
   }
 
   /**

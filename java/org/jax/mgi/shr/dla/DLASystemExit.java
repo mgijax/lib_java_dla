@@ -22,11 +22,6 @@ public class DLASystemExit {
    * The application is exiting because of a fatal error
    */
   public static final int FATAL_ERROR = 1;
-  /**
-   * The application ran to completion but encountered at least one non
-   * fatal error during processing
-   */
-  public static final int NONFATAL_ERROR = 2;
 
   /**
    * exits the system, logs a message to the system
@@ -72,36 +67,11 @@ public class DLASystemExit {
                          "A logger instance could not be obtained. Please " +
                          "report as a bug./n" + e.toString());
     }
-    int errorCnt = DLAExceptionHandler.getErrorCount();
-    int dataErrorCount = DLAExceptionHandler.getDataErrorCount();
-    logMessage(logger, errorCnt, dataErrorCount);
     if (fatal)
       exitCode = FATAL_ERROR;
-    else if (errorCnt > 0)
-      exitCode = NONFATAL_ERROR;
     else
       exitCode = OK;
-    System.exit(exitCode);
     logger.close();
-  }
-
-  /**
-   * logs the error count to the system logger
-   * @assumes nothing
-   * @effects a message gets logged to the system logger
-   * @param logger thr logger instance
-   * @param pErrorCnt the total number of errors
-   * @param pDataRelatedCnt the total number of data related errors
-   */
-  private static void logMessage(DLALogger logger, int pErrorCnt,
-                                 int pDataRelatedCnt) {
-    String message = "The system exited with " + pErrorCnt +
-        " total errors.";
-    if (pErrorCnt > 0) {
-      message = message + " The number of data related errors was " +
-          pDataRelatedCnt + ".";
-    }
-    logger.logpInfo(message, true);
-    logger.logcInfo(message, true);
+    System.exit(exitCode);
   }
 }

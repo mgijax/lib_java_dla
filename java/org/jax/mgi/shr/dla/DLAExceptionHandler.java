@@ -18,22 +18,6 @@ import org.jax.mgi.shr.exception.MGIException;
 
 public class DLAExceptionHandler {
 
-  private static DLALogger logger = null;
-  static {
-    try {
-      logger = DLALogger.getInstance();
-    }
-    catch (DLALoggingException e) {
-      System.err.print("Cannot obtain a Logger for the following reason. " +
-                       "This is really bad news. " +
-                       "Exiting program unequivocally.\n" + e.toString());
-      System.exit(DLASystemExit.FATAL_ERROR);
-    }
-  }
-  private static int errorCount = 0;
-  private static int dataErrorCount = 0;
-
-
   /**
    * provides a standard method for handling exceptions
    * @assumes this method is not being called concurrently
@@ -43,47 +27,26 @@ public class DLAExceptionHandler {
    * @param e an exception that implements LoggableException
    */
   public static void handleException(DLAException e) {
-   e.printStackTrace();
-    logger.logError(e.toString());
-    updateCounts(e);
-  }
+      DLALogger logger = null;
+      try {
+        logger = DLALogger.getInstance();
+      }
+      catch (DLALoggingException e2) {
+        System.err.print("Cannot obtain a Logger for the following reason. " +
+                         "This is really bad news. " +
+                         "Exiting program unequivocally.\n" + e2.toString());
+        System.exit(DLASystemExit.FATAL_ERROR);
+      }
 
-  /**
-   * accesses the error count
-   * @assumes nothing
-   * @effects nothing
-   * @return the count of errors that have occured
-   */
-  public static int getErrorCount() {
-    return errorCount;
-  }
-
-  /**
-   * accesses the data error count
-   * @assumes nothing
-   * @effects nothing
-   * @return the count of errors which are data related that have occured
-   */
-  public static int getDataErrorCount() {
-    return dataErrorCount;
-  }
-
-
-  /**
-   * updates warning or error counts based on the exception
-   * @assumes this method is not being called concurrently
-   * @effects the warning count or error count is updated depending on the
-   * attributes of exception.
-   * @param e an exception that implements LoggableException
-   */
-  private static void updateCounts(MGIException e) {
-      errorCount++;
-      if (e.isDataRelated())
-        dataErrorCount++;
+      e.printStackTrace();
+      logger.logError(e.toString());
   }
 
 }
 // $Log$
+// Revision 1.9  2004/07/01 18:08:27  sc
+// removed e.printStackTrace
+//
 // Revision 1.8  2004/04/02 14:52:17  mbw
 // tweaked error message
 //
