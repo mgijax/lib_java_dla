@@ -29,7 +29,6 @@ import org.jax.mgi.shr.exception.MGIException;
 import java.util.Vector;
 import java.util.Iterator;
 import org.jax.mgi.dbs.mgd.loads.Acc.*;
-import org.jax.mgi.dbs.mgd.accession.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
 
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
@@ -203,30 +202,30 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        try {
          inputSequenceState = resolveRawSequence(seqInput.getSeq());
        }
-	catch (ConfigException e) {
-	  SeqloaderException e1 =
-	      (SeqloaderException) eFactory.getException(
-	  SeqloaderExceptionFactory.ProcessAddErr, e);
-	  throw e1;
-	}
+        catch (ConfigException e) {
+          SeqloaderException e1 =
+              (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.ProcessAddErr, e);
+          throw e1;
+        }
        catch (CacheException e) {
-	  SeqloaderException e1 =
-	      (SeqloaderException) eFactory.getException(
-	  SeqloaderExceptionFactory.ProcessAddErr, e);
-	  throw e1;
-	}
+          SeqloaderException e1 =
+              (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.ProcessAddErr, e);
+          throw e1;
+        }
        catch (DBException e) {
-	  SeqloaderException e1 =
-	      (SeqloaderException) eFactory.getException(
-	  SeqloaderExceptionFactory.ProcessAddErr, e);
-	  throw e1;
-	}
-	catch (TranslationException e) {
-	  SeqloaderException e1 =
-	      (SeqloaderException) eFactory.getException(
-	  SeqloaderExceptionFactory.ProcessAddErr, e);
-	  throw e1;
-	}
+          SeqloaderException e1 =
+              (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.ProcessAddErr, e);
+          throw e1;
+        }
+        catch (TranslationException e) {
+          SeqloaderException e1 =
+              (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.ProcessAddErr, e);
+          throw e1;
+        }
 
        // create the compound sequence; a sequence with its reference(s),
        // source association(s) and seqid(s)
@@ -385,31 +384,31 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
     */
 
    protected void processReferences(Sequence sequence, Vector references)
-	throws KeyNotFoundException, DBException, CacheException, ConfigException {
-	// resolve sequence reference associations and set the states
-	// in the Sequence
+        throws KeyNotFoundException, DBException, CacheException, ConfigException {
+        // resolve sequence reference associations and set the states
+        // in the Sequence
 
-	// The MGI_Reference_Assoc state for a given reference
-	MGI_Reference_AssocState refAssocState = null;
+        // The MGI_Reference_Assoc state for a given reference
+        MGI_Reference_AssocState refAssocState = null;
 
-	Iterator referenceIterator = references.iterator();
-	while(referenceIterator.hasNext()) {
-	    Object ref = referenceIterator.next();
+        Iterator referenceIterator = references.iterator();
+        while(referenceIterator.hasNext()) {
+            Object ref = referenceIterator.next();
         // some providers give both pubmed and medline ids
         if (ref instanceof SeqRefAssocPair)
-	       refAssocState = refAssocProcessor.process(
-		       (SeqRefAssocPair)ref, sequence.getSequenceKey());
+               refAssocState = refAssocProcessor.process(
+                       (SeqRefAssocPair)ref, sequence.getSequenceKey());
 
         // some providers have a single reference for all sequences
         else if (ref instanceof RefAssocRawAttributes)
             refAssocState = refAssocProcessor.process(
-		      (RefAssocRawAttributes)ref, sequence.getSequenceKey());
+                      (RefAssocRawAttributes)ref, sequence.getSequenceKey());
 
         // null if reference not in MGI
-   	    if(refAssocState != null) {
-	        sequence.addRefAssoc(refAssocState);
+            if(refAssocState != null) {
+                sequence.addRefAssoc(refAssocState);
         }
-	}
+        }
    }
 
    /**
