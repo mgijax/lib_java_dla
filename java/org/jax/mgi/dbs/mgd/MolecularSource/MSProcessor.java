@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;
+import org.jax.mgi.shr.cache.CacheConstants;
 import org.jax.mgi.dbs.mgd.lookup.AssocClonesLookup;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.config.MSProcessorCfg;
@@ -74,7 +75,7 @@ public class MSProcessor
      */
     private Logger logger = null;
 
-    /*
+    /*foundByCloneAssociation
      * the following constant definitions are exceptions thrown by this class
      */
     private static String LookupErr = MSExceptionFactory.LookupErr;
@@ -154,61 +155,33 @@ public class MSProcessor
     public MolecularSource processNewSeqSrc(String accid, MSRawAttributes attr)
         throws MSException
     {
+
         // MolecularSource object to be returned
         MolecularSource ms = null;
 
         logger.logDebug("processing the following raw attributes: " + attr);
+
+        if (attr.getLibraryName() != null &&
+            attr.getLibraryName().toLowerCase().equals("not applicable"))
+        {
+            // change to anonymous
+            attr.setLibraryName(null);
+        }
         if (attr.getLibraryName() != null) // this is a named source
         {
-            logger.logDebug("looking up source by name: " +
-                            attr.getLibraryName());
             ms = findByLibraryName(attr);
-            if (logger.isDebug())
-            {
-                if (ms != null)
-                {
-                    logger.logDebug("Named source found");
-                }
-                else
-                {
-                    logger.logDebug("Named source not found");
-                }
-            }
         }
         if (ms == null)
         {
             /**
              * this is an annonymous source or a named
              * which was not found in the database.
-             * look for a source from the associated clones that is named
+             * look for a named source from the associated clones
              * and use that one instead
              **/
-            boolean okToSearchAssocClones = true;
-            try
-            {
-              okToSearchAssocClones =
-                  cfg.getOkToSearchAssocClones().booleanValue();
-            }
-            catch (ConfigException e)
-            {
-              MSExceptionFactory eFactory = new MSExceptionFactory();
-              MSException e2 = (MSException)
-                 eFactory.getException(ConfigErr, e);
-              throw e2;
-            }
-            if (okToSearchAssocClones)
-            {
-              logger.logDebug("looking up named associated clones");
-              ms = findByCachedAssociatedClones(accid);
-              if (ms != null)
-                logger.logDebug("found named source: " + ms.getName());
-              else
-                logger.logDebug("no named source from assoiciated clones found");
-            }
-            else
-              logger.logDebug("looking up named associated clones is disabled");
-
+            ms = findByAssociatedClones(accid);
         }
+
         /**
          * if no molecular source was found then just resolve the raw
          * attributes to a new source or an existing source (using the
@@ -218,7 +191,26 @@ public class MSProcessor
         if (ms == null) // then just use the MSResolver
         {
             logger.logDebug("resolving raw attributes for unamed source");
-            ms = this.resolver.resolve(attr);
+            try
+            {
+                ms = this.resolver.resolve(attr);
+            }
+            catch (MSException e)
+            {
+                if (e instanceof UnresolvedOrganismException)
+                {
+                    // qc report this one
+                    UnresolvedOrganismException e2 =
+                        (UnresolvedOrganismException)e;
+                    this.qcReporter.reportUnresolvedOrganism(accid,
+                        e2.getOrganism());
+                    throw e;
+                }
+                else
+                {
+                    throw e;
+                }
+            }
             try
             {
                 if (!ms.isInDatabase && !ms.isInBatch)
@@ -244,17 +236,76 @@ public class MSProcessor
      * attributes and those that have changed in the molecular source.
      * @param seqid the sequence accid
      * @param seqKey the sequence key
-     * @param attr the raw attributes for molecular source
+     * @param attr the raw attributes for incoming molecular source
+     * @param rawLibName the raw library name for the existing sequence
      * @throws MSException thrown if there is an error resolving attributes
      */
-    public void processExistingSeqSrc(String seqid,
+    public void processExistingSeqSrc(String accid,
                                       Integer seqKey,
+                                      String existingRawLibrary,
                                       MSRawAttributes attr)
     throws MSException
     {
-        MolecularSource incomingSrc = this.resolver.resolveAttrsOnly(attr);
         /**
-         * first find the existing source for this sequence that
+         * this variable will be set to true if the library name was resolved
+         * by looking at the associated clone sources.
+         * it will be set to false if the the library name was resolved by
+         * a direct library lookup
+         */
+        Boolean foundByCloneAssociation = null;
+
+        MolecularSource incomingSrc = null;
+
+        if (attr.getLibraryName() != null &&
+            attr.getLibraryName().toLowerCase().equals("not applicable"))
+        {
+            // change to anonymous
+            attr.setLibraryName(null);
+        }
+        if (attr.getLibraryName() != null) // this is a named source
+        {
+            incomingSrc = findByLibraryName(attr);
+        }
+        if (incomingSrc != null) // ms found
+        {
+            foundByCloneAssociation = new Boolean(false);
+        }
+        if (incomingSrc == null) // ms was not found
+        {
+            /**
+             * this is an annonymous source or a named source
+             * which was not found in the database.
+             * look for a named source from the associated clones
+             **/
+            incomingSrc = findByAssociatedClones(accid);
+            if (incomingSrc != null) // ms found
+            {
+                foundByCloneAssociation = new Boolean(true);
+            }
+        }
+        if (incomingSrc == null) // ms was not found
+        {
+            // find MolecularSource by resolving raw source attributes
+            try
+            {
+                incomingSrc = this.resolver.resolveAttrsOnly(attr);
+            }
+            catch (MSException e)
+            {
+                if (e instanceof UnresolvedOrganismException)
+                {
+                    // qc report this
+                    UnresolvedOrganismException e2 =
+                        (UnresolvedOrganismException)e;
+                    this.qcReporter.reportUnresolvedOrganism(accid,
+                        e2.getOrganism());
+                }
+                throw e;
+            }
+        }
+
+        /**
+         * find the existing source for this sequence that
          * has an organism that matches the organism from the incoming
          * attributes
          */
@@ -270,7 +321,7 @@ public class MSProcessor
                 MSExceptionFactory eFactory = new MSExceptionFactory();
                 MSException e = (MSException)
                     eFactory.getException(NoSourceFound);
-                e.bind(seqid);
+                e.bind(accid);
                 e.bind(incomingSrc.getOrganismKey().intValue());
                 throw e;
             }
@@ -288,106 +339,14 @@ public class MSProcessor
             e2.bind(MSLookup.class.getName());
             throw e2;
         }
-        if (existingSrc.getName() == null) // annonymous source
-        {
-            // compare incoming source to existing source, perform qc reporting
-            // and make changes to existing source if appropriate
-            boolean srcHasChanged = false; // track if the existing ms changes
-            if (existingSrc.getStrainKey().intValue() !=
-                incomingSrc.getStrainKey().intValue())
-            {
-                if (!existingSrc.isStrainCurated())
-                {
-                    existingSrc.setStrainKey(incomingSrc.getStrainKey());
-                    srcHasChanged = true;
-                }
-                else
-                    qcReporter.reportAttributeDiscrepancy(
-                         existingSrc.getMSKey(),
-                         "strain",
-                         incomingSrc.getStrainKey(),
-                         attr.getStrain());
-            }
-
-            if (existingSrc.getCellLineKey().intValue() !=
-                incomingSrc.getCellLineKey().intValue())
-            {
-                if (!existingSrc.isCellLineCurated())
-                {
-                    existingSrc.setCellLineKey(incomingSrc.getCellLineKey());
-                    srcHasChanged = true;
-                }
-                else
-                    qcReporter.reportAttributeDiscrepancy(
-                         existingSrc.getMSKey(),
-                         "cellLine",
-                         incomingSrc.getCellLineKey(),
-                         attr.getCellLine());
-
-            }
-            /* age doesnt support qc reports since it has no controlled voc...
-               leaving out until resolved
-            if (!existingSrc.getAge().equals(incomingSrc.getAge()))
-            {
-                if (!existingSrc.isAgeCurated())
-                {
-                    existingSrc.setAge(incomingSrc.getAge());
-                    srcHasChanged = true;
-                }
-                else
-                    qcReporter.reportAttributeDiscrepancy();
-            }
-            */
-
-            if (existingSrc.getGenderKey().intValue() !=
-                incomingSrc.getGenderKey().intValue())
-            {
-                if (!existingSrc.isGenderCurated())
-                {
-                    existingSrc.setGenderKey(incomingSrc.getGenderKey());
-                    srcHasChanged = true;
-                }
-                else
-                    qcReporter.reportAttributeDiscrepancy(
-                         existingSrc.getMSKey(),
-                         "gender",
-                         incomingSrc.getGenderKey(),
-                         attr.getGender());
-
-            }
-
-            if (existingSrc.getTissueKey().intValue() !=
-                incomingSrc.getTissueKey().intValue())
-            {
-                if (!existingSrc.isTissueCurated())
-                {
-                    existingSrc.setTissueKey(incomingSrc.getTissueKey());
-                    srcHasChanged = true;
-                }
-                else
-                    qcReporter.reportAttributeDiscrepancy(
-                         existingSrc.getMSKey(),
-                         "tissue",
-                         incomingSrc.getTissueKey(),
-                         attr.getTissue());
-
-            }
-            if (srcHasChanged)
-            {
-              try
-              {
-                stream.update(existingSrcAssoc);
-              }
-              catch (MGIException e)
-              {
-                  MSExceptionFactory eFactory = new MSExceptionFactory();
-                  MSException e2 = (MSException)
-                      eFactory.getException(SQLStreamErr, e);
-                  e2.bind(existingSrc.getClass().getName());
-                  throw e2;
-              }
-            }
-        }
+        if (incomingSrc.getName() == null) // annonymous source
+            processIncomingAnonymousSource(existingSrc, incomingSrc,
+                                           existingSrcAssoc, attr,
+                                           existingRawLibrary);
+        else // named source
+            processIncomingNamedSource(existingSrc, incomingSrc,
+                                       existingSrcAssoc, attr,
+                                       existingRawLibrary, foundByCloneAssociation);
     }
 
     /**
@@ -402,6 +361,44 @@ public class MSProcessor
     {
         this.MAXCLONES = max;
     }
+
+    /**
+     * checks the configuration to see if this feature is enabled and if so,
+     * it will lookup up MolecularSource objects via looking at the sources
+     * for the associated clones to the given sequence
+     * @param accid the given sequence
+     * @return the MolecularSource object or null if not found
+     * @throws MSException thrown if there is an error in configuration or if
+     * there is an error during lookup
+     */
+    private MolecularSource findByAssociatedClones(String accid)
+        throws MSException
+    {
+        MolecularSource ms = null;
+        boolean okToSearchAssocClones;
+        try
+        {
+          okToSearchAssocClones =
+              cfg.getOkToSearchAssocClones().booleanValue();
+        }
+        catch (ConfigException e)
+        {
+          MSExceptionFactory eFactory = new MSExceptionFactory();
+          MSException e2 = (MSException)
+             eFactory.getException(ConfigErr, e);
+          throw e2;
+        }
+        if (okToSearchAssocClones)
+        {
+          logger.logDebug("looking up named associated clones");
+          //ms = findByNonCachedAssociatedClonesLookup(accid);
+          ms = findByCachedAssociatedClones(accid);
+        }
+        else
+          logger.logDebug("looking up named associated clones is disabled");
+        return ms; // can be null
+    }
+
 
     /**
      * tries to find a MolecularSource object by using the library name
@@ -442,7 +439,7 @@ public class MSProcessor
     }
 
     /**
-     * finds a MolecularSource object from cache for one or more of the
+     * finds a MolecularSource object by db lookup for one or more of the
      * clones associated to the given sequence.
      * @assumes nothing
      * @effects a new entry could be added to the qc reports if more than one
@@ -454,8 +451,8 @@ public class MSProcessor
      * configuration or if more named sources are found than expected which
      * can be changed by calling MSProcessor.setMaxAssociatedClones(int)
      */
-    private MolecularSource findByAssociatedClones(String accid) throws
-        MSException
+    private MolecularSource findByNonCachedAssociatedClones(String accid)
+        throws MSException
     {
         /**
          * get the sources for the associated clones of this sequence
@@ -529,7 +526,14 @@ public class MSProcessor
         try
         {
             if (assocClonesLookup == null) {
-                assocClonesLookup = new AssocClonesLookup();
+                // look in the configuration to see if caching of
+                // associated clones should be a lazy or full cache
+                int cacheType;
+                if (cfg.getUseAssocClonesFullCache().booleanValue())
+                    cacheType = CacheConstants.FULL_CACHE;
+                else
+                    cacheType = CacheConstants.LAZY_CACHE;
+                assocClonesLookup = new AssocClonesLookup(cacheType);
             }
             cloneSrcNames = assocClonesLookup.lookup(accid);
         }
@@ -581,6 +585,208 @@ public class MSProcessor
             throw e2  ;
         }
         return ms;
+    }
+
+    /**
+     * processes an existing anonymous source by updating attribute fields
+     * if they differ from the incoming values and the existing data has not
+     * been curator edited
+     * @param incomingSrc the incoming molecular source
+     * @param existingSrc the existing molecular source
+     * @param existingSrcAssoc the existing sequence/source association
+     * @param incomingRaw the incoming raw molecular source values
+     * @throws MSException thrown if there is an error getting the changed
+     * values onto the SQLStream
+     */
+    protected void processIncomingAnonymousSource(MolecularSource existingSrc,
+                                                  MolecularSource incomingSrc,
+                                                  MSSeqAssoc existingSrcAssoc,
+                                                  MSRawAttributes incomingRaw,
+                                                  String existingRawLibrary)
+    throws MSException
+    {
+        if (existingSrc.getName() != null) // named source
+        {
+            // call the qc reporter since the named source is changing
+            String foundMethod = null;
+            qcReporter.reportChangedLibrary(existingSrcAssoc.getSeqKey(),
+                                            existingSrc.getMSKey(),
+                                            existingRawLibrary,
+                                            existingSrc.getName(),
+                                            incomingSrc.getMSKey(),
+                                            incomingRaw.getLibraryName(),
+                                            incomingSrc.getName(),
+                                            null);
+        }
+
+        // compare incoming source to existing source
+        // and make changes to existing source if attr is not curator edited
+        // and qc if attr has changed but is curator edited
+        boolean srcHasChanged = false; // track if the existing ms changes
+        if (existingSrc.getStrainKey().intValue() !=
+            incomingSrc.getStrainKey().intValue())
+        {
+            if (!existingSrc.isStrainCurated())
+            {
+                existingSrc.setStrainKey(incomingSrc.getStrainKey());
+                srcHasChanged = true;
+            }
+            else
+                qcReporter.reportAttributeDiscrepancy(
+                     existingSrc.getMSKey(),
+                     "strain",
+                     incomingSrc.getStrainKey(),
+                     incomingRaw.getStrain());
+        }
+
+        if (existingSrc.getCellLineKey().intValue() !=
+            incomingSrc.getCellLineKey().intValue())
+        {
+            if (!existingSrc.isCellLineCurated())
+            {
+                existingSrc.setCellLineKey(incomingSrc.getCellLineKey());
+                srcHasChanged = true;
+            }
+            else
+                qcReporter.reportAttributeDiscrepancy(
+                     existingSrc.getMSKey(),
+                     "cellLine",
+                     incomingSrc.getCellLineKey(),
+                     incomingRaw.getCellLine());
+
+        }
+        /* age doesnt support qc reports since it has no controlled voc...
+           leaving out until resolved
+        if (!existingSrc.getAge().equals(incomingSrc.getAge()))
+        {
+            if (!existingSrc.isAgeCurated())
+            {
+                existingSrc.setAge(incomingSrc.getAge());
+                srcHasChanged = true;
+            }
+            else
+                qcReporter.reportAttributeDiscrepancy();
+        }
+        */
+
+        if (existingSrc.getGenderKey().intValue() !=
+            incomingSrc.getGenderKey().intValue())
+        {
+            if (!existingSrc.isGenderCurated())
+            {
+                existingSrc.setGenderKey(incomingSrc.getGenderKey());
+                srcHasChanged = true;
+            }
+            else
+                qcReporter.reportAttributeDiscrepancy(
+                     existingSrc.getMSKey(),
+                     "gender",
+                     incomingSrc.getGenderKey(),
+                     incomingRaw.getGender());
+
+        }
+
+        if (existingSrc.getTissueKey().intValue() !=
+            incomingSrc.getTissueKey().intValue())
+        {
+            if (!existingSrc.isTissueCurated())
+            {
+                existingSrc.setTissueKey(incomingSrc.getTissueKey());
+                srcHasChanged = true;
+            }
+            else
+                qcReporter.reportAttributeDiscrepancy(
+                     existingSrc.getMSKey(),
+                     "tissue",
+                     incomingSrc.getTissueKey(),
+                     incomingRaw.getTissue());
+
+        }
+        if (existingSrc.getName() != null)
+        {
+            // changing a named source to anonymous
+            // set the name to null
+            existingSrc.setName(null);
+            srcHasChanged = true;
+        }
+
+        if (srcHasChanged)
+        {
+          try
+          {
+            stream.update(existingSrcAssoc);
+          }
+          catch (MGIException e)
+          {
+              MSExceptionFactory eFactory = new MSExceptionFactory();
+              MSException e2 = (MSException)
+                  eFactory.getException(SQLStreamErr, e);
+              e2.bind(existingSrc.getClass().getName());
+              throw e2;
+          }
+        }
+
+    }
+
+    /**
+     * processes an existing named molecular source by updating the library
+     * name if changed and reporting this to a qc report
+     * @param incomingSrc the incoming molecular source
+     * @param existingSrc the existing molecular source
+     * @param existingSrcAssoc the existing sequence/source association
+     * @param incomingRaw the incoming raw molecular source attributes
+     * @param existingRawLibrary the existing raw molecular source library name
+     * @throws MSException thrown if there is an error putting the changed data
+     * onto an SQLStream
+     */
+    protected void processIncomingNamedSource(MolecularSource existingSrc,
+                                              MolecularSource incomingSrc,
+                                              MSSeqAssoc existingSrcAssoc,
+                                              MSRawAttributes incomingRaw,
+                                              String existingRawLibrary,
+                                              Boolean foundByCloneAssociation)
+    throws MSException
+    {
+        if (existingSrc.getName() != null) // named source
+        {
+            if (existingSrc.getName().equals(incomingSrc.getName()))
+            {
+                // they are the same source so do nothing
+                return;
+            }
+            // call the qc reporter since the named source is changing
+            String foundMethod = null;
+            if (foundByCloneAssociation != null)
+            {
+                if (foundByCloneAssociation.booleanValue())
+                    foundMethod = "found by associated clones";
+                else
+                    foundMethod = "found by library lookup";
+
+            }
+            qcReporter.reportChangedLibrary(existingSrcAssoc.getSeqKey(),
+                                            existingSrc.getMSKey(),
+                                            existingRawLibrary,
+                                            existingSrc.getName(),
+                                            incomingSrc.getMSKey(),
+                                            incomingRaw.getLibraryName(),
+                                            incomingSrc.getName(),
+                                            foundMethod);
+        }
+        // change the association to the incoming source
+        existingSrcAssoc.changeMolecularSource(incomingSrc);
+        try
+        {
+            stream.update(existingSrcAssoc);
+        }
+        catch (MGIException e)
+        {
+            MSExceptionFactory eFactory = new MSExceptionFactory();
+            MSException e2 = (MSException)
+                eFactory.getException(SQLStreamErr, e);
+            e2.bind(existingSrc.getClass().getName());
+            throw e2;
+        }
     }
 
 
