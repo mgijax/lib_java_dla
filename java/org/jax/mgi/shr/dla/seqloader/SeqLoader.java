@@ -237,11 +237,16 @@ public abstract class SeqLoader extends DLALoader {
                    iterator.next();
                logger.logdDebug(si.getPrimaryAcc().getAccID());
            }
-           catch (RecordFormatException e) {
-               logger.logdErr(e.getMessage());
-               logger.logcInfo(e.getMessage(), true);
-               errCtr++;
-               continue;
+           catch (MGIException e) {
+               if (e.getParent().getClass().getName().equals("org.jax.mgi.shr.ioutils.RecordFormatException")) {
+                 logger.logdErr(e.getMessage());
+                 logger.logcInfo(e.getMessage(), true);
+                 errCtr++;
+                 continue;
+               }
+               else {
+                   throw e;
+               }
            }
            try {
                seqProcessor.processInput(si);
