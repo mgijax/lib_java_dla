@@ -1,3 +1,9 @@
+DATE: 06/30/2004
+STAFF: mbw
+CHANGES:
+1) Change DLALogger to use same data/time format as the shell stream
+2) Added new genbank package and new GBInputFile classes
+
 TAG: lib_java_dla-sc2_BP-1
 DATE: 06/30/2004
 STAFF: sc
