@@ -26,11 +26,9 @@ public class DLALogFormatter extends Formatter{
   private static final String lineSeparator =
       System.getProperty( "line.separator");
   private static Date date = new Date();
-  private static Object args[] = { date, date };
-  private static StringBuffer buff = new StringBuffer();
-  private static StringBuffer dateString = new StringBuffer();
+  private static Object args[] = { date };
   private static MessageFormat format =
-      new MessageFormat("{0, date, medium} {0, time, medium}");
+      new MessageFormat("{0, date, \"EEE MMM dd HH:mm:ss z yyyy\"}");
   private static final String LOGGER =
       "org.jax.mgi.logging.DataLoadLogger";
   private static final String FRAMEWORKS =
@@ -46,8 +44,8 @@ public class DLALogFormatter extends Formatter{
    * @return the formatted message
    */
   synchronized public String format(LogRecord record) {
-    buff.setLength(0);
-    dateString.setLength(0);
+    StringBuffer buff = new StringBuffer();
+    StringBuffer dateString = new StringBuffer();
     date.setTime(record.getMillis());
     format.format( args, dateString, null );
     buff.append(lineSeparator);
@@ -90,6 +88,9 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.4  2003/10/28 21:00:17  mbw
+// fixed imports
+//
 // Revision 1.3  2003/05/22 15:49:12  mbw
 // javadocs edits
 //
