@@ -20,6 +20,7 @@ public class SeqloaderConstants {
     // character Constants
     public static final String PERIOD = ".";
     public static final String CRT = "\n";
+    public static final String TAB = "\t";
     public static final String SPC = " ";
     public static final String SLASH = "/";
     public static final String EQUAL = "=";
@@ -67,6 +68,9 @@ public class SeqloaderConstants {
 
 }
 //  $Log$
+//  Revision 1.9  2004/04/15 14:13:01  sc
+//  added ORGANISM and LIBRARY as controlled vocab for QC_SEQ_RawSourceConflict.attrName
+//
 //  Revision 1.8  2004/04/13 15:19:30  sc
 //  added ACTIVE_STATUS
 //
