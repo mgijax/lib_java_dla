@@ -2,8 +2,17 @@ package org.jax.mgi.shr.dla;
 
 import org.jax.mgi.shr.config.DatabaseCfg;
 import org.jax.mgi.shr.config.DLALoaderCfg;
+import org.jax.mgi.shr.config.InputDataCfg;
 import org.jax.mgi.shr.dbutils.bcp.BCPManager;
+import org.jax.mgi.shr.dbutils.dao.SQLStream;
+import org.jax.mgi.shr.dbutils.dao.Inline_Stream;
+import org.jax.mgi.shr.dbutils.dao.Batch_Stream;
+import org.jax.mgi.shr.dbutils.dao.Script_Stream;
+import org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream;
+import org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream;
+import org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
+import org.jax.mgi.shr.dbutils.ScriptWriter;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 
@@ -66,9 +75,16 @@ public abstract class DLALoader {
   protected BCPManager mgdBCPMgr;
 
   /**
-   * The primary input data file for database loading
+   * the SQLStream used for loading data
    */
-  protected InputDataFile primaryInputFile;
+  protected SQLStream loadStream = null;
+
+  /**
+   * the SQLStream used for loading qc data
+   */
+  protected SQLStream qcStream = null;
+
+  protected InputDataCfg inputConfig = null;
 
   /**
    * An exception handler for handling MGIExceptions
@@ -97,6 +113,8 @@ public abstract class DLALoader {
       DLAExceptionFactory.FinalizeException;
   private static final String InstanceException =
       DLAExceptionFactory.InstanceException;
+  private static final String SQLStreamNotSupported =
+      DLAExceptionFactory.SQLStreamNotSupported;
 
   /**
    * @is a default constructor
@@ -106,21 +124,23 @@ public abstract class DLALoader {
    */
   public DLALoader() {
     try {
-      logger = DLALogger.getInstance();
-      logger.logdInfo("Performing initialization",true);
-      logger.logpInfo("Beginning load processing",true);
-      radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
-      radarDBMgr.setLogger(logger);
-      mgdDBMgr = new SQLDataManager(new DatabaseCfg("MGD"));
-      mgdDBMgr.setLogger(logger);
-      radarBCPMgr = new BCPManager();
-      radarBCPMgr.setLogger(logger);
-      radarBCPMgr.setSQLDataManager(radarDBMgr);
-      mgdBCPMgr = new BCPManager();
-      mgdBCPMgr.setLogger(logger);
-      mgdBCPMgr.setSQLDataManager(mgdDBMgr);
-      primaryInputFile = new InputDataFile();
-      initialize();
+      this.logger = DLALogger.getInstance();
+      this.logger.logdInfo("Performing initialization",true);
+      this.logger.logpInfo("Beginning load processing",true);
+      this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
+      this.radarDBMgr.setLogger(logger);
+      this.mgdDBMgr = new SQLDataManager(new DatabaseCfg("MGD"));
+      this.mgdDBMgr.setLogger(logger);
+      this.radarBCPMgr = new BCPManager();
+      this.radarBCPMgr.setLogger(logger);
+      this.radarBCPMgr.setSQLDataManager(radarDBMgr);
+      this.mgdBCPMgr = new BCPManager();
+      this.mgdBCPMgr.setLogger(logger);
+      this.mgdBCPMgr.setSQLDataManager(mgdDBMgr);
+      DLALoaderCfg config = new DLALoaderCfg();
+      this.loadStream = createSQLStream(config.getLoadStreamName());
+      this.qcStream = createSQLStream(config.getQCStreamName());
+      this.inputConfig = new InputDataCfg();
     }
     catch (MGIException e) {
       DLAException e2 = (DLAException)
@@ -144,26 +164,19 @@ public abstract class DLALoader {
    * argument can be alternatively placed in the configuration file.
    */
   public static void main(String[] args) {
-    DLAExceptionHandler eHandler = new DLAExceptionHandler();
     DLAExceptionFactory eFactory = new DLAExceptionFactory();
-    String loaderName = null;
     DLALoader loader = null;
-    if (args.length > 0)
-      loaderName = args[0];
-    if (loaderName == null) {
-      try {
-        DLALoaderCfg config = new DLALoaderCfg();
-        loaderName = config.getLoaderClass();
-        Class cls = Class.forName(loaderName);
-        loader = (DLALoader)cls.newInstance();
-      }
-      catch (Exception e) {
+    try
+    {
+        DLALoaderCfg cfg = new DLALoaderCfg();
+        loader = (DLALoader)cfg.getLoaderClass();
+    }
+    catch (Exception e)
+    {
         DLAException e2 = (DLAException)
             eFactory.getException(InstanceException, e);
-        e2.setParent(e);
         DLAExceptionHandler.handleException(e2);
         DLASystemExit.fatalExit();
-      }
     }
     loader.load();
     DLASystemExit.exit();
@@ -181,6 +194,7 @@ public abstract class DLALoader {
   public void load() {
     try {
       logger.logdInfo("Beginning load processing",true);
+      initialize();
       run();
     }
     catch (MGIException e) {
@@ -194,7 +208,7 @@ public abstract class DLALoader {
       logger.logdInfo("Performing finalization",true);
       radarDBMgr.closeResources();
       mgdDBMgr.closeResources();
-      finale();
+      post();
     }
     catch (MGIException e) {
       DLAException e2 = (DLAException)
@@ -235,6 +249,37 @@ public abstract class DLALoader {
    * @throws MGIException throw if an error occurs while performing
    * finalization
    */
-  protected abstract void finale() throws MGIException;
+  protected abstract void post() throws MGIException;
+
+  /**
+   * create a new SQLStream based on the given name
+   * @param name the name of the SQLStream to create
+   * @return the new SQLStream
+   */
+  private SQLStream createSQLStream(String name) throws MGIException
+  {
+      if (name.equals("org.jax.mgi.shr.dbutils.dao.Inline_Stream"))
+          return new Inline_Stream(this.mgdDBMgr);
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.Batch_Stream"))
+          return new Batch_Stream(this.mgdDBMgr);
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.Script_Stream"))
+          return new Script_Stream(this.mgdDBMgr.getScriptWriter());
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream"))
+          return new BCP_Inline_Stream(this.mgdDBMgr, this.mgdBCPMgr);
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream"))
+          return new BCP_Batch_Stream(this.mgdDBMgr, this.mgdBCPMgr);
+      else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream"))
+          return new BCP_Script_Stream(this.mgdDBMgr.getScriptWriter(),
+                                       this.mgdBCPMgr);
+      else
+      {
+          DLAExceptionFactory factory = new DLAExceptionFactory();
+          DLAException e =
+              (DLAException)factory.getException(SQLStreamNotSupported);
+          e.bind(name);
+          throw e;
+      }
+
+  }
 
 }
