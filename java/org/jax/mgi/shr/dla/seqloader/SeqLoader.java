@@ -5,10 +5,12 @@ import org.jax.mgi.shr.timing.Stopwatch;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.ioutils.RecordDataIterator;
 import org.jax.mgi.shr.dbutils.ScriptWriter;
+import org.jax.mgi.shr.dbutils.DataIterator;
 import org.jax.mgi.shr.config.ScriptWriterCfg;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
+import org.jax.mgi.dbs.mgd.MolecularSource.UnresolvedAttributeException;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
@@ -35,7 +37,7 @@ import java.util.Iterator;
  * methods:<br>
  * <UL>
  *   <LI>preprocess - for performing pre processing
- *   <LI>getRecordDataIterator - to create an iterator for its input file with
+ *   <LI>getDataIterator - to create an iterator for its input file with
  *       an appropriate interpreter. And create an optional OrganismChecker.
  *   <LI>appPostProcess - for any application specific post-processing
  * </UL>
@@ -67,11 +69,11 @@ import java.util.Iterator;
 public abstract class SeqLoader extends DLALoader {
     /**
     * must be defined and set by subclass by implementing the
-    * getRecordDataIterator method
+    * getDataIterator method
     */
 
     // iterator over an input file
-    protected RecordDataIterator iterator;
+    protected DataIterator iterator;
 
     // optional organism checker for reporting statistics by organism
     protected OrganismChecker organismChecker;
@@ -128,14 +130,14 @@ public abstract class SeqLoader extends DLALoader {
      * @effects instance variables will be instantiated
      * @throws MGIException if errors occur during initialization
      * @throws RuntimeException if RecordDataIterator is not set after
-     *   call to getRecordDataIterator
+     *   call to getDataIterator
      */
     protected void initialize() throws MGIException {
         loadCfg = new SequenceLoadCfg();
         loadMode = loadCfg.getLoadMode();
 
         // call subclass method to get an iterator for the input file
-        getRecordDataIterator();
+        getDataIterator();
         if (iterator == null ) {
             throw new RuntimeException("You must set the RecordDataIterator " +
                 "in your subclass!!");
@@ -198,7 +200,7 @@ public abstract class SeqLoader extends DLALoader {
             seqProcessor = new SeqProcessor(loadStream,
                     qcStream,
                     seqResolver);
-	    // if in delete/reload mode, delete sequences
+            // if in delete/reload mode, delete sequences
             if (loadMode.equals(SeqloaderConstants.DELETE_RELOAD_MODE)) {
                 seqProcessor.deleteSequences();
             }
@@ -235,7 +237,7 @@ public abstract class SeqLoader extends DLALoader {
            try {
                si = (SequenceInput)
                    iterator.next();
-               logger.logdDebug(si.getPrimaryAcc().getAccID());
+               //logger.logdDebug(si.getPrimaryAcc().getAccID());
            }
            catch (MGIException e) {
                if (e.getParent().getClass().getName().equals("org.jax.mgi.shr.ioutils.RecordFormatException")) {
@@ -281,6 +283,9 @@ public abstract class SeqLoader extends DLALoader {
            // if we can't resolve the source for a sequence, log to curation log
            // go to the next sequence
            catch (MSException e) {
+               if (e instanceof UnresolvedAttributeException) {
+                   throw new MGIException(e.getMessage(), true);
+               }
                String message = e.getMessage() + " Sequence: " +
                    si.getPrimaryAcc().getAccID();
                logger.logdInfo(message, true);
@@ -337,13 +342,13 @@ public abstract class SeqLoader extends DLALoader {
     }
 
     /**
-     * subclasses implement this method to create an iterator for their particular
-     * InputDataFile and set the OrganismChecker if there is one
+     * subclasses implement this method to create an iterator over their particular
+     * Input Data and set the optional OrganismChecker
      * @assumes nothing
      * @effects nothing
      * @throws MGIException
      */
-    abstract protected void getRecordDataIterator() throws MGIException;
+    abstract protected void getDataIterator() throws MGIException;
 
     /**
     * subclasses implement this method to add application specific post processing
