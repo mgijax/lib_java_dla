@@ -175,8 +175,8 @@ public class MSResolver {
             SequenceLoadCfg cfg = new SequenceLoadCfg();
             LogicalDBLookup lookup = new LogicalDBLookup();
             int logicalDB = lookup.lookup(cfg.getLogicalDB()).intValue();
-            logger.logDebug("MSResolver logicalDB = " + logicalDB);
-            logger.logDebug("MSResolver ncbi logicalDBConstant = " + LogicalDBConstants.NCBI_GENE);
+            //logger.logDebug("MSResolver logicalDB = " + logicalDB);
+            //logger.logDebug("MSResolver ncbi logicalDBConstant = " + LogicalDBConstants.NCBI_GENE);
             if (logicalDB == LogicalDBConstants.REFSEQ ||
                     logicalDB == LogicalDBConstants.SEQUENCE) {
                 attrResolver = new GBMSAttrResolver();

@@ -81,7 +81,7 @@ public class GBOrganismChecker implements OrganismChecker {
 
     // DEBUG
     private DLALogger logger;
-    Stopwatch stopWatch = new Stopwatch();
+    //Stopwatch stopWatch = new Stopwatch();
     Runtime runTime = Runtime.getRuntime();
 
     /**
@@ -130,8 +130,8 @@ public class GBOrganismChecker implements OrganismChecker {
 
     public boolean checkOrganism(String record) {
         //DEBUG
-        stopWatch.reset();
-        stopWatch.start();
+        //stopWatch.reset();
+        //stopWatch.start();
 
         totalCtr++;
         // reset
@@ -170,14 +170,15 @@ public class GBOrganismChecker implements OrganismChecker {
             }
         }
 
-        if (isA == false) {
+        /*if (isA == false) {
             logger.logdDebug("Not a valid record", true);
         }
+        */
 
 	// DEBUG
-        stopWatch.stop();
-        logger.logdDebug("checkOrganism time: " + stopWatch.time());
-        logger.logdDebug("Free memory: " + runTime.freeMemory());
+        //stopWatch.stop();
+        //logger.logdDebug("checkOrganism time: " + stopWatch.time());
+        //logger.logdDebug("Free memory: " + runTime.freeMemory());
 
         return isA;
       }
@@ -383,6 +384,9 @@ public class GBOrganismChecker implements OrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.6  2004/07/08 15:03:48  sc
+//  javdocs changes
+//
 //  Revision 1.5  2004/06/30 19:28:46  mbw
 //  javadocs only
 //
