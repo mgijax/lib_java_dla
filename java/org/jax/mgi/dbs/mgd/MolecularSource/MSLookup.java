@@ -58,6 +58,8 @@ public class MSLookup {
     PRB_SourceLookup lookup = new PRB_SourceLookup();
     PRB_SourceDAO src = null;
     src = lookup.findBySeqKey(key);
+    if (src == null)
+        return null;
     MolecularSource ms = new MolecularSource(src);
     ms.setInDatabase(true);
     return ms;
