@@ -126,7 +126,6 @@ public class MergeSplitHelper {
             for (Iterator mapI = primaryMap.keySet().iterator(); mapI.hasNext();) {
                // get the key
                String primary = (String) mapI.next();
-               System.out.println("mapKey: " + primary);
                // get the value; a Vector of 2ndary ids that are primary in MGI
                Vector currentV = (Vector) primaryMap.get(primary);
 
