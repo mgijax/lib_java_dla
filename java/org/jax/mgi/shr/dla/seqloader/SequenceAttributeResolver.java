@@ -15,17 +15,19 @@ import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
-/**
- * @is a class that defines an abstract resolveAttributes method to resolve a
- * SequenceRawAttributes object to a SEQ_SequenceState.
- * Provides lookups and common to all Sequence Attribute Resolvers
+
+ /**
+ * @is An object that resolves a SequenceRawAttributes to a SEQ_SequenceState
+ * Reports discrepancies to the validation log.
  * @has
  *   <UL>
  *   <LI> Sequence Type Lookup (uses a translator)
  *   <LI> Sequence Quality lookup
  *   <LI> User lookup
  *   <LI> Provider lookup (uses a translator)
- *   <LI>Sequence Status  Lookup
+ *   <LI> Sequence Status  Lookup
+ *   <LI> A SEQ_SequenceState
+ *   <LI> A SequenceRawAttributes
  *   </UL>
  * @does
  *   <UL>
@@ -37,27 +39,27 @@ import org.jax.mgi.dbs.mgd.lookup.TranslationException;
  * @version 1.0
  */
 
-abstract public class SequenceAttributeResolver {
+public class SequenceAttributeResolver {
     // typeLookup and providerLookup use a translator
     protected SequenceTypeKeyLookup typeLookup;
     protected VocabKeyLookup qualityLookup;
     protected SequenceProviderKeyLookup providerLookup;
     protected VocabKeyLookup statusLookup;
 
-    /**
-     * Constructs lookups common to all SequenceAttributeResolvers
+     /**
+     * Constructs a SequenceAttributeResolver
      * @assumes Nothing
-     * @effects queries a database
+     * @effects Nothing
      * @param None
      * @throws TranslationException - If a translation error occurs in the type Lookup
      * @throws ConfigException - if there  is an error accessing the
-     * configuration file
+     *         configuration file
      * throws@ DBException - if there is an error accessing the database
      * throws@ CacheException - if there is an error with the
-     * vocabulary cache
+     *         vocabulary cache
      */
 
-    protected SequenceAttributeResolver() throws TranslationException,
+    public SequenceAttributeResolver() throws TranslationException,
         ConfigException, DBException, CacheException {
 
         typeLookup = new SequenceTypeKeyLookup();
@@ -67,22 +69,57 @@ abstract public class SequenceAttributeResolver {
         statusLookup = new VocabKeyLookup(
             VocabularyTypeConstants.SEQUENCESTATUS);
     }
-    /**
-     * Concrete subclasses implement this method to resolve a
-     * SequenceRawAttributes to a SEQ_SequenceState
-     * @assumes Nothing
-     * @effects Nothing
-     * @param rawAttributes A SequenceRawAttributes object
-     * @return a SEQ_SequenceState object
-     * @throws Nothing
-     */
 
-    public abstract SEQ_SequenceState resolveAttributes(
+    /**
+      * resolves a SequenceRawAttributes object to a SEQ_SequenceState
+      * @assumes Nothing
+      * @effects Nothing
+      * @param rawAttributes A SequenceRawAttributes object
+      * @return sequenceState A SEQ_SequenceState
+      * @throws Nothing
+      */
+    public SEQ_SequenceState resolveAttributes(
         SequenceRawAttributes rawAttributes) throws KeyNotFoundException,
-        TranslationException, DBException, CacheException, ConfigException;
+        TranslationException, DBException, CacheException, ConfigException {
+      // the state we are building
+      SEQ_SequenceState state = new SEQ_SequenceState();
+
+      //////////////////////////////////
+      // lookup all the foreign keys  //
+      //////////////////////////////////
+
+      // set the foreign keys
+      state.setSequenceTypeKey(typeLookup.lookup(rawAttributes.getType()));
+      state.setSequenceQualityKey(qualityLookup.lookup(rawAttributes.getQuality()));
+      state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
+      state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
+
+      // copy remaining raw attributes to the sequence state
+      state.setLength(new Integer(rawAttributes.getLength()));
+      state.setDescription(rawAttributes.getDescription());
+      state.setVersion(rawAttributes.getVersion());
+      state.setDivision(rawAttributes.getDivision());
+      state.setVirtual(rawAttributes.getVirtual());
+      state.setRawType(rawAttributes.getType());
+      state.setRawLibrary(rawAttributes.getLibrary());
+      state.setRawOrganism(rawAttributes.getRawOrganisms());
+      state.setRawStrain(rawAttributes.getStrain());
+      state.setRawTissue(rawAttributes.getTissue());
+      state.setRawAge(rawAttributes.getAge());
+      state.setRawSex(rawAttributes.getSex());
+      state.setRawCellLine(rawAttributes.getCellLine());
+      state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
+      state.setSeqrecordDate(rawAttributes.getSeqRecDate());
+      state.setSequenceDate(rawAttributes.getSeqDate());
+      return state;
+
+    }
 }
 
 //  $Log$
+//  Revision 1.3  2004/02/25 21:42:40  mbw
+//  fixed compiler warnings only
+//
 //  Revision 1.2  2004/02/17 15:19:02  sc
 //  Changed to Specific Lookups for SequenceType and SeuqenceProvider, new package import for TranslationException
 //
