@@ -44,7 +44,7 @@ public class DLALoaderCfg extends Configurator {
 
 
   /**
-   * get the name of the SQLStream for loading data
+   * get the name of the SQLStream for loading data (the load stream)
    * @assumes nothing
    * @effects nothing
    * @return the name of the SQLStream
@@ -56,7 +56,7 @@ public class DLALoaderCfg extends Configurator {
   }
 
   /**
-   * get the name of the SQLStream for qc data
+   * get the name of the SQLStream for qc data (the qc stream)
    * @assumes nothing
    * @effects nothing
    * @return the name of the SQLStream
@@ -66,4 +66,27 @@ public class DLALoaderCfg extends Configurator {
       return getConfigString("DLA_QC_STREAM",
                              "org.jax.mgi.shr.dbutils.dao.Inline_Stream");
   }
+
+  /**
+   * get the list of table names to truncate for the load stream
+   * @assumes nothing
+   * @effects nothing
+   * @return the list of table names to truncate for the load stream
+   */
+  public String[] getTruncateLoadTables()
+  {
+      return getConfigStringArrayNull("DLA_TRUNCATE_LOAD_TABLES");
+  }
+
+  /**
+   * get the list of table names to truncate for the qc stream
+   * @assumes nothing
+   * @effects nothing
+   * @return the list of table names to truncate for the qc stream
+   */
+  public String[] getTruncateQCTables()
+  {
+      return getConfigStringArrayNull("DLA_TRUNCATE_QC_TABLES");
+  }
+
 }

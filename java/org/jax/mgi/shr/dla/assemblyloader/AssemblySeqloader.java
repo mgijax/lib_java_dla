@@ -14,16 +14,14 @@ import java.util.Iterator;
 
 /**
  * @is an object which extends Seqloader and implements the Seqloader
- * getRecordDataIterator method to set Seqloader's OrganismChecker and
- * RecordDataIterator
+ * getDataIterator method to set the DataIterator with a InputDataFileIterator
  *
  * @has See superclass
  *
  * @does
  * <UL>
  * <LI>implements superclass (Seqloader) getRecordDataIterator to set superclass
- *     OrganismChecker with an EMBLOrganismChecker and create the
- *     superclass RecordDataIterator from an EMBLInputFile
+ *      DataIterator from an EMBLInputFile
  * <LI>It has an empty implementation of the superclass (DLALoader)
  *     preProcess method
  * <LI>It has an empty implementation of the superclass (Seqloader)
@@ -53,7 +51,7 @@ public class AssemblySeqloader extends SeqLoader {
      * @effects nothing
      * @throws MGIException
      */
-    protected void getRecordDataIterator() throws MGIException {
+    protected void getDataIterator() throws MGIException {
 
         // Create a DataInput File
         InputDataFile inData = new InputDataFile();

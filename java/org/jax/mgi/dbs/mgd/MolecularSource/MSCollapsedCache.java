@@ -116,8 +116,6 @@ public class MSCollapsedCache
                      ms.getStrainKey() + " " +
             "AND " + MGD.prb_source._tissue_key + " = " +
                      ms.getTissueKey() + " " +
-            "AND " + MGD.prb_source.age + " = " +
-                     ms.getAge() + " " +
             "AND " + MGD.prb_source._gender_key + " = " +
                      ms.getGenderKey() + " " +
             "AND " + MGD.prb_source._cellline_key + " = " +
@@ -149,8 +147,8 @@ public class MSCollapsedCache
     protected void addToCache(MolecularSource ms)
     throws DBException, CacheException
     {
-        if (super.lookupNullsOk(ms.toString()) == null)
-            super.cache.put(ms.toString(), ms);
+        if (super.lookupNullsOk(ms.toString().toLowerCase()) == null)
+            super.cache.put(ms.toString().toLowerCase(), ms);
     }
 
     /**

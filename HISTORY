@@ -1,7 +1,17 @@
+DATE: 08/04/2004
+STAFF: sc
+CHANGES: copied over changes to DLALoaderCfg, DLALoader and added new class
+         DLALoaderHelper from the trunk to patch a truncate tables bug.
+
+DATE: 07/30/2004
+STAFF: sc
+CHANGES: copied over changes to MSCollapsedCache from the trunk to patch a 
+         caching bug.
+
 TAG: lib_java_dla-1-0-28-BP-2
 DATE: 07/23/2004
 STAFF: sc
-RELEAS:
+RELEASE:
 CHANGES: see changes since last tag below
 
 DATE: 07/27/2004

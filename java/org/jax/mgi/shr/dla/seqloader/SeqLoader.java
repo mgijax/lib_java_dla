@@ -137,7 +137,7 @@ public abstract class SeqLoader extends DLALoader {
         loadMode = loadCfg.getLoadMode();
 
         // call subclass method to get an iterator for the input file
-        getRecordDataIterator();
+        getDataIterator();
         if (iterator == null ) {
             throw new RuntimeException("You must set the RecordDataIterator " +
                 "in your subclass!!");
@@ -337,13 +337,13 @@ public abstract class SeqLoader extends DLALoader {
     }
 
     /**
-     * subclasses implement this method to create an iterator for their particular
-     * InputDataFile and set the OrganismChecker if there is one
+     * subclasses implement this method to create an iterator over their particular
+     * Input Data and set the optional OrganismChecker
      * @assumes nothing
      * @effects nothing
      * @throws MGIException
      */
-    abstract protected void getRecordDataIterator() throws MGIException;
+    abstract protected void getDataIterator() throws MGIException;
 
     /**
     * subclasses implement this method to add application specific post processing
