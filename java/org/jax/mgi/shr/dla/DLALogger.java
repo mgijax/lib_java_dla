@@ -408,7 +408,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
    * <p>Purpose: sets the debug state to on or off</p>
    * <p>Assumes: nothing</p>
    * <p>Effects: debug messages will either begin getting logged or end</p>
-   * @param bool
+   * @param bool the value of the debug indicator - true for on
    */
   public void setDebug(boolean bool) {
     debugState = bool;
@@ -449,7 +449,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
   /**
     * Creates file handlers for the loggers.
-    * @throws LoggingException if an IO error occurs
+    * @throws DLALoggingException if an IO error occurs
     */
   private void createLogp() throws DLALoggingException {
     try {
@@ -476,7 +476,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
   /**
     * Creates file handlers for the loggers.
-    * @throws LoggingException if an IO error occurs
+    * @throws DLALoggingException if an IO error occurs
     */
   private void createLogc() throws DLALoggingException {
     try {
@@ -504,7 +504,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
   /**
     * Creates file handlers for the loggers.
-    * @throws LoggingException if an IO error occurs
+    * @throws DLALoggingException if an IO error occurs
     */
   private void createLogd() throws DLALoggingException {
     try {
@@ -535,7 +535,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
   /**
     * Creates file handlers for the loggers.
-    * @throws LoggingException if an IO error occurs
+    * @throws DLALoggingException if an IO error occurs
     */
   private void createLogv() throws DLALoggingException {
     try {
@@ -566,6 +566,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     * Private constructor method. Public access to instance is through the
     * methods setup() and getInstance().
     * @param config the the configuration class
+    * @throws ConfigException thron if there is an error with configuration
     */
 
   private DLALogger(DLALoggerCfg config) throws ConfigException {
@@ -631,6 +632,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.2  2003/05/13 18:17:51  mbw
+// fixed debug and header stamping aspects
+//
 // Revision 1.1  2003/05/08 20:40:03  mbw
 // incorporated changes from code reviews
 //

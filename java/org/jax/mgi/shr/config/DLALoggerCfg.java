@@ -50,7 +50,7 @@ public class DLALoggerCfg extends Configurator {
      * value is the designated process name configured by the LOG_PROCESSNAME
      * parameter followed by the string ".proc.log". If the LOG_PROCESSNAME
      * is not configured then the default name is dataLoadLogger.proc.log.
-     * @return
+     * @return name of log
      */
     public String getLogp() {
       String s = getConfigString("LOG_PROC", getDefaultName() + PROC_SUFFIX);
@@ -63,7 +63,7 @@ public class DLALoggerCfg extends Configurator {
      * value is the designated process name configured by the LOG_PROCESSNAME
      * parameter followed by the string ".cur.log". If the LOG_PROCESSNAME is
      * not configured then the default name is dataLoadLogger.cur.log.
-     * @return
+     * @return name of log
      */
     public String getLogc() {
       String s = getConfigString("LOG_CUR", getDefaultName() + CUR_SUFFIX);
@@ -76,7 +76,7 @@ public class DLALoggerCfg extends Configurator {
      * value is the designated process name configured by the LOG_PROCESSNAME
      * parameter followed by the string ".diag.log". If the LOG_PROCESSNAME is
      * not configured then the default name is dataLoadLogger.diag.log.
-     * @return
+     * @return name of log
      */
     public String getLogd() {
       String s = getConfigString("LOG_DIAG", getDefaultName() + DIAG_SUFFIX);
@@ -89,7 +89,7 @@ public class DLALoggerCfg extends Configurator {
      * value is the designated process name configured by the LOG_PROCESSNAME
      * parameter followed by the string ".val.log". If the LOG_PROCESSNAME is
      * not configured then the default name is dataLoadLogger.val.log.
-     * @return
+     * @return name of log
      */
     public String getLogv() {
       String s = getConfigString("LOG_VAL", getDefaultName() + VAL_SUFFIX);
@@ -100,7 +100,7 @@ public class DLALoggerCfg extends Configurator {
      * get the path name of the directory where the logs will be stored. The
      * parameter name read from the configuration file or system properties is
      * LOG_PATH. The default value is the current directory.
-     * @return
+     * @return path of logs
      */
     private String getPath() {
       return getConfigString("LOG_PATH", DEFAULT_PATH);
@@ -112,7 +112,8 @@ public class DLALoggerCfg extends Configurator {
      * system properties is LOG_DEBUG. The value can be yes, no, true or
      * false and the case of the letters are ignored. The default value is
      * false.
-     * @return true or false
+     * @return true if debug is on
+     * @throws ConfigException if an error occurs during configuration
      */
     public Boolean getDebug() throws ConfigException {
       return getConfigBoolean("LOG_DEBUG", new Boolean(false));
@@ -123,7 +124,7 @@ public class DLALoggerCfg extends Configurator {
      * names. The parameter name read from the configuration file or system
      * properties is LOG_PROCESSNAME. The default value is the
      * "dataLoadLogger".
-     * @return
+     * @return default base log name
      */
     private String getDefaultName() {
       return getConfigString("LOG_DEFAULTNAME", DEFAULT_NAME);
@@ -157,6 +158,9 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.3  2003/05/14 15:55:49  mbw
+// changed default of logging debug to false
+//
 // Revision 1.2  2003/05/08 20:41:36  mbw
 // incorporated changes from code reviews
 //

@@ -90,6 +90,7 @@ public class DLASystemExit {
    * <p>Purpose: logs the error count to the system logger</p>
    * <p>Assumes: nothing</p>
    * <p>Effects: a message gets logged to the system logger</p>
+   * @param logger thr logger instance
    * @param pErrorCnt the total number of errors
    * @param pDataRelatedCnt the total number of data related errors
    */

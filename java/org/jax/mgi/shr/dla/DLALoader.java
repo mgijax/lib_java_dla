@@ -179,8 +179,6 @@ public abstract class DLALoader {
    * <p>Effects: the four dla standrad log files and records within the
    * RADAR and/or MGD database. If bcp is being used then bcp files may be
    * available if they were configured to remain after executing them.</p>
-   * @param args command line argument specifying which loader to run. This
-   * argument can be placed in the configuration file instead.
    */
   public void load() {
     try {
