@@ -19,7 +19,7 @@ import org.jax.mgi.shr.dla.DLAExceptionHandler;
 import org.jax.mgi.shr.dla.DLALoggingException;
 
 /**
- * @is An object that determines if a EMBL sequence record is and organism represented
+ * @is An object that determines if a EMBL sequence record is an organism represented
  *      by a configurable set of organisms represented by deciders. e.g.
  *     Given a set of deciders, mouse, human, and rat, returns true if the sequence
  *      record is for an organism in that set.<BR>
@@ -45,7 +45,7 @@ import org.jax.mgi.shr.dla.DLALoggingException;
 public class EMBLOrganismChecker {
     // expression string, pattern, and matcher to find the OS
     // section of a EMBL format sequence record
-    // Note the ? forces searching until the FIRST instance of OX is found
+    // Note the ? forces searching until the FIRST instance of OC is found
     // without the ? it will search until the LAST instance
     private static final String ORG_EXPRESSION = "OS([\\s\\S]*?)OC";
     private Pattern orgPattern;
@@ -117,7 +117,7 @@ public class EMBLOrganismChecker {
     * of deciders
     * @assumes Nothing
     * @effects Nothing
-    * @param record a sequence record
+    * @param record a EMBL format sequence record
     * @return true if 'record' is an organism represented by one of
     *         the deciders.
     * @throws Nothing
@@ -249,7 +249,8 @@ public class EMBLOrganismChecker {
         }
 
         /**
-         * Determines if 'OSString' represents a mouse. Counts total
+         * Determines if 'OSString' represents a mouse. Matching is done
+         * in lower case. Counts total
          * OSStrings processed and total for which the predicate is true.
          * @assumes Nothing
          * @effects Nothing
@@ -260,7 +261,7 @@ public class EMBLOrganismChecker {
          */
 
         protected boolean is(String OSString) {
-          return si.isOrganism(OSString, name);
+          return si.isMatch(OSString.toLowerCase(), name);
        }
      }
      /**
@@ -291,7 +292,8 @@ public class EMBLOrganismChecker {
        }
 
        /**
-        * Determines if 'OSString' represents a rat. Counts total
+        * Determines if 'OSString' represents a rat. Matching is done
+        * in lower case. Counts total
         * OSStrings processed and total for which the predicate is true.
         * @assumes Nothing
         * @effects Nothing
@@ -302,7 +304,7 @@ public class EMBLOrganismChecker {
         */
 
         protected boolean is(String OSString) {
-          return si.isOrganism(OSString, name);
+          return si.isMatch(OSString.toLowerCase(), name);
         }
       }
 
@@ -333,7 +335,8 @@ public class EMBLOrganismChecker {
           }
 
           /**
-           * Determines if 'OSString' represents a human. Counts total
+           * Determines if 'OSString' represents a human. Matching is done
+           * in lower case. Counts total
            * OSStrings processed and total for which the predicate is true.
            * @assumes Nothing
            * @effects Nothing
@@ -343,7 +346,7 @@ public class EMBLOrganismChecker {
            *         this decider.
            */
           protected boolean is(String OSString) {
-            return si.isOrganism(OSString, name);
+            return si.isMatch(OSString.toLowerCase(), name);
           }
 
         }
@@ -361,48 +364,39 @@ public class EMBLOrganismChecker {
         * @version 1.0
         */
 
-   private class EMBLSeqInterrogator {
+   private class EMBLSeqInterrogator extends Interrogator {
 
-       // a hash map data structure that maps organism controlled vocab
-       // to a String expression. All matching is done in lower case.
-       private String mouse;
-       private String rat;
-       private String human;
-
-       // load HashMap with controlled vocab keys and string expression values
-       private HashMap expressions = new HashMap();
-
-       private EMBLSeqInterrogator() {
-          mouse = "Mus musculus".toLowerCase();
-          rat = "Rattus".toLowerCase();
-          human = "sapiens".toLowerCase();
-          expressions.put("mouse", mouse);
-          expressions.put("rat", rat);
-          expressions.put("human", human);
-        }
+       // expressions, matching to be done in lower case
+       private String mouse = "Mus musculus".toLowerCase();
+       private String rat = "Rattus".toLowerCase();
+       private String human = "sapiens".toLowerCase();
 
        /**
-        * Determines whether a sequence record is for a given organism
-        * @assumes "organism" is a valid controlled vocabulary for "OSString"
+        * Constructs a EMBLSeqInterrogator by loading a mapping of controlled
+        * organism vocab keys to EMBL organism expressions
+        * @assumes Nothing
         * @effects Nothing
-        * @param OSString A EMBL format OS section string
-        * @param organism a decider name for determining expression to apply to
-        *        classification
-        * @return true if "OSString" is for "organism"
+        * @param None
         * @throws Nothing
         */
+       private EMBLSeqInterrogator() {
+           loadExpressions();
+       }
 
-         private boolean isOrganism (String OSString, String organism) {
-            // get the string expression that is mapped to 'organism' and return
-            // true if the string expression matches organism of 'OSString'
-            if((OSString.toLowerCase()).indexOf(
-                  (String)expressions.get(organism.toLowerCase())) >  -1) {
-                return true;
-            }
-            else {
-               return false;
-            }
-         }
+        /**
+        * loads the hashmap with organism controlled vocab keys and
+        * organism expression values
+        * @assumes Nothing
+        * @effects Nothing
+        * @param None
+        * @return Nothing
+        * @throws Nothing
+        */
+        protected void loadExpressions() {
+            expressions.put("mouse", mouse);
+            expressions.put("rat", rat);
+            expressions.put("human", human);
+        }
    }
 }
 
