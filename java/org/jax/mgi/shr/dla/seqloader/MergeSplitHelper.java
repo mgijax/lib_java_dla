@@ -21,11 +21,10 @@ import org.jax.mgi.shr.config.SequenceLoadCfg;
 /**
  * @is A helper class for the MergeSplitProcessor that:
  * <UL>
- * <LI> determines which seqids from the set of secondary seqids of incoming sequence
- *       are in MGI as primary seqids.
- * <LI> Maps the primary incoming seqid to the set of secondaries that are primary in mgi
- * <LI> To determine merge and split events,  Remapping of above -
- *      each secondary seqid to its set of primary seqids
+ * <LI> determines which seqids in a given seqid set are in MGI as primary seqids.
+ * <LI> remaps each secondary seqid to its set of primary seqids from a map of
+ *      primary input seqids mapped to their 2ndary seqids that are
+ *      in MGI as primary
  * </UL>
  * @has
  *   <UL>
@@ -66,17 +65,7 @@ public class MergeSplitHelper {
     // the sequence key of a 2ndary seqid found in MGI as primary
     Integer seqKey;
 
-    /**
-    * Constructs a MergeSplitHelper
-    * @assumes nothing
-    * @effects queries a database
-    * @param none
-    * @throws DBException if error creating lookups
-    * @throws CacheException if error using cached lookups
-    * @throws ConfigException if error reading config file
-    */
-
-    public MergeSplitHelper() throws KeyNotFoundException,
+    public MergeSplitHelper(AccessionLookup seqidLookup) throws KeyNotFoundException,
         DBException, CacheException, ConfigException {
         // configurator to get the logicalDB for the load
         SequenceLoadCfg config = new SequenceLoadCfg();
@@ -84,10 +73,11 @@ public class MergeSplitHelper {
         // lookup the key for logical db
         LogicalDBLookup lookup = new LogicalDBLookup();
 
-        // this is a full cached lookup
-        seqIdLookup = new AccessionLookup(lookup.lookup(
-            config.getLogicalDB()).intValue(),
-                MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        // should we use an uncached accession lookup instead?
+        this.seqIdLookup = seqidLookup;
+            //new AccessionLookup(lookup.lookup(
+            //config.getLogicalDB()).intValue(),
+            //    MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
     }
 
     /**
@@ -96,10 +86,9 @@ public class MergeSplitHelper {
     * @assumes nothing
     * @effects queries a database
     * @param seqInput object representing raw values of a Sequence
-    * @return Vector of secondary ids that are primary in MGI
-    * @throws KeyNotFoundException if seqid lookup fails
-    * @throws DBException if lookup error querying a database
-    * @throws CacheException if error using cached lookup
+    * @throws KeyNotFoundException
+    * @throws DBException
+    * @throws CacheException
     */
 
     public Vector getMergeSplitSeqs(SequenceInput seqInput)
@@ -120,7 +109,7 @@ public class MergeSplitHelper {
             }
         }
         return v;
-      }
+        }
 
         /**
          * Create a HashMap of secondary seqid keys (that are primary in MGI) with
@@ -128,11 +117,8 @@ public class MergeSplitHelper {
          *  and 2ndary seqid values (that are primary in MGI)
          * @assumes nothing
          * @effects nothing
-         * @param primaryMap HashMap of Primary seqid keys and 2ndary seqid values
-         *   (that are primary in MGI)
-         * @return a map of secondary seqids (that are primary in MGI) to their
-         * primary seqid(s)
-         * @throws NothingS
+         * @param sequences
+         * @throws
          */
         public HashMap createHash(HashMap primaryMap) {
             HashMap secondaryMap = new HashMap();
