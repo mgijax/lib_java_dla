@@ -360,9 +360,13 @@ public class SeqProcessor implements ProcessSequenceInput  {
 
      Iterator referenceIterator = references.iterator();
      while(referenceIterator.hasNext()) {
+         Object ref = referenceIterator.next();
+         if (ref instanceof SeqRefAssocPair)
            refAssocState = refAssocProcessor.process(
-               (SeqRefAssocPair)referenceIterator.next(),
-               sequence.getSequenceKey());
+               (SeqRefAssocPair)ref, sequence.getSequenceKey());
+         else if (ref instanceof RefAssocRawAttributes)
+             refAssocState = refAssocProcessor.process(
+                 (RefAssocRawAttributes)ref, sequence.getSequenceKey());
 
            // null if reference not in MGI
            if(refAssocState != null) {
