@@ -42,7 +42,7 @@ import org.jax.mgi.shr.dla.DLALoggingException;
  * @version 1.0
  */
 
-public class EMBLOrganismChecker {
+public class EMBLOrganismChecker implements OrganismChecker {
     // expression string, pattern, and matcher to find the OS
     // section of a EMBL format sequence record
     // Note the ? forces searching until the FIRST instance of OC is found
@@ -208,18 +208,31 @@ public class EMBLOrganismChecker {
     *         and the count of records for which the decider returned true
     * @throws Nothing
     */
+
     public Vector getDeciderCounts () {
       Vector v = new Vector();
-      v.add("Total records looked at: " + totalCtr + SeqloaderConstants.CRT);
-      v.add("Total records processed: " + trueCtr + SeqloaderConstants.CRT);
+      v.add("Total Sequences looked at: " + totalCtr + SeqloaderConstants.CRT);
+
+      // get the set of organisms we are loading
+      StringBuffer organisms = new StringBuffer();
       Iterator i = deciders.iterator();
+      while (i.hasNext()) {
+          organisms.append( ((SeqDecider)i.next()).getName() + ", ");
+      }
+      // remove the trailing ', '
+      String orgString = organisms.substring(0, organisms.length()-1);
+
+      v.add("Total records for organism(s) " +
+            orgString + "  found: " +
+            trueCtr + SeqloaderConstants.CRT);
+      i = deciders.iterator();
             while (i.hasNext()) {
               SeqDecider d = (SeqDecider)i.next();
-              String s = "Total " + d.getName() + " records processed: " +
+              String s = "    Total " + d.getName() + ": " +
                   d.getTrueCtr() + SeqloaderConstants.CRT;
               v.add(s);
             }
-            return v;
+       return v;
     }
 
     /**

@@ -37,7 +37,7 @@ import org.jax.mgi.shr.timing.Stopwatch;
  * @version 1.0
  */
 
-public class GBOrganismChecker {
+public class GBOrganismChecker implements OrganismChecker {
     // expression string, pattern, and matcher to find the classification
     // section of a GenBank format sequence record
     // Note the ? forces searching until the FIRST instance of REFERENCE is found
@@ -192,17 +192,28 @@ public class GBOrganismChecker {
     */
     public Vector getDeciderCounts () {
       Vector v = new Vector();
-      v.add("Total records looked at: " + totalCtr + SeqloaderConstants.CRT);
-      v.add("Total records processed: " + trueCtr + SeqloaderConstants.CRT);
+      v.add("Total Sequences looked at: " + totalCtr + SeqloaderConstants.CRT);
+
+      // get the set of organisms we are loading
+      StringBuffer organisms = new StringBuffer();
       Iterator i = deciders.iterator();
+      while (i.hasNext()) {
+          organisms.append( ((SeqDecider)i.next()).getName() + ", ");
+      }
+      // StringBuffer.substring removes the trailing ', '
+      v.add("Total records for organism(s) " +
+            organisms.toString().substring(0,organisms.length()-1) + "  found: " +
+            trueCtr + SeqloaderConstants.CRT);
+      i = deciders.iterator();
             while (i.hasNext()) {
               SeqDecider d = (SeqDecider)i.next();
-              String s = "Total " + d.getName() + " records processed: " +
+              String s = "    Total " + d.getName() + ": " +
                   d.getTrueCtr() + SeqloaderConstants.CRT;
               v.add(s);
             }
-            return v;
+       return v;
     }
+
     /**
      * @is an object that applies this predicate to the classification section
      * of a GenBank sequence record
@@ -381,6 +392,9 @@ public class GBOrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.2.4.1  2004/05/18 15:07:24  sc
+//  class/method headers updated. inner class GBSeqInterrogator now extends Interrogator
+//
 //  Revision 1.2  2004/03/12 14:13:22  sc
 //  HISTORY
 //
