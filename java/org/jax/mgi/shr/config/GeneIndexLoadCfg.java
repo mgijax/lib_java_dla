@@ -8,7 +8,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dla.input.fasta.FASTAFilter;
 
 /**
- * @is an object that retrieves Configuration pararmeters for sequence loaders
+ * an object that retrieves Configuration pararmeters for sequence loaders
  * @has Nothing
  *   <UL>
  *   <LI> a configuration manager

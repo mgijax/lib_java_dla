@@ -88,13 +88,17 @@ public abstract class SeqDecider {
       * abstract method to be implemented to apply a predicate to a String
       * @assumes Nothing
       * @effects Nothing
-      * @return s the String which to apply the predicate
+      * @param s the String which to apply the predicate
+      * @return true if the "is relationship" is satisfied
       */
 
     protected abstract boolean is(String s);
 }
 
 //  $Log$
+//  Revision 1.2  2004/12/07 20:10:25  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:03:46  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

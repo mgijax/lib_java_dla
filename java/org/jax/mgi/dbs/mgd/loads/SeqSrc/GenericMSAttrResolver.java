@@ -14,7 +14,7 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.cache.CacheConstants;
 
 /**
- * @is an object that resolves raw attributes for MolecularSource to their
+ * an object that resolves raw attributes for MolecularSource to their
  * corresponding database key values and performs vocabulary translation
  * @has the following lookup objects
  * <ul>
@@ -51,7 +51,7 @@ public class GenericMSAttrResolver extends MSAttrResolver {
      * @param rawAttr the raw attributes
      * @return the MolecularSource object
      * @throws UnresolvedOrganismException if error resolving organism
-     * @throw MSException thrown if any raw values are null or if there is an
+     * @throws MSException thrown if any raw values are null or if there is an
      * error resolving the attributes
      */
     public MolecularSource resolveAttributes(MSRawAttributes rawAttr) throws

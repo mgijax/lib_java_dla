@@ -14,10 +14,10 @@ import org.jax.mgi.shr.dla.loader.coord.*;
 
 
 /**
- * @is a base class that provides attributes common to all CoordMapProcessors
+ * a base class that provides attributes common to all CoordMapProcessors
  * @abstract defines the process, setMGITypeKey, and setCollectionKey method
  * signatures.
- * @note since the name of the subclass is configured, an instance of which is created by the
+ * @notes since the name of the subclass is configured, an instance of which is created by the
  * Configuration class, it cannot take constructor parameters therefore
  * we provide the abstract methods setMGITypeKey, and setCollectionKey method
  * @has
@@ -75,10 +75,13 @@ public abstract class CoordMapProcessor {
       * @throws DBException  thrown if error using resolver or lookups
       * @throws CacheException  thrown if error using cache or resolver
       * @throws TranslationException thrown if error using resolver
+      * @throws KeyNotFoundException
       */
 
-    public abstract Integer process(CoordMapRawAttributes rawAttr, Coordinate coordinate)
-        throws CacheException, DBException, KeyNotFoundException, ConfigException, TranslationException;
+    public abstract Integer process(CoordMapRawAttributes rawAttr,
+                                    Coordinate coordinate)
+        throws CacheException, DBException, KeyNotFoundException,
+        ConfigException, TranslationException;
 
     /**
      * The following two methods exist because an instance of a subclass is
@@ -96,7 +99,7 @@ public abstract class CoordMapProcessor {
 
     /**
      *  set the collection key for this processors
-     * @param collKey
+     * @param collKey collection key
      */
     public void setCollectionKey(Integer collKey) {
         collectionKey = collKey;

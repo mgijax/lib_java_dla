@@ -8,7 +8,7 @@ import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.ioutils.IOUException;
 
 /**
- * @is An object that represents a GenBank input file that contains sequence
+ * An object that represents a GenBank input file that contains sequence
  *     records that exclude the actual sequences. This is done by setting the
  *     end delimiter prior to the sequence to make the iterator exclude the
  *     sequence from the records that it returns.
@@ -54,6 +54,9 @@ public class GBInputFileNoSeq extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.2  2004/12/07 20:10:31  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:05:23  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

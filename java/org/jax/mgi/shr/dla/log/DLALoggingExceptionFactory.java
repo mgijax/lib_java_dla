@@ -4,7 +4,7 @@ import org.jax.mgi.shr.exception.ExceptionFactory;
 
 
 /**
- * @is An ExceptionFactory which returns LoggingExceptions
+ * An ExceptionFactory which returns LoggingExceptions
  * from the its storage of Exceptions.
  * @has a hashmap of Exceptions
  * @does returns Exceptions by name

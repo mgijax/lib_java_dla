@@ -46,6 +46,10 @@ public class ChromosomeCoordMapProcessor extends CoordMapProcessor {
     /**
      * Constructs a ChromosomeMapProcessor object
      * @throws ConfigException if error getting organism
+     * @throws DBException
+     * @throws CacheException
+     * @throws KeyNotFoundException
+     * @throws TranslationException
      */
 
     public ChromosomeCoordMapProcessor() throws ConfigException,
@@ -66,17 +70,18 @@ public class ChromosomeCoordMapProcessor extends CoordMapProcessor {
      * Gets a MAP_CoordinateKey from the database  if one exists
      * else resolves a CoordMapRawAttributes to create a MAP_CoordinateState and
      * sets the MAP_CoordinateState in the passed in Coordinate object
-     * @returns Integer key for the Coordinate map found of created
+     * @return Integer key for the Coordinate map found of created
      * @effects Queries a database
      * @param rawAttr Set of raw attributes to resolve
      * @param coordinate Coordinate object to set MAP_CoordinateState in if we
      *         need to create one
      * @throws CacheException - if caching error using lookups
      * @throws DBException  if database errors using lookups
-     * @throw KeyNotFoundException if can't find Chromosome key
+     * @throws KeyNotFoundException if can't find Chromosome key
      * @throws ConfigException if configuration errors using chrLookupByKey or
      *         resolving
      * @throws TranslationException - if translation errors resolving
+     * @throws KeyNotFoundException
      */
 
     public Integer process(CoordMapRawAttributes rawAttr, Coordinate coordinate)

@@ -6,7 +6,7 @@ import org.jax.mgi.shr.dla.input.fasta.FASTAData;
 
 
 /**
- * @is a FASTAFilter for exluding non TC sequences
+ * a FASTAFilter for exluding non TC sequences
  * @has nothing
  * @does rejects a given FASTAData if it is a non TC sequence
  * @company Jackson Laboratory

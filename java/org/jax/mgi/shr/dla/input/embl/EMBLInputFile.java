@@ -10,7 +10,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
 /**
-  * @is an InputFile for GenBank format record
+  * an InputFile for GenBank format record
   * @has a regex begin and end delimiter and an EMBL format file
   * @does provides iteration over the records of the file
   * @company The Jackson Laboratory
@@ -25,6 +25,7 @@ public class EMBLInputFile extends InputDataFile {
       * @throws IOUException thrown if there is an error accessing the file
       * @throws ConfigException thrown if there is an error accessing the
       * configuration file
+      * @throws DLALoggingException
       */
      public EMBLInputFile() throws IOUException, ConfigException,
          DLALoggingException

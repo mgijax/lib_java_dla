@@ -10,7 +10,7 @@ import java.util.Date;
 import java.text.MessageFormat;
 
 /**
- * @is A Formatter object that formats the content of a message prepended
+ * A Formatter object that formats the content of a message prepended
  * by a header stamp.
  * @has nothing.
  * @does Formats the content of a message record along with a standard
@@ -89,6 +89,9 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.2  2004/12/07 20:10:48  mbw
+// merged tr6047 onto the trunk
+//
 // Revision 1.1.2.1  2004/11/05 16:18:05  mbw
 // classes were renamed or moved as part of large refactoring effort (see tr604)
 //

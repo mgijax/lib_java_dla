@@ -62,7 +62,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the map collection name attribute
-     * @returns the map collection name
+     * @return the map collection name
      */
 
     public String getMapCollection() {
@@ -80,7 +80,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the coordinate map object attribute
-     * @returns the coordinate map object
+     * @return the coordinate map object
      */
 
     public String getCoordMapObject() {
@@ -89,7 +89,7 @@ public class CoordMapRawAttributes {
 
     /**
       * sets the coordinate map object MGI type key attribute
-      * @param mgiType the MGI type key of 'coordMapObject'
+      * @param mgiTypeKey the MGI type key of 'coordMapObject'
       */
 
     public void setMapMGITypeKey(Integer mgiTypeKey) {
@@ -98,7 +98,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the MGI type key attribute
-     * @returns the MGI type key of 'coordMapObject'
+     * @return the MGI type key of 'coordMapObject'
      */
 
     public Integer getMapMGITypeKey() {
@@ -116,7 +116,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the coordinate map type attribute
-     * @returns the coordinate map type
+     * @return the coordinate map type
      */
 
     public String getMapType() {
@@ -133,7 +133,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the map unit type attribute
-     * @returns the map unit type
+     * @return the map unit type
      */
 
     public String getUnitType() {
@@ -150,7 +150,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the coordinate map length attribute
-     * @returns the length of the coordinate map
+     * @return the length of the coordinate map
      */
 
     public String getLength() {
@@ -167,7 +167,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the sequence number attribute
-     * @returns order of the coordinate map in its collection
+     * @return order of the coordinate map in its collection
      */
 
     public String getSequenceNum() {
@@ -185,7 +185,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the coordinate map name attribute
-     * @returns the coordinate map name
+     * @return the coordinate map name
      */
 
     public String getMapName() {
@@ -203,7 +203,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the coordinate map name abbreviation
-     * @returns the coordinate map name abbreviation
+     * @return the coordinate map name abbreviation
      */
 
     public String getMapAbbrev() {
@@ -221,7 +221,7 @@ public class CoordMapRawAttributes {
 
     /**
      * gets the coordinate map version
-     * @returns the coordinate map version
+     * @return the coordinate map version
      */
 
     public String getMapVersion() {

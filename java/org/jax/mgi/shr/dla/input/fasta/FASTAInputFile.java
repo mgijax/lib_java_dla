@@ -7,7 +7,7 @@ import org.jax.mgi.shr.config.ConfigException;
 
 
 /**
- * @is an InputFile for FASTA data
+ * an InputFile for FASTA data
  * @has a FASTA file
  * @does provides iteration of the records from the file
  * @company The Jackson Laboratory

@@ -14,7 +14,7 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.cache.CacheConstants;
 
 /**
- * @is an object that resolves raw attributes for MolecularSource to their
+ * an object that resolves raw attributes for MolecularSource to their
  * corresponding database key values and performs vocabulary translation
  * @has the following lookup objects
  * <ul>

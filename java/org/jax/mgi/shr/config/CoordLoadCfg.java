@@ -7,7 +7,7 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @is an object that retrieves Configuration pararmeters for coordinate loaders
+ * an object that retrieves Configuration pararmeters for coordinate loaders
  * @has Nothing
  *   <UL>
  *   <LI> a configuration manager

@@ -14,7 +14,7 @@ import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.SchemaConstants;
 
 /**
- * @is a CachedLookup for storing and retrieving MolecularSource objects
+ * a CachedLookup for storing and retrieving MolecularSource objects
  * @has a cache, a full initialization query, a partial initialization query,
  * a "add" query for adding from the database to the cache and a
  * RowDataInterpreter
@@ -152,7 +152,7 @@ public class MSCollapsedCache
     }
 
     /**
-     * @is a RowDataInterpreter
+     * a RowDataInterpreter
      * @has a PRB_SourceInterpreter
      * @does parses a given RowReference and creates a KeyValue object used
      * for cahing query results

@@ -3,7 +3,7 @@ package org.jax.mgi.shr.dla.input.fasta;
 import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
 
 /**
- * @is a class which represents one record from a FASTA file
+ * a class which represents one record from a FASTA file
  * @has fasta data
  * @does provides accessors for the fasta data
  * @company The Jackson Laboratory</p>
@@ -121,7 +121,7 @@ public class FASTAData
 
     /**
      *
-     * @is a RecordDataInterpreter for interpreting fasta records from a fasta
+     * a RecordDataInterpreter for interpreting fasta records from a fasta
      * file
      * @has nothing
      * @does creates new FASTAData objects based on a given fasta record from
