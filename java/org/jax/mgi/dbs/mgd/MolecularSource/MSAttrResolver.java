@@ -3,7 +3,10 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 import org.jax.mgi.dbs.mgd.lookup.StrainKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.TissueKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.OrganismKeyLookup;
-import org.jax.mgi.dbs.mgd.lookup.VocabKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.GenderKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.CellLineKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.SegmentKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.VectorKeyLookup;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.shr.dbutils.DBException;
@@ -35,11 +38,11 @@ public class MSAttrResolver {
      */
     private TissueKeyLookup tissueLookup;
     private OrganismKeyLookup organismLookup;
-    private VocabKeyLookup genderLookup;
-    private VocabKeyLookup cellLineLookup;
+    private GenderKeyLookup genderLookup;
+    private CellLineKeyLookup cellLineLookup;
     private StrainKeyLookup strainLookup;
-    private VocabKeyLookup segmentLookup;
-    private VocabKeyLookup vectorLookup;
+    private SegmentKeyLookup segmentLookup;
+    private VectorKeyLookup vectorLookup;
 
     /**
      * the following string constants that will be resolved and used
@@ -96,14 +99,10 @@ public class MSAttrResolver {
             this.tissueLookup = new TissueKeyLookup();
             this.organismLookup = new OrganismKeyLookup();
             this.strainLookup = new StrainKeyLookup();
-            this.genderLookup =
-                new VocabKeyLookup(VocabularyTypeConstants.GENDER);
-            this.cellLineLookup =
-                new VocabKeyLookup(VocabularyTypeConstants.CELLLINE);
-            this.segmentLookup =
-                new VocabKeyLookup(VocabularyTypeConstants.SEGMENTTYPE);
-            this.vectorLookup =
-                new VocabKeyLookup(VocabularyTypeConstants.VECTORTYPE);
+            this.genderLookup = new GenderKeyLookup();
+            this.cellLineLookup = new CellLineKeyLookup();
+            this.segmentLookup = new SegmentKeyLookup();
+            this.vectorLookup = new VectorKeyLookup();
             // set organism keys
             this.humanKey = this.organismLookup.lookup(HUMAN);
             this.mouseKey = this.organismLookup.lookup(MOUSE);
