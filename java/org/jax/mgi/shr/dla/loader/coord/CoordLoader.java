@@ -1,7 +1,7 @@
 //  $Header
 //  $Name
 
-package org.jax.mgi.shr.dla.loader.coord;
+package org.jax.mgi.shr.dla.coordloader;
 
 import org.jax.mgi.shr.dla.loader.DLALoader;
 import org.jax.mgi.shr.timing.Stopwatch;
@@ -10,28 +10,27 @@ import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
 import org.jax.mgi.shr.dbutils.DataIterator;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.InputDataFile;
-
+import org.jax.mgi.shr.dla.input.CoordinateInput;
+import org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
-import org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor;
-import org.jax.mgi.shr.dla.input.CoordinateInput;
 
 /**
  * a base class which extend DLALoader and implements the DLALoader methods
  * 'initialize', 'preprocess', 'run', and 'postprocess'
  * @has a set of  objects for doing Coordinate loads<br>
  * <UL>
- *   <LI>A DataIterator for iterating over an input file
- *   <LI>A CoordProcessor for processing a CoordInput object
+ *   <LI>A DataIterator for iterating over an input file - see note below.
+ *   <LI>A CoordinateInputProcessor for processing a CoordInput object
  *   <LI>A BufferedWriter for writing out repeated coordinates
- *   <LI>A SeqQCReporter
  * </UL>
  *
  * @does performs initialization of objects for coordinate loads, and
  *       processes coordinates. Keeps count of repeated coordinates in the input
  *       and writes them out to a file.
+ * @note assumes a delete/reload strategy - see preprocess method
  * @note assumes it is iterating over a file; could subclass to set a different
  *       kind of iterator e.g. a RowDataIterator over a ResultSet.
  * @author sc
@@ -66,7 +65,7 @@ public class CoordLoader extends DLALoader {
     private BufferedWriter repeatSeqWriter;
 
     /**
-     * Initializes instance variables depending on load mode
+     * Initializes instance variables
      * @throws MGIException if errors occur during initialization
      */
     public void initialize() throws MGIException {
@@ -91,7 +90,7 @@ public class CoordLoader extends DLALoader {
         // number of valid coordinates WITHOUT processing errors:
         processedCtr = 0;
 
-        // create a CoordProcessor
+        // create a CoordinateInputProcessor
         coordProcessor = new CoordinateInputProcessor(loadStream);
 
         // create the set for storing coordinate ids we have already processed
@@ -102,13 +101,14 @@ public class CoordLoader extends DLALoader {
     }
 
     /**
-     * Deletes this load's collection and all members of that collection
+     * deletes the collection, all coordinate maps and features for the
+     * collection. Creates a new collection object.
      * @effects deletes collection, map, and feature objects from a database
      * @throws MGIException if errors occur while deleting
      */
 
     public void preprocess() throws MGIException {
-        coordProcessor.deleteCoordinates();
+        coordProcessor.preprocess();
     }
 
     /**
