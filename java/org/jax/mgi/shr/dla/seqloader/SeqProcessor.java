@@ -25,7 +25,7 @@ import java.util.Iterator;
 
 abstract public class SeqProcessor  {
    /**
-   * Debug stuff
+   * Debug stuff - public so I have easy access
    */
     protected Stopwatch stopWatch;
     public double runningLookupTime;
@@ -49,9 +49,6 @@ abstract public class SeqProcessor  {
 
     // a stream for handling MGD DAO objects
     protected SQLStream mgdStream;
-
-    // a stream for handling RADAR DAO objects
-    protected SQLStream qcStream;
 
     // get a sequence load configurator
     protected SequenceLoadCfg config;
@@ -117,7 +114,7 @@ abstract public class SeqProcessor  {
        logger.logdDebug("Add Event Primary: " +
                       ( (MSRawAttributes) seqInput.getMSources().get(0)).
                       getOrganism() +
-                      " " + seqInput.getPrimaryAcc().getAccID(), false);
+                      " " + seqInput.getPrimaryAcc().getAccID());
 
        // resolve secondary accessions and set the accession states in the
        // Sequence
