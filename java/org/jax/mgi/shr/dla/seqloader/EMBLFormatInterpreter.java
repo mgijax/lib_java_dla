@@ -363,9 +363,9 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     /**
      * Parses the organism from the OS line of a EMBL format record.
      * Sets the organism in the SequenceRawAttributes and MSRawAttributes objects
-     * Sets numberOfOrganisms
-     * @assumes Assumes the isValid method has been called which sets the
-     * number of non-decider organisms for this record
+     * Sets numberOfOrganisms in the SequenceRawAttributes object. Sets each
+     * MSRawAttributes in the SequenceInput object.
+     * @assumes Nothing
      * @effects Nothing
      * @param osSection The OS section from a EMBL format record
      * <BR>
@@ -388,30 +388,47 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         String organism;
         StringBuffer rawOrganism = new StringBuffer();
         int otherCtr = 0;
-        while (lineTokenizer.hasMoreTokens()) {
-         // MSRawAttributes ms = new MSRawAttributes();
-          // e.g. line looks like "Homo sapiens (Human),"
-          line = lineTokenizer.nextToken().substring(5);
-          StringTokenizer fieldTokenizer = new StringTokenizer(line,
-              SeqloaderConstants.OPEN_PAREN);
-          if (fieldTokenizer.hasMoreTokens()) {
-            // e.g. organism looks like "Homo sapiens"
-            organism = fieldTokenizer.nextToken().trim();
-            // append organism to rawOrganism string with a comma separater
-            rawOrganism.append(organism + SeqloaderConstants.COMMA);
 
-            // if human/mouse/rat create a MSRawAttributes, set its organism,
-            // and set 'ms' in the SequenceInput
-            if (organismChecker.isHumanMouseOrRat(organism)) {
-              MSRawAttributes ms = new MSRawAttributes();
-              ms.setOrganism(organism);
-              sequenceInput.addMSource(ms);
+        // Flags to create only 1 each MSRawAttributes for human, mouse and rat
+        // - e.g. some TrEMBL records have two mouse species:
+        // OS   Mus musculus castaneus (Southeastern Asian house mouse), and
+        // OS   Mus musculus musculus (eastern European house mouse).
+        boolean mouse = false;
+        boolean human = false;
+        boolean rat = false;
+
+        while (lineTokenizer.hasMoreTokens()) {
+            // MSRawAttributes ms = new MSRawAttributes();
+            // e.g. line looks like "Homo sapiens (Human),"
+            line = lineTokenizer.nextToken().substring(5);
+            StringTokenizer fieldTokenizer = new StringTokenizer(line,
+                SeqloaderConstants.OPEN_PAREN);
+            if (fieldTokenizer.hasMoreTokens()) {
+                // e.g. organism looks like "Homo sapiens"
+                organism = fieldTokenizer.nextToken().trim();
+                // append organism to rawOrganism string with a comma separater
+                rawOrganism.append(organism + SeqloaderConstants.COMMA);
+
+                // check for human/mouse/rat
+                // count the number of non-human/mouse/rat organisms
+                if ( ! organismChecker.isHumanMouseOrRat(organism)) {
+                    otherCtr++;
+                }
+                else {
+                    if (organismChecker.isMouse(organism) && mouse == false) {
+                        mouse = true;
+                        setOrganism(organism);
+                    }
+                    else if (organismChecker.isRat(organism) && rat == false) {
+                        rat = true;
+                        setOrganism(organism);
+                    }
+                    else if (organismChecker.isHuman(organism) && human == false) {
+                        human = true;
+                        setOrganism(organism);
+                    }
+                }
             }
-            // Count the number of non-mouse organisms
-            else {
-              otherCtr++;
-            }
-          }
         }
         // create an 'Other' molecular source if we found a non-human/mouse/rat
         // organism
@@ -427,6 +444,21 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
         // set the count of non-human/mouse/rat organisms the raw sequence
         rawSeq.setNumberOfOrganisms(otherCtr);
+    }
+
+    /**
+     * creates an MSRawAttributes for 'organism' and sets it in the sequenceInput
+     * @assumes Nothing
+     * @effects Nothing
+     * @param organism an organism for the SequenceInput being created
+     * @return Nothing
+     * @throws Nothing
+     */
+
+    private void setOrganism(String organism) {
+        MSRawAttributes ms = new MSRawAttributes();
+        ms.setOrganism(organism);
+        sequenceInput.addMSource(ms);
     }
 
     /**
