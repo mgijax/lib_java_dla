@@ -128,6 +128,7 @@ public class MSProcessor
          * attributes
          */
         MolecularSource existingSrc = null;
+/*
         try
         {
             //existingSrc =
@@ -141,6 +142,7 @@ public class MSProcessor
             e2.bind(MSLookup.class.getName());
             throw e2;
         }
+*/
         if (existingSrc == null)
         {
             // what do I do ??
