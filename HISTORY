@@ -5,6 +5,9 @@ CHANGES:
 2) GBSeqAttributeResolver - renamed to GBFormatSeqAttribResolver
 3) SeqEventDetector and MergeSplitProcessor- added counters and methods to get 
    counters events
+4) ProcessSequenceInput interface - added this interface for sequence loaders.
+   provide method definitions for  processing sequence Inputs, deleting 
+   sequences, and getting information about processed sequences
 
 DATE: 03/24/2004
 STAFF: sc
