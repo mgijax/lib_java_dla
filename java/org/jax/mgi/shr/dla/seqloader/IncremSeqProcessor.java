@@ -58,7 +58,7 @@ public class IncremSeqProcessor extends SeqProcessor {
      */
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
-                              SQLStream qcSqlStream,
+                              SQLStream radarSqlStream,
                               SequenceAttributeResolver sar)
         throws CacheException, DBException, ConfigException, MSException,
                DLALoggingException {
@@ -85,7 +85,7 @@ public class IncremSeqProcessor extends SeqProcessor {
        logger = DLALogger.getInstance();
 
         // Create a Molecular Source Processor
-       msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream, logger);
+       msProcessor = new MSProcessor (mgdSqlStream, radarSqlStream, logger);
 
     }
 
@@ -104,14 +104,14 @@ public class IncremSeqProcessor extends SeqProcessor {
      */
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
-                              SQLStream qcSqlStream,
+                              SQLStream radarSqlStream,
                               SeqQCReporter qcReporter,
                               SequenceAttributeResolver sar,
                               MergeSplitProcessor msp,
                               BufferedWriter repeatSeqWriter)
         throws CacheException, DBException, ConfigException, MSException,
                DLALoggingException, KeyNotFoundException {
-        this(mgdSqlStream, qcSqlStream, sar);
+        this(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
