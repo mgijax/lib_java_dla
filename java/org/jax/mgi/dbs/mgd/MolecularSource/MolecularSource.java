@@ -72,6 +72,14 @@ public class MolecularSource
    */
   private static final String DELIMITER = ".";
 
+  /**
+   * these constants are used for setting age, ageMin and ageMax
+   */
+  private static final String NOT_APPLICABLE = "Not Applicable";
+  private static final String NOT_RESOLVED = "Not Resolved";
+  private static final Float ageMin = new Float(-1.0);
+  private static final Float ageMax = new Float(-1.0);
+
   /*
    * the following constant definitions are exceptions thrown by this class
    */
@@ -80,16 +88,18 @@ public class MolecularSource
   private static String AlreadyInDatabase =
       MSExceptionFactory.AlreadyInDatabase;
   private static String AttrHistoryErr = MSExceptionFactory.AttrHistoryErr;
+  private static String NoKeyFound = MSExceptionFactory.NoKeyFound;
 
 
   /**
-   * constructor which has no database key
-   * @throws DBException
-   * @throws ConfigException
+   * constructor which creates a new MolecularSource and assigns no database key
+   * @throws DBException thrown if there is an error with database
+   * @throws ConfigException thrown if there is an error with configuration
    */
   public MolecularSource()
   {
-    state = new PRB_SourceState();
+    this.state = new PRB_SourceState();
+    this.state.setIsCuratorEdited(new Boolean(false));
   }
 
   /**
@@ -100,7 +110,20 @@ public class MolecularSource
   {
     this.state = dao.getState();
     this.key = dao.getKey();
-    this.isInDatabase = true;
+  }
+
+  /**
+   * assign the next database key value to this object
+   * @assumes nothing
+   * @effects the key value for this object will be replaced with the next
+   * available key for the PRB_Source table
+   * @throws ConfigException thrown if there is an exception with the
+   * configuration
+   * @throws DBException thrown if there is an error with the database
+   */
+  public void assignKey() throws ConfigException, DBException
+  {
+    this.key = new PRB_SourceKey();
   }
 
   /**
@@ -222,6 +245,12 @@ public class MolecularSource
   public void setAge(String age)
   {
     this.state.setAge(age);
+    if (age.equals(NOT_APPLICABLE) ||
+        age.equals(NOT_RESOLVED))
+    {
+      this.state.setAgeMax(ageMax);
+      this.state.setAgeMin(ageMin);
+    }
   }
 
   /**
@@ -289,13 +318,17 @@ public class MolecularSource
 
   /**
    * get whether or not this object is currently in the database
-   * @return
+   * @return true if in the database; false otherwise
    */
   public boolean isInDatabase()
   {
       return this.isInDatabase;
   }
 
+  /**
+   * get whether or not this object is currently in a batch stream
+   * @return true if in a batch stream; false otherwise
+   */
   public boolean isInBatch()
   {
       return this.isInBatch;
@@ -328,7 +361,7 @@ public class MolecularSource
          */
         try
         {
-            if (history != null)
+            if (history == null)
                 history = new MSAttrHistory();
             this.curatedEditedTissue =
                 new Boolean(history.isTissueCurated(this.getMSKey()));
@@ -370,7 +403,7 @@ public class MolecularSource
          */
         try
         {
-            if (history != null)
+            if (history == null)
                 history = new MSAttrHistory();
             this.curatedEditedAge =
                 new Boolean(history.isAgeCurated(this.getMSKey()));
@@ -415,7 +448,7 @@ public class MolecularSource
          */
         try
         {
-            if (history != null)
+            if (history == null)
                 history = new MSAttrHistory();
             this.curatedEditedCellLine =
                 new Boolean(history.isCellLineCurated(this.getMSKey()));
@@ -460,7 +493,7 @@ public class MolecularSource
          */
         try
         {
-            if (history != null)
+            if (history == null)
                 history = new MSAttrHistory();
             this.curatedEditedStrain =
                 new Boolean(history.isStrainCurated(this.getMSKey()));
@@ -505,7 +538,7 @@ public class MolecularSource
          */
         try
         {
-            if (history != null)
+            if (history == null)
                 history = new MSAttrHistory();
             this.curatedEditedGender =
                 new Boolean(history.isGenderCurated(this.getMSKey()));
@@ -550,7 +583,7 @@ public class MolecularSource
          */
         try
         {
-            if (history != null)
+            if (history == null)
                 history = new MSAttrHistory();
             this.curatedEditedOrganism =
                 new Boolean(history.isOrganismCurated(this.getMSKey()));
@@ -572,7 +605,7 @@ public class MolecularSource
   /**
    * insert this instance to the database.
    * @assumes nothing
-   * @effects a record will be updated or inserted into the database
+   * @effects a record will be inserted into the database
    * @throws DBException thrown if there is an error with the database
    * @throws ConfigException thrown if there is an error with configuration
    * @throws MSException thrown if this object is already in the database
@@ -603,15 +636,7 @@ public class MolecularSource
     else
       stream.insert(new PRB_SourceDAO(key, state));
     this.isInBatch = true;
-  }
-
-  /**
-   * update this instance to the database.
-   * @assumes nothing
-   * @effects a record will be updated or inserted into the database
-   */
-  public void update(SQLStream stream) throws ConfigException, DBException
-  {
+    // now add enties to the MGI_AttributeHistory table
   }
 
 

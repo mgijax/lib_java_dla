@@ -32,11 +32,6 @@ public class MSResolver {
      * the MSAttributeResolver used for resolving the raw attributes
      */
     protected MSAttrResolver attrResolver = null;
-    /**
-     * reusable object for holding a MolecularSource after being
-     * resolved by the MSAttrResolver but before being resolved by this class
-     */
-    private MolecularSource unresolvedMS = null;
 
     /*
      * the following constant definitions are exceptions thrown by this class
@@ -45,6 +40,7 @@ public class MSResolver {
         MSExceptionFactory.MSResolverInitErr;
     protected static String ResolveErr = MSExceptionFactory.ResolveErr;
     protected static String CacheErr = MSExceptionFactory.CacheErr;
+    protected static String KeyErr = MSExceptionFactory.KeyErr;
 
 
     public MSResolver()
@@ -79,16 +75,17 @@ public class MSResolver {
     throws MSException
     {
         // resolve attributes only
-        this.unresolvedMS = this.attrResolver.resolveAttributes(attributes);
+        MolecularSource newMS =
+            this.attrResolver.resolveAttributes(attributes);
         /**
          * now resolve the MolecularSource by looking in the cache
          * of collapsed sources and if not there create a new one and add
          * it to the cache
          */
-        MolecularSource resolvedMS = null;
+        MolecularSource existingMS = null;
         try
         {
-            resolvedMS = this.msCollapsedCache.lookup(this.unresolvedMS);
+            existingMS = this.msCollapsedCache.lookup(newMS);
         }
         catch (MGIException e)
         {
@@ -98,12 +95,12 @@ public class MSResolver {
             e2.bind(attributes.toString());
             throw e2;
         }
-        if (resolvedMS == null)
+        if (existingMS == null)
         {
-            // create a bare naked MolecularSource and copy attributes into it
+            // assign a new key to the new MolecularSource and add
+            // it to the cache
             try {
-                resolvedMS = new MolecularSource(
-                    new PRB_SourceDAO(new PRB_SourceState()));
+                newMS.assignKey();
             }
             catch (MGIException e)
            {
@@ -113,27 +110,22 @@ public class MSResolver {
                e2.bind(attributes.toString());
                throw e2;
            }
-            resolvedMS.setAge(this.unresolvedMS.getAge());
-            resolvedMS.setCellLineKey(this.unresolvedMS.getCellLineKey());
-            resolvedMS.setGenderKey(this.unresolvedMS.getGenderKey());
-            resolvedMS.setName(this.unresolvedMS.getName());
-            resolvedMS.setOrganismKey(this.unresolvedMS.getOrganismKey());
-            resolvedMS.setStrainKey(this.unresolvedMS.getStrainKey());
-            resolvedMS.setTissueKey(this.unresolvedMS.getTissueKey());
             try
             {
-                this.msCollapsedCache.addToCache(resolvedMS);
+                this.msCollapsedCache.addToCache(newMS);
             }
             catch (MGIException e)
             {
                 MSExceptionFactory eFactory = new MSExceptionFactory();
                MSException e2 = (MSException)
                    eFactory.getException(CacheErr, e);
-               e2.bind(resolvedMS.toString());
+               e2.bind(newMS.getClass().getName());
                throw e2;
             }
+            return newMS;
         }
-        return resolvedMS;
+        else
+          return existingMS;
     }
 
 }

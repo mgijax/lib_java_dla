@@ -72,6 +72,16 @@ public class MSExceptionFactory extends ExceptionFactory {
         "to a resource error: ??", false));
   }
   /**
+   * an error occurred while trying to resolve an MolecularSource
+   */
+  public static final String KeyErr =
+      "org.jax.mgi.dbs.mgd.KeyErr";
+  static {
+    exceptionsMap.put(KeyErr, new MSException(
+        "Could not obtain a new primary key value for a Molecular Source due " +
+        "to a resource error", false));
+  }
+  /**
    * too many rows were returned on a query
    */
   public static final String TooManyRows =
@@ -148,6 +158,20 @@ public class MSExceptionFactory extends ExceptionFactory {
         "Could not find molecular source for existing sequence with " +
         "accid = ?? and organism key = ??", false));
   }
+
+  /**
+   * no key has been assigned to the MolecularSource object and a call to
+   * update() was made
+   */
+  public static final String NoKeyFound =
+      "org.jax.mgi.dbs.mgd.NoKeyFound";
+  static {
+    exceptionsMap.put(NoKeyFound, new MSException(
+        "The MolecularSource could not be updated since it has no key " +
+        "assigned for the given state:\n ??", false));
+  }
+
+
 
 
 

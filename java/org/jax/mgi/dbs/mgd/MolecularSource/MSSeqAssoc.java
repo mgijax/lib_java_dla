@@ -1,9 +1,14 @@
 package org.jax.mgi.dbs.mgd.MolecularSource;
 
+import java.util.Vector;
+
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceInterpreter;
 import org.jax.mgi.dbs.mgd.dao.SEQ_Source_AssocDAO;
 import org.jax.mgi.dbs.mgd.dao.SEQ_Source_AssocInterpreter;
+import org.jax.mgi.shr.dbutils.dao.DAO;
+import org.jax.mgi.shr.dbutils.dao.RecordStamper;
+import org.jax.mgi.shr.dbutils.dao.RecordStampException;
 import org.jax.mgi.shr.dbutils.dao.SQLTranslatable;
 import org.jax.mgi.shr.dbutils.ResultsNavigator;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
@@ -12,6 +17,7 @@ import org.jax.mgi.shr.dbutils.RowDataInterpreter;
 import org.jax.mgi.shr.dbutils.RowReference;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dbutils.DBExceptionFactory;
+import org.jax.mgi.shr.dbutils.Table;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.config.RecordStampCfg;
 import org.jax.mgi.shr.config.ConfigException;
@@ -33,7 +39,7 @@ import org.jax.mgi.dbs.mgd.MGD;
  * @version 1.0
  */
 
-public class MSSeqAssoc implements SQLTranslatable
+public class MSSeqAssoc extends DAO
 {
 
     /**
@@ -44,11 +50,6 @@ public class MSSeqAssoc implements SQLTranslatable
      * the DAO object for the SEQ_Source_Assoc table
      */
     private SEQ_Source_AssocDAO seqSourceAssocDAO = null;
-
-    /**
-     * the job stream key for the currently runtime user
-     */
-    private Integer jobStreamKey = null;
 
     /*
      * the following constant definitions are exceptions thrown by this class
@@ -69,8 +70,6 @@ public class MSSeqAssoc implements SQLTranslatable
     {
         this.prbSourceDAO = prbSourceDAO;
         this.seqSourceAssocDAO = seqSourceAssocDAO;
-        RecordStampCfg cfg = new RecordStampCfg();
-        this.jobStreamKey = cfg.getJobStreamKey();
     }
 
     /**
@@ -107,6 +106,33 @@ public class MSSeqAssoc implements SQLTranslatable
     }
 
     /**
+     * get the bcp tables supported. currently this is not implemented and
+     * a runtime exception is thrown when this method is called
+     * @assumes nothing
+     * @effects a runtime exception is thrown
+     * @return the insert sql for this instance once the implementation is
+     * completed. currently a runtime exception is called
+     */
+    public Vector getBCPSupportedTables()
+    {
+        throw MGIException.getUnsupportedMethodException();
+    }
+
+    /**
+     * get the bcp vector for a given table supported. currently this is not
+     * implemented and a runtime exception is thrown when this method is called
+     * @assumes nothing
+     * @effects a runtime exception is thrown
+     * @return the insert sql for this instance once the implementation is
+     * completed. currently a runtime exception is called
+     */
+    public Vector getBCPVector(Table table)
+    {
+        throw MGIException.getUnsupportedMethodException();
+    }
+
+
+    /**
      * get the sql for doing inserts. currently this is not implemented and
      * a runtime exception is thrown when this method called
      * @assumes nothing
@@ -126,20 +152,36 @@ public class MSSeqAssoc implements SQLTranslatable
      * @assumes nothing
      * @effects nothing
      */
-    public String getUpdateSQL()
+    public String getUpdateSQL() throws DBException
     {
         MolecularSource ms = this.getMolecularSource();
-        return
-            "execute PRB_processSeqLoaderSource " +
-            this.getAssocKey().toString() + ", " +
-            this.getSeqKey().toString() + ", " +
-            ms.getMSKey().toString() + ", " +
-            ms.getOrganismKey().toString() + ", " +
-            ms.getStrainKey().toString() + ", " +
-            ms.getTissueKey().toString() + ", " +
-            ms.getGenderKey().toString() + ", " +
-            ms.getCellLineKey().toString() + ", " +
-            this.jobStreamKey.toString();
+        try
+        {
+          RecordStamper.stampForUpdate(prbSourceDAO.getState());
+        }
+        catch (RecordStampException e)
+        {
+          DBExceptionFactory ef = new DBExceptionFactory();
+          DBException e2 = (DBException)
+            ef.getException(DBExceptionFactory.RecordStampErr);
+          e2.bind("PRB_Source");
+          throw e2;
+        }
+
+        StringBuffer sql = new StringBuffer("exec PRB_processSeqLoaderSource ");
+
+        sql.append(Converter.toString(this.seqSourceAssocDAO.getKey().getKey()) + ", ");
+        sql.append(Converter.toString(this.seqSourceAssocDAO.getState().getSequenceKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getKey().getKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().getOrganismKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().getStrainKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().getTissueKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().getGenderKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().getCellLineKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().getModifiedByKey()));
+
+        return new String(sql);
+
     }
 
     /**

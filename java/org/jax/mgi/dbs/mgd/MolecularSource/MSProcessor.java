@@ -50,7 +50,7 @@ public class MSProcessor
      * the maximum limit of rows allowed to be return from the
      * associated clone lookup
      */
-    private static final int MAXRESULTS = 25;
+    private int MAXCLONES = 25;
 
     /*
      * the following constant definitions are exceptions thrown by this class
@@ -91,16 +91,16 @@ public class MSProcessor
         // MolecularSource object to be returned
         MolecularSource ms = null;
 
-        if (attr.getLibraryName() != null) // represents a named source
+        if (attr.getLibraryName() != null) // this is a named source
         {
-            ms = processByLibraryName(attr);
+            ms = findByLibraryName(attr);
         }
-        if (ms == null) // represents an annonymous source or a named
+        if (ms == null) // this is an annonymous source or a named
                         // which was not found in the database
         {
             // look for a source from the associated clones that is named
             // and use that one instead
-            ms = processByAssociatedClones(accid);
+            ms = findByAssociatedClones(accid);
         }
         /**
          * if no molecular source was found then just resolve the raw
@@ -136,12 +136,11 @@ public class MSProcessor
      * @param seqid the sequence accid
      * @param seqKey the sequence key
      * @param attr the raw attributes for molecular source
-     * @return a resolved MolecularSource object
      * @throws MSException thrown if there is an error resolving attributes
      */
-    public MolecularSource processExistingSeqSrc(String seqid,
-                                                 Integer seqKey,
-                                                 MSRawAttributes attr)
+    public void processExistingSeqSrc(String seqid,
+                                      Integer seqKey,
+                                      MSRawAttributes attr)
     throws MSException
     {
         MSAttrResolver attrResolver = new MSAttrResolver();
@@ -169,6 +168,10 @@ public class MSProcessor
             }
             existingSrc = existingSrcAssoc.getMolecularSource();
         }
+        catch (MSException e)
+        {
+            throw e;
+        }
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
@@ -182,7 +185,8 @@ public class MSProcessor
             // compare incoming source to existing source, perform qc reporting
             // and make changes to existing source if appropriate
             boolean srcHasChanged = false; // track if the existing ms changes
-            if (existingSrc.getStrainKey() != incomingSrc.getStrainKey())
+            if (existingSrc.getStrainKey().intValue() !=
+                incomingSrc.getStrainKey().intValue())
             {
                 if (!existingSrc.isStrainCurated())
                 {
@@ -193,7 +197,8 @@ public class MSProcessor
                     qcReporter.reportAttributeDiscrepancy();
             }
 
-            if (existingSrc.getCellLineKey() != incomingSrc.getCellLineKey())
+            if (existingSrc.getCellLineKey().intValue() !=
+                incomingSrc.getCellLineKey().intValue())
             {
                 if (!existingSrc.isCellLineCurated())
                 {
@@ -204,7 +209,7 @@ public class MSProcessor
                     qcReporter.reportAttributeDiscrepancy();
             }
 
-            if (existingSrc.getAge() != incomingSrc.getAge())
+            if (!existingSrc.getAge().equals(incomingSrc.getAge()))
             {
                 if (!existingSrc.isAgeCurated())
                 {
@@ -215,7 +220,8 @@ public class MSProcessor
                     qcReporter.reportAttributeDiscrepancy();
             }
 
-            if (existingSrc.getGenderKey() != incomingSrc.getGenderKey())
+            if (existingSrc.getGenderKey().intValue() !=
+                incomingSrc.getGenderKey().intValue())
             {
                 if (!existingSrc.isGenderCurated())
                 {
@@ -226,7 +232,8 @@ public class MSProcessor
                     qcReporter.reportAttributeDiscrepancy();
             }
 
-            if (existingSrc.getTissueKey() != incomingSrc.getTissueKey())
+            if (existingSrc.getTissueKey().intValue() !=
+                incomingSrc.getTissueKey().intValue())
             {
                 if (!existingSrc.isTissueCurated())
                 {
@@ -238,14 +245,49 @@ public class MSProcessor
             }
             if (srcHasChanged)
             {
-                //existingSrc.update(stream);
+              try
+              {
+                stream.update(existingSrcAssoc);
+              }
+              catch (MGIException e)
+              {
+                  MSExceptionFactory eFactory = new MSExceptionFactory();
+                  MSException e2 = (MSException)
+                      eFactory.getException(SQLStreamErr, e);
+                  e2.bind(existingSrc.getClass().getName());
+                  throw e2;
+              }
             }
         }
-        return null;
-
     }
 
-    private MolecularSource processByLibraryName(MSRawAttributes attr) throws
+    /**
+     * set the limit on how many associated clones can be processed for a
+     * given sequence
+     * @assumes nothing
+     * @effects more or less associated clones will be processed before an
+     * MSException is thrown
+     * @param max the limit value
+     */
+    public void setMaxAssociatedClones(int max)
+    {
+        this.MAXCLONES = max;
+    }
+
+    /**
+     * tries to find a MolecularSource object by using the library name
+     * and returns null if not found. The raw library name is obtained from the
+     * MSRawAttributes and translated.
+     * @param attr the MolecularSource raw attributes object which has the
+     * raw library name
+     * @return the found MolecularSource object for the given library or
+     * null if not found
+     * @throws MSException thrown if there is an error with the database,
+     * configuration, or an error occuring during lookup or vocabulary
+     * translation
+     */
+
+    private MolecularSource findByLibraryName(MSRawAttributes attr) throws
         MSException
     {
         MolecularSource ms = null; // the MolecularSource object to return
@@ -286,7 +328,21 @@ public class MSProcessor
         return ms;
     }
 
-    private MolecularSource processByAssociatedClones(String accid) throws
+    /**
+     * tries to find a MolecularSource object from the database that is a
+     * named library source associated with one or more of the associated
+     * clones for the given sequence.
+     * @assumes nothing
+     * @effects a new entry could be added to the qc reports if more than one
+     * named source is found and they have conflicting names
+     * @param accid the given sequence
+     * @return the MolecularSource for a named source of one of the associated
+     * clones of the given sequence
+     * @throws MSException thrown if there is an error with the database or
+     * configuration or if more named sources are found than expected which
+     * can be changed by calling MSProcessor.setMaxAssociatedClones(int)
+     */
+    private MolecularSource findByAssociatedClones(String accid) throws
         MSException
     {
         /**
@@ -295,7 +351,7 @@ public class MSProcessor
         Vector v = null;
         try
         {
-            v = MSLookup.findAssocClonesByAccid(accid, MAXRESULTS);
+            v = MSLookup.findAssocClonesByAccid(accid, MAXCLONES);
         }
         catch (MGIException e)
         {
