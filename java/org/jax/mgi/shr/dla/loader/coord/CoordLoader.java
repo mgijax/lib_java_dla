@@ -11,6 +11,7 @@ import org.jax.mgi.shr.dbutils.DataIterator;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.dla.input.CoordinateInput;
+import org.jax.mgi.shr.dla.loader.DLALoaderException;
 import org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -63,6 +64,15 @@ public class CoordLoader extends DLALoader {
 
     // writer for all coordinates repeated in the input
     private BufferedWriter repeatSeqWriter;
+
+    /**
+     * constructor
+     * @throws DLALoaderException thrown from the base class
+     */
+    public CoordLoader() throws DLALoaderException
+    {
+        super();
+    }
 
     /**
      * Initializes instance variables

@@ -138,7 +138,7 @@ public abstract class DLALoader {
    * @does instantiates the 'basic-needs' classes for performing
    * database loads in accordance with the DLA standards
    */
-  public DLALoader() {
+  public DLALoader() throws DLALoaderException {
     try {
       this.logger = DLALogger.getInstance();
       this.dlaConfig = new DLALoaderCfg();
@@ -160,8 +160,7 @@ public abstract class DLALoader {
     catch (Exception e) {
       DLALoaderException e2 = (DLALoaderException)
           dlaExceptionFactory.getException(InitException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
+      throw e2;
     }
   }
 
@@ -174,7 +173,7 @@ public abstract class DLALoader {
    * RADAR and/or MGD database. If bcp is being used then bcp files may be
    * available if they were configured to remain after executing them.
    */
-  public void load() {
+  public void load() throws DLALoaderException {
     String[] loadTables = this.dlaConfig.getTruncateLoadTables();
     String[] qcTables = this.dlaConfig.getTruncateQCTables();
     try {
@@ -192,8 +191,7 @@ public abstract class DLALoader {
     catch (Exception e) {
       DLALoaderException e2 = (DLALoaderException)
           dlaExceptionFactory.getException(InitException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
+      throw e2;
     }
     try {
       logger.logdInfo("Performing load pre processing",true);
@@ -202,8 +200,7 @@ public abstract class DLALoader {
     catch (Exception e) {
       DLALoaderException e2 = (DLALoaderException)
           dlaExceptionFactory.getException(PreProcessException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
+      throw e2;
     }
     try {
       logger.logdInfo("Performing load processing",true);
@@ -212,8 +209,7 @@ public abstract class DLALoader {
     catch (Exception e) {
       DLALoaderException e2 = (DLALoaderException)
           dlaExceptionFactory.getException(RunException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
+      throw e2;
     }
     try {
       logger.logdInfo("Performing post processing",true);
@@ -224,12 +220,10 @@ public abstract class DLALoader {
     catch (Exception e) {
       DLALoaderException e2 = (DLALoaderException)
           dlaExceptionFactory.getException(PostProcessException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
+      throw e2;
     }
     logger.logdInfo("Load completed",true);
     logger.logpInfo("Load completed",false);
-    DLASystemExit.exit();
   }
 
   /**

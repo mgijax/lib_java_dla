@@ -1,6 +1,7 @@
 package org.jax.mgi.shr.dla.loader.seq;
 
 import org.jax.mgi.shr.dla.loader.DLALoader;
+import org.jax.mgi.shr.dla.loader.DLALoaderException;
 import org.jax.mgi.shr.timing.Stopwatch;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.ioutils.RecordDataIterator;
@@ -137,6 +138,15 @@ public abstract class SeqLoader extends DLALoader {
 
     // writer for all repeated input sequences
     private BufferedWriter repeatSeqWriter;
+
+    /**
+     * constructor
+     * @throws DLALoaderException thrown from the base class
+     */
+    public SeqLoader() throws DLALoaderException
+    {
+        super();
+    }
 
     /**
      * Initializes instance variables depending on load mode

@@ -6,6 +6,7 @@ package org.jax.mgi.shr.dla.loader.seq;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
+import org.jax.mgi.shr.dla.loader.DLALoaderException;
 
 /**
  * @is an object which extends Seqloader and implements the Seqloader
@@ -25,6 +26,15 @@ import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
  */
 
 public class AssemblySeqloader extends SeqLoader {
+
+    /**
+     * constructor
+     * @throws DLALoaderException thrown from the base class
+     */
+    public AssemblySeqloader() throws DLALoaderException
+    {
+        super();
+    }
 
     /**
      * This load has no preprocessing

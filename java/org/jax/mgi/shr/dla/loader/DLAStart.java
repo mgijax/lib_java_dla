@@ -47,7 +47,15 @@ public class DLAStart
           DLALoaderExceptionHandler.handleException(e2);
           DLASystemExit.fatalExit();
       }
-      loader.load();
+      try
+      {
+          loader.load();
+      }
+      catch (DLALoaderException e)
+      {
+          DLALoaderExceptionHandler.handleException(e);
+          DLASystemExit.fatalExit();
+      }
       DLASystemExit.exit();
     }
 
