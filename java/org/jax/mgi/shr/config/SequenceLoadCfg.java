@@ -192,7 +192,6 @@ public class SequenceLoadCfg extends Configurator {
     return getConfigString("SEQ_TYPE");
   }
 
-
   /**
    * Gets the sequence release data
    * @assumes Nothing
@@ -205,13 +204,23 @@ public class SequenceLoadCfg extends Configurator {
     return getConfigDate("SEQ_RELEASE_DATE");
   }
 
-
-
-
-
+  /**
+   * Gets the Jobstream name
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the Jobstream name
+   * @throws ConfigException if "SEQ_JOBSTREAM" not found in configuration file
+   */
+  public String getJobstreamName() throws ConfigException {
+    return getConfigString("SEQ_JOBSTREAM");
+  }
 }
 
 //  $Log$
+//  Revision 1.5  2004/03/29 20:26:08  mbw
+//  changed existing parameter names to be prefixed by the SEQ string and added a few new parameters
+//
 //  Revision 1.4  2004/03/24 18:31:31  sc
 //  added getQuality and getSeqType
 //
