@@ -176,7 +176,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
    * @param message the message to log
    */
   public void logInfo(String message) {
-    logdInfo(message, false);
+    logdInfo(message, true);
   }
 
   /**
@@ -394,7 +394,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     // log message to diagnostic log only if logging level is at FINEST
     diagnosticsLogger.logp(Level.FINEST, clientClass, clientMethod, msg);
   }
-  
+
   /**
     * Writes a debug message to the diagnostics log.
     * A standard header stamp will be included.
@@ -650,6 +650,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.9  2003/10/31 15:26:23  mbw
+// removed timestamp from logInfo
+//
 // Revision 1.8  2003/10/31 15:18:56  mbw
 // changed logInfo to add timestamp to message
 //
