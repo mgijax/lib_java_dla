@@ -25,9 +25,21 @@ public class SeqloaderConstants {
     public static final String EQUAL = "=";
     public static final String DBL_QUOTE = "\\\"";
     public static final String EMPTY_STRING = "";
+    public static final String DUMMY_SEQ_STATUS = "Not Loaded";
+    // Event constants
+    public static final int ADD = 1;
+    public static final int UPDATE = 2;
+    public static final int ALREADY_ADDED = 3;
+    public static final int NON_EVENT = 4;
+    public static final int MERGE = 6;
+    public static final int SPLIT = 7;
+
 
 }
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:43  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:20  sc
 //  changes made from code review~
 //

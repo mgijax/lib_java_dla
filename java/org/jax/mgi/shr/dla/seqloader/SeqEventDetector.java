@@ -2,18 +2,62 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-import org.jax.mgi.dbs.mgd.lookup.PrimarySeqLookup;
-import java.util.Set;
+import org.jax.mgi.dbs.mgd.lookup.TermNameLookup;
+import org.jax.mgi.shr.cache.CacheException;
+import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.shr.dbutils.DBException;
+import org.jax.mgi.shr.config.ConfigException;
+
+import java.util.HashSet;
+
 public class SeqEventDetector {
-    public SeqEventDetector(MergeSplitProcessor mergeSplitProcessor) {
+
+    private MergeSplitProcessor mergeSplitProcessor;
+    private TermNameLookup termNameLookup;
+    private HashSet seqIdsAlreadyAdded;
+
+    public SeqEventDetector(MergeSplitProcessor mergeSplitProcessor)
+         throws ConfigException, CacheException, DBException {
+        this.mergeSplitProcessor = mergeSplitProcessor;
+        termNameLookup = new TermNameLookup();
     }
 
-    public String detectEvent(SequenceInput seqInput, Sequence sequence) {
-	return null;
-    }
+    public int detectEvent(SequenceInput seqInput, Sequence sequence)
+          throws CacheException, KeyNotFoundException, DBException {
 
-    private int logicalDB;
-    private PrimarySeqLookup lookup;
-    private MergeSplitProcessor eventDetector;
-    private Set seqIdsAlreadyAdded;
+        // init event to 'Non Event'
+        int event = SeqloaderConstants.NON_EVENT;
+        String seqid = seqInput.getPrimaryAcc().getAccID();
+
+        // we've already already processed this sequence?
+        if (sequence == null && seqIdsAlreadyAdded.contains(seqid)) {
+          event = SeqloaderConstants.ALREADY_ADDED;
+        }
+
+        // this is a new sequence
+        else if ( sequence == null ) {
+          event = SeqloaderConstants.ADD;
+          seqIdsAlreadyAdded.add(seqid);
+        }
+
+        // this is a dummy sequence
+        else if (termNameLookup.lookup(
+            sequence.getSequenceState().getSequenceStatusKey()).equals(
+                SeqloaderConstants.DUMMY_SEQ_STATUS)) {
+        }
+
+        // this sequence may need to be updated
+        else if (sequence.getSequenceState().getSeqrecordDate().after(
+                 seqInput.getSeq().getSeqRecDate())) {
+          event = SeqloaderConstants.UPDATE;
+        }
+
+        // find merge/split sequences;
+        if (event != SeqloaderConstants.NON_EVENT &&
+                event != SeqloaderConstants.ALREADY_ADDED) {
+            mergeSplitProcessor.preProcess(seqInput);
+        }
+
+        return event;
+    }
 }

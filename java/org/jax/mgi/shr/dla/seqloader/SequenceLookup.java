@@ -16,7 +16,6 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceDAO;
 import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
-import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
 import org.jax.mgi.dbs.mgd.dao.*;
