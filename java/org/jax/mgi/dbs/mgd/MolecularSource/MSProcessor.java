@@ -8,6 +8,8 @@ import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;
 import org.jax.mgi.dbs.mgd.lookup.AssocClonesLookup;
 import org.jax.mgi.shr.exception.MGIException;
+import org.jax.mgi.shr.config.MSProcessorCfg;
+import org.jax.mgi.shr.config.ConfigException;
 
 /**
  * @IS an object for processing raw molecular source attributes for a given
@@ -52,6 +54,11 @@ public class MSProcessor
     protected MSLookup msLookup = null;
 
     /**
+     * the configurator for the MSProcessor
+     */
+    protected MSProcessorCfg cfg = null;
+
+    /**
      * the library lookup for associated clones
      */
     protected AssocClonesLookup assocClonesLookup = null;
@@ -73,6 +80,7 @@ public class MSProcessor
     private static String LookupErr = MSExceptionFactory.LookupErr;
     private static String SQLStreamErr = MSExceptionFactory.SQLStreamErr;
     private static String NoSourceFound = MSExceptionFactory.NoSourceFound;
+    private static String ConfigErr = MSExceptionFactory.ConfigErr;
 
     /**
      * constructor
@@ -87,6 +95,17 @@ public class MSProcessor
         this.qcReporter = new MSQCReporter(qcStream);
         this.logger = new ConsoleLogger();
         this.msLookup = new MSLookup();
+        try
+        {
+          this.cfg = new MSProcessorCfg();
+        }
+        catch (ConfigException e)
+        {
+          MSExceptionFactory eFactory = new MSExceptionFactory();
+          MSException e2 = (MSException)
+              eFactory.getException(ConfigErr, e);
+          throw e2;
+        }
     }
 
     /**
@@ -103,6 +122,18 @@ public class MSProcessor
         this.qcReporter = new MSQCReporter(qcStream);
         this.logger = logger;
         this.msLookup = new MSLookup();
+        try
+        {
+          this.cfg = new MSProcessorCfg();
+        }
+        catch (ConfigException e)
+        {
+          MSExceptionFactory eFactory = new MSExceptionFactory();
+          MSException e2 = (MSException)
+              eFactory.getException(ConfigErr, e);
+          throw e2;
+        }
+
     }
 
 
@@ -144,25 +175,39 @@ public class MSProcessor
                 }
             }
         }
-        if (ms == null) // this is an annonymous source or a named
-                        // which was not found in the database
+        if (ms == null)
         {
-            // look for a source from the associated clones that is named
-            // and use that one instead
-            logger.logDebug("looking up named associated clones");
-            ms = findByCachedAssociatedClones(accid);
-
-        }
-        if (logger.isDebug())
-        {
-            if (ms != null)
+            /**
+             * this is an annonymous source or a named
+             * which was not found in the database.
+             * look for a source from the associated clones that is named
+             * and use that one instead
+             **/
+            boolean okToSearchAssocClones = true;
+            try
             {
-                logger.logDebug("found named source: " + ms.getName());
+              okToSearchAssocClones =
+                  cfg.getOkToSearchAssocClones().booleanValue();
             }
-            else
+            catch (ConfigException e)
             {
+              MSExceptionFactory eFactory = new MSExceptionFactory();
+              MSException e2 = (MSException)
+                 eFactory.getException(ConfigErr, e);
+              throw e2;
+            }
+            if (okToSearchAssocClones)
+            {
+              logger.logDebug("looking up named associated clones");
+              ms = findByCachedAssociatedClones(accid);
+              if (ms != null)
+                logger.logDebug("found named source: " + ms.getName());
+              else
                 logger.logDebug("no named source from assoiciated clones found");
             }
+            else
+              logger.logDebug("looking up named associated clones is disabled");
+
         }
         /**
          * if no molecular source was found then just resolve the raw
