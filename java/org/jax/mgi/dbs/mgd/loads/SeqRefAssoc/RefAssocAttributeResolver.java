@@ -71,7 +71,7 @@ public class RefAssocAttributeResolver {
      * @effects Nothing
      * @param raw the RefAssocRawAttributes object to be resolved
      * @param objectKey The object key with which to associate the reference
-     * @param refLogicalDb - logicalDB key for the reference
+     * @param refLogicalDB - logicalDB key for the reference
      * @return an MGI_ReferenceAssocState which may be null if the reference is
      *         not in MGI
      * @throws CacheException if error using lookup
