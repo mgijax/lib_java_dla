@@ -76,8 +76,7 @@ public class GBMSAttrResolver extends MSAttrResolver {
             organismKey = super.organismLookup.lookup(organism);
         }
         catch (KeyNotFoundException e) {
-            organismKey = super.otherKey;
-            ms.setOrganismKey(super.otherKey);
+           throw new UnresolvedOrganismException(organism);
         }
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
