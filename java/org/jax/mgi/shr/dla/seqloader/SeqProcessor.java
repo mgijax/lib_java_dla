@@ -9,6 +9,8 @@ import org.jax.mgi.shr.timing.Stopwatch;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.dla.DLALogger;
+import org.jax.mgi.shr.dla.DLALoggingException;
+import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
@@ -23,7 +25,7 @@ import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import java.util.Vector;
 import java.util.Iterator;
 
-abstract public class SeqProcessor  {
+public class SeqProcessor  {
    /**
    * Debug stuff - public so I have easy access
    */
@@ -37,42 +39,96 @@ abstract public class SeqProcessor  {
     public double highMSPTime;
     public double lowMSPTime;
 
+    // a stream for handling MGD DAO objects
+    protected SQLStream mgdStream;
 
     // resolves GenBank sequence attributes to MGI values
     protected SequenceAttributeResolver seqResolver;
 
-    // resolves molecular source attributes for a sequence to MGI values
-    protected MSProcessor msProcessor;
+    // resolves accession attributes to MGI value
+    protected AccAttributeResolver accResolver;
 
     // Resolves sequence reference attributes to MGI values
     protected SeqRefAssocProcessor refAssocProcessor;
 
-    // a stream for handling MGD DAO objects
-    protected SQLStream mgdStream;
+    // logger for the load
+    protected DLALogger logger;
+
+    // resolves molecular source attributes for a sequence to MGI values
+    protected MSProcessor msProcessor;
 
     // get a sequence load configurator
     protected SequenceLoadCfg config;
 
-    // resolves accession attributes to MGI value
-    protected AccAttributeResolver accResolver;
-
     // logicalDB_key for the load
     protected int logicalDBKey;
 
-    // logger for the load
-    protected DLALogger logger;
+    /**
+     * Constructs a SeqProcessor that adds and deleting sequence to/from
+     * a database
+     * @assumes Nothing
+     * @effects Nothing
+     * @param None
+     * @throws CacheException
+     * @throws DBException
+     * @throws ConfigException
+     * @throws MSException
+     * @throws DLALoggingException
+     * @throws KeyNotFoundException
+     */
 
-    // exception factory for seqloader exceptions
-    protected SeqloaderExceptionFactory eFactory;
+    public SeqProcessor(SQLStream mgdSqlStream,
+                              SQLStream radarSqlStream,
+                              SequenceAttributeResolver sar)
+        throws CacheException, DBException, ConfigException, MSException,
+               DLALoggingException, KeyNotFoundException {
+      /**
+      * Debug stuff
+      */
+      stopWatch = new Stopwatch();
+      runningLookupTime = 0.0;
+      highLookupTime = 0.0;
+      lowLookupTime = 0.0;
+      runningMSPTime = 0.0;
+      highMSPTime = 0.0;
+      lowMSPTime = 999.0;
+      sequenceCtr = 0;
 
-    public abstract void processSequence(SequenceInput sequenceInput)
-        throws ConfigException, CacheException, DBException, TranslationException,
-           KeyNotFoundException, MSException, SeqloaderException,
-           RepeatSequenceException, SequenceResolverException,
-           ChangedOrganismException, ChangedLibraryException;
+      mgdStream = mgdSqlStream;
+      seqResolver = sar;
 
-       /**
-   * processes Add events
+      // Create an Accession Attribute Resolver
+       accResolver = new AccAttributeResolver();
+
+       // Create a Reference Association Processor
+       refAssocProcessor = new SeqRefAssocProcessor();
+       logger = DLALogger.getInstance();
+
+        // Create a Molecular Source Processor
+       msProcessor = new MSProcessor (mgdSqlStream, radarSqlStream, logger);
+
+       // configurator to lookup logicalDB
+       config = new SequenceLoadCfg();
+       logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
+    }
+
+    /**
+    * deletes all Sequences from a given logical db from a database
+    * @assumes Nothing
+    * @effects deletes sequences from a database
+    * @param None
+    * @return nothing
+    * @throws
+    */
+
+    public void deleteSequences() {
+      // call a stored procedure to delete sequences by logicalDB
+
+    }
+
+
+   /**
+   * Adds a sequence to the database
    * @assumes Nothing
    * @effects queries and inserts into a database
    * @param seqInput SequenceInput object - a set of raw attributes to resolve
@@ -87,7 +143,7 @@ abstract public class SeqProcessor  {
    * @throws SequenceResolverException
    */
 
-   public void processAddEvent(SequenceInput seqInput)
+   public void addSequence(SequenceInput seqInput)
        throws ConfigException, CacheException, DBException, TranslationException,
          KeyNotFoundException, MSException, SequenceResolverException {
        // resolve raw sequence
