@@ -49,7 +49,7 @@ public class MSProcessor
     /**
      * the library lookup object for looking up named sources
      */
-    protected MSLookup libLookup = null;
+    protected MSLookup msLookup = null;
 
     /**
      * the library lookup for associated clones
@@ -86,7 +86,7 @@ public class MSProcessor
         this.resolver = new MSResolver();
         this.qcReporter = new MSQCReporter(qcStream);
         this.logger = new ConsoleLogger();
-        this.libLookup = new MSLookup();
+        this.msLookup = new MSLookup();
     }
 
     /**
@@ -102,7 +102,7 @@ public class MSProcessor
         this.resolver = new MSResolver(logger);
         this.qcReporter = new MSQCReporter(qcStream);
         this.logger = logger;
-        this.libLookup = new MSLookup();
+        this.msLookup = new MSLookup();
     }
 
 
@@ -149,9 +149,11 @@ public class MSProcessor
         {
             // look for a source from the associated clones that is named
             // and use that one instead
-            logger.logDebug("looking up named associated clones");
-            ms = findByCachedAssociatedClones(accid);
+            //logger.logDebug("looking up named associated clones");
+            //ms = findByCachedAssociatedClones(accid);
+
         }
+        /*
         if (logger.isDebug())
         {
             if (ms != null)
@@ -163,6 +165,7 @@ public class MSProcessor
                 logger.logDebug("no named source from assoiciated clones found");
             }
         }
+*/
         /**
          * if no molecular source was found then just resolve the raw
          * attributes to a new source or an existing source (using the
@@ -177,6 +180,7 @@ public class MSProcessor
             {
                 if (!ms.isInDatabase && !ms.isInBatch)
                     ms.insert(this.stream);
+
             }
             catch (MGIException e)
             {
@@ -377,14 +381,14 @@ public class MSProcessor
         Integer sourceKey = null;
         try
         {
-            ms = libLookup.findByName(attr.getLibraryName());
+            ms = msLookup.findByName(attr.getLibraryName());
         }
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
                 eFactory.getException(LookupErr, e);
-            e2.bind(libLookup.getClass().getName());
+            e2.bind(msLookup.getClass().getName());
             throw e2;
         }
         if (ms == null)
@@ -476,15 +480,15 @@ public class MSProcessor
         MSException
     {
         /**
-         * get the sources for the associated clones of this sequence
+         * get the source names for the associated clones of this sequence
          */
-        String clones = null;
+        String[] cloneSrcNames = null;
         try
         {
             if (assocClonesLookup == null) {
                 assocClonesLookup = new AssocClonesLookup();
             }
-            clones = assocClonesLookup.lookup(accid);
+            cloneSrcNames = assocClonesLookup.lookup(accid);
         }
         catch (MGIException e)
         {
@@ -494,15 +498,15 @@ public class MSProcessor
             e2.bind(AssocClonesLookup.class.getName());
             throw e2  ;
         }
-        if (clones == null)
+        if (cloneSrcNames == null)
             return null;
         // try and find a named source from the associated clones.
-        // all the names must agree...if they dont then send to qc report.
+        // all the names must agree...if they dont then send to qc report
+        // and return null.
         String agreedUponName = null;
-        String[] cloneArray = clones.split(AssocClonesLookup.DELIMITER);
-        for (int i = 0; i < cloneArray.length; i++)
+        for (int i = 0; i < cloneSrcNames.length; i++)
         {
-            String thisName = cloneArray[i];
+            String thisName = cloneSrcNames[i];
             if (agreedUponName == null)
             { // then agree on this name
                 agreedUponName = thisName;
@@ -523,14 +527,14 @@ public class MSProcessor
         MolecularSource ms = null;
         try
         {
-            ms = libLookup.findByName(agreedUponName);
+            ms = msLookup.findByName(agreedUponName);
         }
         catch (MGIException e)
         {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
                 eFactory.getException(LookupErr, e);
-            e2.bind(libLookup.getClass().getName());
+            e2.bind(msLookup.getClass().getName());
             throw e2  ;
         }
         return ms;
