@@ -3,7 +3,7 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-import org.jax.mgi.dbs.mgd.lookup.TermNameLookup;
+import org.jax.mgi.dbs.mgd.lookup.VocabTermLookup;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.dbutils.DBException;
@@ -15,13 +15,13 @@ public class SeqEventDetector {
 
     // MergeSplit Processor can be null - we are deferring testing for now
     private MergeSplitProcessor mergeSplitProcessor;
-    private TermNameLookup termNameLookup;
+    private VocabTermLookup termNameLookup;
     private HashSet seqIdsAlreadyAdded;
 
     public SeqEventDetector(MergeSplitProcessor mergeSplitProcessor)
          throws ConfigException, CacheException, DBException {
         this.mergeSplitProcessor = mergeSplitProcessor;
-        termNameLookup = new TermNameLookup();
+        termNameLookup = new VocabTermLookup();
         seqIdsAlreadyAdded = new HashSet();
     }
 
