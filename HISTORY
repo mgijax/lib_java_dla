@@ -1,3 +1,9 @@
+DATE: 02/17/2004
+STAFF: sc
+RELEASE: dev
+CHANGES: changed classes in org.jax.mgi.shr.dla.seqloader to use new Lookups
+  mike mentions below
+
 DATE: 02/16/2004
 STAFF: mbw
 RELEASE:
