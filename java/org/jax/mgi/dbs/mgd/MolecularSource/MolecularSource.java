@@ -11,6 +11,7 @@ import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
+import org.jax.mgi.dbs.mgd.hist.PRB_SourceAttrHistory;
 
 /**
  * @is an object which represents a molecular source
@@ -66,7 +67,7 @@ public class MolecularSource
   /**
    * the class for checking MolecularSource attribute history
    */
-  protected MSAttrHistory history = null;
+  protected PRB_SourceAttrHistory history = null;
 
 
   /**
@@ -364,7 +365,7 @@ public class MolecularSource
         try
         {
             if (history == null)
-                history = new MSAttrHistory();
+                history = new PRB_SourceAttrHistory();
             this.curatedEditedTissue =
                 new Boolean(history.isTissueCurated(this.getMSKey()));
         }
@@ -406,7 +407,7 @@ public class MolecularSource
         try
         {
             if (history == null)
-                history = new MSAttrHistory();
+                history = new PRB_SourceAttrHistory();
             this.curatedEditedAge =
                 new Boolean(history.isAgeCurated(this.getMSKey()));
         }
@@ -451,7 +452,7 @@ public class MolecularSource
         try
         {
             if (history == null)
-                history = new MSAttrHistory();
+                history = new PRB_SourceAttrHistory();
             this.curatedEditedCellLine =
                 new Boolean(history.isCellLineCurated(this.getMSKey()));
         }
@@ -496,7 +497,7 @@ public class MolecularSource
         try
         {
             if (history == null)
-                history = new MSAttrHistory();
+                history = new PRB_SourceAttrHistory();
             this.curatedEditedStrain =
                 new Boolean(history.isStrainCurated(this.getMSKey()));
         }
@@ -541,7 +542,7 @@ public class MolecularSource
         try
         {
             if (history == null)
-                history = new MSAttrHistory();
+                history = new PRB_SourceAttrHistory();
             this.curatedEditedGender =
                 new Boolean(history.isGenderCurated(this.getMSKey()));
         }
@@ -586,7 +587,7 @@ public class MolecularSource
         try
         {
             if (history == null)
-                history = new MSAttrHistory();
+                history = new PRB_SourceAttrHistory();
             this.curatedEditedOrganism =
                 new Boolean(history.isOrganismCurated(this.getMSKey()));
         }
