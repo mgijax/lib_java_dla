@@ -1,7 +1,22 @@
+DATE: 08/23/2004
+STAFF: sc
+CHANGES:
+1) SequenceLoadCfg - added several methods to get source info and 
+   getInterpreterClass()
+2) org.jax.mgi.shr.dla.assemblyloader.MGSAssemblyFormatInterpreter - no longer
+   gets attributes from a file header - now from configuration
+3) added org.jax.mgi.shr.config.CoordLoadCfg.java
+4) added org.jax.mgi.shr.dla.coordloader classes
+
 DATE: 08/04/2004
 STAFF: sc
-CHANGES: copied over changes to DLALoaderCfg, DLALoader and added new class
-         DLALoaderHelper from the trunk to patch a truncate tables bug.
+CHANGES: 
+1) copied over changes to DLALoaderCfg, DLALoader and added new class
+   DLALoaderHelper from the trunk to patch a truncate tables bug.
+2) updated SeqLoader to use a DataIterator rather than a RecordDataIterator
+3) java/org/jax/mgi/shr/dla/assemblyloader/AssemblySeqloader.java and 
+   java/org/jax/mgi/shr/dla/assemblyloader/MGSAssemblyFormatInterpreter.java
+   added
 
 DATE: 07/30/2004
 STAFF: sc
