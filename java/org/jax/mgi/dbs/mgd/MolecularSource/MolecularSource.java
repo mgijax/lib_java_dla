@@ -635,8 +635,11 @@ public class MolecularSource
         throw e;
     }
 
-    if (key == null)
-      stream.insert(new PRB_SourceDAO(state));
+    if (key == null) {
+        PRB_SourceDAO psd = new PRB_SourceDAO(state);
+        this.key = psd.getKey();
+        stream.insert(psd);
+    }
     else
       stream.insert(new PRB_SourceDAO(key, state));
     this.isInBatch = true;
