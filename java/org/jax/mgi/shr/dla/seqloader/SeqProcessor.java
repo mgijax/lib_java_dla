@@ -12,7 +12,6 @@ import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
-import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.SchemaConstants;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
@@ -63,9 +62,6 @@ public class SeqProcessor implements ProcessSequenceInput  {
 
     // get a sequence load configurator
     protected SequenceLoadCfg config;
-
-    // logicalDB_key for the load
-    protected int logicalDBKey;
 
     // name of the jobtream
     protected String jobStreamName;
@@ -125,12 +121,11 @@ public class SeqProcessor implements ProcessSequenceInput  {
 
        // configurator to lookup logicalDB
        config = new SequenceLoadCfg();
-       logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
        jobStreamName = config.getJobstreamName();
     }
 
     /**
-    * deletes all Sequences from a given logical db from a database
+    * deletes all Sequences loaded by a given load from a database
     * @assumes Nothing
     * @effects deletes sequences from a database
     * @param None
@@ -163,7 +158,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
    * @throws SeqloaderException if there are configuration, cacheing, database,
    *         translation, or lookup errors. These errors cause load to fail
    * @throws RepeatSequenceException errors writing to repeat sequence file
-   * @throws ChangedLibrary if raw library for existing sequence is different
+   * @throws ChangedLibraryException if raw library for existing sequence is different
    *         than for current sequence being processed. This exception is thrown
    *         by subclass
    * @throws ChangedOrganismException if raw organism for existing sequence is
@@ -282,7 +277,6 @@ public class SeqProcessor implements ProcessSequenceInput  {
               SeqloaderExceptionFactory.CreateRefAssocErr, e);
              throw e1;
            }
-
        }
 
        // process Molecular Source then create SEQ_Source
@@ -378,13 +372,9 @@ public class SeqProcessor implements ProcessSequenceInput  {
 
      Iterator referenceIterator = references.iterator();
      while(referenceIterator.hasNext()) {
-         Object ref = referenceIterator.next();
-         if (ref instanceof SeqRefAssocPair)
            refAssocState = refAssocProcessor.process(
-               (SeqRefAssocPair)ref, sequence.getSequenceKey());
-         else if (ref instanceof RefAssocRawAttributes)
-             refAssocState = refAssocProcessor.process(
-                 (RefAssocRawAttributes)ref, sequence.getSequenceKey());
+               (SeqRefAssocPair)referenceIterator.next(),
+               sequence.getSequenceKey());
 
            // null if reference not in MGI
            if(refAssocState != null) {
