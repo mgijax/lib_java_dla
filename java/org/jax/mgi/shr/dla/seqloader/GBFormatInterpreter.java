@@ -722,9 +722,11 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         // get the Genbank division code
         rawSeq.setDivision(locus.substring(64, 67));
 
-        // get the sequence record date
-        rawSeq.setSeqRecDate(DateConverter.convertDate(
-            locus.substring(68, 79)));
+        // convert date and get the set sequence record date
+        Timestamp date = DateConverter.convertDate(locus.substring(68, 79));
+        rawSeq.setSeqRecDate(date);
+        // the initial sequence date is the same as the sequence record date
+        rawSeq.setSeqDate(date);
     }
 
     /**
