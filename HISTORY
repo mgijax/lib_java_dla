@@ -1,3 +1,9 @@
+TAG: lib_java_dla-1-0-29
+DATE: 07/20/2004
+STAFF: sc
+CHANGES:
+1) SeqLoader - need to delete sequences when in delete/reload mode - oops.
+
 TAG: lib_java_dla-1-0-28-BP
 DATE: 07/19/2004
 STAFF: sc
