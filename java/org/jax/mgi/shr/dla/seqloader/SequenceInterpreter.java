@@ -36,7 +36,7 @@ import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
 
 public abstract class SequenceInterpreter implements RecordDataInterpreter {
     // a configurator
-    private SequenceLoadCfg sequenceCfg;
+    protected SequenceLoadCfg sequenceCfg;
 
     // whether this provider has virtual sequences
     protected String virtual;
