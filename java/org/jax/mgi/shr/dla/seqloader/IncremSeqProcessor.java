@@ -363,9 +363,9 @@ public class IncremSeqProcessor extends SeqProcessor {
           logger.logcInfo("Sequence: " + primarySeqid +
                           " MGI rawOrganism: " + existingRawOrganism +
                           " Input rawOrganism: " + inputRawOrganism, false );
-          qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
-                                              inputRawLibrary);
-
+          qcReporter.reportRawSourceConflicts(existingSeqKey,
+                                              SeqloaderConstants.ORGANISM,
+                                              inputRawOrganism);
           throw new ChangedOrganismException();
         }
         // if both input and existing rawLibrary not null and not equal - QC
@@ -375,8 +375,9 @@ public class IncremSeqProcessor extends SeqProcessor {
             logger.logcInfo("Library conflict: " + primarySeqid +
                             " MGI rawLibrary: " + existingRawLibrary +
                             " Input rawLibrary: " + inputRawLibrary, false);
-            qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
-                                              inputRawLibrary);
+            qcReporter.reportRawSourceConflicts(existingSeqKey,
+                                                SeqloaderConstants.LIBRARY,
+                                                inputRawLibrary);
             throw new ChangedLibraryException();
         }
         // if one rawLibrary null and the other not - QC
@@ -386,8 +387,9 @@ public class IncremSeqProcessor extends SeqProcessor {
             logger.logcInfo("Library conflict: " + primarySeqid +
                             " MGI rawLibrary: " + existingRawLibrary +
                             " Input rawLibrary: " + inputRawLibrary, false);
-            qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
-                                              inputRawLibrary);
+            qcReporter.reportRawSourceConflicts(existingSeqKey,
+                                                SeqloaderConstants.LIBRARY,
+                                                inputRawLibrary);
             throw new ChangedLibraryException();
        }
        else {
