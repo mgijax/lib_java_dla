@@ -1,3 +1,8 @@
+DATE: 10/07/2004
+STAFF: mbw
+RELEASE: dev
+CHANGES: removed error counting from the DLAloader
+
 TAG: lib_java_dla-1-0-33
 DATE: 09/09/2004
 STAFF: sc
