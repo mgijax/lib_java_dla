@@ -228,9 +228,24 @@ public class SequenceLoadCfg extends Configurator {
   public String getJobstreamName() throws ConfigException {
     return getConfigString("JOBSTREAM");
   }
+  /**
+   * get the interpreter to use.
+   * @return interpreter object.
+   * @assumes nothing
+   * @effects nothing
+   * @throws ConfigException thrown if interpreter object could not be created
+   * from the configuration
+   */
+  public Object getInterpreterClass() throws ConfigException {
+    return getConfigObject("SEQ_INTERPRETER");
+  }
+
 }
 
 //  $Log$
+//  Revision 1.8  2004/04/02 19:07:33  mbw
+//  changed config parm name from SEQ_JOBSTREAM to JOB_STREAM
+//
 //  Revision 1.7  2004/04/02 18:39:24  mbw
 //  added a getJnumber method
 //
