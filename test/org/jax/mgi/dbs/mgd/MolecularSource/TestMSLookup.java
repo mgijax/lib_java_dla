@@ -19,13 +19,20 @@ public class TestMSLookup
     {
         super.setUp();
         sqlMgr = new SQLDataManager();
+        DBSchema schema = sqlMgr.getDBSchema();
+        createTriggers(schema);
+        dropTriggers(schema);
         runDeletes();
         runInserts();
+        //createTriggers(schema);
     }
 
     protected void tearDown() throws Exception
     {
+        DBSchema schema = sqlMgr.getDBSchema();
+        dropTriggers(schema);
         runDeletes();
+        createTriggers(schema);
         sqlMgr = null;
         super.tearDown();
     }
@@ -128,5 +135,21 @@ public class TestMSLookup
             );
 
     }
+
+    protected void dropTriggers(DBSchema schema) throws Exception
+    {
+      createTriggers(schema);
+      schema.dropTriggers("ACC_Accession");
+      schema.dropTriggers("PRB_Source");
+      schema.dropTriggers("PRB_Probe");
+    }
+
+    protected void createTriggers(DBSchema schema) throws Exception
+    {
+      schema.createTriggers("ACC_Accession");
+      schema.createTriggers("PRB_Source");
+      schema.createTriggers("PRB_Probe");
+    }
+
 
 }
