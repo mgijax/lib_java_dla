@@ -57,6 +57,7 @@ public class GeneIndexLoader extends FASTALoader
         // set reference attributes
         refAttr.setMgiType(new Integer(MGITypeConstants.REF));
         refAttr.setRefAssocType(new Integer(MGIRefAssocTypeConstants.PROVIDER));
+        refAttr.setRefId(cfg.getJnumber());
         // set reusable sequence attributes
         // other record base attributes are set in the load method
         seqAttr = new SequenceRawAttributes();
