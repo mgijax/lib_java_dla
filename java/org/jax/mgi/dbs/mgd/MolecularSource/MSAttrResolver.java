@@ -144,6 +144,18 @@ public class MSAttrResolver {
         }
     }
 
+    /**
+     * resolve the given molecular source raw attributes to a MolecularSource
+     * object from the database or to a new MolecularSource object to be added
+     * to the database
+     * @assumes nothing
+     * @effects a new MolecularSource object could be added to the internal
+     * cache
+     * @param rawAttr the raw attributes
+     * @return the MolecularSource object
+     * @throws MSException thrown if there is an error trying to resolve the
+     * attributes
+     */
     public MolecularSource resolveAttributes(MSRawAttributes rawAttr) throws
         MSException {
         MolecularSource ms = new MolecularSource();
