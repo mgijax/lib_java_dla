@@ -1,9 +1,13 @@
 package org.jax.mgi.dbs.mgd.MolecularSource;
 
+import org.jax.mgi.dbs.mgd.MGD;
+import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceKey;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceLookup;
+import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryDAO;
+import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryState;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.dao.SQLTranslatable;
 import org.jax.mgi.shr.dbutils.DBException;
@@ -636,7 +640,55 @@ public class MolecularSource
     else
       stream.insert(new PRB_SourceDAO(key, state));
     this.isInBatch = true;
-    // now add enties to the MGI_AttributeHistory table
+    /**
+     * triggers are in place in the database to update records in the
+     * MGI_AttributeHistory table when new records are inserted into the
+     * PRB_Source table. If this stream uses a BCPStrategy for doing inserts,
+     * then records will have be added to the MGI_AttributeHistory table
+     * at this point since the insert triggers will not get fired
+     */
+    if (stream.isBCP())
+    {
+      MGI_AttributeHistoryState state = new MGI_AttributeHistoryState();
+      state.setMGITypeKey(new Integer(MGITypeConstants.SOURCE));
+      state.setObjectKey(this.key.getKey());
+
+      state.setColumnName(MGD.prb_source._segmenttype_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source._vector_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source._organism_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source._strain_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source._tissue_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source._cellline_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source._refs_key);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source.name);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source.description);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source.age);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source.agemin);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+
+      state.setColumnName(MGD.prb_source.agemax);
+      stream.insert(new MGI_AttributeHistoryDAO(state));
+    }
   }
 
 
