@@ -84,7 +84,7 @@ public abstract class SeqLoader extends DLALoader {
     protected SeqProcessor seqProcessor;
 
     // provides access to Configuration values
-    private SequenceLoadCfg loadCfg;
+    protected SequenceLoadCfg loadCfg;
 
     // load mode e.g. incremental_initial, incremental, delete_reload
     private String loadMode;
@@ -198,6 +198,10 @@ public abstract class SeqLoader extends DLALoader {
             seqProcessor = new SeqProcessor(loadStream,
                     qcStream,
                     seqResolver);
+	    // if in delete/reload mode, delete sequences
+            if (loadMode.equals(SeqloaderConstants.DELETE_RELOAD_MODE)) {
+                seqProcessor.deleteSequences();
+            }
        }
     }
 
