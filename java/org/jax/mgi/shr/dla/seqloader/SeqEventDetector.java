@@ -33,15 +33,15 @@ public class SeqEventDetector {
         int event = SeqloaderConstants.NON_EVENT;
         String seqid = seqInput.getPrimaryAcc().getAccID();
 
-        // this is a new sequence
-        if ( sequence == null ) {
-              event = SeqloaderConstants.ADD;
-              seqIdsAlreadyAdded.add(seqid);
+        // we've already already processed this sequence
+        if (seqIdsAlreadyAdded.contains(seqid)) {
+          event = SeqloaderConstants.ALREADY_ADDED;
         }
 
-        // we've already already processed this sequence
-        else if (seqIdsAlreadyAdded.contains(seqid)) {
-          event = SeqloaderConstants.ALREADY_ADDED;
+        // this is a new sequence
+        else if ( sequence == null ) {
+              event = SeqloaderConstants.ADD;
+              seqIdsAlreadyAdded.add(seqid);
         }
 
         // this is a dummy sequence
