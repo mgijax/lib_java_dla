@@ -100,12 +100,24 @@ public class SequenceInput {
      * add one raw reference association to the set
      * @assumes Nothing
      * @effects Nothing
-     * @param ref a RefAssocRawAttributes to add to the set of reference associations
+     * @param ref a SeqRefAssocPair to add to the set of reference associations
      * @return Nothing
      * @throws Nothing
      */
 
     public void addRef(SeqRefAssocPair ref) {refs.add(ref);}
+
+    /**
+     * add one raw reference association to the set
+     * @assumes Nothing
+     * @effects Nothing
+     * @param ref a RefAssocRawAttributes to add to the set of reference associations
+     * @return Nothing
+     * @throws Nothing
+     */
+
+    public void addRef(RefAssocRawAttributes ref) {refs.add(ref);}
+
 
     /**
      * set the raw primary accession
@@ -231,6 +243,9 @@ public class SequenceInput {
     }
 }
 //  $Log$
+//  Revision 1.2  2004/02/25 21:42:40  mbw
+//  fixed compiler warnings only
+//
 //  Revision 1.1  2004/01/06 20:09:46  mbw
 //  initial version imported from lib_java_seqloader
 //
