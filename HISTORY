@@ -1,14 +1,60 @@
-lib_java_dla-assembly2-BP
+TAG: lib_java_dla-37
+DATE: 12/07/2004
+STAFF: mbw
+RELEASE: dev
+CHANGES: merged the tr6047 branch onto the trunk
+
+TAG: lib_java_dla-tr6047-5
+DATE: 12/06/2004
+STAFF:sc
+CHANGES:
+1) Added AssemblySeqloader as it was missing from the refactoring
+
+TAG: lib_java_dla-tr6047-4
+DATE: 12/03/2004
+STAFF:mbw
+CHANGES:
+1) changed the use of floats to double throughout
+
+TAG: lib_java_dla-tr6047-3
+DATE: 11/19/2004
+STAFF:sc
+CHANGES:
+1) Added AssemblySeqloader as it was missing from the refactoring
+
+TAG: lib_java_dla-tr6047-2
+DATE: 11/17/2004
+STAFF:sc
+CHANGES:
+1) CoordLoader package updated
+
+TAG: lib_java_dla-tr6047-1
+DATE: 11/16/2004
+STAFF:sc
+CHANGES:
+1) manually merged CoordLoader and CoordProcessor from assembly2 branch
+   into tr6047 branch because of package and class name changes in tr6047
+
+TAG: lib_java_dla-assembly2-1
+DATE: 11/10/2004
+STAFF: sc
+RELEASE: dev
+CHANGES:TR5395
+1) Bug fix - CoordLoader and CoordProcessor updated so that we do not 
+   query for the collection in the database to get a collection key that is only
+   then going to be deleted. 
+
+TAG: lib_java_dla-assembly2-BP
 DATE: 11/03/2004
 STAFF: sc
 RELEASE: dev
 
-lib_java_dla-tr6047-BP
+TAG: lib_java_dla-tr6047-BP
 DATE: 11/03/2004
 STAFF: mbw
 RELEASE: dev
 
-lib_java_dla-1-0-36
+TAG: lib_java_dla-1-0-36
 DATE: 10/22/2004
 STAFF: sc
 RELEASE: dev
