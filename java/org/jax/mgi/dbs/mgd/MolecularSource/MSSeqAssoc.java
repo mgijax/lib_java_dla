@@ -82,6 +82,19 @@ public class MSSeqAssoc extends DAO
     }
 
     /**
+     * returns the MolecularSource object for this instance
+     * @assumes nothing
+     * @effects nothing
+     * @return the MolecularSource
+     */
+    public void changeMolecularSource(MolecularSource ms)
+    {
+        Integer key = ms.getMSKey();
+        this.seqSourceAssocDAO.getState().setSourceKey(key);
+        this.prbSourceDAO = ms.getSourceDAO();
+    }
+
+    /**
      * get the sequence key associated for this instance
      * @assumes nothing
      * @effects nothing
@@ -166,18 +179,26 @@ public class MSSeqAssoc extends DAO
           throw e2;
         }
 
-        StringBuffer sql = new StringBuffer("exec PRB_processSeqLoaderSource ");
+        StringBuffer sql =  new StringBuffer("exec PRB_processSeqLoaderSource ");
 
-        sql.append(Converter.toString(this.seqSourceAssocDAO.getKey().getKey()) + ", ");
-        sql.append(Converter.toString(this.seqSourceAssocDAO.getState().getSequenceKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getKey().getKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getState().getOrganismKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getState().getStrainKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getState().getTissueKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getState().getGenderKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getState().getCellLineKey()) + ", ");
-        sql.append(Converter.toString(this.prbSourceDAO.getState().getModifiedByKey()));
-
+        sql.append(Converter.toString(this.seqSourceAssocDAO.getKey().
+                                      getKey()) + ", ");
+        sql.append(Converter.toString(this.seqSourceAssocDAO.getState().
+                                      getSequenceKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getKey().getKey()) +
+                                      ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().
+                                      getOrganismKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().
+                                      getStrainKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().
+                                      getTissueKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().
+                                      getGenderKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().
+                                      getCellLineKey()) + ", ");
+        sql.append(Converter.toString(this.prbSourceDAO.getState().
+                                      getModifiedByKey()));
         return new String(sql);
 
     }
