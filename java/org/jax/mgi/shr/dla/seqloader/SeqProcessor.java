@@ -67,6 +67,9 @@ public class SeqProcessor implements ProcessSequenceInput  {
     // logicalDB_key for the load
     protected int logicalDBKey;
 
+    // name of the jobtream
+    protected String jobStreamName;
+
     // exception factory for seqloader exceptions
     protected SeqloaderExceptionFactory eFactory;
 
@@ -123,6 +126,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
        // configurator to lookup logicalDB
        config = new SequenceLoadCfg();
        logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
+       jobStreamName = config.getJobstreamName();
     }
 
     /**
@@ -136,7 +140,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
 
     public void deleteSequences() throws SeqloaderException {
 
-      String spCall = "SEQ_deleteByLogicalDB " + logicalDBKey;
+      String spCall = "SEQ_deleteByCreatedBy " + jobStreamName;
       try {
         SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         sqlMgr.executeSimpleProc(spCall);
