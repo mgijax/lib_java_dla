@@ -16,6 +16,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.shr.dla.DLALogger;
+import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
@@ -25,7 +26,9 @@ import org.jax.mgi.dbs.mgd.MolecularSource.MolecularSource;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceKey;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
+import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.shr.exception.MGIException;
+import org.jax.mgi.dbs.mgd.AccessionLib;
 
 
 import java.util.Vector;
@@ -44,11 +47,15 @@ public class IncremSeqProcessor extends SeqProcessor {
     // QCReporter to manage writing to seqloader QC tables
     private SeqQCReporter qcReporter;
 
-    // lookup a sequence in MGI
+    // lookup a seqid in MGI ( to get a _Sequence_key)
+    private AccessionLookup seqIdLookup;
+
+    // lookup a Sequence in MGI ( to get a Sequence object)
     private SequenceLookup seqLookup;
 
     // Lookup for LogicalDB key
     LogicalDBLookup logicalDBLookup;
+
     // logicalDB_key for the load
     private int logicalDBKey;
 
@@ -78,8 +85,10 @@ public class IncremSeqProcessor extends SeqProcessor {
         this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
-        seqLookup = new SequenceLookup(mgdSqlStream);
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
+        seqIdLookup = new AccessionLookup(logicalDBKey,
+                MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        seqLookup = new SequenceLookup(mgdSqlStream);
     }
 
     /**
@@ -134,40 +143,60 @@ public class IncremSeqProcessor extends SeqProcessor {
           SequenceResolverException, MSException {
 
           // get the primary seqid of the sequence we are processing
-          String primarySeqid = seqInput.getPrimaryAcc().getAccID();
+          String primarySeqId = seqInput.getPrimaryAcc().getAccID();
 
-          // see if this sequence is in MGI, existingSequence is null if not
-          // in MGI
-          sequenceCtr = sequenceCtr + 1;
-          stopWatch.start();
-          // Note: must declare outside of try block
-          Sequence existingSequence;
+          // must declare outside try block
+          Integer seqKey;
+
+          // do quick lookup to see if the primary is in MGI
           try {
-              existingSequence = seqLookup.findBySeqId(
-              seqInput.getPrimaryAcc().getAccID(), logicalDBKey);
+              seqKey = seqIdLookup.lookup(primarySeqId);
           }
           catch (MGIException e) {
             SeqloaderException e1 =
-                (SeqloaderException) eFactory.getException(
-            SeqloaderExceptionFactory.SeqQueryErr, e);
-            throw e1;
+                  (SeqloaderException) eFactory.getException(
+                      SeqloaderExceptionFactory.SeqKeyQueryErr, e);
+            e1.bind(primarySeqId);
+              throw e1;
           }
 
-          stopWatch.stop();
-          double time = stopWatch.time();
-          stopWatch.reset();
-          if (highLookupTime < time) {
-            highLookupTime = time;
-          }
-          else if (lowLookupTime > time) {
-            lowLookupTime = time;
+          // If primarySeqId not in MGI existing sequence will remain null
+          Sequence existingSequence = null;
+
+          if (seqKey != null) {
+              // the sequence is in MGI get its Sequence object
+              sequenceCtr = sequenceCtr + 1;
+              stopWatch.start();
+              try {
+                existingSequence = seqLookup.findBySeqId(primarySeqId, logicalDBKey);
+              }
+              catch (MGIException e) {
+                SeqloaderException e1 =
+                    (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.SeqQueryErr, e);
+                e1.bind(primarySeqId);
+                throw e1;
+              }
+
+              stopWatch.stop();
+              double time = stopWatch.time();
+              stopWatch.reset();
+              if (highLookupTime < time) {
+                  highLookupTime = time;
+                }
+              else if (lowLookupTime > time) {
+                    lowLookupTime = time;
+              }
+              runningLookupTime += time;
           }
 
-          runningLookupTime += time;
-
+          // must declare outside try block
           int event;
+
+          // Note: we pass existing Sequence to the event detector even though
+          // it might be null
           try {
-            event = eventDetector.detectEvent(seqInput, existingSequence);
+              event = eventDetector.detectEvent(seqInput, existingSequence);
           }
           catch (MGIException e) {
             SeqloaderException e1 =
@@ -177,11 +206,11 @@ public class IncremSeqProcessor extends SeqProcessor {
           }
 
           if (event == SeqloaderConstants.ALREADY_ADDED) {
-            logger.logdDebug("Already Added Event Primary: " + primarySeqid);
+            logger.logdDebug("Already Added Event Primary: " + primarySeqId);
             processAlreadyAddedEvent(seqInput);
           }
           else if (event == SeqloaderConstants.UPDATE) {
-            logger.logdDebug("Update Event Primary: " + primarySeqid);
+            logger.logdDebug("Update Event Primary: " + primarySeqId);
             try {
               processUpdateEvent(seqInput, existingSequence);
             }
@@ -220,7 +249,7 @@ public class IncremSeqProcessor extends SeqProcessor {
             super.processInput(seqInput);
           }
           else if (event == SeqloaderConstants.DUMMY) {
-            logger.logdDebug("Dummy Event Primary: " + primarySeqid);
+            logger.logdDebug("Dummy Event Primary: " + primarySeqId);
             try {
               processDummyEvent(seqInput, existingSequence);
             }
@@ -233,11 +262,11 @@ public class IncremSeqProcessor extends SeqProcessor {
           }
 
           else if (event == SeqloaderConstants.NON_EVENT) {
-            logger.logdDebug("NON Event Primary: " + primarySeqid);
+            logger.logdDebug("NON Event Primary: " + primarySeqId);
           }
           else {
             // raise error - unhandled case
-            logger.logdErr("UNHANDLED Event Primary: " + primarySeqid);
+            logger.logdErr("UNHANDLED Event Primary: " + primarySeqId);
             System.err.println(
                 "Unhandled event in IncremSeqPrcessor.processSequence");
 

@@ -214,6 +214,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
          SeqloaderException e1 =
              (SeqloaderException) eFactory.getException(
           SeqloaderExceptionFactory.CreateSequenceErr, e);
+          e1.bind(seqInput.getPrimaryAcc().getAccID());
          throw e1;
        }
 
@@ -236,13 +237,15 @@ public class SeqProcessor implements ProcessSequenceInput  {
          SeqloaderException e1 =
              (SeqloaderException) eFactory.getException(
           SeqloaderExceptionFactory.CreatePrimaryAccessionErr, e);
+         e1.bind(seqInput.getPrimaryAcc().getAccID());
          throw e1;
        }
 
-       logger.logdDebug("Add Event Primary: " +
-                      ( (MSRawAttributes) seqInput.getMSources().get(0)).
-                      getOrganism() +
-                      " " + seqInput.getPrimaryAcc().getAccID());
+       logger.logdDebug("Add Event Primary: "  +
+                        seqInput.getPrimaryAcc().getAccID());
+       for (Iterator i = seqInput.getMSources().iterator(); i.hasNext(); ) {
+          logger.logdDebug("    " + ((MSRawAttributes) i.next()).getOrganism());
+       }
 
        // resolve secondary accessions and set the accession states in the
        // Sequence
@@ -260,6 +263,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
              SeqloaderException e1 =
                  (SeqloaderException) eFactory.getException(
               SeqloaderExceptionFactory.CreateSecondaryAccessionErr, e);
+             e1.bind(seqInput.getPrimaryAcc().getAccID());
              throw e1;
            }
 
