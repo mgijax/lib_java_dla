@@ -50,7 +50,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
     // section of a EMBL format sequence record
     // Note the ? forces searching until the FIRST instance of OC is found
     // without the ? it will search until the LAST instance
-    private static final String ORG_EXPRESSION = "OS([\\s\\S]*?)OC";
+    private static final String ORG_EXPRESSION = "^OS([\\s\\S]*?)OC";
     private Pattern orgPattern;
     private Matcher orgMatcher;
 
@@ -135,9 +135,10 @@ public class EMBLOrganismChecker implements OrganismChecker {
         // find the OS section of this record
         orgMatcher = orgPattern.matcher(record);
         Iterator i = deciders.iterator();
-
+        logger.logdDebug(record);
         // if we've found the OS section -
         if (orgMatcher.find() == true) {
+            logger.logdDebug("We found the OS section" + orgMatcher.group(1));
             // Determine if we are interested in this sequence
             while (i.hasNext()) {
                 SeqDecider currentDecider = (SeqDecider)i.next();
