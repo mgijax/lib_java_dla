@@ -146,7 +146,7 @@ public abstract class DLALoader {
       this.loadBCPMgr.setSQLDataManager(loadDBMgr);
       this.loadStream = createSQLStream(config.getLoadStreamName());
       this.qcStream = createSQLStream(config.getQCStreamName());
-      //this.inputConfig = new InputDataCfg();
+      this.inputConfig = new InputDataCfg();
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
