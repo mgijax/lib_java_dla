@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.Iterator;
+import java.util.HashSet;
 
 /**
  * a base class which extend DLALoader and implements the DLALoader methods
@@ -100,6 +101,12 @@ public abstract class SeqLoader extends DLALoader {
     // Resolves SEQ_Sequence attributes
     private SequenceAttributeResolver seqResolver;
 
+    //  cache of seqids we have already processed
+    private HashSet seqIdsAlreadyProcessed;
+
+    // count of sequence records whose seqids we have already processed
+    private int seqIdsAlreadyProcessedCtr;
+
     // the number of valid sequences WITHOUT processing errors
     int processedSeqCtr;
 
@@ -121,7 +128,7 @@ public abstract class SeqLoader extends DLALoader {
     // handles determining and processing merges and splits
     private MergeSplitProcessor mergeSplitProcessor;
 
-    // writer for all repeated input sequences for subsequent processing
+    // writer for all repeated input sequences
     private BufferedWriter repeatSeqWriter;
 
     /**
@@ -145,17 +152,35 @@ public abstract class SeqLoader extends DLALoader {
         // handles all qc reporting for a sequence load
         qcReporter = new SeqQCReporter(qcStream);
 
-        // seqloader specific exceptions
+        // create Factory to get seqloader specific exceptions
         seqEFactory = new SeqloaderExceptionFactory();
 
-        // resolves SequenceRawAttributes objects to SEQ_SequenceState
+        // create resolver to resolvea SequenceRawAttribute object to a SEQ_SequenceState
         seqResolver = new SequenceAttributeResolver();
+
+        // create the set for storing seqids we have already processed
+        seqIdsAlreadyProcessed = new HashSet();
+
+        // count of sequence records whose seqids we have already processed
+        seqIdsAlreadyProcessedCtr = 0;
 
         // number of valid sequences WITHOUT processing errors:
         processedSeqCtr = 0;
 
         // number of valid sequences WITH processing errors
         errCtr = 0;
+
+        // writes repeated input sequences to a file
+        try {
+            repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
+                getRepeatFileName()));
+        }
+        catch (IOException e) {
+            SeqloaderException e1 =
+                (SeqloaderException) seqEFactory.getException(
+                SeqloaderExceptionFactory.RepeatFileIOException, e);
+            throw e1;
+        }
 
         // init objects needed to process in incremental mode
         if (loadMode.equals(SeqloaderConstants.INCREM_LOAD_MODE)) {
@@ -175,24 +200,12 @@ public abstract class SeqLoader extends DLALoader {
             // determines and processes merges and splits
             mergeSplitProcessor = new MergeSplitProcessor(seqidLookup, qcReporter);
 
-            // writes repeated input sequences to a file for subsequent processing
-            try {
-                repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
-                    getRepeatFileName()));
-            }
-            catch (IOException e) {
-                SeqloaderException e1 =
-                    (SeqloaderException) seqEFactory.getException(
-                    SeqloaderExceptionFactory.RepeatFileIOException, e);
-                throw e1;
-            }
             // a SeqProcessor that handles detection and processing of events
             seqProcessor = new IncremSeqProcessor(loadStream,
                    qcStream,
                    qcReporter,
                    seqResolver,
-                   mergeSplitProcessor,
-                   repeatSeqWriter);
+                   mergeSplitProcessor);
         }
         // create SeqProcessor that can do deletes and process add events only
         else if (loadMode.equals(SeqloaderConstants.INCREM_INITIAL_LOAD_MODE) ||
@@ -237,7 +250,23 @@ public abstract class SeqLoader extends DLALoader {
            try {
                si = (SequenceInput)
                    iterator.next();
-               //logger.logdDebug(si.getPrimaryAcc().getAccID());
+               String currentSeqid = si.getPrimaryAcc().getAccID();
+               //logger.logdDebug(currentSeqid);
+               if (seqIdsAlreadyProcessed.contains(currentSeqid)) {
+                   // we have a repeated sequence; count it, write it out,
+                   // go on to next sequence in the input
+                   seqIdsAlreadyProcessedCtr++;
+                   repeatSeqWriter.write(si.getSeq().getRecord() + SeqloaderConstants.CRT);
+                   logger.logdDebug("Repeat Sequence: " + currentSeqid);
+                   continue;
+               }
+               else {
+                   // add the seqid to the set we have processed
+                   seqIdsAlreadyProcessed.add(currentSeqid);
+               }
+           }
+           catch (IOException e) {
+               throw new MGIException(e.getMessage());
            }
            catch (MGIException e) {
                if (e.getParent().getClass().getName().equals("org.jax.mgi.shr.ioutils.RecordFormatException")) {
@@ -253,13 +282,7 @@ public abstract class SeqLoader extends DLALoader {
            try {
                seqProcessor.processInput(si);
            }
-           // log repeated sequence, don't count as processed, go to the next sequence
-           catch (RepeatSequenceException e) {
-               String message = e.getMessage() + " Sequence: " +
-                   si.getPrimaryAcc().getAccID();
-               logger.logdDebug (message, true);
-               continue;
-           }
+
            // If incoming raw organism != existing raw organism -
            // qcReporter handles reporting
            catch (ChangedOrganismException e) {
@@ -319,19 +342,21 @@ public abstract class SeqLoader extends DLALoader {
             logger.logdInfo("Processing Merge/Splits", false);
             this.mergeSplitProcessor.process(mergeSplitWriter);
             mergeSplitWriter.execute();
-            logger.logdInfo("Closing repeat sequence writer", false);
-
-            // close the repeat sequence writer
-            try {
-                repeatSeqWriter.close();
-            }
-            catch (IOException e) {
-                SeqloaderException e1 =
-                    (SeqloaderException) seqEFactory.getException(
-                    SeqloaderExceptionFactory.RepeatFileIOException, e);
-                throw e1;
-            }
         }
+
+        // close the repeat sequence writer
+        logger.logdInfo("Closing repeat sequence writer", false);
+        try {
+            repeatSeqWriter.close();
+        }
+
+        catch (IOException e) {
+            SeqloaderException e1 =
+                (SeqloaderException) seqEFactory.getException(
+                SeqloaderExceptionFactory.RepeatFileIOException, e);
+            throw e1;
+        }
+
         // close the qc reporting stream after all qc reporting done - Note that
         // mergeSplitProcessor does qc reporting
         logger.logdInfo("Closing qc stream", false);
@@ -382,6 +407,10 @@ public abstract class SeqLoader extends DLALoader {
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
 
+        // Report number of repeated sequences found
+        logger.logdInfo("Total Repeat Sequences written to repeat file: " + seqIdsAlreadyProcessedCtr, false);
+        logger.logpInfo("Total Repeat Sequences written to repeat file: " + seqIdsAlreadyProcessedCtr, false);
+
         // following logged in debug mode only
         if (totalValidSeqs > 0) {
             logger.logdDebug("Average Processing Time/Valid Sequence processed = " +
@@ -401,7 +430,7 @@ public abstract class SeqLoader extends DLALoader {
             logger.logdDebug("Least MSProcessor time = " + seqProcessor.lowMSPTime, false);
         }
         // Report OrganismChecker counts
-        logger.logdInfo("\n\nValid Sequences Processed by Organism (excludes repeated sequences): ", false);
+        logger.logdInfo("\n\nValid Sequences Processed by Organism (includes repeated sequences): ", false);
         if(organismChecker != null) {
             Vector deciderCts = organismChecker.getDeciderCounts();
             for (Iterator i = deciderCts.iterator(); i.hasNext(); ) {
