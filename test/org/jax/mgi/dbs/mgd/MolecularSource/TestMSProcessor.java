@@ -58,6 +58,13 @@ public class TestMSProcessor
         sqlMgr = null;
         radar = null;
         msProcessor = null;
+        segmentLookup = null;
+        vectorLookup = null;
+        tissueLookup = null;
+        genderLookup = null;
+        cellLineLookup = null;
+        strainLookup = null;
+        organismLookup = null;
         super.tearDown();
     }
 
@@ -210,7 +217,7 @@ public class TestMSProcessor
      */
     public void testNewSeqNewSrc() throws Exception
     {
-        String accid = null;
+        String accid = "NOGOOD";
         MSRawAttributes raw = new MSRawAttributes();
         raw.setOrganism("mouse, laboratory");
         raw.setGender("Male");
@@ -231,7 +238,7 @@ public class TestMSProcessor
      */
     public void testNewSeqNewNamedSrc() throws Exception
     {
-        String accid = null;
+        String accid = "NOGOOD";
         MSRawAttributes raw = new MSRawAttributes();
         raw.setLibraryName("name5");
         raw.setCellLine("HeLa");
