@@ -1,27 +1,15 @@
 //  $Header
 //  $Name
 
-package org.jax.mgi.shr.dla.seqloader
-    ;
+package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.*;
-import java.util.regex.*;
-//import java.sql.*;
 import java.sql.Timestamp;
 
-import org.jax.mgi.shr.dla.seqloader.SequenceInterpreter;
-import org.jax.mgi.shr.dla.seqloader.SequenceInput;
-import org.jax.mgi.shr.dla.seqloader.SeqloaderConstants;
-import org.jax.mgi.shr.dla.seqloader.SeqRefAssocPair;
-import org.jax.mgi.shr.dla.seqloader.DateConverter;
-import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.SequenceRawAttributes;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
-
 
     /**
      * @is An object that parses SwissProt sequence records and obtains
@@ -50,11 +38,10 @@ import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
      */
 
 public class EMBLFormatInterpreter extends SequenceInterpreter {
-    //////////////////////////////////////
-    // constants for String searching  //
-    /////////////////////////////////////
 
+    /////////////////////////////////////////////////////////
     // String constants to find EMBL format seq record TAGS
+    /////////////////////////////////////////////////////////
 
     // for length
     private static String ID = "ID";
@@ -78,15 +65,12 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     // A SequenceInput and its parts            //
     //////////////////////////////////////////////
 
-    // The object we are building. Represents a sequence,
+    // The object we are building. Represents raw attributes for a sequence,
     // its source, references, and accessions
     protected SequenceInput sequenceInput = new SequenceInput();
 
     // raw attributes for a sequence - reused by calling reset()
     private SequenceRawAttributes rawSeq = new SequenceRawAttributes();
-
-    // raw attributes for a sequences source - reused by calling reset()
-   //private MSRawAttributes rawMS = new MSRawAttributes();
 
     // checks a sequence record to see if it is an organism we want to load
     private EMBLOrganismChecker organismChecker;
@@ -104,15 +88,15 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     * Constructs a EMBL FormatInterpreter
     * @assumes Nothing
     * @effects Nothing
-    * @param None
+    * @param oc an EMBLFormatOrganismChecker
     * @throws ConfigException if can't find configuration file
     */
 
     public EMBLFormatInterpreter(EMBLOrganismChecker oc) throws ConfigException {
-        // Create an organism checker for SwissProt
+        // Create an organism checker for EMBL format
         this.organismChecker = oc;
 
-        // Initialize vars that hold sequence record sections for later parsing
+        // Initialize vars that hold sequence record sections
         idSection = null;
         acSection = null;
         dtSection = new StringBuffer();
@@ -123,12 +107,11 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
       }
 
     /**
-     * Determines whether this sequence is for
-     * an organism we want to load
+     * Determines whether this sequence is for an organism we want to load
      * @assumes Nothing
      * @effects Nothing
      * @param record A EMBL format sequence record
-     * @return true if we want to load this sequence
+     * @return true if organism of the sequence is an organism we want to load
      * @throws Nothing
      */
 
@@ -141,7 +124,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * Configuration and parsed values
      * @assumes Nothing
      * @effects Nothing
-     * @param rcd A sequence record
+     * @param rcd An EMBL format sequence record
      * @return A SequenceInput object representing 'rcd'
      * @throws RecordFormatException if we can't parse an attribute because of
      *         record formatting errors
@@ -163,7 +146,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         parseDE(deSection.toString());
         parseOS(osSection.toString());
 
-        // this method also adds RefAssocRawAttributes objects to the
+        // this method call also adds RefAssocRawAttributes objects to the
         // SequenceInput object
         if(rxSection.length() != 0) {
             parseRX(rxSection.toString());
@@ -185,13 +168,13 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * Parses a sequence record into individual sections for later parsing
      * @assumes Nothing
      * @effects Nothing
-     * @param rcd A sequence record
+     * @param rcd An EMBL format sequence record
      * @return Nothing
      * @throws Nothing
      */
 
     protected void parseRecord(String rcd) {
-        // re-initialize vars that hold sequence record sections for later parsing
+        // re-initialize vars that hold sequence record sections
         idSection = null;
         acSection = null;
         dtSection = new StringBuffer();
@@ -251,8 +234,8 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * DT   16-OCT-2001 (Rel. 40, Last sequence update)
      * DT   16-OCT-2001 (Rel. 40, Last annotation update)
      * <BR>
-     * Note that sequence record date is the later of sequence update and
-     * annotation update
+     * Note that SequenceRawAttributes.seqRecDate is set to the later of
+     * sequence update and annotation update
      * @return Nothing
      * @throws Nothing
      */
@@ -265,11 +248,8 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         // discard first DT line
         lineSplitter.nextToken();
 
-        /**
-        / get the sequence update line and tokenize it
-        */
-        String line = lineSplitter.nextToken();
-        StringTokenizer fieldSplitter = new StringTokenizer(line);
+        // tokenize the sequence update line
+        StringTokenizer fieldSplitter = new StringTokenizer(lineSplitter.nextToken());
 
         // discard the DT tag field
         fieldSplitter.nextToken();
@@ -278,11 +258,8 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         Timestamp sequenceDate = DateConverter.convertDate(fieldSplitter.nextToken());
         rawSeq.setSeqRecDate(sequenceDate);
 
-        /**
-        / get the sequence annotation update line and tokenize it
-        */
-       line = lineSplitter.nextToken();
-       fieldSplitter = new StringTokenizer(line);
+       // get the sequence annotation update line and tokenize it
+       fieldSplitter = new StringTokenizer(lineSplitter.nextToken());
 
        // discard the DT tag field
        fieldSplitter.nextToken();
@@ -305,13 +282,13 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
     /**
      * Parses sets of MedLine and PubMed ids from the RX section of a EMBL
-     * format sequence record where they exist. Creates a RefAssocRawAttributes
+     * format sequence record if they exist. Creates a RefAssocRawAttributes
      * object for each id, bundles them in a pair, then sets the pair in the
      * SequenceInput object.
-     * If a reference has only one id, the other in the SeqRefAssocPair is null.
+     * If a reference has only one type of id, the other in the SeqRefAssocPair is null.
      * @assumes Nothing
      * @effects Nothing
-     * @param reference the RX section parsed from a EMBL format record
+     * @param rxSection the RX section parsed from a EMBL format record
      * <BR>
      * RX section example, Note there can be multiple RX lines: <BR>
      * <PRE>
@@ -322,7 +299,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      */
 
     protected void parseRX(String rxSection) {
-        // holders for pubmed and medline ids
+        // pubmed and medline ids
         String pubmed = null;
         String medline = null;
 
@@ -399,12 +376,12 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
         while (lineTokenizer.hasMoreTokens()) {
             // MSRawAttributes ms = new MSRawAttributes();
-            // e.g. line looks like "Homo sapiens (Human),"
+            // e.g. 'line' looks like "Homo sapiens (Human),"
             line = lineTokenizer.nextToken().substring(5);
             StringTokenizer fieldTokenizer = new StringTokenizer(line,
                 SeqloaderConstants.OPEN_PAREN);
             if (fieldTokenizer.hasMoreTokens()) {
-                // e.g. organism looks like "Homo sapiens"
+                // e.g. 'organism' looks like "Homo sapiens"
                 organism = fieldTokenizer.nextToken().trim();
                 // append organism to rawOrganism string with a comma separater
                 rawOrganism.append(organism + SeqloaderConstants.COMMA);
@@ -557,24 +534,16 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         while(lineTokenizer.hasMoreTokens()){
             descript.append(lineTokenizer.nextToken().substring(5));
         }
-        String description = descript.toString();
-
-        if (description.length() > 255) {
-            rawSeq.setDescription(description.substring(0, 255));
-
-        }
-        else {
-            rawSeq.setDescription(description);
-        }
-         //System.out.println(description);
+        // set description in the raw sequence
+        rawSeq.setDescription(descript.toString());
     }
 
     /**
-     * Parses the ID section (always 1 line) of a EMBL format sequence record.
-     * Sets the length in the SequenceRawAttributes object<BR>
+     * Parses length from the ID section (always 1 line) of a EMBL format
+     * sequence record and sets length in the SequenceRawAttributes object<BR>
      * @assumes Nothing
      * @effects Nothing
-     * @param locus The LOCUS line of a GenBank sequence record.
+     * @param idLine The ID line of a EMBL format sequence record.
      * <BR>
      * Example of EMBL format ID line:<BR>
      * ID   143B_MOUSE     STANDARD;      PRT;   245 AA.
@@ -594,21 +563,18 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
     protected void parseID(String idLine) {
       StringTokenizer fieldSplitter = new StringTokenizer(idLine);
-      String length;
+
        // we want the 5th token
        for (int i = 0; i < 4; i++) {
            fieldSplitter.nextToken();
        }
-       // get the length
-       length = fieldSplitter.nextToken();
-
-       // seq length in the raw sequence object
-       rawSeq.setLength(length.trim());
+       // set length in the raw sequence object
+       rawSeq.setLength(fieldSplitter.nextToken().trim());
     }
 
     /**
      * Creates one RefAssocRawAttributes object each for a pubmed id and a
-     * medline id,  bundles them in a SeqRefAssocPari, then sets the pair in the
+     * medline id,  bundles them in a SeqRefAssocPair, then sets the pair in the
      * SequenceInput object. If 'pubmed' or 'medline' is null, then the
      * RefAssociationRawAttribute for that id is null
      * @assumes Nothing
@@ -646,7 +612,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * @assumes Nothing
      * @effects Nothing
      * @param accid Accession id of a sequence
-     * @param preferred If true, 'accid' is primary, else 'accid' is 2ndary
+     * @param preferred true, 'accid' is primary. false 'accid' is 2ndary
      * @return nothing
      * @throws Nothing
      */
@@ -659,7 +625,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         seqid.setAccid(accid);
         seqid.setIsPreferred(preferred);
 
-        // GenBank seqids are public
+        //  seqids are public
         seqid.setIsPrivate(Boolean.FALSE);
 
         // set attributes from Configuration
