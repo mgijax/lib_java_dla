@@ -30,6 +30,9 @@ public class TestMSResolver
         super.setUp();
         System.setProperty("SEQ_LOGICALDB", "Sequence DB");
         sqlMgr = new SQLDataManager();
+        DBSchema schema = sqlMgr.getDBSchema();
+        schema.createTriggers("PRB_Source"); // so it can be dropped
+        schema.dropTriggers("PRB_Source");
         this.segmentLookup =
             new VocabKeyLookup(VocabularyTypeConstants.SEGMENTTYPE);
         this.vectorLookup =
@@ -53,7 +56,7 @@ public class TestMSResolver
                 "insert into PRB_Source values (-60, " +
                 segmentLookup.lookup("Not Applicable") + ", " +
                 vectorLookup.lookup("Not Applicable") + ", 1, " +
-                translator.translate("Mus abbotti") + ", " +
+                strainLookup.lookup("Not Specified") + ", " +
                 tissueLookup.lookup("Not Specified") + ", " +
                 genderLookup.lookup("Female") + ", " +
                 cellLineLookup.lookup("Not Specified") + ", null, null, " +
@@ -65,7 +68,7 @@ public class TestMSResolver
                 "insert into PRB_Source values (-70, " +
                 segmentLookup.lookup("Not Applicable") + ", " +
                 vectorLookup.lookup("Not Applicable") + ", 1, " +
-                translator.translate("Mus abbotti") + ", " +
+                strainLookup.lookup("Not Specified") + ", " +
                 tissueLookup.lookup("brain") + ", " +
                 genderLookup.lookup("Not Specified") + ", " +
                 cellLineLookup.lookup("Not Specified") + ", null, null, " +
@@ -73,6 +76,7 @@ public class TestMSResolver
                 "getDate(), getDate())"
                 );
         resolver = new MSResolver();
+        schema.createTriggers("PRB_Source");
     }
 
     protected void tearDown() throws Exception

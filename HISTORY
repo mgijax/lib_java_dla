@@ -1,3 +1,10 @@
+DATE: 09/01/2004
+STAFF: sc
+RELEASE: production
+CHANGES: SequenceLookup bug fix - reset all caches (HashSet) with each invocation of interpretRows
+         Since the cache not reset, sequences repeated in input were creating new references
+         since the refs key found in the cache.
+
 DATE: 08/23/2004
 STAFF: sc
 CHANGES:

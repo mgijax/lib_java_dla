@@ -278,6 +278,7 @@ public class Sequence {
         throws ConfigException, DBException {
 
         Integer refKey = state.getRefsKey();
+
         // if we haven't already created an association for this reference
         if(! currentRefKeySet.contains(refKey)) {
             // add a new DAO to the set of ref associations for this sequence
@@ -577,6 +578,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.9  2004/07/08 15:03:49  sc
+//  javdocs changes
+//
 //  Revision 1.8  2004/06/30 19:34:41  mbw
 //  javadocs only
 //

@@ -29,6 +29,12 @@ public class TestMSCollapsedCache
   protected void setUp() throws Exception {
     super.setUp();
     sqlMgr = new SQLDataManager();
+    DBSchema dbSchema = sqlMgr.getDBSchema();
+    dbSchema = sqlMgr.getDBSchema();
+    // create triggers in order to be able to drop them
+    dbSchema.createTriggers("PRB_Source");
+    dbSchema.dropTriggers("PRB_Source");
+
     this.segmentLookup =
         new VocabKeyLookup(VocabularyTypeConstants.SEGMENTTYPE);
     this.vectorLookup =
@@ -55,7 +61,7 @@ public class TestMSCollapsedCache
             "null, 'Not Applicable', -1.0, -1.0, 0, 1000, 1000, " +
             "getDate(), getDate())"
             );
-    // source that is curatorEdited
+    // source that is curatorEdited (it will not get populated on init)
     sqlMgr.executeUpdate(
             "insert into PRB_Source values (-60, " +
             segmentLookup.lookup("Not Applicable") + ", " +
@@ -80,7 +86,8 @@ public class TestMSCollapsedCache
             "getDate(), getDate())"
 
             );
-    lookup = new MSCollapsedCache(CacheConstants.FULL_CACHE);
+        lookup = new MSCollapsedCache(CacheConstants.FULL_CACHE);
+        dbSchema.createTriggers("PRB_Source");
   }
 
   protected void tearDown() throws Exception {
@@ -94,15 +101,14 @@ public class TestMSCollapsedCache
 
   public void testAddToCache() throws Exception
   {
-    System.out.println("Printing cache...");
-    lookup.printCache(System.out);
-    System.out.println("End of Cache");
-    lookup.initCache();
-    System.out.println("Printing cache...");
-    lookup.printCache(System.out);
-    System.out.println("End of Cache");
+    //System.out.println("Printing cache...");
+    //lookup.printCache(System.out);
+    //System.out.println("End of Cache");
+    //lookup.initCache();
+    //System.out.println("Printing cache...");
+    //lookup.printCache(System.out);
+    //System.out.println("End of Cache");
 
-    int size = lookup.cacheSize();
     // add a new MolecularSource that should not collapse
     MolecularSource newMS =
         new MolecularSource(
@@ -112,11 +118,10 @@ public class TestMSCollapsedCache
     newMS.setCellLineKey(cellLineLookup.lookup("Not Applicable"));
     newMS.setGenderKey(genderLookup.lookup("Not Applicable"));
     newMS.setSegmentTypeKey(segmentLookup.lookup("Not Applicable"));
-    newMS.setStrainKey(strainLookup.lookup("RR"));
+    newMS.setStrainKey(strainLookup.lookup("BALB/cJ"));
     newMS.setTissueKey(tissueLookup.lookup("Not Applicable"));
     lookup.addToCache(newMS);
-    int newSize = lookup.cacheSize();
-    assertEquals(new Integer(newSize), new Integer(size + 1));
+    int size = lookup.cacheSize();
 
     // add a new MolecularSource that should collapse
     MolecularSource anotherMS =
@@ -131,8 +136,8 @@ public class TestMSCollapsedCache
     anotherMS.setStrainKey(strainLookup.lookup("Not Specified"));
     anotherMS.setTissueKey(tissueLookup.lookup("brain"));
     lookup.addToCache(anotherMS);
-    newSize = lookup.cacheSize();
-    assertEquals(new Integer(newSize), new Integer(size + 1));
+    int newSize = lookup.cacheSize();
+    assertEquals(new Integer(size), new Integer(newSize));
 
     // get a unresolved MS and then do a lookup
     MSRawAttributes raw = new MSRawAttributes();

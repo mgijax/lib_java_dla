@@ -59,7 +59,7 @@ public class CoordProcessor {
     private CoordloaderExceptionFactory eFactory;
 
     public CoordProcessor(SQLStream stream) throws DBException, CacheException,
-        ConfigException {
+        ConfigException, KeyNotFoundException {
         mgdStream = stream;
         eFactory = new CoordloaderExceptionFactory();
         coordCfg = new CoordLoadCfg();
@@ -70,8 +70,8 @@ public class CoordProcessor {
         // we have to explicitly set the collection key/ Configurator doesn't
         // take parameters
         mapProcessor.setCollectionKey(collectionKey);
-        featureResolver =
-            (CoordMapFeatureResolver)coordCfg.getMapFeatureResolverClass();
+        featureResolver = new CoordMapFeatureResolver();
+            //(CoordMapFeatureResolver)coordCfg.getMapFeatureResolverClass();
 
     }
 

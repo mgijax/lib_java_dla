@@ -693,14 +693,14 @@ public class SequenceLookup {
         private MGI_AttributeHistoryState typeHistoryState;
 
         // the set of source assoc keys (Integer) already processed
-        private HashSet sourceSet = new HashSet();
+        private HashSet sourceSet;
 
         // the set of ref association keys (Integer) already processed so
         // we don't add dups
-        private HashSet refAssocKeySet = new HashSet();
+        private HashSet refAssocKeySet;
 
         // the set of 2ndary accession keys (Integer) already processed
-        private HashSet accSet = new HashSet();
+        private HashSet accSet;
 
         // a row of data
         private RowData rowData;
@@ -745,7 +745,9 @@ public class SequenceLookup {
             sequence = null;
             seqState = null;
             accState = null;
-
+            sourceSet = new HashSet();
+            refAssocKeySet = new HashSet();
+            accSet = new HashSet();
             Iterator i = v.iterator();
 
             // Create the sequence, primary accession, source assoc

@@ -56,6 +56,7 @@ public class TestMSProcessor
         {} // if they are not there then ignore this error
         doDeletes();
         doInserts();
+        dbSchema.createTriggers("PRB_Source");
         msProcessor = new MSProcessor(new Inline_Stream(sqlMgr),
                                       new Inline_Stream(radar));
     }
@@ -63,7 +64,6 @@ public class TestMSProcessor
     protected void tearDown() throws Exception
     {
         doDeletes();
-        dbSchema.createTriggers("PRB_Source");
         dbSchema = null;
         sqlMgr = null;
         radar = null;

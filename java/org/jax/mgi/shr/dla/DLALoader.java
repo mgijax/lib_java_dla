@@ -180,10 +180,12 @@ public abstract class DLALoader {
       logger.logdInfo("Performing load initialization",true);
       if (loadTables != null)
           DLALoaderHelper.truncateTables(loadTables,
-                                         this.loadDBMgr.getDBSchema());
+                                         this.loadDBMgr.getDBSchema(),
+                                         logger);
       if (qcTables != null)
           DLALoaderHelper.truncateTables(qcTables,
-                                         this.qcDBMgr.getDBSchema());
+                                         this.qcDBMgr.getDBSchema(),
+                                         logger);
       initialize();
     }
     catch (Exception e) {

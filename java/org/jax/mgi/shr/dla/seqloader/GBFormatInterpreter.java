@@ -397,6 +397,12 @@ public class GBFormatInterpreter extends SequenceInterpreter {
               reference.append(line + SeqloaderConstants.CRT);
               currentSection = ANOTHER_REFERENCE_LINE;
             }
+            // records without references won't have a reference line
+            // the next line we want is the FEATURES line where we will start
+            // looking for first features source line
+            else if (line.startsWith(FEATURES)) {
+                currentSection = SOURCE_SECTION;
+            }
           }
           // if we are looking for another REFERENCE line
           else if (currentSection == ANOTHER_REFERENCE_LINE) {

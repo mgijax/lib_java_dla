@@ -300,8 +300,4 @@ public class MSSeqAssoc extends DAO
         nav.close();
         return assoc;
     }
-
-
-
-
 }

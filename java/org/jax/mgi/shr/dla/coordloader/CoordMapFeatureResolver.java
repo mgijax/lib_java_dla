@@ -1,44 +1,40 @@
 package org.jax.mgi.shr.dla.coordloader;
 
+import org.jax.mgi.shr.config.CoordLoadCfg;
 import org.jax.mgi.dbs.mgd.dao.MAP_Coord_FeatureState;
+import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
+import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
+import org.jax.mgi.dbs.mgd.lookup.MGITypeLookup;
+import org.jax.mgi.dbs.mgd.AccessionLib;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.shr.config.ConfigException;
 
-/**
-* An interface that defines the resolve method to resolve a
-* CoordMapFeatureRawAttributes object to a MAP_Coord_FeatureState
+public class CoordMapFeatureResolver {
+    private CoordLoadCfg coordCfg;
+    private AccessionLookup accLookup;
+    private Integer MGITypeKey;
 
-* @company The Jackson Laboratory
-* @author sc
-* @version 1.0
-*/
+    public CoordMapFeatureResolver() throws DBException,
+            CacheException, KeyNotFoundException, ConfigException{
+        coordCfg = new CoordLoadCfg();
+        Integer logicalDBKey = new LogicalDBLookup().lookup(
+            coordCfg.getLogicalDB());
+        MGITypeKey = new MGITypeLookup().lookup(coordCfg.getFeatureMGIType());
+        accLookup = new AccessionLookup(logicalDBKey.intValue(),
+            MGITypeKey.intValue(), AccessionLib.PREFERRED);
+    }
+    public MAP_Coord_FeatureState resolve(CoordMapFeatureRawAttributes rawAttr, Integer mapKey)
+            throws DBException, CacheException, KeyNotFoundException{
 
-public interface CoordMapFeatureResolver {
-        public MAP_Coord_FeatureState resolve (CoordMapFeatureRawAttributes rawAttr,
-        Integer mapKey) throws DBException, CacheException, KeyNotFoundException;
+        MAP_Coord_FeatureState state = new MAP_Coord_FeatureState();
+        state.setMapKey(mapKey);
+        state.setMGITypeKey(MGITypeKey);
+        state.setObjectKey(accLookup.lookup(rawAttr.getObjectId()));
+        state.setStartCoordinate(new Float(rawAttr.getStartCoord()));
+        state.setEndCoordinate(new Float(rawAttr.getEndCoord()));
+        state.setStrand(rawAttr.getStrand());
+        return state;
+    }
 }
-
-// $Log
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

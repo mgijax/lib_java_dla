@@ -203,10 +203,11 @@ public class CoordLoadCfg extends Configurator {
    * @throws ConfigException thrown if error retrieving value
    * from the configuration
    */
+  /*
   public Object getMapFeatureResolverClass() throws ConfigException {
     return getConfigObject("COORD_FEATURE_RESOLVER");
   }
-
+*/
   /**
     * get the logicalDB name for the coordIds
     * @return logicalDB
