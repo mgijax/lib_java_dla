@@ -183,12 +183,30 @@ public class SeqProcessor implements ProcessSequenceInput  {
        try {
          inputSequenceState = resolveRawSequence(seqInput.getSeq());
        }
-       catch (MGIException e) {
-         SeqloaderException e1 =
-             (SeqloaderException) eFactory.getException(
-          SeqloaderExceptionFactory.SeqResolverErr, e);
-         throw e1;
-       }
+	catch (ConfigException e) {
+	  SeqloaderException e1 =
+	      (SeqloaderException) eFactory.getException(
+	  SeqloaderExceptionFactory.ProcessAddErr, e);
+	  throw e1;
+	}
+       catch (CacheException e) {
+	  SeqloaderException e1 =
+	      (SeqloaderException) eFactory.getException(
+	  SeqloaderExceptionFactory.ProcessAddErr, e);
+	  throw e1;
+	}
+       catch (DBException e) {
+	  SeqloaderException e1 =
+	      (SeqloaderException) eFactory.getException(
+	  SeqloaderExceptionFactory.ProcessAddErr, e);
+	  throw e1;
+	}
+	catch (TranslationException e) {
+	  SeqloaderException e1 =
+	      (SeqloaderException) eFactory.getException(
+	  SeqloaderExceptionFactory.ProcessAddErr, e);
+	  throw e1;
+	}
 
 
        // create the compound sequence; a sequence with its ref,
