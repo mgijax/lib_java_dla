@@ -5,16 +5,15 @@ package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.Vector;
 
-import org.jax.mgi.shr.dla.seqloader.SequenceRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 
 /**
- * @is An object that represents data  (SequenceRawAttributes,
+ * @is An object that represents data from a DataProvider sequence record
+ *     and/or Configuration in its raw form. (SequenceRawAttributes,
  *     AccessionRawAttributes (for primary and 2ndary ids),
- *     RefAssocRawAttributes (for PubMed and Medline references), and
- *     MSRawAttributes (for source) ) from a DataProvider sequence record
- *     and/or Configuration in its raw form.
+ *     RefAssocRawAttributes (for PubMed and Medline reference associations), and
+ *     MSRawAttributes (for source associations) )
+
  * @has
  *   <UL>
  *   <LI>A SequenceRawAttributes
@@ -243,6 +242,12 @@ public class SequenceInput {
     }
 }
 //  $Log$
+//  Revision 1.3.4.1  2004/05/18 15:32:48  sc
+//  updated class/method headers
+//
+//  Revision 1.3  2004/04/06 15:52:57  mbw
+//  added new method to add a RefAssocRawAttrinute
+//
 //  Revision 1.2  2004/02/25 21:42:40  mbw
 //  fixed compiler warnings only
 //

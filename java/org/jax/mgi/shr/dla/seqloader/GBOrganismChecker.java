@@ -38,7 +38,7 @@ import org.jax.mgi.shr.timing.Stopwatch;
  * @version 1.0
  */
 
-public class GBOrganismChecker {
+public class GBOrganismChecker implements OrganismChecker {
     // expression string, pattern, and matcher to find the classification
     // section of a GenBank format sequence record
     // Note the ? forces searching until the FIRST instance of REFERENCE is found
@@ -46,7 +46,7 @@ public class GBOrganismChecker {
     private static final String ORG_EXPRESSION = "ORGANISM([\\s\\S]*?)REFERENCE";
 
     // this one doesn't work because in the case of organism being 'Mus sp.'
-    // it stops and does not get the full classification
+    // it stops at 'Mus sp.' does not get the full classification
     //private static final String EXPRESSION = "ORGANISM([^.]+).*";
 
     private Pattern orgPattern;
@@ -81,7 +81,7 @@ public class GBOrganismChecker {
 
     // DEBUG
     private DLALogger logger;
-    //Stopwatch stopWatch = new Stopwatch();
+    Stopwatch stopWatch = new Stopwatch();
     Runtime runTime = Runtime.getRuntime();
 
     /**
@@ -90,7 +90,7 @@ public class GBOrganismChecker {
     * @effects nothing
     * @param None
     * @throws ConfigException if config file does not define mouse human and rat
-    *         decider vars
+    * decider vars
     */
 
     public GBOrganismChecker () throws ConfigException, DLALoggingException {
@@ -119,7 +119,7 @@ public class GBOrganismChecker {
     }
 
     /**
-    * Determines if a sequence record is an organism represented by a set
+    * Determines if a sequence record is an organism represented by the set
     * of deciders
     * @assumes Nothing
     * @effects Nothing
@@ -131,8 +131,8 @@ public class GBOrganismChecker {
 
     public boolean checkOrganism(String record) {
         //DEBUG
-        //stopWatch.reset();
-        //stopWatch.start();
+        stopWatch.reset();
+        stopWatch.start();
 
         totalCtr++;
         // reset
@@ -155,8 +155,9 @@ public class GBOrganismChecker {
                 }
             }
         }
-        // if we don't find the classification, try a different Matcher - this
-        // may be a refseq record
+
+	// if we don't find the classification, try a different Matcher - this
+	// may be a refseq record
         else if (orgAltMatcher.find() == true) {
             // Determine if we are interested in this sequence
             while (i.hasNext()) {
@@ -173,9 +174,12 @@ public class GBOrganismChecker {
         if (isA == false) {
             logger.logdDebug("Not a valid record", true);
         }
-        //stopWatch.stop();
-        //logger.logdDebug("checkOrganism time: " + stopWatch.time());
-        //logger.logdDebug("Free memory: " + runTime.freeMemory());
+
+	// DEBUG
+        stopWatch.stop();
+        logger.logdDebug("checkOrganism time: " + stopWatch.time());
+        logger.logdDebug("Free memory: " + runTime.freeMemory());
+
         return isA;
       }
 
@@ -191,17 +195,28 @@ public class GBOrganismChecker {
     */
     public Vector getDeciderCounts () {
       Vector v = new Vector();
-      v.add("Total records looked at: " + totalCtr + SeqloaderConstants.CRT);
-      v.add("Total records processed: " + trueCtr + SeqloaderConstants.CRT);
+      v.add("Total Sequences looked at: " + totalCtr + SeqloaderConstants.CRT);
+
+      // get the set of organisms we are loading
+      StringBuffer organisms = new StringBuffer();
       Iterator i = deciders.iterator();
+      while (i.hasNext()) {
+          organisms.append( ((SeqDecider)i.next()).getName() + ", ");
+      }
+      // StringBuffer.substring removes the trailing ', '
+      v.add("Total records for organism(s) " +
+            organisms.toString().substring(0,organisms.length()-1) + "  found: " +
+            trueCtr + SeqloaderConstants.CRT);
+      i = deciders.iterator();
             while (i.hasNext()) {
               SeqDecider d = (SeqDecider)i.next();
-              String s = "Total " + d.getName() + " records processed: " +
+              String s = "    Total " + d.getName() + ": " +
                   d.getTrueCtr() + SeqloaderConstants.CRT;
               v.add(s);
             }
-            return v;
+       return v;
     }
+
     /**
      * @is an object that applies this predicate to the classification section
      * of a GenBank sequence record
@@ -229,7 +244,8 @@ public class GBOrganismChecker {
         }
 
         /**
-         * Determines if 'classification' represents a mouse. Counts total
+         * Determines if 'classification' represents a mouse. Matching is done
+         * in lower case. Counts total
          * classifications processed and total for which the predicate is true.
          * @assumes Nothing
          * @effects Nothing
@@ -240,7 +256,7 @@ public class GBOrganismChecker {
          */
 
         protected boolean is(String classification) {
-          return si.isOrganism(classification, name);
+          return si.isMatch(classification.toLowerCase(), name);
        }
      }
      /**
@@ -270,7 +286,8 @@ public class GBOrganismChecker {
        }
 
        /**
-        * Determines if 'classification' represents a rat. Counts total
+        * Determines if 'classification' represents a rat. Matching is done
+        * in lower case. Counts total
         * classifications processed and total for which the predicate is true.
         * @assumes Nothing
         * @effects Nothing
@@ -280,7 +297,7 @@ public class GBOrganismChecker {
         *         this decider.
         */
         protected boolean is(String classification) {
-          return si.isOrganism(classification, name);
+          return si.isMatch(classification.toLowerCase(), name);
         }
       }
       /**
@@ -310,7 +327,8 @@ public class GBOrganismChecker {
           }
 
           /**
-           * Determines if 'classification' represents a human. Counts total
+           * Determines if 'classification' represents a human. Matching is done
+           * in lower case. Counts total
            * classifications processed and total for which the predicate is true.
            * @assumes Nothing
            * @effects Nothing
@@ -320,9 +338,8 @@ public class GBOrganismChecker {
            *         this decider.
            */
           protected boolean is(String classification) {
-            return si.isOrganism(classification, name);
+            return si.isMatch(classification.toLowerCase(), name);
           }
-
         }
 
      /**
@@ -341,56 +358,51 @@ public class GBOrganismChecker {
         * @version 1.0
         */
 
-   private class GBSeqInterrogator {
+   private class GBSeqInterrogator extends Interrogator {
 
-       // a hash map data structure that maps organism controlled vocab
-       // to a String expression. All matching is done in lower case.
-       private String mouse;
-       private String rat;
-       private String human;
-
-       // load HashMap with controlled vocab keys and string expression values
-       private HashMap expressions = new HashMap();
-
-       private GBSeqInterrogator() {
-          mouse = "Muridae; Murinae; Mus".toLowerCase();
-          rat = "Rattus".toLowerCase();
-          human = "sapiens".toLowerCase();
-          expressions.put("mouse", mouse);
-          expressions.put("rat", rat);
-          expressions.put("human", human);
-        }
+       // expressions, matching to be done in lower case
+       private String mouse = "Muridae; Murinae; Mus".toLowerCase();
+       private String rat = "Rattus".toLowerCase();
+       private String human  = "sapiens".toLowerCase();
 
        /**
-        * Determines whether a sequence classification if for a given organism
-        * @assumes "organism" is a valid controlled vocabulary for "classification"
+        * Constructs a GBSeqInterrogator by loading a mapping of organism
+        * controlled vocab keys to GB organism expressions
+        * @assumes Nothing
         * @effects Nothing
-        * @param classification A GenBank sequence classification string
-        * @param organism a decider name for determining expression to apply to
-        *        classification
-        * @return true if "classification" is for "organism"
+        * @param None
         * @throws Nothing
         */
+       private GBSeqInterrogator() {
+          loadExpressions();
+        }
 
-         private boolean isOrganism (String classification, String organism) {
-            // get the string expression that is mapped to 'organism'
-            //String matchString = (String)expressions.get(organism.toLowerCase());
-
-            // return true if the string expression matches organism of 's'
-            // don't create the intermediate String
-            //if((classification.toLowerCase()).indexOf(matchString) >  -1) {
-            if((classification.toLowerCase()).indexOf(
-                  (String)expressions.get(organism.toLowerCase())) >  -1) {
-                return true;
-            }
-            else {
-               return false;
-            }
-         }
+        /**
+        * loads the hashmap with organism controlled vocab keys and
+        * organism expression values
+        * @assumes Nothing
+        * @effects Nothing
+        * @param None
+        * @return Nothing
+        * @throws Nothing
+        */
+        protected void loadExpressions() {
+            expressions.put("mouse", mouse);
+            expressions.put("rat", rat);
+            expressions.put("human", human);
+        }
    }
 }
 
 //  $Log$
+//  Revision 1.2.4.2  2004/06/30 13:04:47  sc
+//  now implements OrganismChecker interface, changed some statistic reporting.
+//
+//  Revision 1.2.4.1  2004/05/18 15:07:24  sc
+//  class/method headers updated. inner class GBSeqInterrogator now extends Interrogator
+//  Revision 1.3  2004/05/17 13:37:13  sc
+//  commented out some debug code
+
 //  Revision 1.2  2004/03/12 14:13:22  sc
 //  HISTORY
 //

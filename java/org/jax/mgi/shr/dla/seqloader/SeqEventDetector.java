@@ -11,9 +11,40 @@ import org.jax.mgi.shr.config.ConfigException;
 
 import java.util.HashSet;
 
+/**
+ * @is an object that determines sequence events
+ * @has
+ *   <UL>
+ *   <LI>A MergeSplitProcessor to handle merge and split events
+ *   <LI>A VocabTermLookup to help determine Dummy events
+ *   <LI>A list of sequences that have already been processed
+ *   <LI>Counters for each event
+ *   </UL>
+ * @does
+ *   <UL>
+ *   <LI>Determines the following events for a sequence:
+ *   <UL>
+ *       <LI>Already Added Event
+ *       <LI>Update Event
+ *       <LI>Add Event
+ *       <LI>Dummy Event
+ *       <LI>Non Event
+ *       <LI>Merges and Splits - See MergeSplitProcessor
+ *   </UL>
+ *   <LI>Keeps counts of each event
+ *   <LI>Processes merge and split events - See MergSplitProcessor
+ *   </UL>
+ * @company The Jackson Laboratory
+ * @author sc
+ * @version 1.0
+ */
+
 public class SeqEventDetector {
 
+    // object to determine and process Merge and Split Events
     private MergeSplitProcessor mergeSplitProcessor;
+
+    // Lookup to help determine Dummy Events - this is a lazy cache
     private VocabTermLookup termNameLookup;
 
     // cache of seqids we have already processed
@@ -32,10 +63,16 @@ public class SeqEventDetector {
     private int dummyCtr = 0;
     // current count of Non events
     private int nonCtr = 0;
-    // current count of merge events
-    private int mergeCtr = 0;
-    // current count of split events
-    private int splitCtr = 0;
+
+    /**
+    * Constructs a SeqEventDetector
+    * @assumes Nothing
+    * @effects Nothing
+    * @param None
+    * @throws ConfigException if error creating VocabTermLookup()
+    * @throws CacheException if error creating VocabTermLookup()
+    * @throws DBException if error creating VocabTermLookup()
+    */
 
     public SeqEventDetector(MergeSplitProcessor mergeSplitProcessor)
          throws ConfigException, CacheException, DBException {
@@ -44,14 +81,30 @@ public class SeqEventDetector {
         seqIdsAlreadyProcessed = new HashSet();
     }
 
+    /**
+      * Detects Sequence events
+      * @assumes Nothing
+      * @effects Queries a database
+      * @param seqInput set of raw values for the sequence being processed
+      * @param sequence sequence as it exists in the database,
+      *        null if it doesn't exist
+      * @return int representation of an Event
+      * @throws CacheException if TermNameLookup error or MergeSplitProcessor
+      *         preprocessing error
+      * @throws KeyNotFoundException if MergeSplitProcessor preprocessing error
+      * @throws DBException if TermNameLookup error or MergeSplitProcessor
+      *         preprocessing error
+      */
+
     public int detectEvent(SequenceInput seqInput, Sequence sequence)
           throws CacheException, KeyNotFoundException, DBException {
 
         // init event to 'Non Event'
         int event = SeqloaderConstants.NON_EVENT;
+        // get the primary seqid
         String seqid = seqInput.getPrimaryAcc().getAccID();
 
-        // we've already already processed this sequence
+        // we've already processed this sequence
         if (seqIdsAlreadyProcessed.contains(seqid)) {
           event = SeqloaderConstants.ALREADY_ADDED;
           alreadyAddedCtr++;
@@ -83,8 +136,7 @@ public class SeqEventDetector {
           seqIdsAlreadyProcessed.add(seqid);
           updateCtr++;
         }
-        // its a non event, increment the counter, but don't add to the
-        // already added seqid cache
+        // don't add to the already added seqid cache
         else {
             nonCtr++;
         }
@@ -174,3 +226,25 @@ public class SeqEventDetector {
 
 }
 // $Log
+ /**************************************************************************
+ *
+ * Warranty Disclaimer and Copyright Notice
+ *
+ *  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+ *  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+ *  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+ *  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+ *  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+ *  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+ *
+ *  This software and data are provided to enhance knowledge and encourage
+ *  progress in the scientific community and are to be used only for research
+ *  and educational purposes.  Any reproduction or use for commercial purpose
+ *  is prohibited without the prior express written permission of The Jackson
+ *  Laboratory.
+ *
+ * Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+ *
+ * All Rights Reserved
+ *
+ **************************************************************************/

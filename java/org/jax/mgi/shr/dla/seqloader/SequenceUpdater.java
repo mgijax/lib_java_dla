@@ -15,14 +15,13 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.hist.Seq_SequenceAttrHistory;
 
-
-
 import java.sql.Timestamp;
 
 /**
  * @is An object that updates a SEQ_SequenceState representing an existing sequence
  *     and an MGI_AttributeHistoryState object representing the sequence type
- *     attribute history
+ *     attribute history in preparation for a database update based on input
+ *     sequence values
  * @has
  *   <UL>
  *   <LI> A SeqAttrHistory object for determining if updates allowed on sequence
@@ -42,10 +41,17 @@ import java.sql.Timestamp;
  */
 
 public class SequenceUpdater {
-
+    // object to determine the attribute History of a SEQ_Sequence
+    // presently history is tracked for sequence type
     Seq_SequenceAttrHistory attrHistory;
+
+    // an instance of the load logger
     DLALogger logger;
+
+    // lookup a logicalDB key - this is a full cache lookup
     LogicalDBLookup logicalDBLookup;
+
+    // the logicalDB key for this load
     Integer logicalDB;
 
     // configurator for the sequence load
@@ -56,14 +62,17 @@ public class SequenceUpdater {
      * @assumes Nothing
      * @effects Queries a database
      * @param None
-     * @throws DBException if problem querying the database for attribute history
-     * @throws ConfigException from creation of loadCfg
-     * @throws CacheException from call to logicalDBLookup.lookup()
-     * @throws KeyNotFoundException from creation of logicalDBLookup
+     * @throws DBException if error creating Seq_SequenceAttrHistory,
+     * or a LogicalDBLookup object
+     * @throws ConfigException if error creating a SequencLoadCfg object,
+     *         a Seq_SequenceAttrHistory object, a LogicalDBLookup, or getting
+     *         the logicalDB from the SequenceLoadCfg object
+     * @throws CacheException if error creating a LogicalDBLookup
+     * @throws KeyNotFoundException if logicalDB is not configured
      */
 
     public SequenceUpdater()
-        throws DBException, ConfigException, DLALoggingException,
+        throws DBException,  DLALoggingException, ConfigException,
             KeyNotFoundException, CacheException {
         attrHistory = new Seq_SequenceAttrHistory();
         logger = DLALogger.getInstance();
@@ -76,19 +85,18 @@ public class SequenceUpdater {
      * updates the attributes of a SEQ_SequenceState representing an existing
      * SEQ_Sequence from a SEQ_SequenceState representing the updated sequence.
      * @assumes Nothing
-     * @effects Queries a database
+     * @effects Queries a database to determine type attributeHistory
      * @param existingSeqState SEQ_SequenceState representing an existing sequence
      * @param existingSeqKey SEQ_SequenceKey of the existing sequence
-     * @param inputSeqState SEQ_SequenceState represeting the updated sequence
+     * @param inputSeqState SEQ_SequenceState representing the updated sequence
      * @return true if any sequence attributes were updated in 'existingSeqState'
-     * @throws DBException if problem querying the database for attribute history
-     * @throws ConfigException
+     * @throws DBException if error querying the database for attribute history
      */
 
     public boolean updateSeq(SEQ_SequenceState existingSeqState,
                              Integer existingSeqKey,
                              SEQ_SequenceState inputSeqState)
-        throws DBException, ConfigException {
+      throws DBException {
 
         boolean update = false;
         // get updateable input sequence attributes
@@ -377,3 +385,25 @@ public class SequenceUpdater {
     }
 }
 // $Log
+/**************************************************************************
+*
+* Warranty Disclaimer and Copyright Notice
+*
+*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+*
+*  This software and data are provided to enhance knowledge and encourage
+*  progress in the scientific community and are to be used only for research
+*  and educational purposes.  Any reproduction or use for commercial purpose
+*  is prohibited without the prior express written permission of The Jackson
+*  Laboratory.
+*
+* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+*
+* All Rights Reserved
+*
+**************************************************************************/

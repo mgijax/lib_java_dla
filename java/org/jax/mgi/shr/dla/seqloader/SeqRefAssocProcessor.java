@@ -3,25 +3,21 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.RefAssocAttributeResolver;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
-
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
-import org.jax.mgi.shr.dla.seqloader.SeqRefAssocPair;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 
 /**
- * @is An object that resolves raw MGI_Reference_Assoc attributes that knows
- *     how to resolve both PubMed and Medline ids
+ * @is An object that resolves PubMed and MedLine RefAssocRawAttributes
+ *     to a MGI_Reference_AssocState
  * @has
  *   <UL>
  *   <LI>Lookups to resolve attributes
- *   <LI>A MGI_Reference_AssocState
  *   <LI>A RefAssocRawAttributes
+ *   <LI>A MGI_Reference_AssocState
  *   </UL>
  * @does
  *   <UL>
@@ -43,14 +39,13 @@ public class SeqRefAssocProcessor {
     private MGI_Reference_AssocState state;
 
     /**
-     * Constructs a SeqRefAssocProcessor object by creating a resolver
+     * Constructs a SeqRefAssocProcessor object
      * @assumes Nothing
-     * @effects Nothing
+     * @effects Queries a database
      * @param None
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws TranslationException
-     * @throws DBException
+     * @throws CacheException if error creating RefAssocAttributeResolver
+     * @throws ConfigException if error creating RefAssocAttributeResolver
+     * @throws DBException if error creating RefAssocAttributeResolver
      */
     public SeqRefAssocProcessor()
         throws DBException, ConfigException, CacheException
@@ -60,24 +55,24 @@ public class SeqRefAssocProcessor {
 
     /**
      * Processes a set of pubmed and medline associations for a sequence reference
-     * If no pubmed reference or if can't resolve pubmed then attempt to
-     * resolve medline.
+     * By first resolving the pubmed reference, then the medline reference if
+     * pubmed does not resolve.
      * @assumes Nothing
      * @effects Nothing
-     * @param seqRefAssocPair A pair of raw reference association attributes, one
+     * @param seqRefAssocPair A pair of RefAssocRawAttributes -  one
      *        pubmed, one medline. One may be null.
-     * @param objectKey The object key with which to associate the reference
+     * @param objectKey The sequence key with which to associate the reference
      * @return MGI_ReferenceAssocState an object representing resolved reference
-     *         association attributes. This object may be null.
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws DBException
-     * @throws TranslationException
-     * @throws KeyNotFoundException
+     *         association attributes. This object is null if no references
+     *         were resolved.
+     * @throws CacheException if error resolving references
+     * @throws DBException if error resolving references
+     * @throws KeyNotFoundException if error resolving references
      */
 
     public MGI_Reference_AssocState process(
-        SeqRefAssocPair seqRefAssocPair, Integer objectKey)
+                SeqRefAssocPair seqRefAssocPair,
+                Integer objectKey)
         throws KeyNotFoundException, DBException, CacheException
     {
         // reset state
@@ -115,11 +110,9 @@ public class SeqRefAssocProcessor {
      * @param objectKey The object key with which to associate the reference
      * @return MGI_ReferenceAssocState an object representing resolved reference
      *         association attributes. This object may be null.
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws DBException
-     * @throws TranslationException
-     * @throws KeyNotFoundException
+     * @throws CacheException if error resolving references
+     * @throws DBException if error resolving references
+     * @throws KeyNotFoundException if error resolving references
      */
     public MGI_Reference_AssocState process(
         RefAssocRawAttributes rawRef, Integer objectKey)
@@ -137,9 +130,6 @@ public class SeqRefAssocProcessor {
         return state;
     }
 }
-
-
-
 
 //  $Log
 

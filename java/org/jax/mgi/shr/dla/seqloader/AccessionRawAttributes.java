@@ -4,7 +4,6 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.Vector;
-
 import org.jax.mgi.dbs.mgd.AccessionLib;
 
     /**
@@ -37,7 +36,7 @@ public class AccessionRawAttributes {
      * sets the accid, prefixPart, and numericPart attributes
      * @assumes Nothing
      * @effects Nothing
-     * @param the accession id
+     * @param accid an accession id
      * @return Nothing
      * @throws Nothing
      */
@@ -54,7 +53,7 @@ public class AccessionRawAttributes {
      * set the logical db attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the logical db for the accession id
+     * @param logicalDB the logical db for the accession id
      * @return Nothing
      * @throws Nothing
      */
@@ -67,7 +66,7 @@ public class AccessionRawAttributes {
      * set the MGI type attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the MGI type for this accession
+     * @param mgiType the MGI type for this accession
      * @return Nothing
      * @throws Nothing
      */
@@ -80,7 +79,7 @@ public class AccessionRawAttributes {
      * set the isPrivate attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param true if this is a private accession id
+     * @param isPrivate true if this is a private accession id
      * @return Nothing
      * @throws Nothing
      */
@@ -93,7 +92,7 @@ public class AccessionRawAttributes {
      * set isPreferred attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param true if this is a preferred accession id
+     * @param isPreferred true if this is a preferred accession id
      * @return Nothing
      * @throws Nothing
      */
@@ -103,10 +102,10 @@ public class AccessionRawAttributes {
     }
 
     /**
-     * sets the CreatedByModifiedBy attribute
+     * sets the CreatedModifiedBy attribute
      * @assumes Nothing
      * @effects Nothing
-     * @param the process/person which created or modified this accession
+     * @param createdModifiedBythe process/person which created or modified this accession
      * @return Nothing
      * @throws Nothing
      */
@@ -141,8 +140,8 @@ public class AccessionRawAttributes {
      * Gets the numeric part of the accession id
      * @assumes Nothing
      * @effects Nothing
-     * @param the numeric part of the accession id
-     * @return Nothing
+     * @param None
+     * @return  the numeric part of the accession id
      * @throws Nothing
      */
 
@@ -152,17 +151,18 @@ public class AccessionRawAttributes {
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @return the logical db
+     * @return the logical db (key) of the accession id
      * @throws Nothing
      */
 
     public String getLogicalDB() { return logicalDB;}
+
     /**
      * gets the MGI type attribute
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @return the MGIType
+     * @return the MGIType (key) of the object_key
      * @throws Nothing
      */
 
@@ -203,7 +203,8 @@ public class AccessionRawAttributes {
     public String getCreatedModifiedBy() { return createdModifiedBy;}
 
     /**
-     * Resets object values to null; isPrivate to false; isPreferred to true
+     * Resets resets isPrivate to false; isPreferred to true and remaining
+     *    objects to null
      * @assumes Nothing
      * @effects Nothing
      * @param None
@@ -223,12 +224,17 @@ public class AccessionRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.1.4.1  2004/05/18 15:18:36  sc
+//  class/method headers updated
+//
+//  Revision 1.1  2004/01/06 20:09:34  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:25:18  sc
 //  changes made from code review~
 //
 //  Revision 1.1  2003/12/08 18:38:49  sc
-//  initial commit
-//
+//  initial commit//
 
 /**************************************************************************
 *

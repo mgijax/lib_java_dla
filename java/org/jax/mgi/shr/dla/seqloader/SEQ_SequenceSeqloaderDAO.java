@@ -9,18 +9,34 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.types.Converter;
 
+/**
+ * @is An object that represents a record in the SEQ_Sequence table. Overrides
+ *     the superclass getDeleteSQL() method
+ * @has
+ *   <UL>
+ *   <LI> SEQ_SequenceKey object
+ *   <LI> SEQ_SequenceState object
+ *   </UL>
+ * @does
+ *   <UL>
+ *   <LI> Overrides the superclass getDeleteSQL() method with a call
+ *       to a stored procedure for deleting Dummy sequences
+ *   </UL>
+ */
+
 public class SEQ_SequenceSeqloaderDAO extends SEQ_SequenceDAO{
 
     /**
      * Constructor which accepts a given SEQ_SequenceState object and
      * will generate a new SEQ_SequenceKey object
      * @assumes Nothing
-     * @effects Nothing
+     * @effects Queries a database for next _Sequence_key
      * @param state The SEQ_SequenceState object
+     * @throws ConfigException if error creating SEQ_SequenceKey
+     * @throws DBException if error creating SEQ_SequenceKey
      */
      public SEQ_SequenceSeqloaderDAO (SEQ_SequenceState state)
-       throws ConfigException, DBException
-     {
+       throws ConfigException, DBException {
        super(new SEQ_SequenceKey(), state);
 
      }
@@ -34,10 +50,8 @@ public class SEQ_SequenceSeqloaderDAO extends SEQ_SequenceDAO{
      * @param state The SEQ_SequenceState object
      */
      public SEQ_SequenceSeqloaderDAO (SEQ_SequenceKey key,
-            SEQ_SequenceState state)
-     {
+            SEQ_SequenceState state) {
          super(key, state);
-
      }
 
      /**
@@ -47,10 +61,9 @@ public class SEQ_SequenceSeqloaderDAO extends SEQ_SequenceDAO{
        * @effects Nothing
        * @param None
        * @return A string representing the SQL statement.
-       * @throws Nothing
+       * @throws DBException
        */
-       public String getDeleteSQL() throws DBException
-       {
+       public String getDeleteSQL() {
             StringBuffer sql = new StringBuffer("SEQ_DeleteDummy ");
             // Following for BCP_Inline_Stream
             //StringBuffer sql = new StringBuffer ("call SEQ_DeleteDummy " );
@@ -59,3 +72,25 @@ public class SEQ_SequenceSeqloaderDAO extends SEQ_SequenceDAO{
        }
 }
 // $Log
+   /**************************************************************************
+   *
+   * Warranty Disclaimer and Copyright Notice
+   *
+   *  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+   *  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+   *  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+   *  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+   *  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+   *  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+   *
+   *  This software and data are provided to enhance knowledge and encourage
+   *  progress in the scientific community and are to be used only for research
+   *  and educational purposes.  Any reproduction or use for commercial purpose
+   *  is prohibited without the prior express written permission of The Jackson
+   *  Laboratory.
+   *
+   * Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+   *
+   * All Rights Reserved
+   *
+   **************************************************************************/

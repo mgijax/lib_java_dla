@@ -4,17 +4,8 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.*;
-import java.util.regex.*;
 import java.sql.*;
 
-import org.jax.mgi.shr.dla.seqloader.SequenceInterpreter;
-import org.jax.mgi.shr.dla.seqloader.SequenceInput;
-import org.jax.mgi.shr.dla.seqloader.SeqloaderConstants;
-import org.jax.mgi.shr.dla.seqloader.SeqRefAssocPair;
-import org.jax.mgi.shr.dla.seqloader.DateConverter;
-import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
-import org.jax.mgi.shr.dla.seqloader.SequenceRawAttributes;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
@@ -51,9 +42,6 @@ import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
      */
 
 public class GBFormatInterpreter extends SequenceInterpreter {
-    //////////////////////////////////////
-    // constants for String searching  //
-    /////////////////////////////////////
 
     // String constants to find GB seq record TAGS
     private static String LOCUS = "LOCUS";
@@ -96,7 +84,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     // A SequenceInput and its parts            //
     //////////////////////////////////////////////
 
-    // The object we are building. Represents a sequence,
+    // The object we are building. Represents raw attributes for a sequence,
     // its source, references, and accessions
     protected SequenceInput sequenceInput = new SequenceInput();
 
@@ -123,7 +111,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     * Constructs a GenBankFormatInterpreter
     * @assumes Nothing
     * @effects Nothing
-    * @param None
+    * @param oc a GBOrganismChecker
     * @throws ConfigException if can't find configuration file
     */
 
@@ -160,8 +148,10 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     /**
      * Parses a sequence record and  creates a SequenceInput object from
      * Configuration and parsed values
-     * @assumes Expects SequenceRawAttributes.quality to be set by a subclass
-     * or by caller calling seqInput.getSeq().setQuality();
+     * @assumes Expects SequenceRawAttributes.quality and SequenceRawAttributes.
+     * type to be set by a subclass OR by caller of this method calling
+     * seqInput.getSeq().setQuality(quality)
+     * and seqInput.getSeq().setType(type)
      * @effects Nothing
      * @param rcd A sequence record
      * @return A SequenceInput object representing 'rcd'
@@ -179,20 +169,64 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         // *RawAttributes objects, and set *RawAttributes in    //
         // SequenceInput object                                 //
         //////////////////////////////////////////////////////////
-        parseLocus(locus);
-        parseDefinition(definition.toString());
-        parseVersion(version);
-        parseOrganism(organism);
-        parseSource(source.toString());
+        if (locus != null ) {
+            parseLocus(locus);
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The LOCUS section is empty");
+            throw e;
+        }
+
+        if (definition.length() > 0) {
+            parseDefinition(definition.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The DEFINITION section is empty");
+            throw e;
+        }
+
+        if (version !=  null) {
+            parseVersion(version);
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The VERSION section is empty");
+            throw e;
+        }
+        if(organism != null ) {
+            parseOrganism(organism);
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The ORGANISM section is empty");
+            throw e;
+        }
+        if (source.length() > 0 ) {
+            parseSource(source.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The SOURCE section is empty");
+            throw e;
+        }
 
         // this method also adds AccessionRawAttributes objects
         // for the primary seqid and any secondary seqids to the SequenceInput object
-        parseAccession(accession.toString());
+        if (accession.length() > 0 ) {
+            parseAccession(accession.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The ACCESSION section is empty");
+            throw e;
+        }
 
         // this method also adds RefAssocRawAttributes objects to the
         // SequenceInput object
         // Note: Not all RefSeq sequences have REFERENCE sections
-        if(reference.length() != 0) {
+        if(reference.length() > 0) {
             parseReference(reference.toString());
         }
 
@@ -414,7 +448,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     * @throws Nothing
     */
 
-    protected void parseSource(String source) throws RecordFormatException {
+    protected void parseSource(String source) {
 
         // Split the source section into individual lines
         StringTokenizer lineSplitter = new StringTokenizer(
@@ -597,11 +631,12 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      *   ORGANISM  Mus musculus
      * </PRE>
      * @return nothing
-     * @throws Nothing
+     * @throws RecordFormatException if 'organism contains just the tag
+     * "ORGANISM  "
      */
 
-    protected void parseOrganism(String organism) throws RecordFormatException {
-
+    protected void parseOrganism(String organism)  throws RecordFormatException {
+    // 'organism' not long enough to accomodate tag AND species/genus
 	if (organism.length() < 10) {
 	    throw new RecordFormatException();
 	}
@@ -611,7 +646,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         rawSeq.setRawOrganisms(rawOrganism);
         rawSeq.setNumberOfOrganisms(0);
         ms.setOrganism(rawOrganism);
-
     }
 
 
