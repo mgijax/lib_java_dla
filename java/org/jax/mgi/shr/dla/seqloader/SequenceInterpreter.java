@@ -37,6 +37,10 @@ public abstract class SequenceInterpreter implements RecordDataInterpreter {
     // a configurator
     protected SequenceLoadCfg sequenceCfg;
 
+    /**
+     * The set of attributes with values common to all sequences
+     */
+
     // whether this provider has virtual sequences
     protected String virtual;
 
