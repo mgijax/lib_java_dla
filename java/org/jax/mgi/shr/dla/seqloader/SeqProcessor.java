@@ -9,9 +9,6 @@ import java.util.HashMap;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
-import org.jax.mgi.shr.dla.seqloader.SequenceAttributeResolver;
-import org.jax.mgi.shr.dla.seqloader.AccAttributeResolver;
-import org.jax.mgi.shr.dla.seqloader.SeqRefAssocProcessor;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
@@ -24,7 +21,7 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
-import org.jax.mgi.dbs.mgd.trans.TranslationException;
+import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
 import java.util.Vector;
 import java.util.Iterator;
