@@ -89,11 +89,6 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     // raw attributes for the sequence's seqid = reused by calling reset()
     private AccessionRawAttributes rawAcc = new AccessionRawAttributes();
 
-    // true if we have found the header record
-    private boolean headerFound = false;
-    // true if we have processed header record
-    private boolean headerProcessed = false;
-
     /**
      * Constructs a MGSAssemblyFormatInterpreter
      * @assumes Nothing
