@@ -38,7 +38,6 @@ public class MSProcessor
      * a SQLStream for inserting new MolecularSource objects into the database
      */
     protected SQLStream stream = null;
-
     /**
      * a SQLStream for adding qc items to the radar qc tables
      */
@@ -47,11 +46,14 @@ public class MSProcessor
      * used for resolving ms raw attributes to a source object
      */
     protected MSResolver resolver = null;
-
     /**
      * an object for performing qc reporting
      */
     protected MSQCReporter qcReporter = null;
+    /**
+     * the library lookup object for looking up named sources
+     */
+    protected LibraryKeyLookup libLookup = null;
 
     /**
      * the maximum limit of rows allowed to be return from the
@@ -369,13 +371,13 @@ public class MSProcessor
         MSException
     {
         MolecularSource ms = null; // the MolecularSource object to return
-        LibraryKeyLookup lookup = null;
         // the source key found from the LibraryNameLookup
         Integer sourceKey = null;
         try
         {
-            lookup = new LibraryKeyLookup();
-            sourceKey = lookup.lookup(attr.getLibraryName());
+            if (libLookup == null)
+                libLookup = new LibraryKeyLookup();
+            sourceKey = libLookup.lookup(attr.getLibraryName());
         }
         catch (KeyNotFoundException e)
         {
