@@ -26,7 +26,7 @@ import org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource;
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.*;
 
 /**
- * an SQLTranslatable object which represents data from the
+ * An SQLTranslatable object which represents data from the
  * seq_source_assoc and prb_source tables
  * @has a MolecularSource object and and the key to its associated sequence
  * and the key to the corresponding seq_source_assoc record

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 /**
- * a base class which extend DLALoader and implements the DLALoader methods
+ * A base class which extend DLALoader and implements the DLALoader methods
  * 'initialize', 'preprocess', 'run', and 'postprocess'
  * @has a set of  objects for doing Coordinate loads<br>
  * <UL>

@@ -10,7 +10,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
 /**
-  * an InputFile for GenBank format record
+  * An InputFile for GenBank format record
   * @has a regex begin and end delimiter and an EMBL format file
   * @does provides iteration over the records of the file
   * @company The Jackson Laboratory

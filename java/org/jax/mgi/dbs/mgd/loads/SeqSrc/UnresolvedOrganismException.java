@@ -3,7 +3,7 @@ package org.jax.mgi.dbs.mgd.loads.SeqSrc;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * is an exception for not being able to resolve an organism name to an
+ * An exception for not being able to resolve an organism name to an
  * organism key.
  * @has nothing
  * @does nothing

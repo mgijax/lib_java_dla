@@ -20,7 +20,7 @@ import java.util.HashMap;
 import org.jax.mgi.shr.dla.input.SequenceInput;
 
 /**
- * an object that determines sequences that have been merged or split and
+ * An object that determines sequences that have been merged or split and
  *     reassociates merged or split sequences with their proper MGI sequence object
  * @has
  *   <UL>

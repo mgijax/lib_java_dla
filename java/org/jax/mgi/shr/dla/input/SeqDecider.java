@@ -4,7 +4,7 @@
 package org.jax.mgi.shr.dla.input;
 
 /**
- * an abstract class that expects its subclasses to implement the protected
+ * An abstract class that expects its subclasses to implement the protected
  *   is method to apply a predicate to a String. Keeps counter of total records
  *   for which the predicate is true.
  * @has
@@ -96,6 +96,9 @@ public abstract class SeqDecider {
 }
 
 //  $Log$
+//  Revision 1.2.6.1  2004/12/09 18:08:32  mbw
+//  fixed javadocs warnings
+//
 //  Revision 1.2  2004/12/07 20:10:25  mbw
 //  merged tr6047 onto the trunk
 //

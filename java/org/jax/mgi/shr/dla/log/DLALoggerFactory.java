@@ -5,7 +5,7 @@ import org.jax.mgi.shr.log.Logger;
 
 
 /**
- * a LoggerFactory for creating a DLALogger
+ * A LoggerFactory for creating a DLALogger
  * @has nothing
  * @does creates an instance of a DLALogger
  * @company The Jackson Laboratory

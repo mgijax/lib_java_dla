@@ -10,7 +10,7 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * an object that retrieves Configuration pararmeters for sequence loaders
+ * An object that retrieves Configuration pararmeters for sequence loaders
  * @has Nothing
  *   <UL>
  *   <LI> a configuration manager
@@ -260,6 +260,9 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.11.10.1  2004/12/09 18:08:30  mbw
+//  fixed javadocs warnings
+//
 //  Revision 1.11  2004/10/20 17:47:57  mbw
 //  removed getType() and getReferenceAssocType() methods (see TR6135, item 3)
 //

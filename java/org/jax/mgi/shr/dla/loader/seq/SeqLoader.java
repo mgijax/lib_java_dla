@@ -31,7 +31,7 @@ import org.jax.mgi.dbs.rdr.qc.SeqQCReporter;
 import org.jax.mgi.dbs.mgd.loads.Seq.*;
 
 /**
- * a base class which extend DLALoader and implements the DLALoader methods
+ * A base class which extend DLALoader and implements the DLALoader methods
  * 'initialize' and 'run' to accomplish load initialization and processing.
  * It expects its subclasses to implement the DLALoader method
  * 'preprocess'. In addition it defines the abstract method

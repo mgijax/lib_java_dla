@@ -41,7 +41,7 @@ import org.jax.mgi.dbs.rdr.qc.SeqQCReporter;
 import org.jax.mgi.shr.dla.loader.seq.*;
 
 /**
- * an object that incrementally processes sequence by resolving a sequence, its
+ * An object that incrementally processes sequence by resolving a sequence, its
  * accession ids, references, and molecular sources raw attributes
  *     then adding or updating them in a database.
  * @has

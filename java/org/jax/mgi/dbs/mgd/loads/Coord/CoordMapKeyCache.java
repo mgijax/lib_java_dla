@@ -15,7 +15,7 @@ import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.SchemaConstants;
 
 /**
- * a CachedLookup for storing and retrieving MAP_CoordinateKey objects
+ * A CachedLookup for storing and retrieving MAP_CoordinateKey objects
  * @has a cache, a full initialization query,
  * a "add" query for adding from the database to the cache and a
  * RowDataInterpreter

@@ -18,7 +18,7 @@ import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.config.GeneIndexLoadCfg;
 
 /**
- * a FASTALoader for loading the TIGR, DoTS and NIA gene indexes
+ * A FASTALoader for loading the TIGR, DoTS and NIA gene indexes
  * @has MSRawAttributes, AccessionRawAttributes, SequenceRawAttributes,
  * RefAssocRawAttributes which are used as input to the SequenceInput object
  * which eventually gets processed by the SequenceProcessor. It also has

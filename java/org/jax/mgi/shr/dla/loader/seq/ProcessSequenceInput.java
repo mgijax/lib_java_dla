@@ -8,7 +8,7 @@ import org.jax.mgi.shr.dla.input.SequenceInput;
 import org.jax.mgi.dbs.mgd.loads.Seq.SequenceResolverException;
 
 /**
- * an interface which defines methods to process a SequenceInput object, get
+ * An interface which defines methods to process a SequenceInput object, get
  * processing information about SequenceInput objects processed and delete Sequences.
  * @has nothing
  * @does provides an interface for processing SequenceInputs

@@ -14,7 +14,7 @@ import org.jax.mgi.shr.dla.loader.coord.*;
 
 
 /**
- * a base class that provides attributes common to all CoordMapProcessors
+ * A base class that provides attributes common to all CoordMapProcessors
  * @abstract defines the process, setMGITypeKey, and setCollectionKey method
  * signatures.
  * @notes since the name of the subclass is configured, an instance of which is created by the

@@ -23,7 +23,7 @@ import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.dbs.SchemaConstants;
 
 /**
- * an object that resolves raw date and creates map collection, a coordinate map
+ * An object that resolves raw date and creates map collection, a coordinate map
  *  and a coord map feature objects in a database.
  * @has
  *   <UL>

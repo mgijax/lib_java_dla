@@ -36,7 +36,7 @@ import org.jax.mgi.shr.dla.input.*;
 import org.jax.mgi.shr.dla.loader.seq.*;
 
 /**
- * an object that resolves raw sequence attributes and adds a sequence, its
+ * An object that resolves raw sequence attributes and adds a sequence, its
  * accession ids, references, and molecular sources to a database.
  * Deletes all sequences created by a given load.
  * @has

@@ -9,7 +9,7 @@ import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 
 /**
- * an object for resolving MolecularSource raw attributes into
+ * An object for resolving MolecularSource raw attributes into
  * a MolecularSource object which has a database key and can be inserted
  * the database
  * @has a MSAttrResolver for resolving the raw attributes, a MSCollapsedCache

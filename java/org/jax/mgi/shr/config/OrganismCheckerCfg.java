@@ -7,7 +7,7 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * an object that retrieves Configuration parameters for the
+ * An object that retrieves Configuration parameters for the
  *     OrganismChecker
  * @has Nothing
  *   <UL>
@@ -74,6 +74,9 @@ public class OrganismCheckerCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.4.10.1  2004/12/09 18:08:30  mbw
+//  fixed javadocs warnings
+//
 //  Revision 1.4  2004/07/28 20:10:11  mbw
 //  javadocs only
 //

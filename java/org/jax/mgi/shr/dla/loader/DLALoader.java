@@ -22,7 +22,7 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.dla.log.DLALogger;
 
 /**
- * a base class which implements the DLA standards for database loaders.
+ * A base class which implements the DLA standards for database loaders.
  * @abstract this class provides the 'basic needs' objects for performing
  * database loads such as SQLDataManagers, Loggers, BCPManagers, SQLStreams
  * and ExceptionHandlers

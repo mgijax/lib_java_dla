@@ -1,9 +1,4 @@
-/*
- * Created on Nov 25, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package org.jax.mgi.dbs.rdr.qc;
 
 import org.jax.mgi.dbs.rdr.dao.QC_MS_AttrEditDAO;
@@ -17,6 +12,15 @@ import org.jax.mgi.dbs.rdr.dao.QC_MS_UnresolvedOrganismState;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.*;
+
+/**
+ * A QCReporter for reporting QC items found during processing of molecular
+ * sources
+ * @has SQLStream for writing QC items to
+ * @does adds items to the SQLStream
+ * @author M Walker
+ * @version 1.0
+ */
 
 public class MSQCReporter
 {
