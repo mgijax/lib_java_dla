@@ -18,17 +18,15 @@ import org.jax.mgi.shr.ioutils.IOUException;
  *   <LI> Sets its attributes to exclude the sequence.
  *   </UL>
  * @company The Jackson Laboratory
- * @author dbm
+ * @author sc
  */
 
 public class GBInputFile extends InputDataFile
 {
     /**
-     * Constructs a CloneTreeInfo object.
+     * Constructs a GBInputFile object.
      * @assumes Nothing
      * @effects Nothing
-     * @throws ConfigException thrown if there is an error accessing the
-     * configuration
      * @throws ConfigException thrown if there is an error accessing the
      * configuration
      * @throws IOUException thrown if there is an error opening the
@@ -56,6 +54,9 @@ public class GBInputFile extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.3  2004/06/30 19:24:09  mbw
+//  javadocs only
+//
 //  Revision 1.2  2004/06/29 17:07:01  mbw
 //  fixed class names in constructor to reflect filename
 //
