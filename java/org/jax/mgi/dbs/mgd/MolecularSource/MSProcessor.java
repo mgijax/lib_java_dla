@@ -8,9 +8,8 @@ import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;
-import org.jax.mgi.dbs.mgd.lookup.LibraryKeyLookup;
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
-import org.jax.mgi.dbs.mgd.lookup.NamedSourceLookup;
+import org.jax.mgi.dbs.mgd.lookup.AssocClonesLookup;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
 
@@ -57,10 +56,15 @@ public class MSProcessor
     protected MSLookup libLookup = null;
 
     /**
+     * the library lookup for associated clones
+     */
+    protected AssocClonesLookup assocClonesLookup = null;
+
+    /**
      * the maximum limit of rows allowed to be return from the
      * associated clone lookup
      */
-    private int MAXCLONES = 25;
+    private int MAXCLONES = 50;
 
     /**
      * the logger to use
@@ -150,7 +154,7 @@ public class MSProcessor
             // look for a source from the associated clones that is named
             // and use that one instead
             logger.logDebug("looking up named associated clones");
-            ms = findByAssociatedClones(accid);
+            ms = findByCachedAssociatedClones(accid);
         }
         if (logger.isDebug())
         {
@@ -384,7 +388,7 @@ public class MSProcessor
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
                 eFactory.getException(LookupErr, e);
-            e2.bind(LibraryKeyLookup.class.getName());
+            e2.bind(libLookup.getClass().getName());
             throw e2;
         }
         if (ms == null)
@@ -396,9 +400,8 @@ public class MSProcessor
     }
 
     /**
-     * tries to find a MolecularSource object from the database that is a
-     * named library source associated with one or more of the associated
-     * clones for the given sequence.
+     * finds a MolecularSource object from cache for one or more of the
+     * clones associated to the given sequence.
      * @assumes nothing
      * @effects a new entry could be added to the qc reports if more than one
      * named source is found and they have conflicting names
@@ -459,5 +462,83 @@ public class MSProcessor
         return ms; // can be null if a named source was never found or
                    // two named sources were found with different names
     }
+
+    /**
+     * finds a MolecularSource object from cache for one or more of the
+     * clones associated to the given sequence.
+     * @assumes nothing
+     * @effects a new entry could be added to the qc reports if more than one
+     * named source is found and they have conflicting names
+     * @param accid the given sequence
+     * @return the MolecularSource for a named source of one of the associated
+     * clones of the given sequence
+     * @throws MSException thrown if there is an error with the database or
+     * configuration or if more named sources are found than expected which
+     * can be changed by calling MSProcessor.setMaxAssociatedClones(int)
+     */
+    private MolecularSource findByCachedAssociatedClones(String accid) throws
+        MSException
+    {
+        /**
+         * get the sources for the associated clones of this sequence
+         */
+        String clones = null;
+        try
+        {
+            if (assocClonesLookup == null) {
+                assocClonesLookup = new AssocClonesLookup();
+            }
+            clones = assocClonesLookup.lookup(accid);
+        }
+        catch (MGIException e)
+        {
+            MSExceptionFactory eFactory = new MSExceptionFactory();
+            MSException e2 = (MSException)
+                eFactory.getException(LookupErr, e);
+            e2.bind(AssocClonesLookup.class.getName());
+            throw e2  ;
+        }
+        if (clones == null)
+            return null;
+        // try and find a named source from the associated clones.
+        // all the names must agree...if they dont then send to qc report.
+        String agreedUponName = null;
+        String[] cloneArray = clones.split(AssocClonesLookup.DELIMITER);
+        for (int i = 0; i < cloneArray.length; i++)
+        {
+            String thisName = cloneArray[i];
+            if (agreedUponName == null)
+            { // then agree on this name
+                agreedUponName = thisName;
+            }
+            else
+            { // compare this name to the agreed upon name
+                if (!thisName.equals(agreedUponName))
+                {
+                    qcReporter.reportCloneNameDiscrepancy(accid,
+                        agreedUponName,
+                        thisName);
+                    // do not use any of the sources
+                    return null;
+                }
+            }
+        }
+        // now obtain the named MolecularSource
+        MolecularSource ms = null;
+        try
+        {
+            ms = libLookup.findByName(agreedUponName);
+        }
+        catch (MGIException e)
+        {
+            MSExceptionFactory eFactory = new MSExceptionFactory();
+            MSException e2 = (MSException)
+                eFactory.getException(LookupErr, e);
+            e2.bind(libLookup.getClass().getName());
+            throw e2  ;
+        }
+        return ms;
+    }
+
 
 }
