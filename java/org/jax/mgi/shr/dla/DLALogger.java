@@ -49,19 +49,28 @@ import org.jax.mgi.shr.config.ConfigException;
  * provided with debug, error, informational and warning levels. Debug
  * messages can be turned off by calling the setDebug method with a value of
  * true.</p>
+ * <p>The following summarizes the methods for witing variaous types of
+ * messages and to each log file:<br>
+ * <ul>
+ * <li>logpInfo - logs an informational message to the process log
+ * <li>logcInfo - logs an informational message to the currator log
+ * <li>logvInfo - logs an informational message to the valiadtion log
+ * <li>logdInfo - logs an informational message to the diagnostics log<br><br>
+ * <li>logvErr - logs an error message to the valiadtion log
+ * <li>logdErr - logs an error message to the diagnostics log<br><br>
+ * <li>logdDebug - logs a debug message to the diagnostics log
  * <p>
- * The DataLoadLogger class is not synchronized and is not safe to use in
- * a multithreaded environment.
+ * The DataLoadLogger class was not written for a multithreaded environment.
  * </p>
  * <p>Company: The Jackson Lab</p>
  * @author M Walker
  * @version 1.0
  */
 
-public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
+public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
   // the Singleton instance
-  private static DataLoadLogger instance = null;
+  private static DLALogger instance = null;
   // the java1.4 Logger instance for the process log
   private Logger processLogger = null;
   // the java1.4 Logger instance for the curator log
@@ -115,10 +124,8 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
   private static final int BRIEF_FORMATTER = 2;
 
   // the following are string constants used throughout this class
-  private static final String LOGGER =
-      "org.jax.mgi.logging.DataLoadLogger";
-  private static final String FRAMEWORKS =
-      "java.util.logging";
+  private final String LOGGER = this.getClass().getName();
+  private static final String FRAMEWORKS = "java.util.logging";
   private static final String DEFAULT_LOG =
       "org.jax.mgi.logging.DefaultLogger";
   private static final String PROC_LOG =
@@ -132,9 +139,9 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
 
   // the following are exceptions thrown by this class
   private static final String InitializeErr =
-      LoggingExceptionFactory.InitializeErr;
+      DLALoggingExceptionFactory.InitializeErr;
   private static final String ConfigurationErr =
-      LoggingExceptionFactory.ConfigurationErr;
+      DLALoggingExceptionFactory.ConfigurationErr;
 
 
 
@@ -145,18 +152,21 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
   * <p>Effects: a new instance of the DataLoadLogger will cretaed if it
   * doesnt already exist.</p>
   * @return singleton instance of DataLoadLogger
+  * @throws DLALoggingException thrown if an error occurs during
+  * configuration.
   */
 
-  public static synchronized DataLoadLogger getInstance()
-  throws LoggingException {
+  public static synchronized DLALogger getInstance()
+  throws DLALoggingException {
     if (instance == null) {
       try {
-        instance = new DataLoadLogger(new DLALoggerCfg());
+        instance = new DLALogger(new DLALoggerCfg());
       }
       catch (ConfigException e) {
-        LoggingExceptionFactory eFactory = new LoggingExceptionFactory();
-        LoggingException e2 =
-            (LoggingException)eFactory.getException(ConfigurationErr, e);
+        DLALoggingExceptionFactory eFactory =
+            new DLALoggingExceptionFactory();
+        DLALoggingException e2 =
+            (DLALoggingException)eFactory.getException(ConfigurationErr, e);
 
       }
       instance.createLogp();
@@ -175,7 +185,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
    * @param message the message to log
    */
   public void logInfo(String message) {
-    logd(message, false);
+    logdInfo(message, false);
   }
 
   /**
@@ -211,7 +221,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
-  public void logp(String msg, boolean doStamping) {
+  public void logpInfo(String msg, boolean doStamping) {
     if (doStamping) {
       if (logpFormatter != STAMPED_FORMATTER) {
         // swith the formatter to stamped
@@ -243,7 +253,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
-  public void logc(String msg, boolean doStamping) {
+  public void logcInfo(String msg, boolean doStamping) {
     if (doStamping) {
       if (logcFormatter != STAMPED_FORMATTER) {
         // swith the formatter to stamped
@@ -275,7 +285,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
-  public void logv(String msg, boolean doStamping) {
+  public void logvInfo(String msg, boolean doStamping) {
     if (doStamping) {
       if (logvFormatter != STAMPED_FORMATTER) {
         // swith the formatter to stamped
@@ -307,7 +317,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
-  public void logd(String msg, boolean doStamping) {
+  public void logdInfo(String msg, boolean doStamping) {
     if (doStamping) {
       if (logdFormatter != STAMPED_FORMATTER) {
         // swith the formatter to stamped
@@ -344,38 +354,6 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     setClassNameMethodName();
     // log the message with header stamp
     validationLogger.logp(Level.SEVERE, clientClass, clientMethod, msg);
-    clientClass = null;
-    clientMethod = null;
-  }
-
-  /**
-    * <p>Purpose: Writes an warning message to the validation log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the validation log
-    * @param  msg string message.
-    */
-  public void logvWarn(String msg) {
-    setClassNameMethodName();
-    // log the message with header stamp
-    validationLogger.logp(Level.WARNING, clientClass, clientMethod, msg);
-    clientClass = null;
-    clientMethod = null;
-  }
-
-  /**
-    * <p>Purpose: Writes a warning message to the diagnostics log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the diagnostics log
-    * @param  msg string message.
-    */
-  public void logdWarn(String msg) {
-    setClassNameMethodName();
-    // log the message with header stamp
-    diagnosticsLogger.logp(Level.WARNING, clientClass, clientMethod, msg);
-    clientClass = null;
-    clientMethod = null;
   }
 
   /**
@@ -389,8 +367,6 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     setClassNameMethodName();
     // log the message with header stamp
     diagnosticsLogger.logp(Level.SEVERE, clientClass, clientMethod, msg);
-    clientClass = null;
-    clientMethod = null;
   }
 
   /**
@@ -408,8 +384,6 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     setClassNameMethodName();
     // log message to diagnostic log only if logging level is at FINEST
     diagnosticsLogger.logp(Level.FINEST, clientClass, clientMethod, msg);
-    clientClass = null;
-    clientMethod = null;
   }
 
   /**
@@ -459,7 +433,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * Creates file handlers for the loggers.
     * @throws LoggingException if an IO error occurs
     */
-  private void createLogp() throws LoggingException {
+  private void createLogp() throws DLALoggingException {
     try {
       // create a new file handler for the process log
       logpHandler = new FileHandler(logp, true);
@@ -473,9 +447,10 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
       processLogger.setLevel(Level.FINER);
     }
     catch (IOException e) {
-      LoggingExceptionFactory eFactory = new LoggingExceptionFactory();
-      LoggingException e2 =
-          (LoggingException)eFactory.getException(InitializeErr);
+      DLALoggingExceptionFactory eFactory =
+          new DLALoggingExceptionFactory();
+      DLALoggingException e2 =
+          (DLALoggingException)eFactory.getException(InitializeErr);
       e2.bind(logp);
       throw e2;
     }
@@ -485,7 +460,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * Creates file handlers for the loggers.
     * @throws LoggingException if an IO error occurs
     */
-  private void createLogc() throws LoggingException {
+  private void createLogc() throws DLALoggingException {
     try {
       // create a new file handler for the curator log
       logcHandler = new FileHandler(logc, true);
@@ -499,9 +474,10 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
       curatorLogger.setLevel(Level.FINER);
     }
     catch (IOException e) {
-      LoggingExceptionFactory eFactory = new LoggingExceptionFactory();
-      LoggingException e2 =
-          (LoggingException)eFactory.getException(InitializeErr);
+      DLALoggingExceptionFactory eFactory =
+          new DLALoggingExceptionFactory();
+      DLALoggingException e2 =
+          (DLALoggingException)eFactory.getException(InitializeErr);
       e2.bind(logc);
       throw e2;
     }
@@ -512,7 +488,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * Creates file handlers for the loggers.
     * @throws LoggingException if an IO error occurs
     */
-  private void createLogd() throws LoggingException {
+  private void createLogd() throws DLALoggingException {
     try {
       // create a new file handler for the curator log
       logdHandler = new FileHandler(logd, true);
@@ -529,9 +505,10 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
         diagnosticsLogger.setLevel(Level.FINE);
     }
     catch (IOException e) {
-      LoggingExceptionFactory eFactory = new LoggingExceptionFactory();
-      LoggingException e2 =
-          (LoggingException)eFactory.getException(InitializeErr);
+      DLALoggingExceptionFactory eFactory =
+          new DLALoggingExceptionFactory();
+      DLALoggingException e2 =
+          (DLALoggingException)eFactory.getException(InitializeErr);
       e2.bind(logd);
       throw e2;
     }
@@ -542,7 +519,7 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     * Creates file handlers for the loggers.
     * @throws LoggingException if an IO error occurs
     */
-  private void createLogv() throws LoggingException {
+  private void createLogv() throws DLALoggingException {
     try {
       // create a new file handler for the curator log
       logvHandler = new FileHandler(logv, true);
@@ -556,9 +533,10 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
       validationLogger.setLevel(Level.FINER);
     }
     catch (IOException e) {
-      LoggingExceptionFactory eFactory = new LoggingExceptionFactory();
-      LoggingException e2 =
-          (LoggingException)eFactory.getException(InitializeErr);
+      DLALoggingExceptionFactory eFactory =
+          new DLALoggingExceptionFactory();
+      DLALoggingException e2 =
+          (DLALoggingException)eFactory.getException(InitializeErr);
       e2.bind(logv);
       throw e2;
     }
@@ -569,17 +547,19 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
   /**
     * Private constructor method. Public access to instance is through the
     * methods setup() and getInstance().
+    * @param config the the configuration class
     */
 
-  private DataLoadLogger(DLALoggerCfg config) {
+  private DLALogger(DLALoggerCfg config) throws ConfigException {
     // obtain values from config
     logp = config.getLogp();
     logc = config.getLogc();
     logv = config.getLogv();
     logd = config.getLogd();
-    debugState = config.getDebug();
-    // get a named Logger class from the java 1.4 frameworks
-    // and remove the default handlers for each log
+    debugState = config.getDebug().booleanValue();
+    // get a named Logger class from the java 1.4 frameworks.
+    // naming these logs is for java 1.4 internal use.
+    // remove the default handlers for each log.
     processLogger = Logger.getLogger(PROC_LOG);
     removeHandlers(processLogger);
     curatorLogger = Logger.getLogger(CUR_LOG);
@@ -592,7 +572,9 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     setGlobalHandlerOff();
   }
 
-
+  /**
+   * remove global handlers from the loggers
+   */
   private void setGlobalHandlerOff() {
     Handler[] handlers =
       Logger.getLogger( "" ).getHandlers();
@@ -601,6 +583,10 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     }
   }
 
+  /**
+   * remove any handlers on a given logger
+   * @param logger the logger for which to remove handlers
+   */
   private void removeHandlers(Logger logger) {
     Handler[] handlers = logger.getHandlers();
     for ( int index = 0; index < handlers.length; index++ ) {
@@ -608,6 +594,10 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
     }
   }
 
+  /**
+   * sets the instance variables clientClass and clientMethod for use in
+   * message header stamping
+   */
   private void setClassNameMethodName() {
     String name;
     StackTraceElement stack[] = new Throwable().getStackTrace();
@@ -623,6 +613,9 @@ public class DataLoadLogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.2  2003/04/29 19:31:42  mbw
+// call to newInstance no returns a DataLoadLogger not Logger and by default header stamping is turned off when logging messages through the Logger interface
+//
 // Revision 1.1  2003/04/22 22:31:59  mbw
 // initial version
 //

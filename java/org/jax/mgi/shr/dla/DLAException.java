@@ -19,7 +19,6 @@ public class DLAException extends MGIException {
    * <p>Assumes: nothing</p>
    * <p>Effects: nothing</p>
    * @param pMessage the message string
-   * @param pParentException the parent exception which can be null
    * @param pDataRelated indicator for whether or not the error is
    * data related
    */

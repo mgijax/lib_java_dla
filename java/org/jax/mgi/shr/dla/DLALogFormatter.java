@@ -13,13 +13,11 @@ import java.text.MessageFormat;
 /**
  * <p>IS: A Formatter object that formats the content of a message prepended
  * by a header stamp.</p>
- * <p>HAS: A message record.</p>
+ * <p>HAS: nothing.</p>
  * <p>DOES: Formats the content of a message record along with a standard
- * header
- * stamp.</p>
- * <p>Description: Header formats are an implementation of the DLA logging
- * standards.
- * </p>
+ * header stamp. An example illustrating the format is as follows:<br>
+ * Nov 25, 2002 5:46:05 PM org.jax.mgi.log.TestDataLoadLogger testMethod<br>
+ * INFO: this is a test message</p>
  * <p>Company: The Jackson Lab</p>
  * @author M Walker
  * @version 1.0
@@ -34,8 +32,6 @@ public class DLALogFormatter extends Formatter{
   private static StringBuffer dateString = new StringBuffer();
   private static MessageFormat format =
       new MessageFormat("{0, date, medium} {0, time, medium}");
-  //private static StringBuffer callingClass = new StringBuffer();
-  //private static StringBuffer callingMethod = new StringBuffer();
   private static final String LOGGER =
       "org.jax.mgi.logging.DataLoadLogger";
   private static final String FRAMEWORKS =
@@ -53,8 +49,6 @@ public class DLALogFormatter extends Formatter{
   synchronized public String format(LogRecord record) {
     buff.setLength(0);
     dateString.setLength(0);
-    //callingClass.setLength(0);
-    //callingMethod.setLength(0);
     date.setTime(record.getMillis());
     format.format( args, dateString, null );
     buff.append(lineSeparator);
@@ -97,6 +91,9 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.1  2003/04/22 22:31:58  mbw
+// initial version
+//
 // Revision 1.2.2.2  2003/03/21 16:18:41  mbw
 // added standard header/footer
 //

@@ -24,24 +24,15 @@ import org.jax.mgi.shr.config.ConfigException;
  * @version 1.0
  */
 
-public class DLALoggerCfg {
+public class DLALoggerCfg extends Configurator {
 
-    static protected ConfigurationManager cm = null;
     private static String THIS_CLASS = DLALoggerCfg.class.getName();
     private static String PROC_SUFFIX = ".proc.log";
     private static String CUR_SUFFIX = ".cur.log";
     private static String VAL_SUFFIX = ".val.log";
     private static String DIAG_SUFFIX = ".diag.log";
     private static String DEFAULT_PATH = ".";
-    private static String DEFAULT_NAME = "dataLoadLogger";
-    private String logp = null;
-    private String logc = null;
-    private String logd = null;
-    private String logv = null;
-    private String processName = null;
-    private String path = null;
-    private boolean debug;
-    private boolean debugInd = false;
+    private static String DEFAULT_NAME = "dataLoad";
 
 
   /**
@@ -50,7 +41,7 @@ public class DLALoggerCfg {
    * @throws ConfigException
    */
     public DLALoggerCfg() throws ConfigException {
-      cm = ConfigurationManager.getInstance();
+      super();
     }
 
     /**
@@ -62,12 +53,8 @@ public class DLALoggerCfg {
      * @return
      */
     public String getLogp() {
-      if (logp == null) {
-        logp = cm.get("LOG_PROC");
-        if (logp == null)
-          logp = getDefaultName() + PROC_SUFFIX;
-      }
-      return getFullPathName(logp);
+      String s = getConfigString("LOG_PROC", getDefaultName() + PROC_SUFFIX);
+      return getFullPathName(s);
     }
 
     /**
@@ -79,12 +66,8 @@ public class DLALoggerCfg {
      * @return
      */
     public String getLogc() {
-      if (logc == null) {
-        logc = cm.get("LOG_CUR");
-        if (logc == null)
-          logc = getDefaultName() + CUR_SUFFIX;
-      }
-      return getFullPathName(logc);
+      String s = getConfigString("LOG_CUR", getDefaultName() + CUR_SUFFIX);
+      return getFullPathName(s);
     }
 
     /**
@@ -96,12 +79,8 @@ public class DLALoggerCfg {
      * @return
      */
     public String getLogd() {
-      if (logd == null) {
-        logd = cm.get("LOG_DIAG");
-        if (logd == null)
-          logd = getDefaultName() + DIAG_SUFFIX;
-      }
-      return getFullPathName(logd);
+      String s = getConfigString("LOG_DIAG", getDefaultName() + DIAG_SUFFIX);
+      return getFullPathName(s);
     }
 
     /**
@@ -113,12 +92,8 @@ public class DLALoggerCfg {
      * @return
      */
     public String getLogv() {
-      if (logv == null) {
-        logv = cm.get("LOG_VAL");
-        if (logv == null)
-          logv = getDefaultName() + VAL_SUFFIX;
-      }
-      return getFullPathName(logv);
+      String s = getConfigString("LOG_VAL", getDefaultName() + VAL_SUFFIX);
+      return getFullPathName(s);
     }
 
     /**
@@ -128,12 +103,7 @@ public class DLALoggerCfg {
      * @return
      */
     private String getPath() {
-      if (path == null) {
-        path = cm.get("LOG_PATH");
-        if (path == null)
-          path = DEFAULT_PATH;
-      }
-      return path;
+      return getConfigString("LOG_PATH", DEFAULT_PATH);
     }
 
     /**
@@ -144,13 +114,8 @@ public class DLALoggerCfg {
      * false.
      * @return true or false
      */
-    public boolean getDebug() {
-      if (debugInd)
-        return debug;
-      String s = cm.get("LOG_DEBUG");
-      debug = checkTrue(s);
-      debugInd = true;
-      return debug;
+    public Boolean getDebug() throws ConfigException {
+      return getConfigBoolean("LOG_DEBUG", new Boolean(true));
     }
 
     /**
@@ -161,12 +126,7 @@ public class DLALoggerCfg {
      * @return
      */
     private String getDefaultName() {
-      if (processName == null) {
-        processName = cm.get("LOG_DEFAULTNAME");
-        if (processName == null)
-          processName = DEFAULT_NAME;
-      }
-      return processName;
+      return getConfigString("LOG_DEFAULTNAME", DEFAULT_NAME);
     }
 
 
@@ -191,44 +151,15 @@ public class DLALoggerCfg {
     private String getFullPathName(String name) {
       if (isPathFull(name))
         return name;
-      if (path == null)
-        path = getPath();
-      return path + File.separator + name;
-    }
-
-    /**
-     * converts the string values 'yes' and 'true' into the the boolean true
-     * and converts a null value into the boolean false.
-     * @param s
-     * @return true or false
-     */
-    private boolean checkTrue(String s) {
-      if (s == null)
-        return false;
-      if (s.toUpperCase().equals("YES") || s.toUpperCase().equals("TRUE"))
-        return true;
-      else
-        return false;
-    }
-
-    /**
-     * converts the string values 'no' and 'false' into the the boolean false
-     * and converts a null value into the boolean true.
-     * @param s
-     * @return true or false
-     */
-    private boolean checkFalse(String s) {
-      if (s == null)
-        return true;
-      if (s.toUpperCase().equals("NO") || s.toUpperCase().equals("FALSE"))
-        return false;
-      else
-        return true;
+      return getPath() + File.separator + name;
     }
 
 }
 
 // $Log$
+// Revision 1.1  2003/04/22 22:31:00  mbw
+// initial version
+//
 // Revision 1.1.2.3  2003/04/08 22:18:07  mbw
 // removed set methods
 //

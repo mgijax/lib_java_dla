@@ -3,11 +3,11 @@
 
 package org.jax.mgi.shr.dla;
 
-import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.exception.MGIException;
+import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * <p>IS: An object which handles exceptions of type LoggableException</p>
+ * <p>IS: An object which handles exceptions of type MGIException</p>
  * <p>HAS: An instance of a logger and static variables for totaling system
  * warnings and errors</p>
  * <p>DOES: provides a standard way to handle caught exceptions which include
@@ -19,18 +19,20 @@ import org.jax.mgi.shr.exception.MGIException;
 
 public class DLAExceptionHandler {
 
-  private Logger logger = null;
+  private static DLALogger logger = null;
+  static {
+    try {
+      logger = DLALogger.getInstance();
+    }
+    catch (DLALoggingException e) {
+      System.err.print("Cannot obtain a Logger. This is really bad news." +
+                       "Exiting stage left");
+      System.exit(DLASystemExit.FATAL_ERROR);
+    }
+  }
   private static int errorCount = 0;
   private static int dataErrorCount = 0;
 
-
-  /**
-   * default constructor
-   * @param pLogger the logger class
-   */
-  public DLAExceptionHandler(Logger pLogger) {
-    logger = pLogger;
-  }
 
   /**
    * <p>Purpose: provides a standard method for handling exceptions</p>
@@ -40,7 +42,7 @@ public class DLAExceptionHandler {
    * depending on the attributes of exception.</p>
    * @param e an exception that implements LoggableException
    */
-  public void handleException(DLAException e) {
+  public static void handleException(DLAException e) {
     logger.logError(e.toString());
     updateCounts(e);
   }
@@ -51,7 +53,7 @@ public class DLAExceptionHandler {
    * <p>Effects: nothing</p>
    * @return the count of errors that have occured
    */
-  public int getErrorCount() {
+  public static int getErrorCount() {
     return errorCount;
   }
 
@@ -61,7 +63,7 @@ public class DLAExceptionHandler {
    * <p>Effects: nothing</p>
    * @return the count of errors which are data related that have occured
    */
-  public int getDataErrorCount() {
+  public static int getDataErrorCount() {
     return dataErrorCount;
   }
 
@@ -73,7 +75,7 @@ public class DLAExceptionHandler {
    * attributes of exception.</p>
    * @param e an exception that implements LoggableException
    */
-  private void updateCounts(MGIException e) {
+  private static void updateCounts(MGIException e) {
       errorCount++;
       if (e.isDataRelated())
         dataErrorCount++;
@@ -81,6 +83,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.1  2003/04/22 22:31:57  mbw
+// initial version
+//
 // Revision 1.4  2003/04/01 21:53:34  mbw
 // resolved impact of class name change
 //

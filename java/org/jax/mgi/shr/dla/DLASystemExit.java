@@ -1,7 +1,5 @@
 package org.jax.mgi.shr.dla;
 
-import org.jax.mgi.shr.log.Logger;
-
 /**
  * <p>IS: A static class which assigns names to a set of constants defined
  * for system exits codes and provides an exit method for DLA applications.
@@ -61,29 +59,29 @@ public class DLASystemExit {
    * system logger.</p>
    * <p>Assumes: nothing</p>
    * <p>Effects: the java System.exit() method will be called</p>
+   * @param fatal true if this is a fatal exit; false otherwise
    */
   private static void exit(boolean fatal) {
     int exitCode;
-    Logger logger = null;
+    DLALogger logger = null;
     try {
-      logger = DataLoadLogger.getInstance();
+      logger = DLALogger.getInstance();
     }
-    catch (LoggingException e) {
+    catch (DLALoggingException e) {
       fatal = true;
-      System.out.println("Internal error occurred when calling system exit: " +
+      System.err.println("Internal error occurred when calling system exit: " +
                          "A logger instance could not be obtained. Please " +
                          "report as a bug./n" + e.toString());
     }
-    DLAExceptionHandler errHandler = new DLAExceptionHandler(logger);
-    int errorCnt = errHandler.getErrorCount();
-    int dataErrorCount = errHandler.getDataErrorCount();
+    int errorCnt = DLAExceptionHandler.getErrorCount();
+    int dataErrorCount = DLAExceptionHandler.getDataErrorCount();
     logMessage(logger, errorCnt, dataErrorCount);
     if (fatal)
-      exitCode = 1;
+      exitCode = FATAL_ERROR;
     else if (errorCnt > 0)
-      exitCode = 2;
+      exitCode = NONFATAL_ERROR;
     else
-      exitCode = 0;
+      exitCode = OK;
     System.exit(exitCode);
     logger.close();
   }
@@ -95,7 +93,7 @@ public class DLASystemExit {
    * @param pErrorCnt the total number of errors
    * @param pDataRelatedCnt the total number of data related errors
    */
-  private static void logMessage(Logger logger, int pErrorCnt,
+  private static void logMessage(DLALogger logger, int pErrorCnt,
                                  int pDataRelatedCnt) {
     String message = "The system exited with " + pErrorCnt +
         " total errors.";
@@ -103,6 +101,7 @@ public class DLASystemExit {
       message = message + " The number of data related errors was " +
           pDataRelatedCnt + ".";
     }
-    logger.logInfo(message);
+    logger.logpInfo(message, true);
+    logger.logcInfo(message, true);
   }
 }
