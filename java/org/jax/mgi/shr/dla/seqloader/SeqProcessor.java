@@ -7,10 +7,13 @@ package org.jax.mgi.shr.dla.seqloader;
 import org.jax.mgi.shr.timing.Stopwatch;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
+import org.jax.mgi.shr.dbutils.SQLDataManager;
+import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
+import org.jax.mgi.dbs.SchemaConstants;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
@@ -21,11 +24,12 @@ import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
+import org.jax.mgi.shr.exception.MGIException;
 
 import java.util.Vector;
 import java.util.Iterator;
 
-public class SeqProcessor  {
+public class SeqProcessor implements ProcessSequenceInput  {
    /**
    * Debug stuff - public so I have easy access
    */
@@ -62,6 +66,9 @@ public class SeqProcessor  {
 
     // logicalDB_key for the load
     protected int logicalDBKey;
+
+    // exception factory for seqloader exceptions
+    protected SeqloaderExceptionFactory eFactory;
 
     /**
      * Constructs a SeqProcessor that adds and deleting sequence to/from
@@ -118,12 +125,22 @@ public class SeqProcessor  {
     * @effects deletes sequences from a database
     * @param None
     * @return nothing
-    * @throws
+    * @throws SeqloaderException if error getting SQLDataManager or
     */
 
-    public void deleteSequences() {
-      // call a stored procedure to delete sequences by logicalDB
+    public void deleteSequences() throws SeqloaderException {
 
+      String spCall = "SEQ_deleteByLogicalDB " + logicalDBKey;
+      try {
+        SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
+        sqlMgr.executeSimpleProc(spCall);
+      }
+      catch (MGIException e) {
+        SeqloaderException e1 =
+            (SeqloaderException) eFactory.getException(
+         SeqloaderExceptionFactory.CreateSequenceErr, e);
+        throw e1;
+      }
     }
 
 
@@ -134,24 +151,50 @@ public class SeqProcessor  {
    * @param seqInput SequenceInput object - a set of raw attributes to resolve
    *        and add to the database
    * @return nothing
-   * @throws ConfigException
-   * @throws CacheException
-   * @throws DBException
-   * @throws TranslationException
-   * @throws KeyNotFoundException
-   * @throws MSException
-   * @throws SequenceResolverException
+   * @throws SeqloaderException if there are configuration, cacheing, database,
+   *         translation, or lookup errors. These errors cause load to fail
+   * @throws RepeatSequenceException errors writing to repeat sequence file
+   * @throws ChangedLibrary if raw library for existing sequence is different
+   *         than for current sequence being processed. This exception is thrown
+   *         by subclass
+   * @throws ChangedOrganismException if raw organism for existing sequence is
+   *         different than for current sequence being processed. This exception
+   *         is thrown by subclass
+   * @throws SequenceResolverException if errors resolving a sequence
+   * @throws MSException is errors resolving a sequences source
    */
 
-   public void addSequence(SequenceInput seqInput)
-       throws ConfigException, CacheException, DBException, TranslationException,
-         KeyNotFoundException, MSException, SequenceResolverException {
+   public void processInput(SequenceInput seqInput)
+       throws SeqloaderException, RepeatSequenceException,
+          ChangedLibraryException, ChangedOrganismException,
+          SequenceResolverException, MSException {
+
+       SEQ_SequenceState inputSequenceState;
        // resolve raw sequence
-       SEQ_SequenceState inputSequenceState = resolveRawSequence(seqInput.getSeq());
+       try {
+         inputSequenceState = resolveRawSequence(seqInput.getSeq());
+       }
+       catch (MGIException e) {
+         SeqloaderException e1 =
+             (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.SeqResolverErr, e);
+         throw e1;
+       }
+
 
        // create the compound sequence; a sequence with its ref,
-       // source association(s)and seqid(s),
-       Sequence inputSequence = new Sequence(inputSequenceState, mgdStream);
+       // source association(s)and seqid(s)
+       Sequence inputSequence;
+       try {
+         inputSequence = new Sequence(inputSequenceState, mgdStream);
+       }
+       catch (MGIException e) {
+         SeqloaderException e1 =
+             (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.CreateSequenceErr, e);
+         throw e1;
+       }
+
 
        // create MGI_AttributesHistory on the sequence type if stream is
        // using bcp
@@ -162,11 +205,18 @@ public class SeqProcessor  {
 
        // resolve primary accession attributes and set the accession state
        // in the Sequence
-       // Note: Exceptions thrown resolving accessions are thrown
-       // out to main; indicates a bad LogicalDB value in the config file
-       inputSequence.setAccPrimary(
-         accResolver.resolveAttributes(
-         seqInput.getPrimaryAcc(), inputSequence.getSequenceKey()));
+       try {
+         inputSequence.setAccPrimary(
+             accResolver.resolveAttributes(
+             seqInput.getPrimaryAcc(), inputSequence.getSequenceKey()));
+       }
+       catch (MGIException e) {
+         SeqloaderException e1 =
+             (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.CreatePrimaryAccessionErr, e);
+         throw e1;
+       }
+
        logger.logdDebug("Add Event Primary: " +
                       ( (MSRawAttributes) seqInput.getMSources().get(0)).
                       getOrganism() +
@@ -176,18 +226,36 @@ public class SeqProcessor  {
        // Sequence
        Iterator secondaryIterator = seqInput.getSecondary().iterator();
        while (secondaryIterator.hasNext()) {
-           AccessionRawAttributes ara = (AccessionRawAttributes) secondaryIterator.
-             next();
+           AccessionRawAttributes ara =
+               (AccessionRawAttributes) secondaryIterator.next();
            logger.logdDebug("Add Event Secondary: " + (ara).getAccID(), false);
-           inputSequence.addAccSecondary(
-               accResolver.resolveAttributes(ara,
-                                         inputSequence.getSequenceKey()));
+           try {
+             inputSequence.addAccSecondary(
+                 accResolver.resolveAttributes(ara,
+                     inputSequence.getSequenceKey()));
+           }
+           catch (MGIException e) {
+             SeqloaderException e1 =
+                 (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.CreateSecondaryAccessionErr, e);
+             throw e1;
+           }
+
        }
        // resolve sequence reference associations and set the states
        // in the Sequence
        Vector references = seqInput.getRefs();
        if (!references.isEmpty()) {
-           processReferences(inputSequence, references);
+           try {
+             processReferences(inputSequence, references);
+           }
+           catch (MGIException e) {
+             SeqloaderException e1 =
+                 (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.CreateRefAssocErr, e);
+             throw e1;
+           }
+
        }
 
        // process Molecular Source then create SEQ_Source
@@ -225,10 +293,26 @@ public class SeqProcessor  {
            sourceAssocState.setSourceKey(inputMSSource.getMSKey());
 
            // set the source association in the Sequence
-           inputSequence.addSeqSrcAssoc(sourceAssocState);
+           try {
+             inputSequence.addSeqSrcAssoc(sourceAssocState);
+           }
+           catch (MGIException e) {
+             SeqloaderException e1 =
+                 (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.CreateSrcAssocErr, e);
+             throw e1;
+           }
        }
        // send the new sequence to its stream
-       inputSequence.sendToStream();
+       try {
+         inputSequence.sendToStream();
+       }
+       catch (MGIException e) {
+         SeqloaderException e1 =
+             (SeqloaderException) eFactory.getException(
+          SeqloaderExceptionFactory.SequenceSendToStreamErr, e);
+         throw e1;
+       }
    }
 
 
