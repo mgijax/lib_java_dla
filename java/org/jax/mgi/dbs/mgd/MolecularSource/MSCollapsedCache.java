@@ -79,10 +79,10 @@ public class MSCollapsedCache
     public String getFullInitQuery()
     {
         return new String(
-            "SELECT * " +
-            "FROM PRB_Source " +
-            "WHERE isCuratorEdited = 0 " +
-            "AND name is null"
+            "SELECT " + MGD.prb_source._name + ".* " +
+            "FROM " + MGD.prb_source._name + " " +
+            "WHERE " + MGD.prb_source.iscuratoredited + " = 0 " +
+            "AND " + MGD.prb_source.name + " is null"
             );
     }
 
@@ -107,9 +107,9 @@ public class MSCollapsedCache
     {
         MolecularSource ms = (MolecularSource)addObject;
         return new String(
-            "SELECT * " +
-            "FROM PRB_Source " +
-            "WHERE isCuratorEdited = 0 " +
+            "SELECT " + MGD.prb_source._name + ".* " +
+            "FROM " + MGD.prb_source._name + " " +
+            "WHERE " + MGD.prb_source.iscuratoredited + " = 0 " +
             "AND " + MGD.prb_source._segmenttype_key + " = " +
                      ms.getSegmentTypeKey() + " " +
             "AND " + MGD.prb_source._vector_key + " = " +
