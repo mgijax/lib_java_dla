@@ -57,5 +57,17 @@ public class DLAExceptionFactory extends ExceptionFactory {
         false));
   }
 
+  /**
+   * The named SQLStream is not supported
+   */
+  public static final String SQLStreamNotSupported =
+      "org.jax.mgi.shr.shrdbutils.SQLStreamNotSupported";
+  static {
+    exceptionsMap.put(SQLStreamNotSupported, new DLAException(
+        "The SQLStream ?? is not supported",
+        false));
+  }
+
+
 
 }
