@@ -1,4 +1,4 @@
-package org.jax.mgi.shr.log;
+package org.jax.mgi.shr.dla;
 
 import org.jax.mgi.shr.exception.ExceptionFactory;
 

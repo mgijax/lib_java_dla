@@ -1,7 +1,7 @@
 // $Header$
 // $Name$
 
-package org.jax.mgi.shr.log;
+package org.jax.mgi.shr.dla;
 
 import java.util.logging.Formatter;
 import java.lang.Character;
@@ -35,6 +35,9 @@ public class MessageOnlyFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.1  2003/04/24 20:47:11  mbw
+// initial version
+//
 // Revision 1.3.2.2  2003/03/21 16:18:20  mbw
 // added standard header/footer
 //
