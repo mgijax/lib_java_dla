@@ -60,9 +60,9 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
    * Debug stuff - public so I have easy access
    */
     protected Stopwatch stopWatch;
-    public double runningLookupTime;
-    public double highLookupTime;
-    public double lowLookupTime;
+   // public double runningLookupTime;
+   // public double highLookupTime;
+   // public double lowLookupTime;
 
     public double runningMSPTime;
     public double highMSPTime;
@@ -126,9 +126,9 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
       * Debug stuff
       */
       stopWatch = new Stopwatch();
-      runningLookupTime = 0.0;
-      highLookupTime = 0.0;
-      lowLookupTime = 0.0;
+      //runningLookupTime = 0.0;
+      //highLookupTime = 0.0;
+      //lowLookupTime = 0.0;
       runningMSPTime = 0.0;
       highMSPTime = 0.0;
       lowMSPTime = 999.0;

@@ -339,8 +339,7 @@ public abstract class SeqLoader extends DLALoader {
            // process the last batch
            ( (IncremSequenceInputProcessor) seqProcessor).finishUpdateBatch();
            // any update errors to errCtr
-           errCtr += ( (IncremSequenceInputProcessor) seqProcessor).
-               getExistingSeqErrCtr();
+           errCtr += ( (IncremSequenceInputProcessor) seqProcessor).getCurrentExistingSeqErrCtr();
        }
        loadStopWatch.stop();
        totalProcessTime = loadStopWatch.time();
@@ -433,22 +432,34 @@ public abstract class SeqLoader extends DLALoader {
 
         // following logged in debug mode only
         if (totalValidSeqs > 0) {
-            logger.logdDebug("Average Processing Time/Valid Sequence processed = " +
+            logger.logdDebug(
+                "Average Processing Time/Valid Sequence processed = " +
                 (totalProcessTime / totalValidSeqs), false);
-            logger.logdDebug("Average SequenceLookup time = " +
-                (seqProcessor.runningLookupTime / totalValidSeqs), false);
-            logger.logdDebug("Greatest SequenceLookup time = " +
-               seqProcessor.highLookupTime, false);
-            logger.logdDebug("Least SequenceLookup time = " +
-                seqProcessor.lowLookupTime, false);
-
             // report MSProcessor execution times
             logger.logdDebug("Average MSProcessor time = " +
-                (seqProcessor.runningMSPTime / totalValidSeqs), false);
+                             (seqProcessor.runningMSPTime / totalValidSeqs), false);
             logger.logdDebug("Greatest MSProcessor time = " +
-               seqProcessor.highMSPTime, false);
-            logger.logdDebug("Least MSProcessor time = " + seqProcessor.lowMSPTime, false);
+                             seqProcessor.highMSPTime, false);
+            logger.logdDebug("Least MSProcessor time = " +
+                             seqProcessor.lowMSPTime, false);
         }
+            // special handling for Incremental mode
+            if (loadMode.equals(SeqloaderConstants.INCREM_LOAD_MODE)) {
+                logger.logdDebug("Total SequenceLookup time = " +
+                                 ( (IncremSequenceInputProcessor) seqProcessor).
+                                 getCurrentSequenceLookupTime(), false);
+                logger.logdDebug(
+                    "Average SequenceLookup time per Sequence in MGI = " +
+                    ( (IncremSequenceInputProcessor) seqProcessor).
+                    getCurrentAverageSequenceLookupTime(), false);
+                logger.logdDebug("Greatest SequenceLookup time = " +
+                                 ( (IncremSequenceInputProcessor) seqProcessor).
+                                 getCurrentHighSequenceLookupTime(), false);
+                logger.logdDebug("Least SequenceLookup time = " +
+                                 ( (IncremSequenceInputProcessor) seqProcessor).
+                                 getCurrentLowSequenceLookupTime(), false);
+            }
+
         // Report OrganismChecker counts
         logger.logdInfo("\n\nValid Sequences Processed by Organism (includes repeated sequences): ", false);
         if(organismChecker != null) {

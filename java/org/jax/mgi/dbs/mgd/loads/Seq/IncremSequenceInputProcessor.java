@@ -76,19 +76,35 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     // logicalDB_key for the load
     private int logicalDBKey;
 
+    // a cache of SeqInput object with seqid keys that have been determined
+    // to be in MGI (possible updates)
+    private HashMap batchMap;
+
+    // The following are public to provide easy access for debug logging
     // the number of seqids for the SequenceLookup to query for at one time
-    int batchSize;
+    public int batchSize;
 
     // current number of sequences in the "In MGI" batch
     // this will always be <= batchSize
-    int batchCtr;
+    private int batchCtr;
+
+    // Current total SequenceLookup time
+    private double runningLookupTime;
+
+    // Current highest SequenceLookup time
+    private double highLookupTime;
+
+    // Current lowest SequenceLookup time
+    private double lowLookupTime;
 
     // current number of non-fatal errors processing sequences already in MGI
-    int existingSeqErrCtr;
+    private int existingSeqErrCtr;
 
-    // a cache of SeqInput object with seqid keys that have been determined
-    // to be in MGI (possible updates)
-    HashMap batchMap;
+    // current number of existing sequences processed
+    private int existingSeqCtr;
+
+    // current SequenceLookup average
+    private double runningLookupAverage;
 
     /**
      * Constructs a IncremSeqProcessor that handles processing of add, update,
@@ -126,7 +142,12 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         seqLookup = new SequenceLookup(mgdSqlStream, batchSize);
         batchCtr = 0;
         batchMap = new HashMap();
+        runningLookupTime = 0.0;
+        highLookupTime = 0.0;
+        lowLookupTime = 0.0;
         existingSeqErrCtr = 0;
+        existingSeqCtr = 0;
+        runningLookupAverage = 0.0;
     }
 
     /**
@@ -220,17 +241,67 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
           }
       }
 
-      /**
-      * Gets the number of existing sequences with non-fatal processing errors
-      * thus far
+    /**
+     * Gets the number of existing sequences processed thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return int number of existing sequences processed thus far
+     */
+    public int getCurrentExistingSeqCtr() {
+        return existingSeqCtr;
+    }
+
+    /**
+     * Gets the number of existing sequences with non-fatal processing errors
+     * thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return int number of existing sequences with non-fatal processing errors
+     * thus far
+     */
+    public int getCurrentExistingSeqErrCtr() {
+        return existingSeqErrCtr;
+    }
+
+    /**
+     * The current greatest time to query the SequenceLookup thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return double current greatest time to query the SequenceLookup thus far
+     */
+    public double getCurrentHighSequenceLookupTime() {
+        return highLookupTime;
+    }
+
+    /**
+     * The current lowest time to query the SequenceLookup thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return double current lowest time to query the SequenceLookup thus far
+     */
+    public double getCurrentLowSequenceLookupTime() {
+        return lowLookupTime;
+    }
+
+    /**
+     * The current total time to query the SequenceLookup thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return double current total time to query the SequenceLookup thus far
+     */
+    public double getCurrentSequenceLookupTime() {
+        return runningLookupTime;
+    }
+
+    /**
+      * The current Average time to query the SequenceLookup thus far
       * @assumes nothing
       * @effects nothing
-      * @return int number of existing sequences with non-fatal processing errors
-      * thus far
+      * @return double current average time to query the SequenceLookup thus far
       */
-      public int getExistingSeqErrCtr() {
-          return existingSeqErrCtr;
-      }
+     public double getCurrentAverageSequenceLookupTime() {
+         return runningLookupTime / existingSeqCtr;
+     }
 
     /**
     * Gets a Vector of Strings reporting counts for a different events processed
@@ -242,7 +313,6 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     */
      public Vector getProcessedReport() {
          Vector report = super.getProcessedReport();
-         //report.add("Total Add Events: " + eventDetector.getAddEventCount());
          report.add("Total Update Events: " + eventDetector.getUpdateEventCount());
          report.add("Total Dummy Events: " + eventDetector.getDummyEventCount());
          report.add("Total Non Events: " + eventDetector.getNonEventCount());
@@ -428,6 +498,8 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
                     "Unhandled event in IncremSeqProcessor.processSequence");
             }
         }
+        existingSeqCtr = existingSeqCtr + seqIdSet.size();
+        runningLookupAverage = runningLookupTime / existingSeqCtr;
     }
 
       /**
