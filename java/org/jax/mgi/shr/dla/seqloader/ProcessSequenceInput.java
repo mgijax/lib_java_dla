@@ -25,8 +25,7 @@ public interface ProcessSequenceInput {
      * SequenceInput object
      */
     public void processInput(SequenceInput seqInput)
-        throws SeqloaderException, RepeatSequenceException,
-           ChangedOrganismException,
+        throws SeqloaderException, ChangedOrganismException,
            SequenceResolverException, MSException;
     /**
     * method definition to get processing information about the SequenceInput
