@@ -99,11 +99,12 @@ public class MergeSplitHelper {
         secondaries = seqInput.getSecondary();
         Iterator i = secondaries.iterator();
         while(i.hasNext()) {
-            seqKey = seqIdLookup.lookup(((AccessionRawAttributes)i.next()).getAccID());
+            String seqId = ((AccessionRawAttributes)i.next()).getAccID();
+            seqKey = seqIdLookup.lookup(seqId);
 
             // this secondary is primary in MGI, add it the the merge/split set
             if (seqKey != null) {
-                v.add(seqKey);
+                v.add(seqId);
             }
         }
         return v;
@@ -132,7 +133,7 @@ public class MergeSplitHelper {
                // for each secondary map it to its primary
                for (Iterator vecI = currentV.iterator(); vecI.hasNext(); ) {
                    // add each secondary to the newMap with value=primary
-                   Integer secondary = (Integer) vecI.next();
+                   String secondary = (String) vecI.next();
                    System.out.println("mapValue: " + secondary);
                    // add a new mapping
                    if (!secondaryMap.containsKey(secondary)) {
