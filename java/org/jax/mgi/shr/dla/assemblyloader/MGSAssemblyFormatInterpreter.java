@@ -64,6 +64,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     private Timestamp seqDate;
 
     // record attributes
+    String record;
     String seqid;
     Integer startBP;
     Integer endBP;
@@ -193,6 +194,8 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     }
 
    private void  parseRecord(String rcd) throws RecordFormatException {
+       // save the record
+       record = rcd;
        // get the seqid and description from the non-header record
        ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
        if (splitLine.size() != 6) {
@@ -209,6 +212,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         description = ( (String)splitLine.get(5)).trim();
    }
    private void createRawSequence() {
+       rawSeq.setRecord(record);
        rawSeq.setType(seqType);
        rawSeq.setQuality(seqQuality);
        rawSeq.setStatus(seqStatus);
