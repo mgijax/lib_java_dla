@@ -1,7 +1,7 @@
 //  $Header
 //  $Name
 
-package org.jax.mgi.shr.dla.coordloader;
+package org.jax.mgi.shr.dla.loader.coord;
 
 import org.jax.mgi.shr.dla.loader.DLALoader;
 import org.jax.mgi.shr.timing.Stopwatch;
