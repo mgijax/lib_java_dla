@@ -1,3 +1,21 @@
+TAG: lib_java_dla-sc2_BP-1
+DATE: 06/30/2004
+STAFF: sc
+CHANGES:
+1) Interrogator - added
+2) EMBLOrganismChecker and GBOrganismChecker - class/method headers updated. 
+   GBSeqInterrogator (inner class) now extends Interrogator
+3) class/method headers updated 
+4) OrganismChecker (interface) - added
+5) OrganismCheckerCfg - added
+6) EMBLInputFile, EMBLInputFileNoSeq - added
+7) SeqLoader - added
+8) IncremSeqProcessor - added CRT when writing out repeated sequences
+9) GBOrganismChecker, EMBLOrganismChecker - now implements OrganismChecker 
+   interface, changed some statistic reporting.
+10) [EMBL GB] FormatInterpreter - added throwing of RecordFormatException
+    when required sections of a sequence record are not found
+
 TAG: lib_java_dla-sc2_BP
 DATE: 05/13/2004
 STAFF: lec
