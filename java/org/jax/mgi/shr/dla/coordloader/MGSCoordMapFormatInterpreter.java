@@ -44,6 +44,7 @@ public class MGSCoordMapFormatInterpreter extends CoordMapInterpreter {
     /**
      * The set of attributes parsed from an input record
      */
+    private String record;
     private String coordId;
     private String chromosome;
     private String startBP;
@@ -150,7 +151,7 @@ public class MGSCoordMapFormatInterpreter extends CoordMapInterpreter {
                    "5 tab delimited elements expected.\n" + rcd);
             throw e;
         }
-
+        record = rcd;
         coordId = ((String)splitLine.get(0)).trim();
         chromosome = ((String)splitLine.get(1)).trim();
         startBP = ((String)splitLine.get(2)).trim();
@@ -217,6 +218,7 @@ public class MGSCoordMapFormatInterpreter extends CoordMapInterpreter {
      * @throws Nothing
      */
    private void setFeatureRawAttributes() {
+       rawMapFeature.setRecord(record);
        // not setting coord map attribute, resolver will derive from
        // CoordMapRawAttributes
        // set the MGIType
