@@ -187,11 +187,7 @@ public class NonGBMSAttrResolver extends MSAttrResolver {
         }
 
         try {
-            organismKey = this.organismLookup.lookup(organism);
-        }
-        catch (KeyNotFoundException e) {
-            organismKey = this.otherKey;
-            ms.setOrganismKey(this.otherKey);
+            ms.setOrganismKey(this.organismLookup.lookup(organism));
         }
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
@@ -200,14 +196,6 @@ public class NonGBMSAttrResolver extends MSAttrResolver {
             e2.bind("organism");
             throw e2;
         }
-        /**
-         * Check organism value. If not in mouse, human or rat then map it to
-         * 'Other'
-         */
-        if (!organismKey.equals(this.mouseKey) &&
-            !organismKey.equals(this.humanKey) &&
-            !organismKey.equals(this.ratKey))
-            ms.setOrganismKey(this.otherKey);
 
         return ms;
     }
