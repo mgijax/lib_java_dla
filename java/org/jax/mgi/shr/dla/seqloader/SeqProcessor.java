@@ -96,7 +96,7 @@ abstract public class SeqProcessor  {
    * @throws SequenceResolverException
    */
 
-   protected void processAddEvent(SequenceInput seqInput)
+   public void processAddEvent(SequenceInput seqInput)
        throws ConfigException, CacheException, DBException, TranslationException,
          KeyNotFoundException, MSException, SequenceResolverException {
        // resolve raw sequence
@@ -155,7 +155,6 @@ abstract public class SeqProcessor  {
            stopWatch.start();
            MolecularSource inputMSSource = msProcessor.processNewSeqSrc(
                seqInput.getPrimaryAcc().getAccID(),
-               //existingSequence.getAccPrimary().getAccID(),
                (MSRawAttributes) msIterator.next());
            stopWatch.stop();
            double time = stopWatch.time();
