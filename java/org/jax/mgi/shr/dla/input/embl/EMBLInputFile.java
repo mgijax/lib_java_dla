@@ -25,6 +25,7 @@ public class EMBLInputFile extends InputDataFile {
       * @throws IOUException thrown if there is an error accessing the file
       * @throws ConfigException thrown if there is an error accessing the
       * configuration file
+      * @throws DLALoggingException
       */
      public EMBLInputFile() throws IOUException, ConfigException,
          DLALoggingException

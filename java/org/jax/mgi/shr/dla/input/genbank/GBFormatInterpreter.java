@@ -812,7 +812,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         else {
             rawSeq.setDescription(definition.substring(12));
         }
-         //System.out.println(definition.substring(12));
     }
 
     /**
