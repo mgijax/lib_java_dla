@@ -3,6 +3,7 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 import junit.framework.*;
 import org.jax.mgi.shr.cache.*;
 import org.jax.mgi.shr.dbutils.*;
+import org.jax.mgi.shr.log.*;
 import org.jax.mgi.dbs.mgd.lookup.*;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
@@ -83,7 +84,7 @@ public class TestMSCollapsedCache
     runtime = Runtime.getRuntime();
     beforeInit = runtime.maxMemory() - runtime.freeMemory();
     //System.out.println(runtime.maxMemory() - runtime.freeMemory());
-    lookup = new MSCollapsedCache(CacheConstants.FULL_CACHE);
+    lookup = new MSCollapsedCache(new ConsoleLogger(), CacheConstants.FULL_CACHE);
   }
 
   protected void tearDown() throws Exception {
