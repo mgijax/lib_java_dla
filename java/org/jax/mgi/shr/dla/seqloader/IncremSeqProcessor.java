@@ -285,7 +285,7 @@ public class IncremSeqProcessor extends SeqProcessor {
     */
      public Vector getProcessedReport() {
          Vector report = new Vector();
-         report .add("Total Already Added Events: " + eventDetector.getAlreadyAddedEventCount());
+         report .add("Total Already Added Events (repeated sequences): " + eventDetector.getAlreadyAddedEventCount());
          report.add("Total Add Events: " + eventDetector.getAddEventCount());
          report.add("Total Update Events: " + eventDetector.getUpdateEventCount());
          report.add("Total Dummy Events: " + eventDetector.getDummyEventCount());

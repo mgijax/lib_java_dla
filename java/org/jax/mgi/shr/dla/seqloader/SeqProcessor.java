@@ -157,7 +157,8 @@ public class SeqProcessor implements ProcessSequenceInput  {
    * @return nothing
    * @throws SeqloaderException if there are configuration, cacheing, database,
    *         translation, or lookup errors. These errors cause load to fail
-   * @throws RepeatSequenceException errors writing to repeat sequence file
+   * @throws RepeatSequenceException errors writing to repeat sequence file (note
+   *         subclass processInput method throws this exception)
    * @throws ChangedLibraryException if raw library for existing sequence is different
    *         than for current sequence being processed. This exception is thrown
    *         by subclass
