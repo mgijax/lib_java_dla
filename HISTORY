@@ -1,3 +1,10 @@
+DATE: 04/05/2004
+STAFF: sc
+CHANGES:
+1) SeqloaderExceptionFactory added exception
+2) SeqProcessor and IncremSeqProcessor processInput method - changed
+   exception handling
+
 DATE: 03/31/2004
 STAFF: sc
 CHANGES:
