@@ -10,10 +10,12 @@ import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
+import org.jax.mgi.dbs.mgd.lookup.VocabTermLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.hist.Seq_SequenceAttrHistory;
+import org.jax.mgi.shr.dla.loader.seq.SeqloaderConstants;
 
 import java.sql.Timestamp;
 
@@ -53,6 +55,9 @@ public class SequenceUpdater {
 
     // the logicalDB key for this load
     Integer logicalDB;
+
+    // to lookup sequence status by key
+    private VocabTermLookup termNameLookup;
 
     // configurator for the sequence load
     private SequenceLoadCfg loadCfg;
@@ -105,6 +110,7 @@ public class SequenceUpdater {
         loadCfg = new SequenceLoadCfg();
         logicalDBLookup = new LogicalDBLookup();
         logicalDB = logicalDBLookup.lookup(loadCfg.getLogicalDB());
+        termNameLookup = new VocabTermLookup();
     }
 
     /**
@@ -117,12 +123,13 @@ public class SequenceUpdater {
      * @param inputSeqState SEQ_SequenceState representing the updated sequence
      * @return true if any sequence attributes were updated in 'existingSeqState'
      * @throws DBException if error querying the database for attribute history
+     * @throws CacheException if error using a lookup
      */
 
     public boolean updateSeq(SEQ_SequenceState existingSeqState,
                              Integer existingSeqKey,
                              SEQ_SequenceState inputSeqState)
-      throws DBException {
+      throws DBException, CacheException {
 
         boolean update = false;
         // get updateable input sequence attributes
@@ -141,6 +148,7 @@ public class SequenceUpdater {
         String inputSeqRawSex = inputSeqState.getRawSex();
         String inputSeqRawCellLine = inputSeqState.getRawCellLine();
         String inputSeqDescription = inputSeqState.getDescription();
+        Integer inputSeqStatusKey = inputSeqState.getSequenceStatusKey();
 
         // get updateable existing sequence attributes
         Integer existingSeqTypeKey = existingSeqState.getSequenceTypeKey();
@@ -158,6 +166,7 @@ public class SequenceUpdater {
         String existingSeqRawSex = existingSeqState.getRawSex();
         String existingSeqRawCellLine = existingSeqState.getRawCellLine();
         String existingSeqDescription = existingSeqState.getDescription();
+        Integer existingSeqStatusKey = existingSeqState.getSequenceStatusKey();
 
         // update sequence type key only if not curator edited
         if (! inputSeqTypeKey.equals(existingSeqTypeKey) ) {
@@ -406,7 +415,20 @@ public class SequenceUpdater {
                   update = true;
                 }
             }
-
+            // update sequence status key
+            // incoming ACTIVE can update existing DELETED, NOTLOADED
+            // incoming DELETED can update existing ACTIVE, NOTLOADED
+            // e.g. incoming refseq ACTIVE should update existing refseq DELETED
+            // because deleted refseqs can become active again.
+            if(! inputSeqStatusKey.equals(existingSeqStatusKey)) {
+                String statusString = termNameLookup.lookup(existingSeqStatusKey);
+                // don't update split status
+                if ( ! statusString.equals(SeqloaderConstants.SPLIT_STATUS)) {
+                    logger.logdDebug("Updating Sequence Status to " + inputSeqStatusKey);
+                    existingSeqState.setSequenceStatusKey(inputSeqStatusKey);
+                    update = true;
+                }
+            }
         return update;
     }
 }
