@@ -17,7 +17,7 @@ package org.jax.mgi.shr.dla.coordloader;
  */
 
 public class CoordMapFeatureRawAttributes {
-
+    private String record;
     private String coordMap;
     private Integer MGIType;
     private String objectId;
@@ -27,6 +27,12 @@ public class CoordMapFeatureRawAttributes {
     private String endBP;
     private String strand;
 
+    public void setRecord (String rcd) {
+        record = rcd;
+    }
+    public String getRecord () {
+        return record;
+    }
     public void setMap (String map) {
         coordMap = map;
     }
