@@ -52,6 +52,9 @@ public class GenBankFile extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.1  2004/06/29 16:55:09  mbw
+//  initial version
+//
 //
 /**************************************************************************
 *
