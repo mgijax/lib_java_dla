@@ -1,8 +1,7 @@
 //  $Header
 //  $Name:
 
-package org.jax.mgi.shr.dla.seqloader
-    ;
+package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.*;
 import java.util.regex.*;
@@ -601,14 +600,20 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      * @throws Nothing
      */
 
-    protected void parseOrganism(String organism) {
-        String rawOrganism = organism.substring(9).trim();
+    protected void parseOrganism(String organism) throws RecordFormatException {
+
+	if (organism.length() < 10) {
+	    throw new RecordFormatException();
+	}
+
+	String rawOrganism = organism.substring(9).trim();
         // set the organism field of raw sequence and raw molecular source
         rawSeq.setRawOrganisms(rawOrganism);
         rawSeq.setNumberOfOrganisms(0);
         ms.setOrganism(rawOrganism);
 
     }
+
 
     /**
      * Parses the version number from the VERSION line of a GenBank sequence
