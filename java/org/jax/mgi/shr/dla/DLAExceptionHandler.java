@@ -43,6 +43,7 @@ public class DLAExceptionHandler {
    * @param e an exception that implements LoggableException
    */
   public static void handleException(DLAException e) {
+   e.printStackTrace();
     logger.logError(e.toString());
     updateCounts(e);
   }
@@ -83,6 +84,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.8  2004/04/02 14:52:17  mbw
+// tweaked error message
+//
 // Revision 1.7  2004/03/29 20:17:46  mbw
 // fixed message printed when logger can not be instantiated
 //
