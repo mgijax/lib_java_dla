@@ -7,15 +7,16 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @is an object that retrieves Configuration pararmeters for sequence loaders
+ * @is an object that retrieves Configuration parameters for the
+ *     OrganismChecker
  * @has Nothing
  *   <UL>
  *   <LI> a configuration manager
  *   </UL>
  * @does
  *   <UL>
- *   <LI> provides methods to retrieve Configuration parameters that are
- *        specific to sequence loads
+ *   <LI> provides methods to retrieve Configuration parameters to determine
+ *        which organisms to load
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -25,7 +26,7 @@ import org.jax.mgi.shr.config.ConfigException;
 
 public class OrganismCheckerCfg extends Configurator {
     /**
-     * Constructs a sequence load configurator
+     * Constructs a OrganismCheckerCfg
      * @assumes Nothing
      * @effects Nothing
      * @param None
@@ -73,9 +74,13 @@ public class OrganismCheckerCfg extends Configurator {
     public Boolean getHuman() throws ConfigException {
         return new Boolean(getConfigString("LOAD_HUMAN"));
     }
+
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:29  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.1  2003/12/19 12:55:46  sc
 //  initial commit
 //
