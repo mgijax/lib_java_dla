@@ -96,7 +96,19 @@ public class SequenceAttributeResolver {
       state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
       state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
       //
-      // cleanse the incoming decription data
+      // cleanse raw organisms
+      // Needed for sequences that may have >1 organism e.g. SwissProt
+      String organisms = rawAttributes.getRawOrganisms();
+      if (organisms != null) {
+          organisms = organisms.replaceAll("'", "''");
+          if (organisms.length() > 255) {
+              organisms = organisms.substring(0,254);
+          }
+      }
+      state.setRawOrganism(organisms);
+
+      //
+      // cleanse decription data
       //
       String desc = rawAttributes.getDescription();
       if (desc != null) {
@@ -179,7 +191,6 @@ public class SequenceAttributeResolver {
       state.setDivision(rawAttributes.getDivision());
       state.setVirtual(rawAttributes.getVirtual());
       state.setRawType(rawAttributes.getType());
-      state.setRawOrganism(rawAttributes.getRawOrganisms());
       state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
       state.setSeqrecordDate(rawAttributes.getSeqRecDate());
       state.setSequenceDate(rawAttributes.getSeqDate());
@@ -189,6 +200,12 @@ public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.10.2.1  2004/07/27 18:24:51  sc
+//  Changed RecordDataIterator to interface DataIterator. run() method catch block now tests MSException to see if it is an instance of UnresolvedAttributeException - new exception for assembly load as all source attributes must resolve; other seqloads simply skip the sequence and reportjava/org/jax/mgi/shr/dla/seqloader/SeqLoader.java
+//
+//  Revision 1.10  2004/07/08 15:03:49  sc
+//  javdocs changes
+//
 //  Revision 1.9  2004/06/30 19:35:01  mbw
 //  javadocs only
 //
