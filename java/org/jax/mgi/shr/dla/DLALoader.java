@@ -153,8 +153,7 @@ public abstract class DLALoader {
 
   /**
    * The main routine which dynamically instantiates an instance
-   * of the specific loader class and executes the load() method. See javadocs
-   * for the load() method for further details.
+   * of the configured loader class and executes the load() method.
    * @assumes a specific loader has been specified on the command line
    * or within a configuration file or java system properties.
    * @effects the four dla standrad log files and records within the
@@ -183,7 +182,7 @@ public abstract class DLALoader {
   }
 
   /**
-   * executes the initialize(), run() and finale() methods
+   * executes the initialize(), run() and post() methods
    * of the subclass loader and performs standard logging and
    * system exiting.
    * @assumes nothing.
