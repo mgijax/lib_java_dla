@@ -10,8 +10,6 @@ import org.jax.mgi.dbs.rdr.dao.QC_MS_AttrEditDAO;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_AttrEditState;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_NameConflictDAO;
 import org.jax.mgi.dbs.rdr.dao.QC_MS_NameConflictState;
-import org.jax.mgi.dbs.rdr.dao.QC_MS_NoLibFoundDAO;
-import org.jax.mgi.dbs.rdr.dao.QC_MS_NoLibFoundState;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.exception.MGIException;
 
@@ -33,26 +31,6 @@ public class MSQCReporter
       this.stream = stream;
     }
 
-    public void reportLibraryNameNotFound(String name)
-    throws MSException
-    {
-      QC_MS_NoLibFoundState state = new QC_MS_NoLibFoundState();
-      state.setLibraryName(name);
-      try
-      {
-        stream.insert(new QC_MS_NoLibFoundDAO(state));
-      }
-      catch (MGIException e)
-      {
-        MSExceptionFactory eFactory = new MSExceptionFactory();
-        MSException e2 = (MSException)
-            eFactory.getException(QCErr, e);
-        e2.bind("QC_MS_NoLibFound");
-        throw e2;
-
-      }
-
-    }
 
     public void reportCloneNameDiscrepancy(String accid,
                                            String name,
@@ -61,11 +39,8 @@ public class MSQCReporter
     {
       QC_MS_NameConflictState state = new QC_MS_NameConflictState();
       state.setAccid(accid);
-      //state.setName(name);
-      state.setClone1Name(name);
-      //state.setConflict(conflictName);
-      state.setClone2Name(conflictName);
-
+      state.setLibName1(name);
+      state.setLibName2(conflictName);
       try
       {
         stream.insert(new QC_MS_NameConflictDAO(state));
