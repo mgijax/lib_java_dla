@@ -115,7 +115,7 @@ public class DLALoggerCfg extends Configurator {
      * @return true or false
      */
     public Boolean getDebug() throws ConfigException {
-      return getConfigBoolean("LOG_DEBUG", new Boolean(true));
+      return getConfigBoolean("LOG_DEBUG", new Boolean(false));
     }
 
     /**
@@ -157,6 +157,9 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.2  2003/05/08 20:41:36  mbw
+// incorporated changes from code reviews
+//
 // Revision 1.1  2003/04/22 22:31:00  mbw
 // initial version
 //
