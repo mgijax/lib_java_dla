@@ -18,10 +18,10 @@ import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is a base class which implements the DLA standards for all loaders.
- * @abstract this class provides the instantiation of the 'basic needs'
- * objects for performing database loads such as SQLDataManagers, loggers,
- * BCPManagers, SQLJobstreams and DLA exception handlers and factories.
+ * @is a base class which implements the DLA standards for database loaders.
+ * @abstract this class provides the 'basic needs' objects for performing
+ * database loads such as SQLDataManagers, Loggers, BCPManagers, SQLStreams
+ * and ExceptionHandlers
  * Sub classes would be required to implement the following
  * methods:<br>
  * <UL>
@@ -34,15 +34,17 @@ import org.jax.mgi.shr.exception.MGIException;
  * <UL>
  *   <LI>A DLALogger
  *   <LI>A DLAExceptionHandler
- *   <LI>A primary input file for loading into the database
- *   <LI>A SQLDataManager for the RADAR database
- *   <LI>A SQLdataManager for the MGD database
- *   <LI>A BCPManager for the RADAR database
- *   <LI>A BCPManager for the MGD database
+ *   <LI>A configurator for configuring the input file
+ *   <LI>A SQLDataManager for the qc database
+ *   <LI>A SQLDataManager for the load database
+ *   <LI>A BCPManager for the qc database
+ *   <LI>A BCPManager for the load database
+ *   <LI>A SQLStream for the qc database
+ *   <LI>A SQLStream for the radar database
+ * </UL>
  *
- * @does performs initialization of 'basic-needs' and instantiates
- * the subclass and calls the initialize(), run() and finale() methods
- * on the subclass.
+ * @does performs initialization of 'basic-needs' objects and calls
+ * the subclass initialize, preprocess, run, and postprocess methods
  * @author mbw, dbm
  * @version 1.0
  */
@@ -59,22 +61,22 @@ public abstract class DLALoader {
   /**
    * An SQL data manager for providing database access to the radar database
    */
-  protected SQLDataManager radarDBMgr;
+  protected SQLDataManager qcDBMgr;
 
   /**
    * An SQL data manager for providing database access to the radar database
    */
-  protected SQLDataManager mgdDBMgr;
+  protected SQLDataManager loadDBMgr;
 
   /**
    * A bcp manager for controlling the bcp writers for the radar database.
    */
-  protected BCPManager radarBCPMgr;
+  protected BCPManager qcBCPMgr;
 
   /**
    * A bcp manager for controlling the bcp writers for the mgd database.
    */
-  protected BCPManager mgdBCPMgr;
+  protected BCPManager loadBCPMgr;
 
   /**
    * the SQLStream used for loading data
@@ -86,6 +88,9 @@ public abstract class DLALoader {
    */
   protected SQLStream qcStream = null;
 
+  /**
+   * configurator for the input file
+   */
   protected InputDataCfg inputConfig = null;
 
   /**
@@ -129,19 +134,19 @@ public abstract class DLALoader {
       this.logger = DLALogger.getInstance();
       DLALoaderCfg config = new DLALoaderCfg();
       String loadPrefix = config.getLoadPrefix();
-      this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
-      this.radarDBMgr.setLogger(logger);
-      this.mgdDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
-      this.mgdDBMgr.setLogger(logger);
-      this.radarBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
-      this.radarBCPMgr.setLogger(logger);
-      this.radarBCPMgr.setSQLDataManager(radarDBMgr);
-      this.mgdBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
-      this.mgdBCPMgr.setLogger(logger);
-      this.mgdBCPMgr.setSQLDataManager(mgdDBMgr);
+      this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
+      this.qcDBMgr.setLogger(logger);
+      this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
+      this.loadDBMgr.setLogger(logger);
+      this.qcBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
+      this.qcBCPMgr.setLogger(logger);
+      this.qcBCPMgr.setSQLDataManager(qcDBMgr);
+      this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
+      this.loadBCPMgr.setLogger(logger);
+      this.loadBCPMgr.setSQLDataManager(loadDBMgr);
       this.loadStream = createSQLStream(config.getLoadStreamName());
       this.qcStream = createSQLStream(config.getQCStreamName());
-      this.inputConfig = new InputDataCfg();
+      //this.inputConfig = new InputDataCfg();
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
@@ -195,8 +200,8 @@ public abstract class DLALoader {
     try {
       logger.logdInfo("Performing post processing",true);
       postprocess();
-      radarDBMgr.closeResources();
-      mgdDBMgr.closeResources();
+      qcDBMgr.closeResources();
+      loadDBMgr.closeResources();
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
@@ -255,18 +260,18 @@ public abstract class DLALoader {
   private SQLStream createSQLStream(String name) throws MGIException
   {
       if (name.equals("org.jax.mgi.shr.dbutils.dao.Inline_Stream"))
-          return new Inline_Stream(this.mgdDBMgr);
+          return new Inline_Stream(this.loadDBMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.Batch_Stream"))
-          return new Batch_Stream(this.mgdDBMgr);
+          return new Batch_Stream(this.loadDBMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.Script_Stream"))
-          return new Script_Stream(this.mgdDBMgr.getScriptWriter());
+          return new Script_Stream(this.loadDBMgr.getScriptWriter());
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream"))
-          return new BCP_Inline_Stream(this.mgdDBMgr, this.mgdBCPMgr);
+          return new BCP_Inline_Stream(this.loadDBMgr, this.loadBCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream"))
-          return new BCP_Batch_Stream(this.mgdDBMgr, this.mgdBCPMgr);
+          return new BCP_Batch_Stream(this.loadDBMgr, this.loadBCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream"))
-          return new BCP_Script_Stream(this.mgdDBMgr.getScriptWriter(),
-                                       this.mgdBCPMgr);
+          return new BCP_Script_Stream(this.loadDBMgr.getScriptWriter(),
+                                       this.loadBCPMgr);
       else
       {
           DLAExceptionFactory factory = new DLAExceptionFactory();
