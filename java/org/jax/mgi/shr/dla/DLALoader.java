@@ -94,6 +94,11 @@ public abstract class DLALoader {
   protected InputDataCfg inputConfig = null;
 
   /**
+   * configurator for all DLA parameters
+   */
+  protected DLALoaderCfg dlaConfig = null;
+
+  /**
    * An exception handler for handling MGIExceptions
    */
   protected DLAExceptionHandler exceptionHandler =
@@ -132,8 +137,8 @@ public abstract class DLALoader {
   public DLALoader() {
     try {
       this.logger = DLALogger.getInstance();
-      DLALoaderCfg config = new DLALoaderCfg();
-      String loadPrefix = config.getLoadPrefix();
+      this.dlaConfig = new DLALoaderCfg();
+      String loadPrefix = dlaConfig.getLoadPrefix();
       this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
       this.qcDBMgr.setLogger(logger);
       this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
@@ -142,9 +147,9 @@ public abstract class DLALoader {
       this.qcBCPMgr.setLogger(logger);
       this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
       this.loadBCPMgr.setLogger(logger);
-      this.loadStream = createSQLStream(config.getLoadStreamName(),
+      this.loadStream = createSQLStream(dlaConfig.getLoadStreamName(),
                                         loadDBMgr, loadBCPMgr);
-      this.qcStream = createSQLStream(config.getQCStreamName(),
+      this.qcStream = createSQLStream(dlaConfig.getQCStreamName(),
                                       qcDBMgr, qcBCPMgr);
       this.inputConfig = new InputDataCfg();
     }
@@ -256,8 +261,8 @@ public abstract class DLALoader {
    * @param name the name of the SQLStream to create
    * @return the new SQLStream
    */
-  private SQLStream createSQLStream(String name, SQLDataManager DBMgr,
-                                    BCPManager BCPMgr) throws MGIException
+  protected SQLStream createSQLStream(String name, SQLDataManager DBMgr,
+                                      BCPManager BCPMgr) throws MGIException
   {
       if (name.equals("org.jax.mgi.shr.dbutils.dao.Inline_Stream"))
           return new Inline_Stream(DBMgr);
