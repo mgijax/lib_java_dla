@@ -363,24 +363,28 @@ public class SeqProcessor implements ProcessSequenceInput  {
     */
 
    protected void processReferences(Sequence sequence, Vector references)
-       throws KeyNotFoundException, DBException, CacheException, ConfigException {
-     // resolve sequence reference associations and set the states
-     // in the Sequence
+	throws KeyNotFoundException, DBException, CacheException, ConfigException {
+	// resolve sequence reference associations and set the states
+	// in the Sequence
 
-     // The MGI_Reference_Assoc state for a given reference
-     MGI_Reference_AssocState refAssocState = null;
+	// The MGI_Reference_Assoc state for a given reference
+	MGI_Reference_AssocState refAssocState = null;
 
-     Iterator referenceIterator = references.iterator();
-     while(referenceIterator.hasNext()) {
-           refAssocState = refAssocProcessor.process(
-               (SeqRefAssocPair)referenceIterator.next(),
-               sequence.getSequenceKey());
+	Iterator referenceIterator = references.iterator();
+	while(referenceIterator.hasNext()) {
+	 Object ref = referenceIterator.next();
+	 if (ref instanceof SeqRefAssocPair)
+	   refAssocState = refAssocProcessor.process(
+		(SeqRefAssocPair)ref, sequence.getSequenceKey());
+	 else if (ref instanceof RefAssocRawAttributes)
+             refAssocState = refAssocProcessor.process(
+		 (RefAssocRawAttributes)ref, sequence.getSequenceKey());
 
-           // null if reference not in MGI
-           if(refAssocState != null) {
-               sequence.addRefAssoc(refAssocState);
-           }
-     }
+		// null if reference not in MGI
+	   if(refAssocState != null) {
+		sequence.addRefAssoc(refAssocState);
+	   }
+	}
 
    }
 
