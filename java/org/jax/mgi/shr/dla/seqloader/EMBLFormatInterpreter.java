@@ -81,7 +81,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     private StringBuffer dtSection;
     private StringBuffer deSection;
     private StringBuffer osSection;
-    private StringBuffer ocSection;
     private StringBuffer rxSection;
 
     /**
@@ -102,7 +101,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         dtSection = new StringBuffer();
         deSection = new StringBuffer();
         osSection = new StringBuffer();
-        ocSection = new StringBuffer();
         rxSection = new StringBuffer();
       }
 
@@ -122,7 +120,8 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     /**
      * Parses a sequence record and  creates a SequenceInput object from
      * Configuration and parsed values
-     * @assumes Nothing
+     * @assumes Expects SequenceRawAttributes.quality and to be set by a subclass
+     * or by caller calling seqInput.getSeq().setQuality();
      * @effects Nothing
      * @param rcd An EMBL format sequence record
      * @return A SequenceInput object representing 'rcd'
@@ -140,15 +139,50 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         // *RawAttributes objects, and set *RawAttributes in    //
         // SequenceInput object                                 //
         //////////////////////////////////////////////////////////
-        parseID(idSection);
-        parseAC(acSection);
-        parseDT(dtSection.toString());
-        parseDE(deSection.toString());
-        parseOS(osSection.toString());
+        if (idSection != null ) {
+            parseID(idSection);
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The ID section is empty");
+            throw e;
+        }
+        if (acSection != null ) {
+            parseAC(acSection);
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The AC section is empty");
+            throw e;
+        }
+        if (dtSection.length() > 0 ) {
+            parseDT(dtSection.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The DT section is empty");
+            throw e;
+        }
+        if (deSection.length() > 0 ) {
+            parseDE(deSection.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The DE section is empty");
+            throw e;
+        }
+        if (osSection.length() > 0 ) {
+            parseOS(osSection.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The OS section is empty");
+            throw e;
+        }
 
         // this method call also adds RefAssocRawAttributes objects to the
         // SequenceInput object
-        if(rxSection.length() != 0) {
+        if( rxSection.length() > 0) {
             parseRX(rxSection.toString());
         }
 
@@ -157,7 +191,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         rawSeq.setVirtual(virtual);
         rawSeq.setProvider(provider);
         rawSeq.setStatus(seqStatus);
-
         // set rawSeq in 'sequenceInput
         sequenceInput.setSeq(rawSeq);
 
@@ -180,7 +213,6 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         dtSection = new StringBuffer();
         deSection = new StringBuffer();
         osSection = new StringBuffer();
-        ocSection = new StringBuffer();
         rxSection = new StringBuffer();
 
         // reset reused instance variables
