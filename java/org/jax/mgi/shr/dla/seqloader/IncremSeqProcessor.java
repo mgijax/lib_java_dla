@@ -44,35 +44,52 @@ public class IncremSeqProcessor extends SeqProcessor {
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
                               SQLStream qcSqlStream,
+                              SequenceAttributeResolver sar)
+        throws CacheException, DBException, ConfigException, MSException,
+               DLALoggingException {
+      /**
+      * Debug stuff
+      */
+      stopWatch = new Stopwatch();
+      runningLookupTime = 0.0;
+      highLookupTime = 0.0;
+      lowLookupTime = 0.0;
+      runningMSPTime = 0.0;
+      highMSPTime = 0.0;
+      lowMSPTime = 999.0;
+      sequenceCtr = 0;
+
+      mgdStream = mgdSqlStream;
+      qcStream = qcSqlStream;
+      seqResolver = sar;
+
+      // Create an Accession Attribute Resolver
+       accResolver = new AccAttributeResolver();
+
+       // Create a Reference Association Processor
+       refAssocProcessor = new SeqRefAssocProcessor();
+
+        // Create a Molecular Source Processor
+       msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream);
+       logger = DLALogger.getInstance();
+    }
+
+
+    public IncremSeqProcessor(SQLStream mgdSqlStream,
+                              SQLStream qcSqlStream,
                               SequenceAttributeResolver sar,
                               MergeSplitProcessor msp,
                               BufferedWriter repeatSeqWriter)
         throws CacheException, DBException, ConfigException, MSException,
                DLALoggingException, KeyNotFoundException, SeqloaderException {
-
-        /**
-        * Debug stuff
-        */
-        stopWatch = new Stopwatch();
-        runningLookupTime = 0.0;
-        highLookupTime = 0.0;
-        lowLookupTime = 0.0;
-        runningMSPTime = 0.0;
-        highMSPTime = 0.0;
-        lowMSPTime = 0.0;
-        sequenceCtr = 0;
-
-        //super(mgdSqlStream, qcSqlstream, sar)
-        mgdStream = mgdSqlStream;
-        qcStream = qcSqlStream;
-        seqResolver = sar;
+        this(mgdSqlStream, qcSqlStream, sar);
 
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
         config = new SequenceLoadCfg();
         seqLookup = new SequenceLookup(mgdSqlStream);
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-
+/*
          // Create an Accession Attribute Resolver
         accResolver = new AccAttributeResolver();
 
@@ -81,8 +98,10 @@ public class IncremSeqProcessor extends SeqProcessor {
 
          // Create a Molecular Source Processor
         msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream);
-        logger = DLALogger.getInstance();
+      logger = DLALogger.getInstance();
+ */
     }
+
     /**
      * Does incremental processing on a sequence by detecting
      * add, update, already processed and non events. Also detects and processes
