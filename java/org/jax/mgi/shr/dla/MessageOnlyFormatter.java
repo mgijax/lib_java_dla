@@ -8,12 +8,12 @@ import java.lang.Character;
 import java.util.logging.LogRecord;
 
 /**
- * <p>IS: A Formatter object that formats the content of a log message
- * without prepending a standard header stamp.</p>
- * <p>HAS: A message record.</p>
- * <p>DOES: Formats a message record without a standard header
- * stamp.</p>
- * <p>Company: The Jackson Lab</p>
+ * @is A Formatter object that formats the content of a log message
+ * without prepending a standard header stamp.
+ * @has A message record.
+ * @does Formats a message record without a standard header
+ * stamp.
+ * @company The Jackson Lab
  * @author M Walker
  * @version 1.0
  */
@@ -35,6 +35,9 @@ public class MessageOnlyFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.3  2003/05/08 20:40:07  mbw
+// incorporated changes from code reviews
+//
 // Revision 1.2  2003/04/29 19:30:30  mbw
 // changed package name
 //

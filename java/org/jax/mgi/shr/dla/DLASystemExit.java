@@ -1,15 +1,14 @@
 package org.jax.mgi.shr.dla;
 
 /**
- * <p>IS: A static class which assigns names to a set of constants defined
+ * @is A static class which assigns names to a set of constants defined
  * for system exits codes and provides an exit method for DLA applications.
- * </p>
- * <p>HAS: A set of exit codes used as possible values for the parameter to
- * the System.exit method</p>
- * <p>DOES: Provides a static exit method for DLA applications which reports a
+ * @has A set of exit codes used as possible values for the parameter to
+ * the System.exit method
+ * @does Provides a static exit method for DLA applications which reports a
  * summary of errors, closes the log files, and calculates the system exit
- * code</p>
- * <p>Company: Jackson Laboratory</p>
+ * code
+ * @company Jackson Laboratory
  * @author M Walker
  * @version 1.0
  */
@@ -30,10 +29,10 @@ public class DLASystemExit {
   public static final int NONFATAL_ERROR = 2;
 
   /**
-   * <p>Purpose: exits the system, logs a message to the system
-   * logger reporting errors counts and closes all log files.</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: a message will get logged to the system logger, all log
+   * @purpose exits the system, logs a message to the system
+   * logger reporting errors counts and closes all log files.
+   * @assumes nothing
+   * @effects a message will get logged to the system logger, all log
    * files will be closed and the java System.exit() method will get called
    * with a value of OK or NONFATAL_ERROR depending on the error count.
    */
@@ -42,10 +41,10 @@ public class DLASystemExit {
   }
 
   /**
-   * <p>Purpose: exits the system with a fatal exit code and logs a message
-   * to the system logger reporting errors counts.</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: a message will get logged to the system logger, all log
+   * @purpose exits the system with a fatal exit code and logs a message
+   * to the system logger reporting errors counts.
+   * @assumes nothing
+   * @effects a message will get logged to the system logger, all log
    * files will be closed and the java System.exit() method will get called
    * with a value of FATAL_ERROR.
    */
@@ -54,11 +53,11 @@ public class DLASystemExit {
   }
 
   /**
-   * <p>Purpose: exits the system with a calculated exit code based on
+   * @purpose exits the system with a calculated exit code based on
    * the total error counts along with logging the error tally to the
-   * system logger.</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: the java System.exit() method will be called</p>
+   * system logger.
+   * @assumes nothing
+   * @effects the java System.exit() method will be called
    * @param fatal true if this is a fatal exit; false otherwise
    */
   private static void exit(boolean fatal) {
@@ -87,9 +86,9 @@ public class DLASystemExit {
   }
 
   /**
-   * <p>Purpose: logs the error count to the system logger</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: a message gets logged to the system logger</p>
+   * @purpose logs the error count to the system logger
+   * @assumes nothing
+   * @effects a message gets logged to the system logger
    * @param logger thr logger instance
    * @param pErrorCnt the total number of errors
    * @param pDataRelatedCnt the total number of data related errors

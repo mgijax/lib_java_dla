@@ -3,21 +3,21 @@ package org.jax.mgi.shr.dla;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * <p>IS: An MGIException which represents errors occuring within a DLA
- * application.</p>
- * <p>HAS: an exception message, a data related indicator and a parent
- * exception which can be null.</p>
- * <p>DOES: nothing</p>
- * <p>Company: Jackson Laboratory</p>
+ * @is An MGIException which represents errors occuring within a DLA
+ * application.
+ * @has an exception message, a data related indicator and a parent
+ * exception which can be null.
+ * @does nothing
+ * @company Jackson Laboratory
  * @author M Walker
  * @version 1.0
  */
 
 public class DLAException extends MGIException {
   /**
-   * <p>Purpose: constructor</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: nothing</p>
+   * @purpose constructor
+   * @assumes nothing
+   * @effects nothing
    * @param pMessage the message string
    * @param pDataRelated indicator for whether or not the error is
    * data related

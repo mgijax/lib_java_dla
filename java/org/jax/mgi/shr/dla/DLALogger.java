@@ -23,24 +23,24 @@ import org.jax.mgi.shr.config.DLALoggerCfg;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * <p>IS: an object that logs messages of various severity levels to a set of
- * predetermined log files in terms with the DLA logging standards.</p>
- * <p>HAS: log files, message handlers, message formatters and a configurator.
- * </p>
- * <p>DOES: formats and writes messages to the set of log files defined in
- * the DLA.</p>
+ * @is an object that logs messages of various severity levels to a set of
+ * predetermined log files in terms with the DLA logging standards.
+ * @has log files, message handlers, message formatters and a configurator.
+ *
+ * @does formats and writes messages to the set of log files defined in
+ * the DLA.
  * <p>Description:
  * The DLA standards names four log files for various types of reporting.
  * These include the process log, curator log, sql validation log, and the
  * diagnostics log. See the DLA Standards document for further information
- * regarding the use of these logs.</p>
+ * regarding the use of these logs.
  * <p>
  * Log entries can be written in two ways. First, an entry can be
  * posted with a standard header stamp, which includes the date, class name,
  * severity level, and method name. A set of alternative methods are provided
  * which do not include the standard header stamps when posting to the logs.
  * These methods are provided as a way to do multiline information reporting
- * without cluttering the output with many header stamps. </p>
+ * without cluttering the output with many header stamps.
  * <p>
  * The logger allows different severity levels of messages for each log
  * file. The process and curator logs are provided with only one severity
@@ -48,7 +48,7 @@ import org.jax.mgi.shr.config.ConfigException;
  * informational, warning and error levels, wheareas the diagnostics logs are
  * provided with debug, error, informational and warning levels. Debug
  * messages can be turned off by calling the setDebug method with a value of
- * true.</p>
+ * true.
  * <p>The following summarizes the methods for witing variaous types of
  * messages and to each log file:<br>
  * <ul>
@@ -61,8 +61,8 @@ import org.jax.mgi.shr.config.ConfigException;
  * <li>logdDebug - logs a debug message to the diagnostics log
  * <p>
  * The DataLoadLogger class was not written for a multithreaded environment.
- * </p>
- * <p>Company: The Jackson Lab</p>
+ *
+ * @company The Jackson Lab
  * @author M Walker
  * @version 1.0
  */
@@ -146,11 +146,11 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
 
  /**
-  * <p>Purpose: public constructor method to obtain a singleton instance of
-  * DataLoadLogger.</p>
-  * <p>Assumes: nothing</p>
-  * <p>Effects: a new instance of the DataLoadLogger will cretaed if it
-  * doesnt already exist.</p>
+  * @purpose public constructor method to obtain a singleton instance of
+  * DataLoadLogger.
+  * @assumes nothing
+  * @effects a new instance of the DataLoadLogger will cretaed if it
+  * doesnt already exist.
   * @return singleton instance of DataLoadLogger
   * @throws DLALoggingException thrown if an error occurs during
   * configuration.
@@ -178,10 +178,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-   * <p>Purpose: logs an informational message with a standard header
-   * stamp to the diagnostics log</p>
-   * <p>Assumes: nothing </p>
-   * <p>Effects: a message will get logged to the diagnostics log</p>
+   * @purpose logs an informational message with a standard header
+   * stamp to the diagnostics log
+   * @assumes nothing
+   * @effects a message will get logged to the diagnostics log
    * @param message the message to log
    */
   public void logInfo(String message) {
@@ -189,10 +189,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-   * <p>Purpose: logs an error message with a standard header stamp to the
-   * diagnostics log</p>
-   * <p>Assumes: nothing </p>
-   * <p>Effects: an error message will get logged to the diagnostics log</p>
+   * @purpose logs an error message with a standard header stamp to the
+   * diagnostics log
+   * @assumes nothing
+   * @effects an error message will get logged to the diagnostics log
    * @param message the message to log
    */
   public void logError(String message) {
@@ -200,11 +200,11 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-   * <p>Purpose: logs a debug message with a standard header stamp to the
-   * diagnostics log</p>
-   * <p>Assumes: nothing </p>
-   * <p>Effects: a debug will get logged to the diagnostics log if the
-   * debug state is true</p>
+   * @purpose logs a debug message with a standard header stamp to the
+   * diagnostics log
+   * @assumes nothing
+   * @effects a debug will get logged to the diagnostics log if the
+   * debug state is true
    * @param message the message to log
    */
   public void logDebug(String message) {
@@ -214,10 +214,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
 
   /**
-    * <p>Purpose: Writes an informational message to the process log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the process log
+    * @purpose Writes an informational message to the process log.
+    * A standard header stamp will be included.
+    * @assumes nothing
+    * @effects a message will be written to the process log
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
@@ -246,10 +246,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-    * <p>Purpose: Writes an informational message to the curator log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the curator log
+    * @purpose Writes an informational message to the curator log.
+    * A standard header stamp will be included.
+    * @assumes nothing
+    * @effects a message will be written to the curator log
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
@@ -278,10 +278,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-    * <p>Purpose: Writes an informational message to the validation log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the validation log
+    * @purpose Writes an informational message to the validation log.
+    * A standard header stamp will be included.
+    * @assumes nothing
+    * @effects a message will be written to the validation log
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
@@ -310,10 +310,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-    * <p>Purpose: Writes an informational message to the diagnostic log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the diagnostics log
+    * @purpose Writes an informational message to the diagnostic log.
+    * A standard header stamp will be included.
+    * @assumes nothing
+    * @effects a message will be written to the diagnostics log
     * @param  msg string message.
     * @param doStamping true if the message should be time stamped
     */
@@ -344,10 +344,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
 
 
   /**
-    * <p>Purpose: Writes an error message to the validation log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the validation log
+    * @purpose Writes an error message to the validation log.
+    * A standard header stamp will be included.
+    * @assumes nothing
+    * @effects a message will be written to the validation log
     * @param  msg string message.
     */
   public void logvErr(String msg) {
@@ -363,10 +363,10 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-    * <p>Purpose: Writes an error message to the diagnostics log.
-    * A standard header stamp will be included.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the diagnostics log
+    * @purpose Writes an error message to the diagnostics log.
+    * A standard header stamp will be included.
+    * @assumes nothing
+    * @effects a message will be written to the diagnostics log
     * @param  msg string message.
     */
   public void logdErr(String msg) {
@@ -382,13 +382,13 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-    * <p>Purpose: Writes a debug message to the diagnostics log.
+    * @purpose Writes a debug message to the diagnostics log.
     * A standard header stamp will be included.
     * This message will only be written if the debug
     * state is set to true. The setDebug method is
-    * used to toggle the debug state.</p>
-    * <p>Assumes: nothing</p>
-    * <p>Effects: a message will be written to the diagnostics log if
+    * used to toggle the debug state.
+    * @assumes nothing
+    * @effects a message will be written to the diagnostics log if
     * the debug state is true
     * @param  msg string message.
     */
@@ -405,9 +405,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-   * <p>Purpose: sets the debug state to on or off</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: debug messages will either begin getting logged or end</p>
+   * @purpose sets the debug state to on or off
+   * @assumes nothing
+   * @effects debug messages will either begin getting logged or end
    * @param bool the value of the debug indicator - true for on
    */
   public void setDebug(boolean bool) {
@@ -420,9 +420,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-   * <p>Purpose: return the debug state of the logger</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: nothing</p>
+   * @purpose return the debug state of the logger
+   * @assumes nothing
+   * @effects nothing
    * @return the debug state
    */
   public boolean isDebug() {
@@ -430,9 +430,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 
   /**
-   * <p>Purpose: close the log files</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: log files will be closed</p>
+   * @purpose close the log files
+   * @assumes nothing
+   * @effects log files will be closed
    */
   public void close() {
     // close file handlers
@@ -632,6 +632,9 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.3  2003/05/16 15:09:43  mbw
+// fixed javadocs to be in sync with code
+//
 // Revision 1.2  2003/05/13 18:17:51  mbw
 // fixed debug and header stamping aspects
 //

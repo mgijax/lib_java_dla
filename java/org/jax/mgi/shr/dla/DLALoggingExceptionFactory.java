@@ -3,11 +3,11 @@ package org.jax.mgi.shr.dla;
 import org.jax.mgi.shr.exception.ExceptionFactory;
 
 /**
- * <p>IS: An ExceptionFactory which returns LoggingExceptions
- * from the its storage of Exceptions.</p>
- * <p>HAS: a hashmap of Exceptions</p>
- * <p>DOES: returns Exceptions by name</p>
- * <p>Company: Jackson Laboratory</p>
+ * @is An ExceptionFactory which returns LoggingExceptions
+ * from the its storage of Exceptions.
+ * @has a hashmap of Exceptions
+ * @does returns Exceptions by name
+ * @company Jackson Laboratory
  * @author M Walker
  * @version 1.0
  */

@@ -9,7 +9,7 @@ import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * <p>IS: a base class which implements the DLA standards for all loaders.<p>
+ * @is a base class which implements the DLA standards for all loaders.<p>
  * <p>ABSTRACT: this class provides the instantiation of the 'basic needs'
  * objects for performing database loads such as SQLDataManagers, loggers,
  * BCPManagers, DLA exception handlers and factories. It also provides the
@@ -20,7 +20,7 @@ import org.jax.mgi.shr.exception.MGIException;
  *   <LI>run - for performing a specific load
  *   <LI>finale - for closing resources and other finalizations
  * </UL>
- * <p>HAS: a set of 'basic-needs' objects for doing DLA loads<br>
+ * @has a set of 'basic-needs' objects for doing DLA loads<br>
  * <UL>
  *   <LI>A DLALogger
  *   <LI>A DLAExceptionHandler
@@ -29,10 +29,10 @@ import org.jax.mgi.shr.exception.MGIException;
  *   <LI>A SQLdataManager for the MGD database
  *   <LI>A BCPManager for the RADAR database
  *   <LI>A BCPManager for the MGD database
- * </p>
- * <p>DOES: performs initialization of 'basic-needs' and instantiates
+ *
+ * @does performs initialization of 'basic-needs' and instantiates
  * the subclass and calls the initialize(), run() and finale() methods
- * on the subclass.</p>
+ * on the subclass.
  * <pre>
  * @author mbw, dbm
  * @version 1.0
@@ -101,10 +101,10 @@ public abstract class DLALoader {
       DLAExceptionFactory.InstanceException;
 
   /**
-   * <p>IS: a default constructor</p>
-   * <p>HAS: nothing</p>
-   * <p>DOES: instantiates the 'basic-needs' classes for performing
-   * database loads in accordance with the DLA standards</p>
+   * @is a default constructor
+   * @has nothing
+   * @does instantiates the 'basic-needs' classes for performing
+   * database loads in accordance with the DLA standards
    */
   public DLALoader() {
     try {
@@ -134,14 +134,14 @@ public abstract class DLALoader {
   }
 
   /**
-   * <p>Purpose: The main routine which dynamically instantiates an instance
+   * @purpose The main routine which dynamically instantiates an instance
    * of the specific loader class and executes the load() method. See javadocs
    * for the load() method for further details.
-   * <p>Assumes: a specific loader has been specified on the command line
-   * or within a configuration file or java system properties.</p>
-   * <p>Effects: the four dla standrad log files and records within the
+   * @assumes a specific loader has been specified on the command line
+   * or within a configuration file or java system properties.
+   * @effects the four dla standrad log files and records within the
    * RADAR and/or MGD database. If bcp is being used then bcp files may be
-   * available if they were configured to remain after executing them.</p>
+   * available if they were configured to remain after executing them.
    * @param args command line argument specifying which loader to run. This
    * argument can be alternatively placed in the configuration file.
    */
@@ -172,13 +172,13 @@ public abstract class DLALoader {
   }
 
   /**
-   * <p>Purpose: executes the initialize(), run() and finale() methods
+   * @purpose executes the initialize(), run() and finale() methods
    * of the subclass loader and performs standard logging and
-   * system exiting.</p>
-   * <p>Assumes: nothing.</p>
-   * <p>Effects: the four dla standrad log files and records within the
+   * system exiting.
+   * @assumes nothing.
+   * @effects the four dla standrad log files and records within the
    * RADAR and/or MGD database. If bcp is being used then bcp files may be
-   * available if they were configured to remain after executing them.</p>
+   * available if they were configured to remain after executing them.
    */
   public void load() {
     try {
@@ -210,32 +210,32 @@ public abstract class DLALoader {
   }
 
   /**
-   * <p>Purpose: to initialize instance variable of the subclass</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: instance variables will be instantiated</p>
+   * @purpose to initialize instance variable of the subclass
+   * @assumes nothing
+   * @effects instance variables will be instantiated
    * @throws MGIException if errors occur during initialization
    */
   protected abstract void initialize() throws MGIException;
 
   /**
-   * <p>Purpose: to perform a database load into the RADAR and/or MGD
-   * database</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: database records created within the RADAR and/or MGD
+   * @purpose to perform a database load into the RADAR and/or MGD
+   * database
+   * @assumes nothing
+   * @effects database records created within the RADAR and/or MGD
    * database and possible bcp files if doing bcp processing and the system
-   * is configured to keep bcp files after executing them</p>
+   * is configured to keep bcp files after executing them
    * @throws MGIException throw if an error occurs while performing the
-   * load</p>
+   * load
    */
   protected abstract void run() throws MGIException;
 
   /**
-   * <p>Purpose: to perform any finalization routines such as closing
-   * resources opened during initialization</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: all resources will be closed</p>
+   * @purpose to perform any finalization routines such as closing
+   * resources opened during initialization
+   * @assumes nothing
+   * @effects all resources will be closed
    * @throws MGIException throw if an error occurs while performing
-   * finalization</p>
+   * finalization
    */
   protected abstract void finale() throws MGIException;
 

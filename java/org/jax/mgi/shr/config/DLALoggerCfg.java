@@ -9,17 +9,17 @@ import org.jax.mgi.shr.config.ConfigurationManager;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * <p>IS: an object for configuring a DataLoadLogger.<p>
- * <p>HAS: a set of DataLoadLogger configuration parameters and a reference
- * to a ConfigurationManager<p>
- * <p>DOES: provides methods for getting and setting configuration paramaters
- * for a DataLoadLogger.<p>
- * <p>Description: This class obtains a reference to the ConfigurationManager
+ * @is an object for configuring a DataLoadLogger.
+ * @has a set of DataLoadLogger configuration parameters and a reference
+ * to a ConfigurationManager
+ * @does provides methods for getting and setting configuration paramaters
+ * for a DataLoadLogger.
+ * <p>Description: This class obtains a reference to the ConfiguratRionManager
  * singleton class which holds all the system configuration parameters read in
  * from the system properties and the configuration file. It then provides
  * get methods for looking up parameter values that pertain to a
- * DataLoadLogger and provides set methods for overriding these values.</p>
- * <p>Company: Jackson Laboratory</p>
+ * DataLoadLogger and provides set methods for overriding these values.
+ * @company Jackson Laboratory
  * @author M. Walker
  * @version 1.0
  */
@@ -158,6 +158,9 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.4  2003/05/16 15:09:37  mbw
+// fixed javadocs to be in sync with code
+//
 // Revision 1.3  2003/05/14 15:55:49  mbw
 // changed default of logging debug to false
 //

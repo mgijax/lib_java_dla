@@ -7,12 +7,12 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * <p>IS: An object which handles exceptions of type MGIException</p>
- * <p>HAS: An instance of a logger and static variables for totaling system
- * warnings and errors</p>
- * <p>DOES: provides a standard way to handle caught exceptions which include
- * functionality for logging and error/warning count totaling</p>
- * <p>Company: Jackson Laboratory</p>
+ * @is An object which handles exceptions of type MGIException
+ * @has An instance of a logger and static variables for totaling system
+ * warnings and errors
+ * @does provides a standard way to handle caught exceptions which include
+ * functionality for logging and error/warning count totaling
+ * @company Jackson Laboratory
  * @author M Walker
  * @version 1.0
  */
@@ -35,11 +35,11 @@ public class DLAExceptionHandler {
 
 
   /**
-   * <p>Purpose: provides a standard method for handling exceptions</p>
-   * <p>Assumes: this method is not being called concurrently</p>
-   * <p>Effects: a message is written to a log file or files depending on the
+   * @purpose provides a standard method for handling exceptions
+   * @assumes this method is not being called concurrently
+   * @effects a message is written to a log file or files depending on the
    * type of exception and the warning count or error count is updated
-   * depending on the attributes of exception.</p>
+   * depending on the attributes of exception.
    * @param e an exception that implements LoggableException
    */
   public static void handleException(DLAException e) {
@@ -48,9 +48,9 @@ public class DLAExceptionHandler {
   }
 
   /**
-   * <p>Purpose: accesses the error count</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: nothing</p>
+   * @purpose accesses the error count
+   * @assumes nothing
+   * @effects nothing
    * @return the count of errors that have occured
    */
   public static int getErrorCount() {
@@ -58,9 +58,9 @@ public class DLAExceptionHandler {
   }
 
   /**
-   * <p>Purpose: accesses the data error count</p>
-   * <p>Assumes: nothing</p>
-   * <p>Effects: nothing</p>
+   * @purpose accesses the data error count
+   * @assumes nothing
+   * @effects nothing
    * @return the count of errors which are data related that have occured
    */
   public static int getDataErrorCount() {
@@ -69,10 +69,10 @@ public class DLAExceptionHandler {
 
 
   /**
-   * <p>Purpose: updates warning or error counts based on the exception</p>
-   * <p>Assumes: this method is not being called concurrently</p>
-   * <p>Effects: the warning count or error count is updated depending on the
-   * attributes of exception.</p>
+   * @purpose updates warning or error counts based on the exception
+   * @assumes this method is not being called concurrently
+   * @effects the warning count or error count is updated depending on the
+   * attributes of exception.
    * @param e an exception that implements LoggableException
    */
   private static void updateCounts(MGIException e) {
@@ -83,6 +83,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.3  2003/05/13 18:18:24  mbw
+// modified exit message
+//
 // Revision 1.2  2003/05/08 20:40:02  mbw
 // incorporated changes from code reviews
 //

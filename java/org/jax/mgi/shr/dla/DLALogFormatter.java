@@ -11,14 +11,14 @@ import java.util.Date;
 import java.text.MessageFormat;
 
 /**
- * <p>IS: A Formatter object that formats the content of a message prepended
- * by a header stamp.</p>
- * <p>HAS: nothing.</p>
- * <p>DOES: Formats the content of a message record along with a standard
+ * @is A Formatter object that formats the content of a message prepended
+ * by a header stamp.
+ * @has nothing.
+ * @does Formats the content of a message record along with a standard
  * header stamp. An example illustrating the format is as follows:<br>
  * Nov 25, 2002 5:46:05 PM org.jax.mgi.log.TestDataLoadLogger testMethod<br>
- * INFO: this is a test message</p>
- * <p>Company: The Jackson Lab</p>
+ * INFO: this is a test message
+ * @company The Jackson Lab
  * @author M Walker
  * @version 1.0
  */
@@ -91,6 +91,9 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.2  2003/05/08 20:40:02  mbw
+// incorporated changes from code reviews
+//
 // Revision 1.1  2003/04/22 22:31:58  mbw
 // initial version
 //

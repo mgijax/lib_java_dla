@@ -3,10 +3,10 @@ package org.jax.mgi.shr.dla;
 import org.jax.mgi.shr.exception.ExceptionFactory;
 
 /**
- * <p>IS: An ExceptionFactory.</p>
- * <p>HAS: a hashmap of predefined DLAExceptions stored by a name key</p>
- * <p>DOES: looks up DLAExceptions by name</p>
- * <p>Company: The Jackson Laboratory</p>
+ * @is An ExceptionFactory.
+ * @has a hashmap of predefined DLAExceptions stored by a name key
+ * @does looks up DLAExceptions by name
+ * @company The Jackson Laboratory
  * @author M Walker
  * @version 1.0
  */
