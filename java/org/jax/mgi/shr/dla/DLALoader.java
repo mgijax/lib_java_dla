@@ -133,7 +133,7 @@ public abstract class DLALoader {
   }
 
   /**
-   * @purpose The main routine which dynamically instantiates an instance
+   * The main routine which dynamically instantiates an instance
    * of the specific loader class and executes the load() method. See javadocs
    * for the load() method for further details.
    * @assumes a specific loader has been specified on the command line
@@ -171,7 +171,7 @@ public abstract class DLALoader {
   }
 
   /**
-   * @purpose executes the initialize(), run() and finale() methods
+   * executes the initialize(), run() and finale() methods
    * of the subclass loader and performs standard logging and
    * system exiting.
    * @assumes nothing.
@@ -209,7 +209,7 @@ public abstract class DLALoader {
   }
 
   /**
-   * @purpose to initialize instance variable of the subclass
+   * to initialize instance variable of the subclass
    * @assumes nothing
    * @effects instance variables will be instantiated
    * @throws MGIException if errors occur during initialization
@@ -217,7 +217,7 @@ public abstract class DLALoader {
   protected abstract void initialize() throws MGIException;
 
   /**
-   * @purpose to perform a database load into the RADAR and/or MGD
+   * to perform a database load into the RADAR and/or MGD
    * database
    * @assumes nothing
    * @effects database records created within the RADAR and/or MGD
@@ -229,7 +229,7 @@ public abstract class DLALoader {
   protected abstract void run() throws MGIException;
 
   /**
-   * @purpose to perform any finalization routines such as closing
+   * to perform any finalization routines such as closing
    * resources opened during initialization
    * @assumes nothing
    * @effects all resources will be closed

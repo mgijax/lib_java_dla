@@ -15,7 +15,7 @@ import org.jax.mgi.shr.exception.MGIException;
 
 public class DLAException extends MGIException {
   /**
-   * @purpose constructor
+   * constructor
    * @assumes nothing
    * @effects nothing
    * @param pMessage the message string

@@ -29,7 +29,7 @@ public class DLASystemExit {
   public static final int NONFATAL_ERROR = 2;
 
   /**
-   * @purpose exits the system, logs a message to the system
+   * exits the system, logs a message to the system
    * logger reporting errors counts and closes all log files.
    * @assumes nothing
    * @effects a message will get logged to the system logger, all log
@@ -41,7 +41,7 @@ public class DLASystemExit {
   }
 
   /**
-   * @purpose exits the system with a fatal exit code and logs a message
+   * exits the system with a fatal exit code and logs a message
    * to the system logger reporting errors counts.
    * @assumes nothing
    * @effects a message will get logged to the system logger, all log
@@ -53,7 +53,7 @@ public class DLASystemExit {
   }
 
   /**
-   * @purpose exits the system with a calculated exit code based on
+   * exits the system with a calculated exit code based on
    * the total error counts along with logging the error tally to the
    * system logger.
    * @assumes nothing
@@ -86,7 +86,7 @@ public class DLASystemExit {
   }
 
   /**
-   * @purpose logs the error count to the system logger
+   * logs the error count to the system logger
    * @assumes nothing
    * @effects a message gets logged to the system logger
    * @param logger thr logger instance

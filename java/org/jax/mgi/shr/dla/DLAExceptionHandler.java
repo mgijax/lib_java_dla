@@ -35,7 +35,7 @@ public class DLAExceptionHandler {
 
 
   /**
-   * @purpose provides a standard method for handling exceptions
+   * provides a standard method for handling exceptions
    * @assumes this method is not being called concurrently
    * @effects a message is written to a log file or files depending on the
    * type of exception and the warning count or error count is updated
@@ -48,7 +48,7 @@ public class DLAExceptionHandler {
   }
 
   /**
-   * @purpose accesses the error count
+   * accesses the error count
    * @assumes nothing
    * @effects nothing
    * @return the count of errors that have occured
@@ -58,7 +58,7 @@ public class DLAExceptionHandler {
   }
 
   /**
-   * @purpose accesses the data error count
+   * accesses the data error count
    * @assumes nothing
    * @effects nothing
    * @return the count of errors which are data related that have occured
@@ -69,7 +69,7 @@ public class DLAExceptionHandler {
 
 
   /**
-   * @purpose updates warning or error counts based on the exception
+   * updates warning or error counts based on the exception
    * @assumes this method is not being called concurrently
    * @effects the warning count or error count is updated depending on the
    * attributes of exception.
@@ -83,6 +83,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.4  2003/05/22 15:49:11  mbw
+// javadocs edits
+//
 // Revision 1.3  2003/05/13 18:18:24  mbw
 // modified exit message
 //
