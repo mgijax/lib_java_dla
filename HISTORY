@@ -1,3 +1,8 @@
+DATE: 05/03/2004
+STAFF: mbw
+CHANGES:
+1) FASTAData class now correctly strips newline chars from input sequence
+
 TAG: lib_java_dla-1-0-22_BP
 DATE: 04/30/2004
 STAFF: lec
