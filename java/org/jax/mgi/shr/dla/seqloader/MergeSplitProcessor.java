@@ -143,7 +143,8 @@ public class MergeSplitProcessor {
                            SeqloaderConstants.SGL_QUOTE + toSeqid +
                            SeqloaderConstants.SGL_QUOTE;
                        logger.logcInfo(cmd, false);
-                       writer.writeGo(cmd);
+                       writer.write(cmd);
+                       writer.go();
                        splitCtr++;
                    }
                }
@@ -161,7 +162,8 @@ public class MergeSplitProcessor {
 
                    logger.logcInfo(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
-                   writer.writeGo(cmd);
+                   writer.write(cmd);
+                   writer.go();
                    mergeCtr++;
                }
         }
