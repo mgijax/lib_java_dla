@@ -37,7 +37,10 @@ public class IncremSeqProcessor extends SeqProcessor {
     private SeqEventDetector eventDetector;
 
     // writer for repeated sequences
-    BufferedWriter repeatWriter;
+    private BufferedWriter repeatWriter;
+
+    // QCReporter to manage writing to seqloader QC tables
+    private SeqQCReporter qcReporter;
 
     // lookup a sequence in MGI
     private SequenceLookup seqLookup;
@@ -72,7 +75,6 @@ public class IncremSeqProcessor extends SeqProcessor {
       sequenceCtr = 0;
 
       mgdStream = mgdSqlStream;
-      qcStream = qcSqlStream;
       seqResolver = sar;
 
       // Create an Accession Attribute Resolver
@@ -80,7 +82,7 @@ public class IncremSeqProcessor extends SeqProcessor {
 
        // Create a Reference Association Processor
        refAssocProcessor = new SeqRefAssocProcessor();
-      logger = DLALogger.getInstance();
+       logger = DLALogger.getInstance();
 
         // Create a Molecular Source Processor
        msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream, logger);
@@ -103,13 +105,14 @@ public class IncremSeqProcessor extends SeqProcessor {
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
                               SQLStream qcSqlStream,
+                              SeqQCReporter qcReporter,
                               SequenceAttributeResolver sar,
                               MergeSplitProcessor msp,
                               BufferedWriter repeatSeqWriter)
         throws CacheException, DBException, ConfigException, MSException,
                DLALoggingException, KeyNotFoundException {
         this(mgdSqlStream, qcSqlStream, sar);
-
+        this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
         config = new SequenceLoadCfg();
@@ -146,6 +149,8 @@ public class IncremSeqProcessor extends SeqProcessor {
      *    sequence in the input
      * @throws SequenceResolverException if we are unable to resolve one or more
      *    SequenceRawAttributes attributes
+     * @throws ChangedOrganismException if input organism != existing organism
+     * @throws ChangedLibraryException if input library != existing library
      */
 
   // need to throw SeqloaderException here. Catch and bundle these exceptions in
@@ -184,23 +189,19 @@ public class IncremSeqProcessor extends SeqProcessor {
 
         if (event == SeqloaderConstants.ALREADY_ADDED) {
           //System.out.println("This is a Already Added Event");
+           logger.logdDebug("Already Added Event Primary: " + primarySeqid);
            processAlreadyAddedEvent(seqInput);
-           logger.logdDebug("Already Added Event Primary: " + primarySeqid, true);
-
         }
         else if (event == SeqloaderConstants.UPDATE ) {
+            logger.logdDebug("Update Event Primary: " + primarySeqid);
             processUpdateEvent(seqInput, existingSequence);
-            logger.logdDebug("Update Event Primary: " + primarySeqid, true);
             //System.out.println("This is a Update Event");
         }
         else if (event == SeqloaderConstants.ADD) {
             processAddEvent(seqInput);
-            //logger.logdDebug("Add Event Primary: " + primarySeqid, true);
-            //System.out.println("This is an Add Event");
         }
         else if (event == SeqloaderConstants.DUMMY) {
-          logger.logdInfo("Primary: " + primarySeqid +
-                            "is a Dummy Sequence and will be deleted", true);
+            logger.logdDebug("Dummy Event Primary: " + primarySeqid);
             processDummyEvent(seqInput, existingSequence);
             //System.out.println("This is a Dummy Event");
         }
@@ -212,8 +213,9 @@ public class IncremSeqProcessor extends SeqProcessor {
         }
         else {
           // raise error - unhandled case
-          System.err.println("Unhandled event in IncremSeqPrcessor.processSequence");
           logger.logdDebug("UNHANDLED Event Primary: " + primarySeqid);
+          System.err.println("Unhandled event in IncremSeqPrcessor.processSequence");
+
         }
       }
 
@@ -233,8 +235,6 @@ public class IncremSeqProcessor extends SeqProcessor {
       private void processAlreadyAddedEvent(SequenceInput seqInput)
           throws RepeatSequenceException, SeqloaderException {
       try {
-          logger.logdDebug("Already Added Event Primary: " +
-                           seqInput.getPrimaryAcc().getAccID());
           // write sequence to file and throw RepeatFileException
           repeatWriter.write(seqInput.getSeq().getRecord());
           throw new RepeatSequenceException();
@@ -267,26 +267,29 @@ public class IncremSeqProcessor extends SeqProcessor {
       private void processUpdateEvent(SequenceInput seqInput, Sequence existingSequence)
           throws ConfigException, CacheException, DBException, TranslationException,
               KeyNotFoundException, MSException, SequenceResolverException,
-              ChangedOrganismException, ChangedLibraryException {
+              SeqloaderException, ChangedOrganismException, ChangedLibraryException {
+
+        // get input values needed to accomplish update
         SequenceRawAttributes rawSeq = seqInput.getSeq();
+        String inputRawOrganism = rawSeq.getRawOrganisms();
+        String inputRawLibrary = rawSeq.getLibrary();
         String primarySeqid = seqInput.getPrimaryAcc().getAccID();
         SEQ_SequenceState existingSeqState = existingSequence.getSequenceState();
 
-        String inputRawOrganism = rawSeq.getRawOrganisms();
+        // get existing values needed to accomplish update
         String existingRawOrganism = existingSeqState.getRawOrganism();
-        String inputRawLibrary = rawSeq.getLibrary();
         String existingRawLibrary = existingSeqState.getRawLibrary();
-        logger.logdDebug("Update Event Primary: " +
-                           primarySeqid);
+        Integer existingSeqKey = existingSequence.getSequenceKey();
+
         // if input rawOrganism and existing rawOrganism don't match - QC
         if (!inputRawOrganism.equals(existingRawOrganism)) {
           // QC report and throw an exception
           logger.logcInfo("Sequence: " + primarySeqid +
-                          " MGI rawOrganism: " +
-                          existingSequence.getSequenceState().getRawOrganism() +
-                          " Input rawOrganism: " +
-                          seqInput.getSeq().getRawOrganisms(), false );
-          // write to qcSQLStream
+                          " MGI rawOrganism: " + existingRawOrganism +
+                          " Input rawOrganism: " + inputRawOrganism, false );
+          qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
+                                              inputRawLibrary);
+
           throw new ChangedOrganismException();
         }
         // if both input and existing rawLibrary not null and not equal - QC
@@ -294,10 +297,10 @@ public class IncremSeqProcessor extends SeqProcessor {
                 !inputRawLibrary.equals(existingRawLibrary)) {
             // QC report and throw an exception
             logger.logcInfo("Sequence: " + primarySeqid +
-                            " MGI rawLibrary: " +
-                            existingSequence.getSequenceState().getRawLibrary() +
-                            " Input rawLibrary: " +
-                            seqInput.getSeq().getLibrary(), false);
+                            " MGI RawLibrary: " + existingRawLibrary +
+                            " Input rawLibrary: " + inputRawLibrary, false);
+            qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
+                                              inputRawLibrary);
             throw new ChangedLibraryException();
         }
         // if one rawLibrary null and the other not - QC
@@ -305,10 +308,10 @@ public class IncremSeqProcessor extends SeqProcessor {
                  (inputRawLibrary == null && existingRawLibrary != null)) {
             // QC report and throw an exception
             logger.logcInfo("Sequence: " + primarySeqid +
-                            " MGI rawLibary: " +
-                            existingSequence.getSequenceState().getRawLibrary() +
-                            " Input rawLibrary: " +
-                            seqInput.getSeq().getLibrary(), false);
+                            " MGI rawLibrary: " + existingRawLibrary +
+                            " Input rawLibrary: " + inputRawLibrary, false);
+            qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
+                                              inputRawLibrary);
             throw new ChangedLibraryException();
        }
        else {
@@ -340,14 +343,17 @@ public class IncremSeqProcessor extends SeqProcessor {
               }
           Vector oldReferences = existingSequence.getOldRefAssociations();
           MGI_Reference_AssocState refState;
+          Integer refsKey;
+
           if (oldReferences != null) {
               for (Iterator i = oldReferences.iterator(); i.hasNext();) {
                   refState = (MGI_Reference_AssocState)i.next();
+                  refsKey = refState.getRefsKey();
                   // use SeqQCReporter here to report sequenceKey and refs_key
                   // existingSequence.getSequenceKey();
                   logger.logcInfo("Old _refs_key: " +
-                      refState.getRefsKey() + " for seqid: " +
-                      primarySeqid, true);
+                      refsKey + " for seqid: " + primarySeqid, true);
+                  qcReporter.reportOldReferences(existingSeqKey, refsKey);
                   }
           }
 
@@ -374,8 +380,7 @@ public class IncremSeqProcessor extends SeqProcessor {
                                    Sequence existingSequence)
         throws ConfigException, CacheException, DBException, TranslationException,
           KeyNotFoundException, MSException, SequenceResolverException {
-        logger.logdDebug("Dummy Event Primary: " +
-                           seqInput.getPrimaryAcc().getAccID());
+
         // send dummy sequence to stream to be deleted
         existingSequence.sendToStream();
 
