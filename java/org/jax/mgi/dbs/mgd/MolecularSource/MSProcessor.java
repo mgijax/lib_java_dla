@@ -33,9 +33,14 @@ public class MSProcessor
 {
 
     /**
-     * a SQLStream for writing writing insert statements for molecular sources
+     * a SQLStream for inserting new MolecularSource objects into the database
      */
     protected SQLStream stream = null;
+
+    /**
+     * a SQLStream for adding qc items to the radar qc tables
+     */
+    protected SQLStream qcStream = null;
     /**
      * used for resolving ms raw attributes to a source object
      */
@@ -64,11 +69,12 @@ public class MSProcessor
      * @throws MSException thrown if there is an error instantiating the
      * MSResolver
      */
-    public MSProcessor(SQLStream stream) throws MSException
+    public MSProcessor(SQLStream stream, SQLStream qcStream) throws MSException
     {
         this.stream = stream;
+        this.qcStream = qcStream;
         this.resolver = new MSResolver();
-        this.qcReporter = new MSQCReporter();
+        this.qcReporter = new MSQCReporter(qcStream);
     }
 
     /**
@@ -194,7 +200,11 @@ public class MSProcessor
                     srcHasChanged = true;
                 }
                 else
-                    qcReporter.reportAttributeDiscrepancy();
+                    qcReporter.reportAttributeDiscrepancy(
+                         existingSrc.getMSKey(),
+                         "strain",
+                         incomingSrc.getStrainKey(),
+                         attr.getStrain());
             }
 
             if (existingSrc.getCellLineKey().intValue() !=
@@ -206,9 +216,15 @@ public class MSProcessor
                     srcHasChanged = true;
                 }
                 else
-                    qcReporter.reportAttributeDiscrepancy();
-            }
+                    qcReporter.reportAttributeDiscrepancy(
+                         existingSrc.getMSKey(),
+                         "cellLine",
+                         incomingSrc.getCellLineKey(),
+                         attr.getCellLine());
 
+            }
+            /* age doesnt support qc reports since it has no controlled voc...
+               leaving out until resolved
             if (!existingSrc.getAge().equals(incomingSrc.getAge()))
             {
                 if (!existingSrc.isAgeCurated())
@@ -219,6 +235,7 @@ public class MSProcessor
                 else
                     qcReporter.reportAttributeDiscrepancy();
             }
+            */
 
             if (existingSrc.getGenderKey().intValue() !=
                 incomingSrc.getGenderKey().intValue())
@@ -229,7 +246,12 @@ public class MSProcessor
                     srcHasChanged = true;
                 }
                 else
-                    qcReporter.reportAttributeDiscrepancy();
+                    qcReporter.reportAttributeDiscrepancy(
+                         existingSrc.getMSKey(),
+                         "gender",
+                         incomingSrc.getGenderKey(),
+                         attr.getGender());
+
             }
 
             if (existingSrc.getTissueKey().intValue() !=
@@ -241,7 +263,12 @@ public class MSProcessor
                     srcHasChanged = true;
                 }
                 else
-                    qcReporter.reportAttributeDiscrepancy();
+                    qcReporter.reportAttributeDiscrepancy(
+                         existingSrc.getMSKey(),
+                         "tissue",
+                         incomingSrc.getTissueKey(),
+                         attr.getTissue());
+
             }
             if (srcHasChanged)
             {
@@ -301,7 +328,8 @@ public class MSProcessor
         }
         catch (KeyNotFoundException e)
         {
-            qcReporter.reportLibraryNameNotFound(attr);
+            qcReporter.reportLibraryNameNotFound(attr.getLibraryName());
+            attr.setLibraryName(null); // change to anonymous
             return null;
         }
         catch (MGIException e)
@@ -380,7 +408,9 @@ public class MSProcessor
                 {
                     if (!thisName.equals(agreedUponName))
                     {
-                        qcReporter.reportCloneNameDiscrepancy(v);
+                        qcReporter.reportCloneNameDiscrepancy(accid,
+                                                              agreedUponName,
+                                                              thisName);
                         // do not use any of the sources
                         return null;
                     }
