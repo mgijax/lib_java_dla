@@ -5,6 +5,13 @@ CHANGES:
 2) SeqProcessor and IncremSeqProcessor processInput method - changed
    exception handling
 
+DATE: 04/02/2004
+STAFF: mbw
+CHANGES:
+1) added new FASTALoader and GeneIndexLoader classes
+2) changed SequenceInput to handle storing RefAssocRawAttr
+3) changed SequenceProcessor and RefAssocAttrResolver to resolve RefAssocRawAttr
+
 DATE: 03/31/2004
 STAFF: sc
 CHANGES:
