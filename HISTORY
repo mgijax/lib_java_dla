@@ -1,3 +1,9 @@
+TAG: lib_java_dla-1-0-6-patch-1
+DATE: 01/21/2004
+STAFF: mbw
+RELEASE:
+CHANGES: added install.dir to build.properties and changed classpath
+
 TAG: lib_java_dla-1-0-6
 DATE: 12/29/2003
 STAFF: mbw
