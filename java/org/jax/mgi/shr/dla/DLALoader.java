@@ -14,7 +14,9 @@ import org.jax.mgi.shr.dbutils.dao.BCP_Inline_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream;
 import org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
+import org.jax.mgi.shr.dbutils.DBSchema;
 import org.jax.mgi.shr.dbutils.ScriptWriter;
+import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 import org.jax.mgi.shr.exception.MGIException;
 
@@ -172,8 +174,16 @@ public abstract class DLALoader {
    * available if they were configured to remain after executing them.
    */
   public void load() {
+    String[] loadTables = this.dlaConfig.getTruncateLoadTables();
+    String[] qcTables = this.dlaConfig.getTruncateQCTables();
     try {
       logger.logdInfo("Performing load initialization",true);
+      if (loadTables != null)
+          DLALoaderHelper.truncateTables(loadTables,
+                                         this.loadDBMgr.getDBSchema());
+      if (qcTables != null)
+          DLALoaderHelper.truncateTables(qcTables,
+                                         this.qcDBMgr.getDBSchema());
       initialize();
     }
     catch (Exception e) {
@@ -289,5 +299,7 @@ public abstract class DLALoader {
       }
 
   }
+
+
 
 }
