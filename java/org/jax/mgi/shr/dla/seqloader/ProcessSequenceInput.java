@@ -5,7 +5,7 @@ import java.util.Vector;
 
 /**
  * @is an interface which defines methods to process a SequenceInput object, get
- * reports of sequences processed and delete Sequences.
+ * processing information about SequenceInput objects processed and delete Sequences.
  * @has nothing
  * @does provides an interface for processing SequenceInputs
  * @copyright Jackson Labatory
@@ -28,6 +28,22 @@ public interface ProcessSequenceInput {
         throws SeqloaderException, RepeatSequenceException,
            ChangedLibraryException, ChangedOrganismException,
            SequenceResolverException, MSException;
+    /**
+    * method definition to get processing information about the SequenceInput
+    * objects processed
+    * @assumes nothing
+    * @effects Noting
+    * @param None
+    * @throws Nothing
+    */
     public Vector getProcessedReport();
+
+    /**
+    * method definition for deleting sequences
+    * @assumes nothing
+    * @effects Noting
+    * @param None
+    * @throws Seqloader Exception if errors deleting sequences
+    */
     public void deleteSequences() throws SeqloaderException;
 }
