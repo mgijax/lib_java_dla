@@ -8,6 +8,7 @@ import org.jax.mgi.shr.dbutils.RowReference;
 import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
+import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceInterpreter;
 import org.jax.mgi.dbs.mgd.MGD;
@@ -35,15 +36,24 @@ public class MSCollapsedCache
     private Interpreter interpreter = null;
 
     /**
+     * the logger to use
+     */
+    private Logger logger = null;
+
+
+    /**
      * constructor
      * @throws ConfigException thrown if there is an error with configuration
      * @throws DBException thrown if there is an error accessing the database
      * @throws CacheException thrown if there is an error with the cache
      */
-    public MSCollapsedCache(int cacheType)
+    public MSCollapsedCache(Logger logger, int cacheType)
     throws ConfigException, DBException, CacheException
 {
-    super(cacheType, SQLDataManagerFactory.getShared(SchemaConstants.MGD));
+    super(cacheType,
+          SQLDataManagerFactory.getShared(SchemaConstants.MGD),
+          logger);
+    this.logger = logger;
     interpreter = new Interpreter();
     }
 
@@ -137,8 +147,8 @@ public class MSCollapsedCache
     protected void addToCache(MolecularSource ms)
     throws DBException, CacheException
     {
-        if (lookup(ms) == null)
-            super.cache.put(ms.toString(), ms);
+        logger.logDebug("adding to cache: " + ms);
+        super.cache.put(ms.toString(), ms);
     }
 
     /**

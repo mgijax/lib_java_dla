@@ -6,6 +6,8 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.shr.cache.CacheConstants;
+import org.jax.mgi.shr.log.Logger;
+import org.jax.mgi.shr.log.ConsoleLogger;
 
 /**
  * @is an object for resolving MolecularSource raw attributes into
@@ -33,6 +35,11 @@ public class MSResolver {
      */
     protected MSAttrResolver attrResolver = null;
 
+    /**
+     * the logger to use
+     */
+    protected Logger logger = null;
+
     /*
      * the following constant definitions are exceptions thrown by this class
      */
@@ -43,22 +50,31 @@ public class MSResolver {
     protected static String KeyErr = MSExceptionFactory.KeyErr;
 
 
+    /**
+     * constructor
+     * @throws MSException if a error occurs during initialization of the
+     * collapsed molecular source cache or the MSAttrResolver
+     */
     public MSResolver()
     throws MSException
     {
-        try
-        {
-            msCollapsedCache = new MSCollapsedCache(CacheConstants.FULL_CACHE);
-            attrResolver = new MSAttrResolver();
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(MSResolverInitErr, e);
-            throw e2;
-        }
+        this.logger = new ConsoleLogger();
+        init(logger);
     }
+
+    /**
+     * constructor which accepts a Logger
+     * @param logger the Logger to use
+     * @throws MSException thrown if a error occurs during initialization of
+     * the collapsed molecular source cache or the MSAttrResolver
+     */
+    public MSResolver(Logger logger)
+    throws MSException
+    {
+        this.logger = logger;
+        init(logger);
+    }
+
 
     /**
      * resolve the given set of raw molecular source attributes to a
@@ -126,6 +142,30 @@ public class MSResolver {
         }
         else
           return existingMS;
+    }
+
+    /**
+     * initialize this instance
+     * @assumes nothing
+     * @effects the collapsed cache and the MSAttrResolver will be initialized
+     * @param logger the logger to use
+     * @throws MGIException thrown if there is an error during initialization
+     */
+    protected void init(Logger logger) throws MSException
+    {
+        try
+        {
+            msCollapsedCache = new MSCollapsedCache(logger,
+                CacheConstants.FULL_CACHE);
+            attrResolver = new MSAttrResolver();
+        }
+        catch (MGIException e)
+        {
+            MSExceptionFactory eFactory = new MSExceptionFactory();
+            MSException e2 = (MSException)
+                eFactory.getException(MSResolverInitErr, e);
+            throw e2;
+        }
     }
 
 }

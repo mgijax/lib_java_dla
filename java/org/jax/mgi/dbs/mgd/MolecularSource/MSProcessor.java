@@ -6,6 +6,8 @@ import java.util.Iterator;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.shr.log.Logger;
+import org.jax.mgi.shr.log.ConsoleLogger;
 import org.jax.mgi.dbs.mgd.lookup.LibraryKeyLookup;
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.shr.config.ConfigException;
@@ -57,6 +59,11 @@ public class MSProcessor
      */
     private int MAXCLONES = 25;
 
+    /**
+     * the logger to use
+     */
+    private Logger logger = null;
+
     /*
      * the following constant definitions are exceptions thrown by this class
      */
@@ -75,7 +82,24 @@ public class MSProcessor
         this.qcStream = qcStream;
         this.resolver = new MSResolver();
         this.qcReporter = new MSQCReporter(qcStream);
+        this.logger = new ConsoleLogger();
     }
+
+    /**
+     * constructor
+     * @throws MSException thrown if there is an error instantiating the
+     * MSResolver
+     */
+    public MSProcessor(SQLStream stream, SQLStream qcStream,
+                       Logger logger) throws MSException
+    {
+        this.stream = stream;
+        this.qcStream = qcStream;
+        this.resolver = new MSResolver(logger);
+        this.qcReporter = new MSQCReporter(qcStream);
+        this.logger = logger;
+    }
+
 
     /**
      * discovers the MolecularSource object to use for the given sequence by
@@ -97,16 +121,42 @@ public class MSProcessor
         // MolecularSource object to be returned
         MolecularSource ms = null;
 
+        logger.logDebug("processing the following raw attributes: " + attr);
         if (attr.getLibraryName() != null) // this is a named source
         {
+            logger.logDebug("looking up source by name: " +
+                            attr.getLibraryName());
             ms = findByLibraryName(attr);
+            if (logger.isDebug())
+            {
+                if (ms != null)
+                {
+                    logger.logDebug("Named source found");
+                }
+                else
+                {
+                    logger.logDebug("Named source not found");
+                }
+            }
         }
         if (ms == null) // this is an annonymous source or a named
                         // which was not found in the database
         {
             // look for a source from the associated clones that is named
             // and use that one instead
+            logger.logDebug("looking up named associated clones");
             ms = findByAssociatedClones(accid);
+        }
+        if (logger.isDebug())
+        {
+            if (ms != null)
+            {
+                logger.logDebug("found named source: " + ms.getName());
+            }
+            else
+            {
+                logger.logDebug("no named source from assoiciated clones found");
+            }
         }
         /**
          * if no molecular source was found then just resolve the raw
@@ -116,6 +166,7 @@ public class MSProcessor
 
         if (ms == null) // then just use the MSResolver
         {
+            logger.logDebug("resolving raw attributes for unamed source");
             ms = this.resolver.resolve(attr);
             try
             {
