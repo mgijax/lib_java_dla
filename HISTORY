@@ -1,3 +1,14 @@
+TAG: lib_java_dla-tr5421-1
+DATE: 03/02/2005
+STAFF: sc
+RELEASE: prod
+CHANGES: 
+1) New classes for this tr: SeqDeleter, SeqDeleterProcessor, 
+   SeqDeleterCfg.java, GBSeqDeleterInterpreter, RefSeqDeleterInterpreter
+2) SeqLoaderConstants - Added new sequence status constants (delete, split)
+3) SequenceUpdater.java - Added logic to update sequence status key 
+4) Sequence - updated the getState() method to return a *copy* of the SequenceState
+
 TAG: lib_java_dla-tr5421-BP
 DATE: 02/28/2005
 STAFF: sc
