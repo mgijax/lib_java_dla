@@ -1,3 +1,9 @@
+DATE: 05/07/2004
+STAFF: sc
+CHANGES:
+1) GBFormatInterpreter - throw RecordFormatException if organism 
+     not in sequence record
+
 DATE: 05/03/2004
 STAFF: mbw
 CHANGES:
