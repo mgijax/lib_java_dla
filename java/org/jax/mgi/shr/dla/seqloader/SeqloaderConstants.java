@@ -23,6 +23,7 @@ public class SeqloaderConstants {
     public static final String SPC = " ";
     public static final String SLASH = "/";
     public static final String EQUAL = "=";
+    // Yes, THREE escapes! your not seeing things - isn't Java fun
     public static final String DBL_QUOTE = "\\\"";
     public static final String EMPTY_STRING = "";
 
@@ -41,17 +42,17 @@ public class SeqloaderConstants {
     public static final int SPLIT = 7;
     public static final int DUMMY = 8;
 
-    // Provider vocabulary constants
-   // public static final String GENBANK_PROVIDER = "GenBank";
-   // public static final String SWISSPROT_PROVIDER = "SWISS-PROT";
-   // public static final String TREMBL_PROVIDER = "TrEMBL";
-   // public static final String REFSEQ_PROVIDER = "RefSeq";
-    //public static final String TIGR_PROVIDER =
-    //public static final String
+    // Sequence quality VOC_Vocab term
+    public static final String HIGH_QUAL = "High";
+    public static final String MED_QUAL = "Medium";
+    public static final String LOW_QUAL = "Low";
 
 
 }
 //  $Log$
+//  Revision 1.3  2004/02/02 19:45:15  sc
+//  development since last tag
+//
 //  Revision 1.2  2004/01/12 20:14:27  sc
 //  ongoing development
 //
