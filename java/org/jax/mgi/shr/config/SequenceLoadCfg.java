@@ -73,18 +73,6 @@ public class SequenceLoadCfg extends Configurator {
     }
 
     /**
-     * Gets the load reference (J number) for this load
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
-     * @return JNumber
-     * @throws ConfigException if "JNUMBER" not found in configuration file
-     */
-    public String getLoadReference() throws ConfigException {
-        return getConfigString("JNUMBER");
-    }
-
-    /**
      * Gets the MGIType name for sequence table
      * @assumes Nothing
      * @effects Nothing
@@ -146,6 +134,9 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.2  2004/02/02 19:42:27  sc
+//  Added repeat file name
+//
 //  Revision 1.1  2004/01/06 20:09:30  mbw
 //  initial version imported from lib_java_seqloader
 //
