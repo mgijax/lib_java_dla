@@ -120,7 +120,7 @@ abstract public class SeqProcessor  {
        inputSequence.setAccPrimary(
          accResolver.resolveAttributes(
          seqInput.getPrimaryAcc(), inputSequence.getSequenceKey()));
-       logger.logdDebug("Primary: " +
+       logger.logdDebug("Add Event Primary: " +
                       ( (MSRawAttributes) seqInput.getMSources().get(0)).
                       getOrganism() +
                       " " + seqInput.getPrimaryAcc().getAccID(), false);
@@ -131,7 +131,7 @@ abstract public class SeqProcessor  {
        while (secondaryIterator.hasNext()) {
            AccessionRawAttributes ara = (AccessionRawAttributes) secondaryIterator.
              next();
-           logger.logdDebug("Secondary: " + (ara).getAccID(), false);
+           logger.logdDebug("Add Event Secondary: " + (ara).getAccID(), false);
            inputSequence.addAccSecondary(
                accResolver.resolveAttributes(ara,
                                          inputSequence.getSequenceKey()));
