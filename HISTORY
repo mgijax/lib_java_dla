@@ -1,3 +1,8 @@
+DATE: 07/22/2004
+STAFF: mbw
+CHANGES:
+1) DLALoader, DLALogger  - changes to suit impact from revised lib_java_core (3.01 maint release)
+
 TAG: lib_java_dla-1-0-29
 DATE: 07/20/2004
 STAFF: sc
