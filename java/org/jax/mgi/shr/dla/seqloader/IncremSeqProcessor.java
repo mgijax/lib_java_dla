@@ -179,13 +179,36 @@ public class IncremSeqProcessor extends SeqProcessor {
             try {
               processUpdateEvent(seqInput, existingSequence);
             }
-            catch (MGIException e) {
+            catch (ConfigException e) {
               SeqloaderException e1 =
                   (SeqloaderException) eFactory.getException(
               SeqloaderExceptionFactory.ProcessUpdateErr, e);
               throw e1;
             }
-
+	   catch (CacheException e) {
+              SeqloaderException e1 =
+                  (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.ProcessUpdateErr, e);
+              throw e1;
+            }
+	   catch (DBException e) {
+              SeqloaderException e1 =
+                  (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.ProcessUpdateErr, e);
+              throw e1;
+            }
+	    catch (TranslationException e) {
+              SeqloaderException e1 =
+                  (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.ProcessUpdateErr, e);
+              throw e1;
+            }
+	    catch (KeyNotFoundException e) {
+              SeqloaderException e1 =
+                  (SeqloaderException) eFactory.getException(
+              SeqloaderExceptionFactory.ProcessUpdateErr, e);
+              throw e1;
+            }
           }
           else if (event == SeqloaderConstants.ADD) {
             super.processInput(seqInput);
@@ -314,8 +337,8 @@ public class IncremSeqProcessor extends SeqProcessor {
         else if ( (inputRawLibrary != null && existingRawLibrary != null) &&
                 !inputRawLibrary.equals(existingRawLibrary)) {
             // QC report and throw an exception
-            logger.logcInfo("Sequence: " + primarySeqid +
-                            " MGI RawLibrary: " + existingRawLibrary +
+            logger.logcInfo("Library conflict: " + primarySeqid +
+                            " MGI rawLibrary: " + existingRawLibrary +
                             " Input rawLibrary: " + inputRawLibrary, false);
             qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
                                               inputRawLibrary);
@@ -325,7 +348,7 @@ public class IncremSeqProcessor extends SeqProcessor {
         else if ( (inputRawLibrary != null && existingRawLibrary == null) ||
                  (inputRawLibrary == null && existingRawLibrary != null)) {
             // QC report and throw an exception
-            logger.logcInfo("Sequence: " + primarySeqid +
+            logger.logcInfo("Library conflict: " + primarySeqid +
                             " MGI rawLibrary: " + existingRawLibrary +
                             " Input rawLibrary: " + inputRawLibrary, false);
             qcReporter.reportRawSourceConflicts(existingSeqKey, inputRawOrganism,
@@ -368,7 +391,7 @@ public class IncremSeqProcessor extends SeqProcessor {
                   refState = (MGI_Reference_AssocState)i.next();
                   refsKey = refState.getRefsKey();
                   logger.logcInfo("Old _refs_key: " +
-                      refsKey + " for seqid: " + primarySeqid, true);
+                      refsKey + " for seqid: " + primarySeqid, false);
                   qcReporter.reportOldReferences(existingSeqKey, refsKey);
                   }
           }
