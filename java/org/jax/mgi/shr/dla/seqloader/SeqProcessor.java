@@ -171,7 +171,7 @@ public class SeqProcessor implements ProcessSequenceInput  {
 
    public void processInput(SequenceInput seqInput)
        throws SeqloaderException, RepeatSequenceException,
-          ChangedLibraryException, ChangedOrganismException,
+          ChangedOrganismException,
           SequenceResolverException, MSException {
 
        SEQ_SequenceState inputSequenceState;
