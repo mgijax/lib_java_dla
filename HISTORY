@@ -1,3 +1,8 @@
+TAG: lib_java_dla-1-0-28
+DATE: 07/13/2004
+STAFF: mbw
+CHANGES: bug fix: removed space and quote characyers from timestamp
+
 TAG: lib_java_dla-1-0-27
 DATE: 07/12/2004
 STAFF: sc
