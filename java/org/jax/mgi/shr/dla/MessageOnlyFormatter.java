@@ -4,7 +4,6 @@
 package org.jax.mgi.shr.dla;
 
 import java.util.logging.Formatter;
-import java.lang.Character;
 import java.util.logging.LogRecord;
 
 /**
@@ -35,6 +34,9 @@ public class MessageOnlyFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.4  2003/05/22 15:49:14  mbw
+// javadocs edits
+//
 // Revision 1.3  2003/05/08 20:40:07  mbw
 // incorporated changes from code reviews
 //
