@@ -1,3 +1,8 @@
+DATE: 03/8/2004
+STAFF:sc
+CHANGES: additions and changes from implementing refseqload and
+         debugging the  incremental load
+
 TAG: lib_java_dla-1-0-14
 DATE: 03/04/2004
 STAFF:mbw

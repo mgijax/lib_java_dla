@@ -164,10 +164,11 @@ public class GBOrganismChecker {
             }
 
         }
+        /*
         if (isA == false) {
             logger.logdDebug("Not a valid record: " + record, true);
         }
-
+        */
         return isA;
       }
 
@@ -383,6 +384,9 @@ public class GBOrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.1  2004/02/27 14:32:36  sc
+//  initial commit having been moved from gbseqload
+//
 //  Revision 1.4  2004/02/19 20:01:50  sc
 //  Added debug logging for sequence which do not pass the isValid test
 //

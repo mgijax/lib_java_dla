@@ -22,6 +22,8 @@ import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.MolecularSource.MolecularSource;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceKey;
+import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 
 import java.util.Vector;
@@ -39,6 +41,18 @@ public class IncremSeqProcessor extends SeqProcessor {
 
     // lookup a sequence in MGI
     private SequenceLookup seqLookup;
+
+    /**
+     * Constructs a IncremSeqProcessor that handles event detection
+     * @assumes Nothing
+     * @effects Nothing
+     * @param None
+     * @throws CacheException
+     * @throws DBException
+     * @throws ConfigException
+     * @throws MSException
+     * @throws DLALoggingException
+     */
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
                               SQLStream qcSqlStream,
@@ -73,6 +87,19 @@ public class IncremSeqProcessor extends SeqProcessor {
 
     }
 
+    /**
+     * Constructs a IncremSeqProcessor that handles adding sequences only; does
+     * not do event detection/handling
+     * @assumes Nothing
+     * @effects Nothing
+     * @param None
+     * @throws CacheException
+     * @throws DBException
+     * @throws ConfigException
+     * @throws MSException
+     * @throws DLALoggingException
+     * @throws KeyNotFoundException
+     */
 
     public IncremSeqProcessor(SQLStream mgdSqlStream,
                               SQLStream qcSqlStream,
@@ -80,7 +107,7 @@ public class IncremSeqProcessor extends SeqProcessor {
                               MergeSplitProcessor msp,
                               BufferedWriter repeatSeqWriter)
         throws CacheException, DBException, ConfigException, MSException,
-               DLALoggingException, KeyNotFoundException, SeqloaderException {
+               DLALoggingException, KeyNotFoundException {
         this(mgdSqlStream, qcSqlStream, sar);
 
         eventDetector = new SeqEventDetector(msp);
@@ -88,17 +115,6 @@ public class IncremSeqProcessor extends SeqProcessor {
         config = new SequenceLoadCfg();
         seqLookup = new SequenceLookup(mgdSqlStream);
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-/*
-         // Create an Accession Attribute Resolver
-        accResolver = new AccAttributeResolver();
-
-        // Create a Reference Association Processor
-        refAssocProcessor = new SeqRefAssocProcessor();
-
-         // Create a Molecular Source Processor
-        msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream);
-      logger = DLALogger.getInstance();
- */
     }
 
     /**
@@ -143,6 +159,9 @@ public class IncremSeqProcessor extends SeqProcessor {
           RepeatSequenceException, SequenceResolverException,
           ChangedOrganismException, ChangedLibraryException {
 
+        // get the primary seqid of the sequence we are processing
+        String primarySeqid = seqInput.getPrimaryAcc().getAccID();
+
         // see if this sequence is in MGI, existingSequence is null if not
         // in MGI
         sequenceCtr = sequenceCtr + 1;
@@ -166,33 +185,35 @@ public class IncremSeqProcessor extends SeqProcessor {
         if (event == SeqloaderConstants.ALREADY_ADDED) {
           //System.out.println("This is a Already Added Event");
            processAlreadyAddedEvent(seqInput);
+           logger.logdDebug("Already Added Event Primary: " + primarySeqid, true);
+
         }
         else if (event == SeqloaderConstants.UPDATE ) {
             processUpdateEvent(seqInput, existingSequence);
+            logger.logdDebug("Update Event Primary: " + primarySeqid, true);
             //System.out.println("This is a Update Event");
         }
         else if (event == SeqloaderConstants.ADD) {
             processAddEvent(seqInput);
+            //logger.logdDebug("Add Event Primary: " + primarySeqid, true);
             //System.out.println("This is an Add Event");
         }
         else if (event == SeqloaderConstants.DUMMY) {
-            processDummyEvent(seqInput, existingSequence);
-            logger.logdInfo("Sequence: " + seqInput.getPrimaryAcc().getAccID() +
+          logger.logdInfo("Primary: " + primarySeqid +
                             "is a Dummy Sequence and will be deleted", true);
+            processDummyEvent(seqInput, existingSequence);
             //System.out.println("This is a Dummy Event");
         }
 
         else if (event == SeqloaderConstants.NON_EVENT) {
             //System.out.println("This is a Non-event");
-            logger.logdDebug("NON Event Primary: " +
-                           seqInput.getPrimaryAcc().getAccID());
+            logger.logdDebug("NON Event Primary: " + primarySeqid);
 
         }
         else {
           // raise error - unhandled case
           System.err.println("Unhandled event in IncremSeqPrcessor.processSequence");
-          logger.logdDebug("UNHANDLED Event Primary: " +
-                           seqInput.getPrimaryAcc().getAccID());
+          logger.logdDebug("UNHANDLED Event Primary: " + primarySeqid);
         }
       }
 
@@ -248,6 +269,7 @@ public class IncremSeqProcessor extends SeqProcessor {
               KeyNotFoundException, MSException, SequenceResolverException,
               ChangedOrganismException, ChangedLibraryException {
         SequenceRawAttributes rawSeq = seqInput.getSeq();
+        String primarySeqid = seqInput.getPrimaryAcc().getAccID();
         SEQ_SequenceState existingSeqState = existingSequence.getSequenceState();
 
         String inputRawOrganism = rawSeq.getRawOrganisms();
@@ -255,22 +277,23 @@ public class IncremSeqProcessor extends SeqProcessor {
         String inputRawLibrary = rawSeq.getLibrary();
         String existingRawLibrary = existingSeqState.getRawLibrary();
         logger.logdDebug("Update Event Primary: " +
-                           seqInput.getPrimaryAcc().getAccID());
+                           primarySeqid);
         // if input rawOrganism and existing rawOrganism don't match - QC
         if (!inputRawOrganism.equals(existingRawOrganism)) {
           // QC report and throw an exception
-          logger.logdInfo("Sequence: " + seqInput.getPrimaryAcc().getAccID() +
+          logger.logcInfo("Sequence: " + primarySeqid +
                           " MGI rawOrganism: " +
                           existingSequence.getSequenceState().getRawOrganism() +
                           " Input rawOrganism: " +
                           seqInput.getSeq().getRawOrganisms(), false );
+          // write to qcSQLStream
           throw new ChangedOrganismException();
         }
         // if both input and existing rawLibrary not null and not equal - QC
         else if ( (inputRawLibrary != null && existingRawLibrary != null) &&
                 !inputRawLibrary.equals(existingRawLibrary)) {
             // QC report and throw an exception
-            logger.logcInfo("Sequence: " + seqInput.getPrimaryAcc().getAccID() +
+            logger.logcInfo("Sequence: " + primarySeqid +
                             " MGI rawLibrary: " +
                             existingSequence.getSequenceState().getRawLibrary() +
                             " Input rawLibrary: " +
@@ -281,7 +304,7 @@ public class IncremSeqProcessor extends SeqProcessor {
         else if ( (inputRawLibrary != null && existingRawLibrary == null) ||
                  (inputRawLibrary == null && existingRawLibrary != null)) {
             // QC report and throw an exception
-            logger.logcInfo("Sequence: " + seqInput.getPrimaryAcc().getAccID() +
+            logger.logcInfo("Sequence: " + primarySeqid +
                             " MGI rawLibary: " +
                             existingSequence.getSequenceState().getRawLibrary() +
                             " Input rawLibrary: " +
@@ -301,17 +324,31 @@ public class IncremSeqProcessor extends SeqProcessor {
           MolecularSource ms;
           while (msIterator.hasNext()) {
               msProcessor.processExistingSeqSrc(
-                seqInput.getPrimaryAcc().getAccID(),
+                primarySeqid,
                 //existingSequence.getAccPrimary().getAccID(),
                 existingSequence.getSequenceKey(),
                 (MSRawAttributes) msIterator.next());
           }
 
-          // resolve sequence reference associations and set theme
-          // in the existing Sequence
+          // resolve sequence reference associations and set new ones
+          // in the existing Sequence; reports any existing references
+          // that no longer apply
           Vector references = seqInput.getRefs();
           if (!references.isEmpty()) {
-            processReferences(existingSequence, references);
+              processReferences(existingSequence, references);
+              // Now report any existing references that may be outdated
+              }
+          Vector oldReferences = existingSequence.getOldRefAssociations();
+          MGI_Reference_AssocState refState;
+          if (oldReferences != null) {
+              for (Iterator i = oldReferences.iterator(); i.hasNext();) {
+                  refState = (MGI_Reference_AssocState)i.next();
+                  // use SeqQCReporter here to report sequenceKey and refs_key
+                  // existingSequence.getSequenceKey();
+                  logger.logcInfo("Old _refs_key: " +
+                      refState.getRefsKey() + " for seqid: " +
+                      primarySeqid, true);
+                  }
           }
 
         }

@@ -133,11 +133,11 @@ public class SequenceUpdater {
             }
             else {
                // log the sequence key, seqid, new rawType existing rawType
-               logger.logdDebug("Cannot update sequence type key due to curation. " +
+               logger.logcInfo("Cannot update sequence type key due to curation. " +
                                "Existing _Sequence_key: " + existingSeqKey +
-                               "has rawType: " + existingSeqState.getRawType() +
-                               ". input rawType is: " +
-                               inputSeqState.getRawType());
+                               " has rawType: " + existingSeqState.getRawType() +
+                               ". Input rawType is: " +
+                               inputSeqState.getRawType(), true);
             }
             existingSeqState.setRawType(inputSeqRawType);
             update = true;
@@ -204,7 +204,7 @@ public class SequenceUpdater {
              }
         }
 
-        // update sequence division. Check for null; chema supports null division
+        // update sequence division. Check for null; schema supports null division
         // if either division is null we don't want to do a String compare
         if (inputSeqDivision == null || existingSeqDivision == null) {
               // if just one is null - update
@@ -218,6 +218,24 @@ public class SequenceUpdater {
             if ( ! inputSeqDivision.equals(existingSeqDivision) ) {
               logger.logdDebug("Updating Sequence Division");
               existingSeqState.setDivision(inputSeqDivision);
+              update = true;
+            }
+        }
+
+        // update raw sequence types. Check for null; schema supports null rawType
+        // if either rawType is null we don't want to do a String compare
+        if (inputSeqRawType == null || existingSeqRawType == null) {
+              // if just one is null - update
+              if ( ! (inputSeqRawType == null && existingSeqRawType == null) ) {
+                  existingSeqState.setRawType(inputSeqRawType);
+                  update = true;
+              }
+        }
+        // Do a string compare, if not equal - update
+        else {
+            if ( ! inputSeqRawType.equals(existingSeqRawType) ) {
+              logger.logdDebug("Updating Sequence RawType");
+              existingSeqState.setRawType(inputSeqRawType);
               update = true;
             }
         }

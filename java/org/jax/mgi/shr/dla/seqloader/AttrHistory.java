@@ -29,9 +29,9 @@ public class AttrHistory
     protected SQLDataManager sqlMgr = null;
 
     /**
-     * MGI type of the MGI_attributeHistory._Object_key
+     * MGI typekey of the MGI_attributeHistory._Object_key
      */
-    String mgiType;
+    int mgiTypeKey;
 
     /**
      * the query statement which allows binding of a source key and column
@@ -50,8 +50,7 @@ public class AttrHistory
             MGD.mgi_attributehistory._name + " his, " +
             MGD.mgi_user._name + " usr, " +
             MGD.voc_term._name + " trm " +
-        "WHERE his." + MGD.mgi_attributehistory._mgitype_key + " = " +
-            mgiType + " " +
+        "WHERE his." + MGD.mgi_attributehistory._mgitype_key + " = ? " +
         "AND his." + MGD.mgi_attributehistory.columnname + " = ? " +
         "AND his." + MGD.mgi_attributehistory._object_key + " = ? " +
         "AND his." + MGD.mgi_attributehistory._modifiedby_key + " = " +
@@ -77,6 +76,7 @@ public class AttrHistory
     public AttrHistory(int mgiTypeKey)
     throws ConfigException, DBException
     {
+        this.mgiTypeKey = mgiTypeKey;
         sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         query = sqlMgr.getBindableStatement(sql);
     }
@@ -98,8 +98,9 @@ public class AttrHistory
         /**
          * bind parameters to the query
          */
-        query.setString(1, columnName);
-        query.setInt(2, objectKey.intValue());
+        query.setInt(1, mgiTypeKey);
+        query.setString(2, columnName);
+        query.setInt(3, objectKey.intValue());
 
         /**
          * execute the query

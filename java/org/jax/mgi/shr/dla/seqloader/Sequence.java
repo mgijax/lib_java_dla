@@ -5,6 +5,7 @@ package org.jax.mgi.shr.dla.seqloader;
 
 import java.util.*;
 
+import org.jax.mgi.shr.Sets;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
@@ -63,10 +64,16 @@ public class Sequence {
     // the set of reference associations for this sequence
     private Vector refAssociations = new Vector();
 
-    // the set of _ref_keys (Integer) for this sequence
+    // the set of ref keys (Integer) for the sequence we are processing
+    // so we may determine if there are any refs for this sequence in MGI that
+    // should be 'deleted' (we'll just qc them)
+    private HashSet inputRefKeySet = new HashSet();
+
+    // the current set of ref keys (Integer) for this sequence includes existing
+    // and new ref keys
     // we use this in order to avoid compare between two
     // MGI_Reference_AssocState objects
-    private HashSet refKeySet = new HashSet();
+    private HashSet currentRefKeySet = new HashSet();
 
     // the set of source associations for this sequence
     private Vector seqSrcAssoc = new Vector();
@@ -90,7 +97,7 @@ public class Sequence {
     private Vector addSeqSrcAssoc = new Vector();
 
     // an iterator to reuse
-    Iterator i;
+    //Iterator i;
 
     // Updates the SequenceState object. seqUpdater is not initialized if
     // this is a new Sequence
@@ -304,8 +311,11 @@ public class Sequence {
     }
 
     /**
-     * Adds a MGI_Reference_AssocDAO to the set of reference associations of
-     * a new sequence (if it does not already have an association for the reference).
+     * Adds a MGI_Reference_AssocDAO representing a new reference to the set of
+     * reference associations for the  sequence (if it does not already have
+     * an association for the reference). Used when building a Sequence that
+     * represents a new sequence to MGI or when adding a reference to an existing
+     * sequence in MGI
      * @assumes Nothing
      * @effects Nothing
      * @param state MGI_Reference_AssocState from which to create a DAO to add to
@@ -319,21 +329,26 @@ public class Sequence {
 
         Integer refKey = state.getRefsKey();
         // if we haven't already created an association for this reference
-        if(! refKeySet.contains(refKey)) {
+        if(! currentRefKeySet.contains(refKey)) {
             // add a new DAO to the set of ref associations for this sequence
             refAssociations.add(new MGI_Reference_AssocDAO(state));
 
             // add the DAO to the add Vector too
             addRefAssoc.add(refAssociations.lastElement());
 
-            // add the refs key to the set
-            refKeySet.add(refKey);
+            // add the refs key to the full set (existing and new) of refs
+            // for the sequence
+            currentRefKeySet.add(refKey);
+
+            // add the refs key to the set of new refs for the sequence
+            inputRefKeySet.add(refKey);
         }
     }
 
     /**
-     * Adds a MGI_Reference_AssocDAO to the set of reference associations of
-     * an existing sequence
+     * Adds a MGI_Reference_AssocDAO to the set of reference associations if this
+     * Sequence represent an existing sequence. Used when building the sequence
+     * references from the set of references found in MGI
      * @assumes Nothing
      * @effects Nothing
      * @param key the MGI_Reference_AssocKey of a reference for an existing
@@ -349,7 +364,7 @@ public class Sequence {
         refAssociations.add(new MGI_Reference_AssocDAO(key, state));
 
         // add the refs key to the set of refs for this sequence
-        refKeySet.add(state.getRefsKey());
+        currentRefKeySet.add(state.getRefsKey());
     }
 
     /**
@@ -384,7 +399,32 @@ public class Sequence {
       return v;
 
     }
+    /**
+     * determines the set of MGI_Reference_Associations in MGI that are not
+     * referenced in the provider sequence record
+     * @assumes Nothing
+     * @effects Nothing
+     * @param None
+     * @return Vector set of *copies* of the reference association states that
+     * are not referenced in the provider sequence record
+     * @throws Nothing
+     */
 
+    public Vector getOldRefAssociations() {
+         Set diffSet = Sets.difference(currentRefKeySet, inputRefKeySet);
+         int diffSetSize = diffSet.size();
+         Vector refVector = new Vector(diffSetSize);
+         if (diffSetSize > 0 ) {
+              for (Iterator i = refAssociations.iterator(); i.hasNext();) {
+                  MGI_Reference_AssocState state = ((MGI_Reference_AssocDAO)i.next()).getState();
+                  if (diffSet.contains(state.getRefsKey()) ) {
+                      refVector.add(state);
+                  }
+              }
+         }
+         return refVector;
+
+    }
 
     /**
     * adds a SEQ_Source_AssocState to the set of source associations of a new
@@ -521,6 +561,7 @@ public class Sequence {
      */
 
     public void sendToStream() throws DBException {
+        Iterator i;
         // New sequence - insert it with its accession and source associations
         // if bcp insert MGI_AttributeHistory
         if(isNewSequence) {
@@ -565,6 +606,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.4  2004/02/25 21:42:39  mbw
+//  fixed compiler warnings only
+//
 //  Revision 1.3  2004/02/02 20:38:07  sc
 //  removed logger
 //
