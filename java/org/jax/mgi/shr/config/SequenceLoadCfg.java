@@ -262,9 +262,27 @@ public class SequenceLoadCfg extends Configurator {
     return getConfigObject("SEQ_INTERPRETER");
   }
 
+  /**
+   * get the SequenceLookup batch size, default is 100
+   * @return number of seqids for the SequenceLookup to query with at once.
+   * @assumes nothing
+   * @effects nothing
+   * @throws ConfigException thrown if interpreter object could not be created
+   * from the configuration
+   */
+  public String getQueryBatchSize() throws ConfigException {
+    return getConfigString("SEQ_QUERY_BATCHSIZE", "400");
+  }
+
 }
 
 //  $Log$
+//  Revision 1.11.12.1  2005/01/21 19:17:10  sc
+//  added getQueryBatchSize with default of 400
+//
+//  Revision 1.11  2004/10/20 17:47:57  mbw
+//  removed getType() and getReferenceAssocType() methods (see TR6135, item 3)
+//
 //  Revision 1.10  2004/10/13 11:59:28  sc
 //  added gets for assembly sequence load configuration values
 //

@@ -77,7 +77,14 @@ public class MergeSplitProcessor {
      * Constructs a MergeSplitProcessor
      * @assumes Nothing
      * @effects Nothing
-     * @param logicalDBKey LogicalDB of load
+     * @param seqidLookup - a lookup of seqids for this provider that are
+     * primary in MGI
+     * @param reporter - qcreporter to report merge/split statistics
+     * @throws KeyNotFoundException
+     * @throws DBException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws DLALoggingException
      */
 
      public MergeSplitProcessor(AccessionLookup seqidLookup, SeqQCReporter reporter)
@@ -95,7 +102,11 @@ public class MergeSplitProcessor {
       *       Integers) that are merges or splits for later processing.
       * @assumes
       * @effects
-      * @param logicalDB to create an AccessionLookup for Sequences
+      * @param seqInput SequenceInput object for which we will determine
+      * merges and splits
+      * @throws KeyNotFoundException
+      * @throws DBException
+      * @throws CacheException
       */
 
     public void preProcess(SequenceInput seqInput)
@@ -110,6 +121,10 @@ public class MergeSplitProcessor {
      *    in MGI and processes accordingly
      * @assumes
      * @effects
+     * @param writer the ScriptWriter which to write the merge and split stored
+     * procedure calls
+     * @throws ScriptException
+     * @throws SeqloaderException
      */
 
     public void process(ScriptWriter writer)
@@ -123,7 +138,7 @@ public class MergeSplitProcessor {
             mapI.hasNext();) {
                // get the key; a secondary id that is primary in MGI
                String fromSeqid = (String) mapI.next();
-               //System.out.println("mapKey: " + secondary);
+
                // get the value; a Vector of primary ids
                Vector currentV = (Vector) secondaryToPrimary.get(fromSeqid);
                if (currentV.isEmpty()) {
@@ -133,7 +148,6 @@ public class MergeSplitProcessor {
                }
                else if (currentV.size() > 1) {
                    // write out call to split stored procedure
-                   logger.logdDebug("Writing SEQ_split call(s):", false);
                    for (Iterator i = currentV.iterator(); i.hasNext();) {
                        String toSeqid = (String)i.next();
                        String cmd = splitProc +
@@ -143,7 +157,6 @@ public class MergeSplitProcessor {
                            SeqloaderConstants.COMMA +
                            SeqloaderConstants.SGL_QUOTE + toSeqid +
                            SeqloaderConstants.SGL_QUOTE;
-                       logger.logdDebug(cmd, false);
                        writer.write(cmd);
                        writer.go();
                        splitCtr++;
@@ -151,7 +164,6 @@ public class MergeSplitProcessor {
                }
                else {
                    // write out call to merge stored procedure
-                   logger.logdDebug("Writing SEQ_merge call:", false);
                    String toSeqid = (String)currentV.get(0);
                    String cmd = mergeProc +
                        SeqloaderConstants.SPC +
@@ -160,8 +172,6 @@ public class MergeSplitProcessor {
                        SeqloaderConstants.COMMA +
                        SeqloaderConstants.SGL_QUOTE + toSeqid +
                        SeqloaderConstants.SGL_QUOTE;
-
-                   logger.logdDebug(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
                    writer.write(cmd);
                    writer.go();

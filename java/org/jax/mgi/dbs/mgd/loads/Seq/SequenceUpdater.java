@@ -57,20 +57,47 @@ public class SequenceUpdater {
     // configurator for the sequence load
     private SequenceLoadCfg loadCfg;
 
+    // the singleton instance of the SequenceUpdater. It is returned by
+     // the getInstance() method
+     private static SequenceUpdater instance = null;
+
+     /**
+       * get the singleton instance of the SequenceUpdater.
+       * @assumes nothing
+       * @effects the Singleton instance is created if it didnt already
+       * exist and the configuration files and system properties are read into
+       * memory
+       * @return a reference to the ConfigurationManagement instance
+       * @throws DBException if error creating instance of this class
+       * @throws ConfigException  if error creating instance of this class
+       * @throws DLALoggingException if error creating instance of this class
+       * @throws KeyNotFoundException if error creating instance of this class
+       * @throws CacheException if error creating instance of this class
+       */
+      protected static SequenceUpdater getInstance()
+          throws DBException, DLALoggingException, ConfigException,
+            KeyNotFoundException, CacheException {
+        if (instance == null) {
+          instance = new SequenceUpdater();
+        }
+        return instance;
+      }
+
     /**
      * constructs a SequenceUpdater
      * @assumes Nothing
      * @effects Queries a database
      * @throws DBException if error creating Seq_SequenceAttrHistory,
      * or a LogicalDBLookup object
-     * @throws ConfigException if error creating a SequencLoadCfg object,
+     * @throws ConfigException if error creating a SequenceLoadCfg object,
      *         a Seq_SequenceAttrHistory object, a LogicalDBLookup, or getting
      *         the logicalDB from the SequenceLoadCfg object
      * @throws CacheException if error creating a LogicalDBLookup
      * @throws KeyNotFoundException if logicalDB is not configured
+     * @throws DLALoggingException if error getting instance of a logger
      */
 
-    public SequenceUpdater()
+    private SequenceUpdater()
         throws DBException,  DLALoggingException, ConfigException,
             KeyNotFoundException, CacheException {
         attrHistory = new Seq_SequenceAttrHistory();

@@ -112,7 +112,6 @@ public class GenericMSAttrResolver extends MSAttrResolver {
             if (rawValue.equals(this.NOT_APPLICABLE) ||
                     rawValue.equals(this.NOT_RESOLVED) ||
                     rawValue.equals(this.NOT_SPECIFIED)) {
-                  //System.out.println("GenericMSAttrResolver setting age: " + rawValue);
                   ms.setAge(rawValue);
             }
             else {

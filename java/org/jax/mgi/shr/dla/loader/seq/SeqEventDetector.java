@@ -62,6 +62,8 @@ public class SeqEventDetector {
     * Constructs a SeqEventDetector
     * @assumes Nothing
     * @effects Nothing
+    * @param mergeSplitProcessor handles detection and processing of merge/split
+    * events
     * @throws ConfigException if error creating VocabTermLookup()
     * @throws CacheException if error creating VocabTermLookup()
     * @throws DBException if error creating VocabTermLookup()
@@ -93,6 +95,7 @@ public class SeqEventDetector {
 
         // init event to 'Non Event'
         int event = SeqloaderConstants.NON_EVENT;
+
         // get the primary seqid
         String seqid = seqInput.getPrimaryAcc().getAccID();
 
@@ -124,10 +127,27 @@ public class SeqEventDetector {
 
         // find merge/split sequences;
         if( event != SeqloaderConstants.NON_EVENT) {
-            mergeSplitProcessor.preProcess(seqInput);
+            detectMergeSplitEvent(seqInput);
         }
 
         return event;
+    }
+
+    /**
+       * Detects merge/split event
+       * @assumes Nothing
+       * @effects Queries a database
+       * @param seqInput set of raw values for the sequence being processed
+       * @throws CacheException if TermNameLookup error or MergeSplitProcessor
+       *         preprocessing error
+       * @throws KeyNotFoundException if MergeSplitProcessor preprocessing error
+       * @throws DBException if TermNameLookup error or MergeSplitProcessor
+       *         preprocessing error
+       */
+
+    public void detectMergeSplitEvent(SequenceInput seqInput)
+        throws CacheException, KeyNotFoundException, DBException {
+        mergeSplitProcessor.preProcess(seqInput);
     }
 
     /**

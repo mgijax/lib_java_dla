@@ -8,6 +8,7 @@ package org.jax.mgi.dbs.mgd.loads.Seq;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
+import org.jax.mgi.shr.dla.loader.seq.SeqloaderConstants;
 import org.jax.mgi.shr.dbutils.MultiRowInterpreter;
 import org.jax.mgi.shr.dbutils.MultiRowIterator;
 import org.jax.mgi.shr.dbutils.ResultsNavigator;
@@ -25,10 +26,15 @@ import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.SchemaConstants;
 import org.jax.mgi.shr.dbutils.InterpretException;
 import org.jax.mgi.shr.dbutils.BindableStatement;
+import org.jax.mgi.shr.timing.Stopwatch;
+import org.jax.mgi.shr.log.Logger;
 
-import java.util.*;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Vector;
 import java.sql.Timestamp;
-
+import java.sql.Array;
 
 /**
  * an object for looking up Sequence objects from the database.
@@ -63,6 +69,12 @@ public class SequenceLookup {
 
     // interpretor for the query
     private SequenceInterpreter interpreter;
+
+    // size of the batch of seqids to query for
+    private int batchSize;
+
+    // logger
+    Logger logger;
 
         // build the query in multiple Strings concatenating them at the end
         // The compiler can't handle the 1000 +- concatenations on one String
@@ -204,7 +216,8 @@ public class SequenceLookup {
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = ?" +
+            " AND a." + MGD.acc_accession.accid + " in (:x)" +
+            //"AND a." + MGD.acc_accession.accid + " in (?, ?)" +
             " AND aa." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND aa." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -338,7 +351,8 @@ public class SequenceLookup {
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = ?" +
+            " AND a." + MGD.acc_accession.accid + " in (:x)" +
+            //"AND a." + MGD.acc_accession.accid + " in (?, ?)" +
             " AND aa." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND aa." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -466,7 +480,7 @@ public class SequenceLookup {
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = ?" +
+            " AND a." + MGD.acc_accession.accid + " in (:x)" +
             " AND m." + MGD.mgi_reference_assoc._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND m." + MGD.mgi_reference_assoc._refassoctype_key + " = " +
@@ -588,7 +602,7 @@ public class SequenceLookup {
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = ?" +
+            " AND a." + MGD.acc_accession.accid + " in (:x)" +
             " AND NOT EXISTS (SELECT 1 FROM " +
             MGD.acc_accession._name + " acc " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
@@ -608,6 +622,10 @@ public class SequenceLookup {
 
         // create one query
         private String query = query1 + query2 + query3 + query4;
+
+        // the query after it has the bind parameters added
+        private String queryWithBindParams;
+
         private BindableStatement statement;
 
         /**
@@ -615,56 +633,103 @@ public class SequenceLookup {
          * @assumes Nothing
          * @effects Nothing
          * @param stream SQL stream for the Sequence
+         * @param bSize the batchSize for which to lookup Sequences
          * @throws DBException if error creating a SQLDataManager or getting
          *         a bindable statement
          * @throws ConfigException if config error creating a SQLDataManager
          */
 
-        public SequenceLookup(SQLStream stream) throws DBException, ConfigException {
+        public SequenceLookup(SQLStream stream, int bSize) throws DBException, ConfigException {
             // the stream with which to build the Sequence
             this.stream = stream;
 
             // get an SQL manager for the MGD database
             sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
-            statement = sqlMgr.getBindableStatement(query);
-
+            logger = sqlMgr.getLogger();
+            batchSize = bSize;
+            queryWithBindParams = addBindParams(batchSize);
+            statement = sqlMgr.getBindableStatement(queryWithBindParams);
             interpreter = new SequenceInterpreter();
         }
 
     /**
-     * create a Sequence object by querying the database by seqid
+     * create a Vector of Sequence objects by querying the database with a set
+     * of seqids
      * @assumes nothing
      * @effects a new connection could be opened to the database if one does
      * not already exist. Queries a database.
-     * @param seqId the seqid of the Sequence for which to query
-     * @param logicalDBKey the logicalDBKey of the seqid
-     * @return the Sequence object represented by the database query
+     * @param seqIdSet the set of seqids of the Sequences for which to query
+     * @param logicalDBKey the logicalDBKey of the seqids in the set
+     * @return a Vector of Sequence objects represented by the database query;
+     * Vector is empty if "seqIds" is empty.
+     * @throws DBException if error querying the database
      */
-    public Sequence findBySeqId(String seqId, int logicalDBKey)
-           throws DBException {
-         // create Vector of values to bind to the query
-         Vector v = new Vector();
-         // add three values to bind to each select in the query
-         for (int i = 0; i < 4; i++) {
-             v.add(new Integer(logicalDBKey));
-             v.add(seqId);
-             v.add(new Integer(logicalDBKey));
-          }
+    public Vector findBySeqId(Set seqIdSet, int logicalDBKey)
+        throws DBException {
+        int seqIdSetSize = seqIdSet.size();
+        logger.logDebug("SequenceLookup processing batch of size" + seqIdSetSize);
+        logger.logDebug("SequenceLookup looking up the followings sequences: " +
+                        seqIdSet.toString());
+        // to hold our Sequence objects
+        Vector sequenceVector = new Vector();
 
+        // if we dont' have any seqids return the empty Set
+        if(seqIdSet.isEmpty()) {
+               return sequenceVector;
+        }
+        // if 'seqIds' is not of length batchSize create a new queryWithBindParams
+        // and BindableStatement
+        // This happens when seqIds.length() mod batchSize != 0 e.g. the last
+        // batch will most likely be < batchSize
+
+        if(seqIdSetSize < batchSize) {
+            logger.logDebug("SequenceLookup processing last batch of size " + seqIdSetSize);
+            queryWithBindParams = addBindParams(seqIdSetSize);
+            statement = sqlMgr.getBindableStatement(queryWithBindParams);
+        }
+        // create Vector of values to bind to the query
+        Vector bindVector = new Vector();
+        // add three values to bind to each select in the query
+        for (int i = 0; i < 4; i++) {
+            bindVector.add(new Integer(logicalDBKey));
+            for (Iterator it = seqIdSet.iterator(); it.hasNext();) {
+                bindVector.add(it.next());
+            }
+            bindVector.add(new Integer(logicalDBKey));
+         }
          // execute the query, passing the values to bind
-         resultsNav = statement.executeQuery(v);
+         resultsNav = statement.executeQuery(bindVector);
 
          // get a multi row iterator
          multiIterator = new MultiRowIterator(resultsNav, interpreter);
 
-         // this iterator will have only one object
-         Sequence s = (Sequence)multiIterator.next();
-
+         // iterator thru the results
+         while(multiIterator.hasNext()) {
+             Sequence s = (Sequence) multiIterator.next();
+             sequenceVector.add(s);
+         }
          // close the resource - does object cleanup
          multiIterator.close();
-         return s;
+
+         // return the Vector of Sequence objects
+         return sequenceVector;
     }
 
+    private String addBindParams(int paramNum) {
+        StringBuffer s = new StringBuffer();
+        for (int i = 0; i < paramNum; i++) {
+            s.append("?");
+            s.append(",");
+        }
+        s.deleteCharAt(s.length()-1);
+        String sString = s.toString();
+        StringBuffer tempBuffer = new StringBuffer(query);
+        for (int j = 0; j < 4; j++) {
+            int index = tempBuffer.indexOf(":x");
+            tempBuffer.replace(index, index + 2, sString);
+        }
+        return tempBuffer.toString();
+    }
     /**
      * @is an object that knows how to build a Sequence object from
      * multiple rows of a result set. All rows with the same sequence key
@@ -690,10 +755,6 @@ public class SequenceLookup {
         // the Sequence and its reusable components we are building from a set
         // of data rows. Not all Sequences have references, secondary seqids
         // or multiple sources; we'll create objects for them as needed.
-        private Sequence sequence;
-        private SEQ_SequenceState seqState;
-        private ACC_AccessionState accState;
-        private MGI_AttributeHistoryState typeHistoryState;
 
         // the set of source assoc keys (Integer) already processed
         private HashSet sourceSet;
@@ -713,6 +774,7 @@ public class SequenceLookup {
          * @assumes Nothing
          * @effects Nothing
          * @param row the current RowReference
+         * @return the Object we have interpreted from 'row'
          * @throws DBException if error getting columns for a row reference
          */
 
@@ -736,18 +798,19 @@ public class SequenceLookup {
 
         /**
          * Build a Sequence object from a Vector of RowData objects
-         * @assumes The caller is not cacheing the Sequence object
+         * @assumes Nothing
          * @effects Nothing
-         * @param v the Vector of RowData objects
+         * @param v a Vector of RowData objects
          * @return a Sequence object, null if v is empty
          * @throws InterpretException if error creating the Sequence object
          */
 
         public Object interpretRows( Vector v) throws InterpretException {
-            // reset the sequence and its reusable components
-            sequence = null;
-            seqState = null;
-            accState = null;
+
+            // declare the data components
+            Sequence sequence = null;
+            SEQ_SequenceState seqState = null;
+            ACC_AccessionState accState = null;
             sourceSet = new HashSet();
             refAssocKeySet = new HashSet();
             accSet = new HashSet();
@@ -787,7 +850,6 @@ public class SequenceLookup {
               seqState.setModifiedByKey(rowData.SEQ_ModifiedBy_key);
               seqState.setCreationDate(rowData.SEQ_creation_date);
               seqState.setModificationDate(rowData.SEQ_modification_date);
-
               // create a Sequence
               try {
                 sequence = new Sequence(seqState, new SEQ_SequenceKey(
@@ -817,36 +879,38 @@ public class SequenceLookup {
                 sequence.setAccPrimary(new ACC_AccessionKey(
                     rowData.ACC_Accession_key), accState);
 
-                // create the first seq source association
-                createSeqSrcAssoc();
+                // create the first seq source association and set it in the
+                // Sequence
+                createSeqSrcAssoc(sequence);
 
-                // create 2ndary accession if there is one
+                // create 2ndary accession, if there is one, and set in Sequence
                 if (rowData.ACC2_Accession_key != null) {
-                  create2ndaryAccession();
+                  create2ndaryAccession(sequence);
                 }
                 // create a reference if there is one
                 if (rowData.RefAssoc_Assoc_key != null) {
-                  createRefAssoc();
+                  createRefAssoc(sequence);
                 }
 
-                // get additional source, ref assoc, 2ndary accessions
+                // get additional source, ref assoc, 2ndary accessions, and set
+                // them in the Sequence
                 while (i.hasNext()) {
                   rowData = (RowData) i.next();
 
                   // create another seq source association if there is one
                   if (rowData.SeqSrc_Assoc_key != null &&
                       !sourceSet.contains(rowData.SeqSrc_Assoc_key)) {
-                    createSeqSrcAssoc();
+                    createSeqSrcAssoc(sequence);
                   }
                   // create another 2ndary accession if there is one
                   if (rowData.ACC2_Accession_key != null &&
                       !accSet.contains(rowData.ACC2_Accession_key)) {
-                    create2ndaryAccession();
+                    create2ndaryAccession(sequence);
                   }
                   // create another reference association if there is one
                   if (rowData.RefAssoc_Assoc_key != null &&
                       !refAssocKeySet.contains(rowData.RefAssoc_Assoc_key)) {
-                    createRefAssoc();
+                    createRefAssoc(sequence);
                   }
 
                 }
@@ -876,9 +940,10 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
+         * @param sequence The Sequence for which to make a source association
          */
 
-        private void createSeqSrcAssoc() {
+        private void createSeqSrcAssoc(Sequence sequence) {
 
             // the seq source association state we are building
             SEQ_Source_AssocState state = new SEQ_Source_AssocState();
@@ -906,9 +971,11 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
+         * @param sequence the Sequence for which to create a 2ndary Accession
+         * object
          */
 
-        private void create2ndaryAccession() {
+        private void create2ndaryAccession(Sequence sequence) {
 
             // the state we are building
             ACC_AccessionState state = new ACC_AccessionState();
@@ -941,9 +1008,10 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
+         * @param sequence the Sequence for which to create a reference association
          */
 
-        private void createRefAssoc() {
+        private void createRefAssoc(Sequence sequence) {
 
             // the reference association we are building
             MGI_Reference_AssocState state = new MGI_Reference_AssocState();
@@ -1054,7 +1122,7 @@ public class SequenceLookup {
              * @assumes Nothing
              * @effects Nothing
              * @param row a RowReference
-             * @throws ConfigException if can't find the Configuration file
+             * @throws DBException if error accessing RowReference methods
              */
 
             public RowData(RowReference row) throws DBException {

@@ -92,6 +92,7 @@ public class GBOrganismChecker implements OrganismChecker {
     * @assumes nothing
     * @effects nothing
     * @throws ConfigException if config file does not define mouse human and rat
+    * @throws DLALoggingException
     * decider vars
     */
 
@@ -387,6 +388,12 @@ public class GBOrganismChecker implements OrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.2.8.1  2005/01/21 19:14:35  sc
+//  javadocs only
+//
+//  Revision 1.2  2004/12/07 20:10:32  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:05:23  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

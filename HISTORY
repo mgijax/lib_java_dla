@@ -1,5 +1,25 @@
+TAG: lib_java_dla-1-0-38
+DATE: 02/09/2005
+STAFF: sc
+RELEASE: prod
+CHANGES: merge of tr6473 branch to trunk
+
+TAG: lib_java_dla-tr6473-2
+DATE: 01/25/2005
+STAFF: sc
+RELEASE: dev
+TR6473 - reorganized stats debug logging, corrected error in figuring
+the average SequenceLookup time.
+
+TAG: lib_java_dla-tr6473-1
+DATE: 01/24/2005
+STAFF: sc
+RELEASE: dev
+TR6473 changes to address batch processing of sequence determined
+to be in MGI (Update, Dummy, Non events)
+
 TAG: lib_java_dla-tr6473-BP
-DATE: 01/12/2004
+DATE: 01/12/2005
 STAFF: sc
 RELEASE: dev
 

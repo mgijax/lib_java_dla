@@ -20,25 +20,18 @@ import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.AccessionLib;
+import org.jax.mgi.dbs.mgd.loads.SeqSrc.UnresolvedAttributeException;
+import org.jax.mgi.shr.timing.Stopwatch;
+import org.jax.mgi.shr.dla.input.SequenceInput;
+import org.jax.mgi.dbs.rdr.qc.SeqQCReporter;
+import org.jax.mgi.shr.dla.loader.seq.*;
 
 import java.util.Vector;
 import java.util.Iterator;
 import java.io.BufferedWriter;
 import java.io.IOException;
-
-
-// Debug
-
-import org.jax.mgi.shr.timing.Stopwatch;
-
-
-
-
-
-
-import org.jax.mgi.shr.dla.input.SequenceInput;
-import org.jax.mgi.dbs.rdr.qc.SeqQCReporter;
-import org.jax.mgi.shr.dla.loader.seq.*;
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * an object that incrementally processes sequence by resolving a sequence, its
@@ -50,14 +43,12 @@ import org.jax.mgi.shr.dla.loader.seq.*;
  *   <LI>a qc reporter
  *   <LI>a logger
  *   <LI>various lookups
- *   <LI>a writer to write out repeated sequence records to a file
  *   </UL>
  * @does
  *   <UL>
  *   <LI>detects events
  *   <LI>process events
  *   <LI>does QC reporting
- *   <LI>writes out repeated sequences to a file
  *   <LI>keeps track of counts of each event
  *   </UL>
  * @company The Jackson Laboratory
@@ -85,9 +76,39 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     // logicalDB_key for the load
     private int logicalDBKey;
 
+    // a cache of SeqInput object with seqid keys that have been determined
+    // to be in MGI (possible updates)
+    private HashMap batchMap;
+
+    // The following are public to provide easy access for debug logging
+    // the number of seqids for the SequenceLookup to query for at one time
+    public int batchSize;
+
+    // current number of sequences in the "In MGI" batch
+    // this will always be <= batchSize
+    private int batchCtr;
+
+    // Current total SequenceLookup time
+    private double runningLookupTime;
+
+    // Current highest SequenceLookup time
+    private double highLookupTime;
+
+    // Current lowest SequenceLookup time
+    private double lowLookupTime;
+
+    // current number of non-fatal errors processing sequences already in MGI
+    private int existingSeqErrCtr;
+
+    // current number of existing sequences processed
+    private int existingSeqCtr;
+
+    // current SequenceLookup average
+    private double runningLookupAverage;
+
     /**
-     * Constructs a IncremSeqProcessor that handles adding sequences only; does
-     * not do event detection/handling
+     * Constructs a IncremSeqProcessor that handles processing of add, update,
+     * dummy, non-event, merge, and split events
      * @assumes Nothing
      * @effects Nothing
      * @param mgdSqlStream an sql stream for processing updates to an MGD database
@@ -117,7 +138,16 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
         seqIdLookup = new AccessionLookup(logicalDBKey,
               MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
-        seqLookup = new SequenceLookup(mgdSqlStream);
+        batchSize = new Integer(config.getQueryBatchSize()).intValue();
+        seqLookup = new SequenceLookup(mgdSqlStream, batchSize);
+        batchCtr = 0;
+        batchMap = new HashMap();
+        runningLookupTime = 0.0;
+        highLookupTime = 0.0;
+        lowLookupTime = 0.0;
+        existingSeqErrCtr = 0;
+        existingSeqCtr = 0;
+        runningLookupAverage = 0.0;
     }
 
     /**
@@ -131,8 +161,10 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     }
 
     /**
-     * Does incremental processing on a sequence by detecting
-     * add, update, and non events. Also detects and processes
+     * Does incremental processing on a sequence by detecting whether the sequence
+     * is new (add event) or in MGI (update, dummy, non events).
+     * Sequences determined to be in MGI are processed in configurable
+     * batches of 1 to 400 sequences. Also detects and processes
      * merge and split events under the covers<BR>
      * <UL>
      * <LI>Add event creates a SEQ_Sequence, one or more SEQ_Source_Assoc,
@@ -142,16 +174,15 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
      * <LI>Update event updates SEQ_Sequence database object and may update
      *     or create PRB_Source (See MSProcessor)
      * <LI>Non event does nothing
-     * <LI>Dummy Event deletes the dummy sequence then processes as an add
+     * <LI>Dummy Event deletes the dummy sequence and processes incoming
+     * sequence as an add
      * <LI>For merges and splits see MergeSplitProcessor
      * </UL>
-     * @assumes
      * @effects Depending on the stream, writes to bcp files, creates SQL batch,
      * writes to SQL script, or does inline SQL
      * @param seqInput - a set of raw attributes for a Sequence,
      *   including source(s), reference(s), accession(s)
-     * @throws SeqloaderException if there is an IO error with the repeat
-     *    sequence file
+     * @throws SeqloaderException if
      * @throws SequenceResolverException if we are unable to resolve one or more
      *    SequenceRawAttributes attributes
      * @throws ChangedOrganismException if input raw organism != existing raw organism
@@ -169,127 +200,108 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
           Integer seqKey;
 
           // do quick lookup to see if the primary is in MGI
-
           try {
               seqKey = seqIdLookup.lookup(primarySeqId);
           }
           catch (MGIException e) {
-            SeqloaderException e1 =
+              SeqloaderException e1 =
                   (SeqloaderException) eFactory.getException(
-                      SeqloaderExceptionFactory.SeqKeyQueryErr, e);
-            e1.bind(primarySeqId);
+                  SeqloaderExceptionFactory.SeqKeyQueryErr, e);
+              e1.bind(primarySeqId);
               throw e1;
           }
-
-          // If primarySeqId not in MGI existing sequence will remain null
-          Sequence existingSequence = null;
-
+          // seqid is in MGI, add seqInput to the batch and process the batch
+          // when it reaches the configured batch size
           if (seqKey != null) {
-              // the sequence is in MGI get its Sequence object
-              sequenceCtr = sequenceCtr + 1;
-              stopWatch.start();
-              logger.logdDebug("Seq in MGI, looking up Sequence", true);
+              String seqId = seqInput.getPrimaryAcc().getAccID();
+              // add the seqInput to the batch
+              batchMap.put(seqId, seqInput);
+              batchCtr++;
+              // process the batch
+              if (batchCtr == batchSize) {
+                  processUpdateBatch();
+                  // reset the batch counter and the batch map
+                  batchCtr = 0;
+                  batchMap = new HashMap();
+              }
+          }
+          // seqid not in MGI, detect possible merge/split event then process
+          // as an add
+          else {
               try {
-                existingSequence = seqLookup.findBySeqId(primarySeqId, logicalDBKey);
-                logger.logdDebug("Got Sequence " + primarySeqId);
+                  eventDetector.detectMergeSplitEvent(seqInput);
+                  super.processInput(seqInput);
               }
               catch (MGIException e) {
-                SeqloaderException e1 =
-                    (SeqloaderException) eFactory.getException(
-                        SeqloaderExceptionFactory.SeqQueryErr, e);
-                e1.bind(primarySeqId);
-                throw e1;
+                  SeqloaderException e1 =
+                      (SeqloaderException) eFactory.getException(
+                      SeqloaderExceptionFactory.EventDetectionErr, e);
+                  throw e1;
               }
+          }
+      }
 
-              stopWatch.stop();
-              double time = stopWatch.time();
-              stopWatch.reset();
-              if (highLookupTime < time) {
-                  highLookupTime = time;
-                }
-              else if (lowLookupTime > time) {
-                    lowLookupTime = time;
-              }
-              runningLookupTime += time;
-          }
+    /**
+     * Gets the number of existing sequences processed thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return int number of existing sequences processed thus far
+     */
+    public int getCurrentExistingSeqCtr() {
+        return existingSeqCtr;
+    }
 
-          // must declare outside try block
-          int event;
+    /**
+     * Gets the number of existing sequences with non-fatal processing errors
+     * thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return int number of existing sequences with non-fatal processing errors
+     * thus far
+     */
+    public int getCurrentExistingSeqErrCtr() {
+        return existingSeqErrCtr;
+    }
 
-          // Note: we pass existing Sequence to the event detector even though
-          // it might be null
-          try {
-              event = eventDetector.detectEvent(seqInput, existingSequence);
-          }
-          catch (MGIException e) {
-            SeqloaderException e1 =
-                (SeqloaderException) eFactory.getException(
-            SeqloaderExceptionFactory.EventDetectionErr, e);
-            throw e1;
-          }
-          if (event == SeqloaderConstants.UPDATE) {
-            logger.logdDebug("Update Event Primary: " + primarySeqId);
-            try {
-              processUpdateEvent(seqInput, existingSequence);
-            }
-            catch (ConfigException e) {
-              SeqloaderException e1 =
-                  (SeqloaderException) eFactory.getException(
-              SeqloaderExceptionFactory.ProcessUpdateErr, e);
-              throw e1;
-            }
-           catch (CacheException e) {
-              SeqloaderException e1 =
-                  (SeqloaderException) eFactory.getException(
-              SeqloaderExceptionFactory.ProcessUpdateErr, e);
-              throw e1;
-            }
-           catch (DBException e) {
-              SeqloaderException e1 =
-                  (SeqloaderException) eFactory.getException(
-              SeqloaderExceptionFactory.ProcessUpdateErr, e);
-              throw e1;
-            }
-            catch (TranslationException e) {
-              SeqloaderException e1 =
-                  (SeqloaderException) eFactory.getException(
-              SeqloaderExceptionFactory.ProcessUpdateErr, e);
-              throw e1;
-            }
-            catch (KeyNotFoundException e) {
-              SeqloaderException e1 =
-                  (SeqloaderException) eFactory.getException(
-              SeqloaderExceptionFactory.ProcessUpdateErr, e);
-              throw e1;
-            }
-          }
-          else if (event == SeqloaderConstants.ADD) {
-            super.processInput(seqInput);
-          }
-          else if (event == SeqloaderConstants.DUMMY) {
-            logger.logdDebug("Dummy Event Primary: " + primarySeqId);
-            try {
-              processDummyEvent(seqInput, existingSequence);
-            }
-            catch (MGIException e) {
-             SeqloaderException e1 =
-                 (SeqloaderException) eFactory.getException(
-             SeqloaderExceptionFactory.ProcessDummyErr, e);
-             throw e1;
-           }
-          }
+    /**
+     * The current greatest time to query the SequenceLookup thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return double current greatest time to query the SequenceLookup thus far
+     */
+    public double getCurrentHighSequenceLookupTime() {
+        return highLookupTime;
+    }
 
-          else if (event == SeqloaderConstants.NON_EVENT) {
-            logger.logdDebug("NON Event Primary: " + primarySeqId);
-          }
-          else {
-            // raise error - unhandled case
-            logger.logdErr("UNHANDLED Event Primary: " + primarySeqId);
-            System.err.println(
-                "Unhandled event in IncremSeqPrcessor.processSequence");
+    /**
+     * The current lowest time to query the SequenceLookup thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return double current lowest time to query the SequenceLookup thus far
+     */
+    public double getCurrentLowSequenceLookupTime() {
+        return lowLookupTime;
+    }
 
-          }
-        }
+    /**
+     * The current total time to query the SequenceLookup thus far
+     * @assumes nothing
+     * @effects nothing
+     * @return double current total time to query the SequenceLookup thus far
+     */
+    public double getCurrentSequenceLookupTime() {
+        return runningLookupTime;
+    }
+
+    /**
+      * The current Average time to query the SequenceLookup thus far
+      * @assumes nothing
+      * @effects nothing
+      * @return double current average time to query the SequenceLookup thus far
+      */
+     public double getCurrentAverageSequenceLookupTime() {
+         return runningLookupTime / existingSeqCtr;
+     }
 
     /**
     * Gets a Vector of Strings reporting counts for a different events processed
@@ -300,8 +312,7 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     * thus far
     */
      public Vector getProcessedReport() {
-         Vector report = new Vector();
-         report.add("Total Add Events: " + eventDetector.getAddEventCount());
+         Vector report = super.getProcessedReport();
          report.add("Total Update Events: " + eventDetector.getUpdateEventCount());
          report.add("Total Dummy Events: " + eventDetector.getDummyEventCount());
          report.add("Total Non Events: " + eventDetector.getNonEventCount());
@@ -309,6 +320,187 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
          report.add("Total Split Events: " + eventDetector.getSplitEventCount());
          return report;
      }
+
+     /**
+      * processes the last batch
+      * @assumes nothing
+      * @effects queries and updates a database
+      * @throws SeqloaderException if error using seqLookup, detecting or
+      * processing an event
+      * @throws MSException if of type UnresolvedAttributeException
+      */
+     public void finishUpdateBatch() throws SeqloaderException, MSException {
+          if(batchMap.size() > 0 ) {
+              try {
+                  processUpdateBatch();
+              }
+              catch (SeqloaderException e) {
+                   SeqloaderException e1 =
+                       (SeqloaderException) eFactory.getException(
+                       SeqloaderExceptionFactory.ProcessUpdateErr, e);
+                   throw e1;
+               }
+          }
+      }
+
+    /**
+     * Processes a batch of SequenceInput's determined to be in MGI. Detects and handles
+     * update, dummy, merge, split and non-events
+     * @assumes nothing
+     * @effects Depending on the stream, writes to bcp files, creates SQL batch,
+     * writes to SQL script, or does inline SQL
+     * @throws SeqloaderException if error using seqLookup, detecting or
+     * processing an event
+     * @throws MSException if of type UnresolvedAttributeException
+     */
+
+    private void processUpdateBatch() throws  SeqloaderException, MSException  {
+        // get the set of seqids to pass to the SequenceLookup
+        Set seqIdSet = batchMap.keySet();
+        Vector sequences;
+        // get Sequence objects for the batch
+        try {
+            stopWatch.reset();
+            stopWatch.start();
+            sequences = seqLookup.findBySeqId(seqIdSet, logicalDBKey);
+            stopWatch.stop();
+            double time = stopWatch.time();
+            if (highLookupTime < time) {
+                highLookupTime = time;
+            }
+            else if (lowLookupTime > time) {
+                lowLookupTime = time;
+            }
+            runningLookupTime += time;
+        }
+        catch (MGIException e) {
+            SeqloaderException e1 =
+                (SeqloaderException) eFactory.getException(
+                SeqloaderExceptionFactory.SeqQueryErr, e);
+            e1.bind(seqIdSet.toString());
+            throw e1;
+        }
+        // iterate thru the Sequence objects detecting and processing events
+        for (Iterator i = sequences.iterator(); i.hasNext(); ) {
+            Sequence existingSequence = (Sequence) i.next();
+            String primarySeqId = existingSequence.getAccPrimary().getAccID();
+            //System.out.println("Primary seqid: " + primarySeqId);
+            SequenceInput seqInput = (SequenceInput) batchMap.get(primarySeqId);
+            if (seqInput == null) {
+                throw new RuntimeException("IncremSequenceInputProcessor: " +
+                    "No SequenceInput object for existing sequence in MGI!");
+            }
+
+            // must declare outside try block
+            int event;
+            try {
+                event = eventDetector.detectEvent(seqInput, existingSequence);
+            }
+            catch (MGIException e) {
+                SeqloaderException e1 =
+                    (SeqloaderException) eFactory.getException(
+                    SeqloaderExceptionFactory.EventDetectionErr, e);
+                throw e1;
+            }
+            if (event == SeqloaderConstants.UPDATE) {
+                logger.logdDebug("Update Event Primary: " + primarySeqId);
+                try {
+                    processUpdateEvent(seqInput, existingSequence);
+                }
+                catch (ConfigException e) {
+                    SeqloaderException e1 =
+                        (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.ProcessUpdateErr, e);
+                    throw e1;
+                }
+                catch (CacheException e) {
+                    SeqloaderException e1 =
+                        (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.ProcessUpdateErr, e);
+                    throw e1;
+                }
+                catch (DBException e) {
+                    SeqloaderException e1 =
+                        (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.ProcessUpdateErr, e);
+                    throw e1;
+                }
+                catch (TranslationException e) {
+                    SeqloaderException e1 =
+                        (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.ProcessUpdateErr, e);
+                    throw e1;
+                }
+                catch (KeyNotFoundException e) {
+                    SeqloaderException e1 =
+                        (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.ProcessUpdateErr, e);
+                    throw e1;
+                }
+                // If incoming raw organism != existing raw organism -
+                // qcReports handles reporting, log to diagnostic and curator
+                catch (ChangedOrganismException e) {
+                    String message = e.getMessage() + " Sequence: " +
+                        seqInput.getPrimaryAcc().getAccID();
+                    logger.logdDebug(message, true);
+                    logger.logcInfo(message, true);
+                    existingSeqErrCtr++;
+                    continue;
+                }
+
+                // if we can't resolve SEQ_Sequence attributes,  log to curation log
+                // go to the next sequence
+                catch (SequenceResolverException e) {
+                    String message = e.getMessage() + " Sequence: " +
+                        seqInput.getPrimaryAcc().getAccID();
+                    logger.logdDebug(message, true);
+                    logger.logcInfo(message, true);
+                    existingSeqErrCtr++;
+                    continue;
+                }
+                // UnresolvedAttributeException is thrown for those loaders that
+                // must resolve *all* source attributes or fail.
+                // For other loads if we can't resolve the source for a sequence,
+                // log to curation log and go to the next sequence
+                catch (MSException e) {
+                    if (e instanceof UnresolvedAttributeException) {
+                        throw e;
+                    }
+                    String message = e.getMessage() + " Sequence: " +
+                        seqInput.getPrimaryAcc().getAccID();
+                    logger.logdInfo(message, true);
+                    logger.logcInfo(message, true);
+                    existingSeqErrCtr++;
+                    continue;
+                }
+
+            }
+            else if (event == SeqloaderConstants.DUMMY) {
+                logger.logdDebug("Dummy Event Primary: " + primarySeqId);
+                try {
+                    processDummyEvent(seqInput, existingSequence);
+                }
+                catch (MGIException e) {
+                    SeqloaderException e1 =
+                        (SeqloaderException) eFactory.getException(
+                        SeqloaderExceptionFactory.ProcessDummyErr, e);
+                    throw e1;
+                }
+            }
+
+            else if (event == SeqloaderConstants.NON_EVENT) {
+                logger.logdDebug("NON Event Primary: " + primarySeqId);
+            }
+            else {
+                // raise error - unhandled case
+                logger.logdErr("UNHANDLED Event Primary: " + primarySeqId);
+                System.err.println(
+                    "Unhandled event in IncremSeqProcessor.processSequence");
+            }
+        }
+        existingSeqCtr = existingSeqCtr + seqIdSet.size();
+        runningLookupAverage = runningLookupTime / existingSeqCtr;
+    }
 
       /**
       * processes Update events
@@ -318,7 +510,6 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
       * @param seqInput SequenceInput object - a set of raw attributes to resolve
       *        and update a sequence
       * @param existingSequence Sequence object for the existing sequence to update
-      * @return nothing
       * @throws ConfigException if error reading config file
       * @throws CacheException if error using lookups
       * @throws DBException if lookup error querying database
@@ -376,12 +567,22 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
           Iterator msIterator = seqInput.getMSources().iterator();
           MolecularSource ms;
           while (msIterator.hasNext()) {
+              stopWatch.start();
               msProcessor.processExistingSeqSrc(
-                primarySeqid,
-                //existingSequence.getAccPrimary().getAccID(),
-                existingSequence.getSequenceKey(),
-                oldRawLibrary,
-                (MSRawAttributes) msIterator.next());
+                  primarySeqid,
+                  existingSequence.getSequenceKey(),
+                  oldRawLibrary,
+                  (MSRawAttributes) msIterator.next());
+              stopWatch.stop();
+              double time = stopWatch.time();
+              stopWatch.reset();
+              if (highMSPTime < time) {
+                  highMSPTime = time;
+              }
+              else if (lowMSPTime > time) {
+                  lowMSPTime = time;
+              }
+              runningMSPTime += time;
           }
 
           // resolve sequence reference associations and set new ones
@@ -416,12 +617,9 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     * @assumes Nothing
     * @effects Deletes dummy sequence and inserts real sequence
     * @param seqInput SequenceInput object representing the real sequence
-    * @param exisingSequence - Sequence object representing the dummy sequence
-    * @return nothing
+    * @param existingSequence Sequence object representing the dummy sequence
     * @throws SeqloaderException if there are configuration, cacheing, database,
     *         translation, or lookup errors. These errors cause load to fail
-    * @throws RepeatSequenceException errors writing to repeat sequence file -
-    *         meant to be caught in order to skip current sequence
     * @throws ChangedOrganismException if raw organism for existing sequence is
     *         different than for current sequence being processed. Meant to be
     *         caught in order to skip current sequence
@@ -433,8 +631,8 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
 
     private void processDummyEvent(SequenceInput seqInput,
                                    Sequence existingSequence)
-        throws SeqloaderException, RepeatSequenceException,
-           ChangedOrganismException, MSException, SequenceResolverException {
+        throws SeqloaderException, ChangedOrganismException, MSException,
+        SequenceResolverException {
 
         // send dummy sequence to stream to be deleted
         try {
