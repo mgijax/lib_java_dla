@@ -25,6 +25,7 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.SchemaConstants;
 import org.jax.mgi.shr.dbutils.InterpretException;
+import org.jax.mgi.shr.dbutils.BindableStatement;
 
 import java.util.*;
 import java.sql.Timestamp;
@@ -60,26 +61,6 @@ public class SequenceLookup {
     // interpretor for the query
     private SequenceInterpreter interpreter;
 
-    public SequenceLookup(SQLStream stream) throws DBException, ConfigException {
-        // the stream with which to build the Sequence
-        this.stream = stream;
-
-        // get an SQL manager for the MGD database
-        sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
-        interpreter = new SequenceInterpreter();
-    }
-
-
-    /**
-     * create a Sequence object by querying the database by seqid
-     * @assumes nothing
-     * @effects a new connection could be opened to the database if one does
-     * not already exist
-     * @param seqid the seqid to use in the query
-     * @return the Sequence object represented by the database query
-     */
-    public Sequence findBySeqId(String seqId, int logicalDBKey)
-        throws DBException {
         // build the query in multiple Strings concatenating them at the end
         // The compiler can't handle the 1000 +- concatenations on one String
         // Unions in place of outer join. Sequences may not have References and
@@ -88,7 +69,7 @@ public class SequenceLookup {
         // query2) have 2ndary(s), no reference(s)
         // query3) have reference(s), no 2ndary(s)
         // query4) have neither
-        String query1 = "SELECT distinct " +
+        private String query1 = "SELECT distinct " +
             " a." + MGD.acc_accession._accession_key +
             " as ACC_Accession_key, " +
             " a." + MGD.acc_accession.accid +
@@ -238,16 +219,13 @@ public class SequenceLookup {
             " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
 	    */
-            " AND a." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = " +
-            "'" + seqId + "'" +
-            " AND aa." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND a." + MGD.acc_accession.accid + " = ?" +
+            " AND aa." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND aa." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND aa." + MGD.acc_accession.preferred + " = " +
@@ -257,7 +235,7 @@ public class SequenceLookup {
             " AND m." + MGD.mgi_reference_assoc._refassoctype_key + " = " +
             MGIRefAssocTypeConstants.PROVIDER;
 
-        String query2 = " UNION SELECT distinct " +
+        private String query2 = " UNION SELECT distinct " +
             " a." + MGD.acc_accession._accession_key +
             " as ACC_Accession_key, " +
             " a." + MGD.acc_accession.accid +
@@ -398,16 +376,13 @@ public class SequenceLookup {
             " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
 	    */
-            " AND a." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = " +
-            "'" + seqId + "'" +
-            " AND aa." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND a." + MGD.acc_accession.accid + " = ?" +
+            " AND aa." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND aa." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND aa." + MGD.acc_accession.preferred + " = " +
@@ -418,7 +393,8 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence._sequence_key +
             " AND r." + MGD.mgi_reference_assoc._refassoctype_key + " = " +
             MGIRefAssocTypeConstants.PROVIDER + ") ";
-        String query3 = " UNION SELECT distinct " +
+
+        private String query3 = " UNION SELECT distinct " +
             " a." + MGD.acc_accession._accession_key +
             " as ACC_Accession_key, " +
             " a." + MGD.acc_accession.accid +
@@ -552,14 +528,12 @@ public class SequenceLookup {
             " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
 	    */
-            " AND a." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = " +
-            "'" + seqId + "'" +
+            " AND a." + MGD.acc_accession.accid + " = ?" +
             " AND m." + MGD.mgi_reference_assoc._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND m." + MGD.mgi_reference_assoc._refassoctype_key + " = " +
@@ -570,11 +544,11 @@ public class SequenceLookup {
             " ac." + MGD.acc_accession._object_key +
             " AND ac." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
-            " AND ac." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND ac." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND ac." + MGD.acc_accession.preferred + " = " +
             AccessionLib.NO_PREFERRED + ")";
-        String query4 = " UNION SELECT distinct " +
+
+        private String query4 = " UNION SELECT distinct " +
             " a." + MGD.acc_accession._accession_key +
             " as ACC_Accession_key, " +
             " a." + MGD.acc_accession.accid +
@@ -699,22 +673,19 @@ public class SequenceLookup {
             " AND his." + MGD.mgi_attributehistory._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
 	    */
-            " AND a." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
             " AND a." + MGD.acc_accession.preferred + " = " +
             AccessionLib.PREFERRED +
-            " AND a." + MGD.acc_accession.accid + " = " +
-            "'" + seqId + "'" +
+            " AND a." + MGD.acc_accession.accid + " = ?" +
             " AND NOT EXISTS (SELECT 1 FROM " +
             MGD.acc_accession._name + " acc " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " acc." + MGD.acc_accession._object_key +
             " AND acc." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
-            " AND acc." + MGD.acc_accession._logicaldb_key + " = " +
-            logicalDBKey +
+            " AND acc." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND acc." + MGD.acc_accession.preferred + " = " +
             AccessionLib.NO_PREFERRED + ") " +
             " AND NOT EXISTS (SELECT 1 FROM " +
@@ -726,18 +697,52 @@ public class SequenceLookup {
         " order by s." + MGD.seq_sequence._sequence_key;
 
         // create one query
-        String query = query1 + query2 + query3 + query4;
-        //String query = query4;
+        private String query = query1 + query2 + query3 + query4;
+        private BindableStatement statement;
+        public SequenceLookup(SQLStream stream) throws DBException, ConfigException {
+            // the stream with which to build the Sequence
+            this.stream = stream;
 
-        // execute the query
-        //System.out.println("SequenceLookup executing query: " );
-        resultsNav = sqlMgr.executeQuery(query);
-	//System.out.println("Done looking up seqid: " + seqId);
-        // get a multi row iterator
-        multiIterator = new MultiRowIterator(resultsNav, interpreter);
+            // get an SQL manager for the MGD database
+            sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
+            statement = sqlMgr.getBindableStatement(query);
 
-        // this iterator will have only one object
-        return (Sequence)multiIterator.next();
+            interpreter = new SequenceInterpreter();
+        }
+
+    /**
+     * create a Sequence object by querying the database by seqid
+     * @assumes nothing
+     * @effects a new connection could be opened to the database if one does
+     * not already exist
+     * @param seqid the seqid to use in the query
+     * @return the Sequence object represented by the database query
+     */
+    public Sequence findBySeqId(String seqId, int logicalDBKey)
+           throws DBException {
+         // create Vector of values to bind to the query
+         Vector v = new Vector();
+         // add three values for each select in the query
+         for (int i = 0; i < 4; i++) {
+             v.add(new Integer(logicalDBKey));
+             v.add(seqId);
+             v.add(new Integer(logicalDBKey));
+          }
+
+         // execute the query, passing the values to bind
+         resultsNav = statement.executeQuery(v);
+
+         //System.out.println("SequenceLookup executing query: " );
+         //resultsNav = sqlMgr.executeQuery(query);
+         //System.out.println("Done looking up seqid: " + seqId);
+         // get a multi row iterator
+         multiIterator = new MultiRowIterator(resultsNav, interpreter);
+
+         // this iterator will have only one object
+         Sequence s = (Sequence)multiIterator.next();
+         // close the resource - does object cleanup
+         multiIterator.close();
+         return s;
     }
     /**
      * @is an object that knows how to build a Sequence object from
