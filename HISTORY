@@ -1,4 +1,10 @@
+TAG: lib_java_dla-1-0-28-BP-2
 DATE: 07/23/2004
+STAFF: sc
+RELEAS:
+CHANGES: see changes since last tag below
+
+DATE: 07/27/2004
 STAFF: sc
 CHANGES: SequenceAttributeResolver.java - truncate rawOrganism to 255.
 CHANGES:TR5395
@@ -18,6 +24,7 @@ CHANGES:TR5395
    of UnresolvedAttributeException - new exception for assembly load as all 
    source attributes must resolve; other seqloads simply skip the sequence 
    and report. 
+
 DATE: 07/23/2004
 STAFF: sc
 CHANGES:
@@ -25,7 +32,7 @@ CHANGES:
    addressed in TR5965. Classes copied from trunk:
    DLAException.java, DLALoader.java, DLALogger.java
 
-TAG: lib_java_dla-1-0-29 (this should have been suffixed with BP, but was not)
+TAG: lib_java_dla-1-0-29 (this should have been lib_java_dla-1-0-28-BP-1)
 DATE: 07/20/2004
 STAFF: sc
 CHANGES: 
