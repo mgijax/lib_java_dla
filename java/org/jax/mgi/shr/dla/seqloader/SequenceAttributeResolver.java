@@ -96,7 +96,19 @@ public class SequenceAttributeResolver {
       state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
       state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
       //
-      // cleanse the incoming decription data
+      // cleanse raw organisms
+      // Needed for sequences that may have >1 organism e.g. SwissProt
+      String organisms = rawAttributes.getRawOrganisms();
+      if (organisms != null) {
+          organisms = organisms.replaceAll("'", "''");
+          if (organisms.length() > 255) {
+              organisms = organisms.substring(0,254);
+          }
+      }
+      state.setRawOrganism(organisms);
+
+      //
+      // cleanse decription data
       //
       String desc = rawAttributes.getDescription();
       if (desc != null) {
@@ -179,7 +191,6 @@ public class SequenceAttributeResolver {
       state.setDivision(rawAttributes.getDivision());
       state.setVirtual(rawAttributes.getVirtual());
       state.setRawType(rawAttributes.getType());
-      state.setRawOrganism(rawAttributes.getRawOrganisms());
       state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
       state.setSeqrecordDate(rawAttributes.getSeqRecDate());
       state.setSequenceDate(rawAttributes.getSeqDate());
@@ -189,6 +200,9 @@ public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.10  2004/07/08 15:03:49  sc
+//  javdocs changes
+//
 //  Revision 1.9  2004/06/30 19:35:01  mbw
 //  javadocs only
 //

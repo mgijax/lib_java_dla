@@ -5,10 +5,12 @@ import org.jax.mgi.shr.timing.Stopwatch;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.ioutils.RecordDataIterator;
 import org.jax.mgi.shr.dbutils.ScriptWriter;
+import org.jax.mgi.shr.dbutils.DataIterator;
 import org.jax.mgi.shr.config.ScriptWriterCfg;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
+import org.jax.mgi.dbs.mgd.MolecularSource.UnresolvedAttributeException;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
@@ -71,7 +73,7 @@ public abstract class SeqLoader extends DLALoader {
     */
 
     // iterator over an input file
-    protected RecordDataIterator iterator;
+    protected DataIterator iterator;
 
     // optional organism checker for reporting statistics by organism
     protected OrganismChecker organismChecker;
@@ -276,6 +278,9 @@ public abstract class SeqLoader extends DLALoader {
            // if we can't resolve the source for a sequence, log to curation log
            // go to the next sequence
            catch (MSException e) {
+               if (e instanceof UnresolvedAttributeException) {
+                   throw new MGIException(e.getMessage(), true);
+               }
                String message = e.getMessage() + " Sequence: " +
                    si.getPrimaryAcc().getAccID();
                logger.logdInfo(message, true);
