@@ -1,3 +1,11 @@
+DATE: 03/29/2004
+STAFF: sc
+CHANGES:
+1) IncremSeqProcessor - added reporting of Event counts
+2) GBSeqAttributeResolver - renamed to GBFormatSeqAttribResolver
+3) SeqEventDetector and MergeSplitProcessor- added counters and methods to get 
+   counters events
+
 DATE: 03/24/2004
 STAFF: sc
 CHANGES:
