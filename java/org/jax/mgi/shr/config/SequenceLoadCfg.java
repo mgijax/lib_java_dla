@@ -205,6 +205,19 @@ public class SequenceLoadCfg extends Configurator {
   }
 
   /**
+   * Gets the jnumber for this load
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return the jnumber for this load
+   * @throws ConfigException if "SEQ_JNUMBER" not found in configuration file
+   */
+  public String getJnumber() throws ConfigException {
+    return getConfigString("SEQ_JNUMBER");
+  }
+
+
+  /**
    * Gets the Jobstream name
    * @assumes Nothing
    * @effects Nothing
@@ -218,6 +231,9 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.6  2004/04/01 20:19:00  sc
+//  added JOBSTREAM
+//
 //  Revision 1.5  2004/03/29 20:26:08  mbw
 //  changed existing parameter names to be prefixed by the SEQ string and added a few new parameters
 //
