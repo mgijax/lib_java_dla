@@ -15,7 +15,9 @@ public class SeqEventDetector {
 
     private MergeSplitProcessor mergeSplitProcessor;
     private VocabTermLookup termNameLookup;
-    private HashSet seqIdsAlreadyAdded;
+
+    // cache of seqids we have already processed
+    private HashSet seqIdsAlreadyProcessed;
     /**
      * Event counters
      */
@@ -39,7 +41,7 @@ public class SeqEventDetector {
          throws ConfigException, CacheException, DBException {
         this.mergeSplitProcessor = mergeSplitProcessor;
         termNameLookup = new VocabTermLookup();
-        seqIdsAlreadyAdded = new HashSet();
+        seqIdsAlreadyProcessed = new HashSet();
     }
 
     public int detectEvent(SequenceInput seqInput, Sequence sequence)
@@ -50,7 +52,7 @@ public class SeqEventDetector {
         String seqid = seqInput.getPrimaryAcc().getAccID();
 
         // we've already already processed this sequence
-        if (seqIdsAlreadyAdded.contains(seqid)) {
+        if (seqIdsAlreadyProcessed.contains(seqid)) {
           event = SeqloaderConstants.ALREADY_ADDED;
           alreadyAddedCtr++;
         }
@@ -58,7 +60,7 @@ public class SeqEventDetector {
         // this is a new sequence
         else if ( sequence == null ) {
               event = SeqloaderConstants.ADD;
-              seqIdsAlreadyAdded.add(seqid);
+              seqIdsAlreadyProcessed.add(seqid);
               addCtr++;
         }
 
@@ -71,16 +73,18 @@ public class SeqEventDetector {
             sequence.setIsDummySequence(true);
 
             // dummy seqs are deleted then processed as adds
-            seqIdsAlreadyAdded.add(seqid);
+            seqIdsAlreadyProcessed.add(seqid);
         }
 
         // this sequence may need to be updated
         else if (sequence.getSequenceState().getSeqrecordDate().before(
                  seqInput.getSeq().getSeqRecDate())) {
           event = SeqloaderConstants.UPDATE;
+          seqIdsAlreadyProcessed.add(seqid);
           updateCtr++;
         }
-        // its a non event, increment the counter
+        // its a non event, increment the counter, but don't add to the
+        // already added seqid cache
         else {
             nonCtr++;
         }
