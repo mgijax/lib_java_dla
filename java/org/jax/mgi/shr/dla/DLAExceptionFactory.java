@@ -39,10 +39,20 @@ public class DLAExceptionFactory extends ExceptionFactory {
   /**
    * Error occurred while trying to run loader
    */
-  public static final String FinalizeException =
-      "org.jax.mgi.shr.shrdbutils.FinalizeException";
+  public static final String PreProcessException =
+      "org.jax.mgi.shr.shrdbutils.PreProcessException";
   static {
-    exceptionsMap.put(FinalizeException, new DLAException(
+    exceptionsMap.put(PreProcessException, new DLAException(
+        "Exception occured during pre processing", false));
+  }
+
+  /**
+   * Error occurred while trying to run loader
+   */
+  public static final String PostProcessException =
+      "org.jax.mgi.shr.shrdbutils.PostProcessException";
+  static {
+    exceptionsMap.put(PostProcessException, new DLAException(
         "Exception occured during post processing", false));
   }
 
