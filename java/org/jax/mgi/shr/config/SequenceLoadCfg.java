@@ -36,7 +36,7 @@ public class SequenceLoadCfg extends Configurator {
     }
 
     /**
-     * Gets the load mode e.g. 'incremental' or 'delete/reload'
+     * Gets the load mode e.g. 'incremental' or 'delete_reload'
      * @assumes Nothing
      * @effects Nothing
      * @param None
@@ -89,7 +89,7 @@ public class SequenceLoadCfg extends Configurator {
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @return MGIType name
+     * @return MGIType for Sequence name
      * @throws ConfigException if "SEQ_MGITYPE" not found in configuration file
      */
     public String getSeqMGIType() throws ConfigException {
@@ -101,7 +101,7 @@ public class SequenceLoadCfg extends Configurator {
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @return MGIType name
+     * @return logicalDB name
      * @throws ConfigException if "LOGICALDB" not found in configuration file
      */
     public String getLogicalDB() throws ConfigException {
@@ -112,7 +112,7 @@ public class SequenceLoadCfg extends Configurator {
    * @assumes Nothing
    * @effects Nothing
    * @param None
-   * @return MGIType name
+   * @return reference assoc typ name
    * @throws ConfigException if "REF_ASSOC_TYPE" not found in configuration file
    */
 
@@ -125,15 +125,30 @@ public class SequenceLoadCfg extends Configurator {
     * @assumes Nothing
     * @effects Nothing
     * @param None
-    * @return MGIType name
+    * @return Provider name
     * @throws ConfigException if "PROVIDER" not found in configuration file
     */
    public String getProvider() throws ConfigException {
        return getConfigString("PROVIDER");
    }
+
+   /**
+   * Gets the repeat sequence file name
+   * @assumes Nothing
+   * @effects Nothing
+   * @param None
+   * @return repeat sequence file name
+   * @throws ConfigException if "REPEAT_FILE" not found in configuration file
+   */
+  public String getRepeatFileName() throws ConfigException {
+      return getConfigString("REPEAT_FILE");
+  }
 }
 
 //  $Log$
+//  Revision 1.1  2004/01/06 20:09:30  mbw
+//  initial version imported from lib_java_seqloader
+//
 //  Revision 1.2  2003/12/20 16:23:37  sc
 //  comment changes from code review
 //
