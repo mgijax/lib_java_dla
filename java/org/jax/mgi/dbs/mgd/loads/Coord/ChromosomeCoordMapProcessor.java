@@ -13,7 +13,6 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 
-import org.jax.mgi.shr.dla.coordloader.*;
 
 /**
  * An object that finds an existing MAP_Coordinate database key

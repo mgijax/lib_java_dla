@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 
 import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
-import org.jax.mgi.shr.dla.fasta.FASTAFilter;
+import org.jax.mgi.shr.dla.input.fasta.FASTAFilter;
 
 /**
  * @is an object that retrieves Configuration pararmeters for sequence loaders

@@ -13,7 +13,7 @@ import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
-import org.jax.mgi.shr.dla.seqloader.*;
+//import org.jax.mgi.shr.dla.seqloader.*;
 
 /**
  * @is An object that resolves a RefAssocRawAttributes object to a

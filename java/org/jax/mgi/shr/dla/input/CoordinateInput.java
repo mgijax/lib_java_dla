@@ -3,7 +3,6 @@
 
 package org.jax.mgi.shr.dla.input;
 
-import org.jax.mgi.shr.dla.coordloader.*;
 import org.jax.mgi.dbs.mgd.loads.Coord.*;
 
 /**
