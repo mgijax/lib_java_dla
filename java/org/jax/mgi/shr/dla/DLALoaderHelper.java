@@ -28,6 +28,8 @@ public class DLALoaderHelper
       {
           for (int i = 0; i < list.length; i++)
           {
+              if (list[i].equals(""))
+                  continue;
               logger.logdInfo("truncating table ... " + list[i], true);
               schema.truncateTable(list[i]);
           }
