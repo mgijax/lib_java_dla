@@ -11,7 +11,6 @@ import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 public class TestMSCollapsedCache
     extends TestCase {
   private MSCollapsedCache lookup = null;
-  private Runtime runtime = null;
   private long beforeInit;
   private SQLDataManager sqlMgr = null;
   private VocabKeyLookup segmentLookup;
@@ -81,9 +80,6 @@ public class TestMSCollapsedCache
             "getDate(), getDate())"
 
             );
-    runtime = Runtime.getRuntime();
-    beforeInit = runtime.maxMemory() - runtime.freeMemory();
-    //System.out.println(runtime.maxMemory() - runtime.freeMemory());
     lookup = new MSCollapsedCache(new ConsoleLogger(), CacheConstants.FULL_CACHE);
   }
 
@@ -101,11 +97,12 @@ public class TestMSCollapsedCache
     System.out.println("Printing cache...");
     lookup.printCache(System.out);
     System.out.println("End of Cache");
-    long afterInit = runtime.maxMemory() - runtime.freeMemory();
-    //System.out.println(runtime.maxMemory() - runtime.freeMemory());
-    System.out.println("memory usage before init: \t\t" + beforeInit);
-    System.out.println("memory usage after init: \t\t" + afterInit);
-    long afterAdd = runtime.maxMemory() - runtime.freeMemory();
+    lookup.initCache();
+    System.out.println("Printing cache...");
+    lookup.printCache(System.out);
+    System.out.println("End of Cache");
+
+    int size = lookup.cacheSize();
     // add a new MolecularSource that should not collapse
     MolecularSource newMS =
         new MolecularSource(
@@ -118,18 +115,8 @@ public class TestMSCollapsedCache
     newMS.setStrainKey(strainLookup.lookup("RR"));
     newMS.setTissueKey(tissueLookup.lookup("Not Applicable"));
     lookup.addToCache(newMS);
-    System.out.println("memory usage after add: \t\t" + afterAdd);
-    System.out.println("size of add: \t\t" + (afterAdd - afterInit));
-    System.out.println("Printing cache...");
-    lookup.printCache(System.out);
-    System.out.println("End of Cache");
-    // get a unresolved MS and then do a lookup
-    MSAttrResolver attrResolver = new MSAttrResolver();
-    MSRawAttributes raw = new MSRawAttributes();
-    raw.setOrganism("mouse, laboratory");
-    MolecularSource unresolvedMS = attrResolver.resolveAttributes(raw);
-    MolecularSource foundMS = lookup.lookup(unresolvedMS);
-    assertEquals(new Integer(-50), foundMS.getMSKey());
+    int newSize = lookup.cacheSize();
+    assertEquals(new Integer(newSize), new Integer(size + 1));
 
     // add a new MolecularSource that should collapse
     MolecularSource anotherMS =
@@ -137,26 +124,23 @@ public class TestMSCollapsedCache
             new PRB_SourceDAO(new PRB_SourceKey(new Integer(-200)),
                               new PRB_SourceState()));
     anotherMS.setOrganismKey(new Integer(1));
-    anotherMS.setCellLineKey(cellLineLookup.lookup("Not Specified"));
-    anotherMS.setGenderKey(genderLookup.lookup("Not Specified"));
     anotherMS.setSegmentTypeKey(segmentLookup.lookup("Not Applicable"));
     anotherMS.setVectorTypeKey(vectorLookup.lookup("Not Applicable"));
+    anotherMS.setCellLineKey(cellLineLookup.lookup("Not Specified"));
+    anotherMS.setGenderKey(genderLookup.lookup("Not Specified"));
     anotherMS.setStrainKey(strainLookup.lookup("Not Specified"));
     anotherMS.setTissueKey(tissueLookup.lookup("brain"));
     lookup.addToCache(anotherMS);
-    long afterSecondAdd = runtime.maxMemory() - runtime.freeMemory();
-    System.out.println("memory usage after second add: \t" + afterSecondAdd);
-    System.out.println("size of second add: \t\t" + (afterSecondAdd - afterAdd));
-    System.out.println("Printing cache...");
-    lookup.printCache(System.out);
-    System.out.println("End of Cache");
+    newSize = lookup.cacheSize();
+    assertEquals(new Integer(newSize), new Integer(size + 1));
 
     // get a unresolved MS and then do a lookup
-    raw = new MSRawAttributes();
+    MSRawAttributes raw = new MSRawAttributes();
     raw.setOrganism("mouse, laboratory");
     raw.setTissue("brain");
-    unresolvedMS = attrResolver.resolveAttributes(raw);
-    foundMS = lookup.lookup(unresolvedMS);
+    MSAttrResolver attrResolver = new MSAttrResolver();
+    MolecularSource unresolvedMS = attrResolver.resolveAttributes(raw);
+    MolecularSource foundMS = lookup.lookup(unresolvedMS);
     assertEquals(new Integer(-70), foundMS.getMSKey());
   }
 
