@@ -199,6 +199,7 @@ public class TestMSProcessor
         MSRawAttributes raw = new MSRawAttributes();
         raw.setOrganism("mouse, laboratory");
         raw.setGender("Male");
+        raw.setCellLine("HeLa");
         MolecularSource ms =
             msProcessor.processNewSeqSrc(accid, raw);
         assertTrue(ms.getMSKey().intValue() > 0); // a new key was created
