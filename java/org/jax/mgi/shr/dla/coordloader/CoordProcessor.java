@@ -7,7 +7,6 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
-import org.jax.mgi.dbs.mgd.lookup.CoordMapCollectionKeyLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.dao.MAP_Coord_FeatureState;
@@ -45,11 +44,11 @@ public class CoordProcessor {
     // gets configuration values for coordinate loads
     private CoordLoadCfg coordCfg;
 
-    // a lookup to get a collection key
-    private CoordMapCollectionKeyLookup collectionLookup;
-
     // name of the collection
     String collectionName;
+
+    // abbreviation for the collection
+    String collectionAbbrev;
 
     // the collection key for this load
     private Integer collectionKey;
@@ -66,6 +65,17 @@ public class CoordProcessor {
     // a coordinate Exception Factory
     private CoordloaderExceptionFactory eFactory;
 
+    /**
+     * Constructs a CoordProcessor
+     * @param stream stream for adding coordinates to an  MGD databaseth
+     * @throws CacheException if error creating CoordMapFeatureResolver
+     * @throws DBException if error creating CoordMapFeatureResolver
+     * @throws ConfigException if error creating configurator or collection name
+     *          not found. Note  that coordCfg.getMapCollectionAbbrev supplies
+     *          a default value if not configured.
+     * @throws KeyNotFoundException if error creating CoordMapFeatureResolver
+     */
+
     public CoordProcessor(SQLStream stream) throws DBException, CacheException,
         ConfigException, KeyNotFoundException {
 
@@ -73,42 +83,31 @@ public class CoordProcessor {
         eFactory = new CoordloaderExceptionFactory();
         coordCfg = new CoordLoadCfg();
         collectionName = coordCfg.getMapCollectionName();
+        collectionAbbrev = coordCfg.getMapCollectionAbbrev();
 
-        // get the collection key or create a new collection if necessary
-        setCollectionKey();
-
+        // set collection abbreviation to the name value if not configured
+        if(collectionAbbrev == null || collectionAbbrev.equals("")) {
+                collectionAbbrev = collectionName;
+        }
+        // create an instance of a CoordMapProcessor from configuration
         mapProcessor = (CoordMapProcessor)coordCfg.getMapProcessorClass();
-
-        // we have to explicitly set the collection key/ Configurator doesn't
-        // take parameters
-        mapProcessor.setCollectionKey(collectionKey);
 
         featureResolver = new CoordMapFeatureResolver();
     }
-
     /**
-     * deletes the coordinate collection, all coordinate maps and features for the
-     * collection
-     * @assumes Nothing
-     * @effects deletes records from a database
-     * @throws CoordLoaderException if error getting SQLDataManager or executing
-     *         a delete.
+     * deletes the collection, all coordinate maps and features for the
+     * collection. Creates a new collection object and sets the collection key
+     * in the map processor
+     * @throws CoordloaderException if error deleting collectin and associated
+     *    maps and features
+     * @throws ConfigException if error creating new collection
+     * @throws DBException if error creating new collection
      */
-
-     public void deleteCoordinates() throws CoordloaderException{
-
-       String spCall = "MAP_deleteByCollection '" + collectionName + "'";
-       try {
-         SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
-         sqlMgr.executeSimpleProc(spCall);
-       }
-       catch (MGIException e) {
-         CoordloaderException e1 =
-             (CoordloaderException) eFactory.getException(
-          CoordloaderExceptionFactory.ProcessDeletesErr, e);
-         throw e1;
-       }
-     }
+    public void preprocess() throws CoordloaderException, ConfigException,
+        DBException {
+        deleteCoordinates();
+        createCollection();
+    }
 
      /**
      * Adds a Coordinate Collection, Coordinate Maps for the Collections and
@@ -145,31 +144,35 @@ public class CoordProcessor {
     }
 
     /**
-     * sets the collection by getting the collection name from configuration
-     * looking up the collection in a database and creating it if not found
-     * @throws DBException if errors creating or using lookup, or creating or
-     * inserting collection DAO
-     * @throws CacheException if error creating or using lookup
-     * @throws ConfigException if error getting getting collection abbrev, creating
-     *    a collection lookup or creating a collectin DAO
+     * deletes the coordinate collection, all coordinate maps and features for the
+     * collection
+     * @assumes Nothing
+     * @effects deletes records from a database
+     * @throws CoordLoaderException if error getting SQLDataManager or executing
+     *         a delete.
      */
-    private void setCollectionKey () throws  CacheException, DBException,
-         ConfigException {
-         // create the lookup
-        collectionLookup = new CoordMapCollectionKeyLookup();
-        try {
-            // see if it is in the database
-            collectionKey = collectionLookup.lookup(collectionName);
-        }
-        catch (KeyNotFoundException e) {
-            // its not in the database, so create it
-            String collectionAbbrev = coordCfg.getMapCollectionAbbrev();
 
-            // if abbreviation isn't configured, just use the name
-            if(collectionAbbrev == null || collectionAbbrev.equals("")) {
-                collectionAbbrev = collectionName;
-            }
+     private void deleteCoordinates() throws CoordloaderException{
 
+       String spCall = "MAP_deleteByCollection '" + collectionName + "'";
+       try {
+         SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
+         sqlMgr.executeSimpleProc(spCall);
+       }
+       catch (MGIException e) {
+         CoordloaderException e1 =
+             (CoordloaderException) eFactory.getException(
+          CoordloaderExceptionFactory.ProcessDeletesErr, e);
+         throw e1;
+       }
+     }
+
+    /**
+     * Creates a collection object and sets the collection key in the map processor
+     * @throws DBException if errors creating or inserting collection DAO
+     * @throws ConfigException if error collection DAO
+     */
+    private void createCollection () throws  DBException, ConfigException {
             // create the state
             MAP_Coord_CollectionState collection = new MAP_Coord_CollectionState();
 
@@ -185,7 +188,9 @@ public class CoordProcessor {
 
             // insert the collection
             mgdStream.insert(dao);
-        }
+        // we have to explicitly set the collection key in the CoordMapProcessor
+        // because it is configured; Configurator does not take parameters
+        mapProcessor.setCollectionKey(collectionKey);
     }
 }
 
