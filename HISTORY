@@ -1,3 +1,24 @@
+TAG: lib_java_dla-1-0-35
+DATE: 10/21/2004
+STAFF: sc
+RELEASE: dev
+CHANGES:TR5395 also see changed since last tag
+) MGSAssemblyFormatInterpreter - added code to set the raw sequence record
+  value 
+) CoordLoadCfg - added getRepeatFileName()
+) CoordLoader - added code to detect and write out repeated coordinates
+              - java docs changes
+) CoordMapFeatureRawAttributes - added record attribute and getRecord()
+) CoordProcessor - java docs
+) MGSCoordMapFormatInterpreter - added record attribute and
+  setRecord()
+) IncremSeqProcessor - removed processAlreadyAddedEvent(). Repeats no longer
+  an event. SeqLoader will detect/write out repeated sequences
+) ProcessSequenceInput.java - processSequenceInput() no longer throws RepeatSequenceException
+) SeqEventDetector - Repeat Sequence non longer an event
+) SeqLoader - now detects and writes out repeated sequences
+) SeqProcessor - processInput() no longer throws RepeatSequenceException
+
 DATE: 10/20/2004
 STAFF: mbw
 RELEASE: dev
@@ -8,7 +29,7 @@ CHANGES:
 TAG: lib_java_dla-1-0-34
 DATE: 09/09/2004
 STAFF: sc
-RELEASE: production
+RELEASE: dev
 CHANGES: TR5395
 1) merge of assembly branch - see changes since last tag below
 
