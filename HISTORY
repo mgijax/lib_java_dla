@@ -1,6 +1,12 @@
+DATE: 07/29/2004
+STAFF: mbw
+CHANGES: 
+1) added the BCP_Stream as a recognized load stream from configuration values
+2) bug fix: MSCollapsedCache now assures that all keys are lower case
+
 TAG: lib_java_dla-1-0-30
 DATE: 07/28/2004
-STAFF: sc
+STAFF: mbw
 CHANGES: see changes below since last release
 
 DATE: 07/27/2004
