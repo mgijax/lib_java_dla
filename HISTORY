@@ -1,8 +1,6 @@
 DATE: 02/19/2004
 STAFF: mbw
-CHANGES: 
- 1) added class AssocClonesLookup
- 2) fixed static caches from getting initialized for each instance
+CHANGES: added use of new AssocClonesLookup class
 
 TAG: lib_java_dla-1-0-11
 DATE: 02/17/2004
