@@ -16,6 +16,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.shr.dla.DLALogger;
+import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSProcessor;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSException;
@@ -46,6 +47,10 @@ public class IncremSeqProcessor extends SeqProcessor {
     // lookup a sequence in MGI
     private SequenceLookup seqLookup;
 
+    // Lookup for LogicalDB key
+    LogicalDBLookup logicalDBLookup;
+    // logicalDB_key for the load
+    private int logicalDBKey;
 
     /**
      * Constructs a IncremSeqProcessor that handles adding sequences only; does
@@ -74,6 +79,7 @@ public class IncremSeqProcessor extends SeqProcessor {
         eventDetector = new SeqEventDetector(msp);
         repeatWriter = repeatSeqWriter;
         seqLookup = new SequenceLookup(mgdSqlStream);
+        logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
     }
 
     /**
