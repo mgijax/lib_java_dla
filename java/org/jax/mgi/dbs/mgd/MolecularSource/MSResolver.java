@@ -145,6 +145,22 @@ public class MSResolver {
     }
 
     /**
+     * resolve the given molecular source raw attributes to a MolecularSource
+     * object without a database key
+     * @assumes nothing
+     * @effects nothing
+     * @param rawAttr the raw attributes
+     * @return the MolecularSource object
+     * @throws MSException thrown if there is an error trying to resolve the
+     * attributes
+     */
+    public MolecularSource resolveAttrsOnly(MSRawAttributes attributes)
+        throws MSException
+    {
+        return this.attrResolver.resolveAttributes(attributes);
+    }
+
+    /**
      * initialize this instance
      * @assumes nothing
      * @effects the collapsed cache and the MSAttrResolver will be initialized
