@@ -147,7 +147,8 @@ public class MSCollapsedCache
     protected void addToCache(MolecularSource ms)
     throws DBException, CacheException
     {
-        logger.logDebug("adding to cache: " + ms);
+        logger.logDebug("adding to cache: " + ms +
+                        "\ntotal ms cache size: " + cacheSize());
         super.cache.put(ms.toString(), ms);
     }
 
