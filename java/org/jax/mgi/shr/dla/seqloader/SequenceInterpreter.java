@@ -41,9 +41,6 @@ public abstract class SequenceInterpreter implements RecordDataInterpreter {
     // whether this provider has virtual sequences
     protected String virtual;
 
-    // reference for the load
-    protected String loadReference;
-
     // MGI type for SEQ_Sequence
     protected Integer seqMGIType;
 
@@ -74,7 +71,6 @@ public abstract class SequenceInterpreter implements RecordDataInterpreter {
         // get values from config
         virtual = sequenceCfg.getVirtual();
         provider = sequenceCfg.getProvider();
-        loadReference = sequenceCfg.getLoadReference();
         seqLogicalDB = sequenceCfg.getLogicalDB();
 
         // get MGIType for SEQ_Sequence table
