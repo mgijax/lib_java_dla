@@ -17,66 +17,110 @@ package org.jax.mgi.shr.dla.coordloader;
  */
 
 public class CoordMapFeatureRawAttributes {
+
     private String record;
     private String coordMap;
     private Integer MGIType;
     private String objectId;
-    // logicalDB of objectId
     private String logicalDB;
     private String startBP;
     private String endBP;
     private String strand;
 
+    /**
+     * sets the record attribute
+     * @param rcd the record
+     */
+
     public void setRecord (String rcd) {
         record = rcd;
     }
+
+    /**
+    * gets the record attribute
+    * @returns the record
+    */
+
     public String getRecord () {
         return record;
     }
-    public void setMap (String map) {
-        coordMap = map;
-    }
-    public String getMap () {
-        return coordMap;
-    }
-    public void setMGIType(Integer type) {
-        MGIType = type;
-    }
-    public Integer getMGIType() {
-        return MGIType;
-    }
+
+    /**
+     * sets the Object id attribute
+     * @param id String to be used to determine Feature object key
+     */
+
     public void setObjectId(String id) {
         objectId = id;
     }
+
+    /**
+    * gets the object id attribute
+    * @returns String to be used to determine Feature object key
+    */
+
     public String getObjectId() {
         return objectId;
     }
-    public void setLogicalDB(String lDB) {
-        logicalDB = lDB;
-    }
-    public String getLogicalDB() {
-        return logicalDB;
-    }
+
+    /**
+     * sets the start coordinate attribute
+     * @param start the start coordinate
+     */
+
     public void setStartCoord(String start) {
         startBP = start;
     }
+
+    /**
+    * gets the start  attribute
+    * @returns the start coordinate
+    */
+
     public String getStartCoord() {
         return startBP;
     }
+
+    /**
+     * sets the end coordinate attribute
+     * @param end the end coordinate
+     */
+
     public void setEndCoord(String end) {
         endBP = end;
     }
+
+    /**
+    * gets the end coordinate attribute
+    * @returns the end coordinate
+    */
+
     public String getEndCoord() {
         return endBP;
     }
+
+    /**
+     * sets the strand  attribute
+     * @param str the strand
+     */
 
     public void setStrand(String str) {
         strand = str;
     }
 
+    /**
+    * gets the stran attribute
+    * @returns the strand
+    */
+
     public String getStrand() {
         return strand;
     }
+
+    /**
+    * resets instance variables
+    */
+
     public void reset() {
        coordMap = null;
        MGIType = null;

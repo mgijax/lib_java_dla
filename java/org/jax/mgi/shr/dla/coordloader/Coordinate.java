@@ -1,3 +1,5 @@
+//  $Header
+//  $Name
 package org.jax.mgi.shr.dla.coordloader;
 
 import org.jax.mgi.dbs.mgd.dao.MAP_Coord_CollectionDAO;
@@ -11,7 +13,8 @@ import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 
 /**
-  * An object that manages a set of DAOs representing a coordinate map.
+  * An object that manages a set of DAOs representing a coordinate collection,
+  * a coordinate map, and a coordinate feature.
   * @has
   *   <UL>
   *   <LI>MAP_Coord_CollectionDAO
@@ -37,22 +40,17 @@ public class Coordinate {
     private SQLStream stream;
 
 
-        /**
-         * Constructs a Coordinate object
-         * @assumes Nothing
-         * @effects Nothing
-         * @param stream the stream which to pass the DAO objects to perform database
-         *        inserts
-         * @throws Nothing
-         */
-
-        public Coordinate (SQLStream stream) {
-            this.stream = stream;
-        }
+    /**
+     * Constructs a Coordinate object
+     * @param stream the stream which to pass the DAO objects to perform database
+     *        inserts
+     */
+    public Coordinate (SQLStream stream) {
+        this.stream = stream;
+    }
 
     /**
       * sets the MAP_Coord_CollectionState
-      * @assumes Nothing
       * @effects Queries a database for the next collection key
       * @param state a MAP_Coord_CollectionState
       * @throws ConfigException if error creating the DAO object
@@ -66,11 +64,7 @@ public class Coordinate {
 
      /**
        * gets a copy of the MAP_Coord_CollectionState
-       * @assumes Nothing
-       * @effects Nothing
-       * @param Nothing
        * @returns a copy of the MAP_Coord_CollectionState
-       * @throws Nothing
        */
 
      public MAP_Coord_CollectionState getCoordMapCollectionState () {
@@ -79,11 +73,7 @@ public class Coordinate {
 
      /**
        * gets the MAP_Coord_Collection key
-       * @assumes Nothing
-       * @effects Nothing
-       * @param Nothing
        * @returns Integer the MAP_Coord_Collection key
-       * @throws Nothing
        */
 
      public Integer getCoordMapCollectionKey () {
@@ -92,7 +82,6 @@ public class Coordinate {
 
      /**
        * sets the MAP_CoordinateState
-       * @assumes Nothing
        * @effects Queries a database for the next collection key
        * @param state a MAP_CoordinateState
        * @throws ConfigException if error creating the DAO object
@@ -106,11 +95,7 @@ public class Coordinate {
 
       /**
         * gets a copy of the MAP_CoordinateState
-        * @assumes Nothing
-        * @effects Nothing
-        * @param Nothing
         * @returns a copy of the MAP_CoordinateState
-        * @throws Nothing
         */
 
       public MAP_CoordinateState getCoordinateMapState () {
@@ -119,11 +104,7 @@ public class Coordinate {
 
       /**
         * gets the MAP_Coordinate key
-        * @assumes Nothing
-        * @effects Nothing
-        * @param Nothing
         * @returns Integer the MAP_Coordinate key
-        * @throws Nothing
         */
 
       public Integer getCoordinateMapKey () {
@@ -132,7 +113,6 @@ public class Coordinate {
 
       /**
         * sets the MAP_Coord_FeatureState
-        * @assumes Nothing
         * @effects Queries a database for the next collection key
         * @param state a MAP_Coord_FeatureState
         * @throws ConfigException if error creating the DAO object
@@ -146,11 +126,7 @@ public class Coordinate {
 
        /**
          * gets a copy of the MAP_Coord_FeatureState
-         * @assumes Nothing
-         * @effects Nothing
-         * @param Nothing
          * @returns a copy of the MAP_Coord_FeatureState
-         * @throws Nothing
          */
 
        public MAP_Coord_FeatureState getCoordMapFeatureState () {
@@ -159,11 +135,7 @@ public class Coordinate {
 
        /**
          * gets the MAP_Coord_Feature key
-         * @assumes Nothing
-         * @effects Nothing
-         * @param Nothing
          * @returns Integer the MAP_Coord_Feature key
-         * @throws Nothing
          */
 
        public Integer getCoordMapFeatureKey () {
@@ -172,11 +144,9 @@ public class Coordinate {
 
        /**
         * Determines the stream methods for and passes to those methods each of
-        * its DAO objects.
-        * inserts MAP_Coord_Feature
-        * may insert MAP_Coord_Collection
-        * may insert MAP_Coordinate
-        * @assumes Nothing
+        * its DAO objects. Inserts MAP_Coord_Feature.
+        * May insert MAP_Coord_Collection
+        * May insert MAP_Coordinate
         * @effects Performs database Inserts
         * @throws DBException if error inserting
         */
@@ -190,9 +160,7 @@ public class Coordinate {
                stream.insert(coordMapDAO);
            }
            stream.insert(coordMapFeatureDAO);
-
        }
-
 }
 
    // $Log

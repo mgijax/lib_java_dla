@@ -4,11 +4,13 @@
 package org.jax.mgi.shr.dla.coordloader;
 
 /**
- * An object that represents raw values needed to create a MAP_Coordinate
- * database object
+ * An object that represents raw values needed to create MAP_Coord_Collection,
+ * MAP_Coordinate, and MAP_Coordinate_Feature databas objects
  * @has
  *   <UL>
- *   <LI> raw attributes needed to create a MAP_Coordinate database object
+ *   <LI> map Collection name
+ *   <LI> CoordMapRawAttributes object
+ *   <LI>CoordMapFeatureRawAttributes object
  *   </UL>
  * @does
  *   <UL>
@@ -26,8 +28,6 @@ public class CoordinateInput {
 
     /**
      * set the coordinate map collection name attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param name the name of the coordinate map collection
      */
     public void setMapCollectionName(String name) {
@@ -36,8 +36,6 @@ public class CoordinateInput {
 
     /**
      * get the Collection Name
-     * @assumes Nothing
-     * @effects Nothing
      * @return the coordinate map collection name
      */
     public String getMapCollectionName() {
@@ -46,8 +44,6 @@ public class CoordinateInput {
 
     /**
      * set the raw coordinate map object
-     * @assumes Nothing
-     * @effects Nothing
      * @param mapRawAttr a CoordMapRawAttributes object representing a
      * Coordinate Map
      */
@@ -57,8 +53,6 @@ public class CoordinateInput {
 
     /**
      * get raw coordinate map object
-     * @assumes Nothing
-     * @effects Nothing
      * @return the raw map coordinate object
      */
     public CoordMapRawAttributes getCoordMapRawAttributes() {
@@ -67,9 +61,7 @@ public class CoordinateInput {
 
     /**
      * set the raw coordinate map feature object
-     * @assumes Nothing
-     * @effects Nothing
-         * @param featureRawAttr a CoordMapFeatureRawAttributes object representing a
+     * @param featureRawAttr a CoordMapFeatureRawAttributes object representing a
      * Coordinate Map Feature
      */
     public void setCoordMapFeatureRawAttributes(CoordMapFeatureRawAttributes
@@ -79,8 +71,6 @@ public class CoordinateInput {
 
     /**
      * get raw coordinate map feature object
-     * @assumes Nothing
-     * @effects Nothing
      * @return the raw coordinate map feature object
      */
     public CoordMapFeatureRawAttributes getCoordMapFeatureRawAttributes() {
@@ -89,8 +79,6 @@ public class CoordinateInput {
 
     /**
      *  sets all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public void reset() {

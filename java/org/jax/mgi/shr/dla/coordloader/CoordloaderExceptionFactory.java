@@ -19,67 +19,6 @@ public class CoordloaderExceptionFactory extends ExceptionFactory {
   public CoordloaderExceptionFactory() {
   }
 
-
-  /**
-   * database error querying for a sequence key
-   */
-/*
-  public static final String SeqKeyQueryErr =
-      "org.jax.mgi.shr.dla.seqloader.SeqKeyQueryErr";
-  static {
-    exceptionsMap.put(SeqKeyQueryErr, new SeqloaderException(
-        "Error querying for sequence key for ??",
-        false));
-  }
-  /**
-    * database error querying for a Sequence
-    */
-/*
-   public static final String SeqQueryErr =
-       "org.jax.mgi.shr.dla.seqloader.SeqQueryErr";
-   static {
-     exceptionsMap.put(SeqQueryErr, new SeqloaderException(
-         "Error querying for the Sequence object for ??",
-         false));
-   }
-
-  /**
-   * Error resolving a sequence
-   */
-/*
-  public static final String SeqResolverErr =
-      "org.jax.mgi.shr.dla.seqloader.SeqResolverErr";
-  static {
-    exceptionsMap.put(SeqResolverErr, new SeqloaderException(
-        "Error resolving Sequence ??",
-        false));
-  }
-
-  /**
-   * Error creating a Sequence object
-   */
-/*
-  public static final String CreateSequenceErr =
-      "org.jax.mgi.shr.dla.seqloader.CreateSequenceErr";
-  static {
-    exceptionsMap.put(CreateSequenceErr, new SeqloaderException(
-        "Error creating a Sequence object for ??",
-        false));
-  }
-
-
-  /**
-   * Database Error sending Sequence object to stream
-   */
-/*
-  public static final String SequenceSendToStreamErr =
-      "org.jax.mgi.shr.dla.seqloader.SequenceSendToStreamErr";
-  static {
-    exceptionsMap.put(SequenceSendToStreamErr, new SeqloaderException(
-        "Database Error sending Sequence object to stream for ??",
-        false));
-  }
-
   /**
    * Error deleting coordinates
    */

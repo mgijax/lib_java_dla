@@ -1,3 +1,6 @@
+//  $Header
+//  $Name
+
 package org.jax.mgi.shr.dla.coordloader;
 
 /**
@@ -16,94 +19,223 @@ package org.jax.mgi.shr.dla.coordloader;
  */
 
 public class CoordMapRawAttributes {
-    // comments refer to how the MGS Assembly loads use these attributes
-    private String mapCollection;  // interpreter sets from file
+    // The map collection to which this map belongs
+    private String mapCollection;
 
-    // chromosome for NCBI and Ensembl loads
     // a resolver uses this value to get the coordinate map object key
-    // if object key is null, then mgiType_key is null
-    private String coordMapObject; // interpreter sets from file
-    private Integer mapMGIType; //interpreter sets as constant
+    // e.g. chromosome name for NCBI and Ensembl loads
+    // note if object key is null, then mgiType key is null
+    private String coordMapObject;
 
-    private String mapType; // interpreter sets from Configuratin
-    private String unitType;  // interpreter sets from Configuration
-    private String length; // interpreter sets from Configuration
-    private String sequenceNum; // not used; determined by resolver
-    private String mapName;  // null
-    private String mapAbbreviation; // null
-    private String mapVersion; // interpreter sets from Configuration
-    private String seqRetrievalParam; // interpreter sets from Configuration
+    // the mgi type of the map object
+    private Integer mapMGITypeKey;
+
+    // the map type e.g. 'assembly'
+    private String mapType;
+
+    // the unit type e.g. 'base pair'
+    private String unitType;
+
+    // the length of the map e.g. length of the chromosome
+    private String length;
+
+    // the ordering of this map within the collection
+    private String sequenceNum;
+
+    // the name of the map
+    private String mapName;
+
+    // abbrev for the map name
+    private String mapAbbreviation;
+
+    // the version of the map
+    private String mapVersion;
+
+    /**
+      * sets the map collection name attribute
+      * @param collection name of the map collection
+      */
 
     public void setMapCollection(String collection) {
         mapCollection = collection;
     }
+
+    /**
+     * gets the map collection name attribute
+     * @returns the map collection name
+     */
+
     public String getMapCollection() {
         return mapCollection;
     }
-    public void setCoordMapObject(String map) {
-        coordMapObject = map;
+    /**
+      * sets the coordinate map object attribute
+      * @param object String that can be resolved to an MGI database object key
+      * e.g. Chromosome number
+      */
+
+    public void setCoordMapObject(String object) {
+        coordMapObject = object;
     }
+
+    /**
+     * gets the coordinate map object attribute
+     * @returns the coordinate map object
+     */
+
     public String getCoordMapObject() {
         return coordMapObject;
     }
-    public void setMapMGIType(Integer mgiType) {
-        mapMGIType = mgiType;
+
+    /**
+      * sets the coordinate map object MGI type key attribute
+      * @param mgiType the MGI type key of 'coordMapObject'
+      */
+
+    public void setMapMGITypeKey(Integer mgiTypeKey) {
+        mapMGITypeKey = mgiTypeKey;
     }
-    public Integer getMapMGIType() {
-        return mapMGIType;
+
+    /**
+     * gets the MGI type key attribute
+     * @returns the MGI type key of 'coordMapObject'
+     */
+
+    public Integer getMapMGITypeKey() {
+        return mapMGITypeKey;
     }
+
+    /**
+      * sets the coordinate map type attribute
+      * @param mType the coordinate map type
+      */
+
     public void setMapType(String mType) {
         mapType = mType;
     }
+
+    /**
+     * gets the coordinate map type attribute
+     * @returns the coordinate map type
+     */
+
     public String getMapType() {
         return mapType;
     }
+    /**
+      * sets the map unit type attribute
+      * @param uType the map unit type
+      */
+
     public void setUnitType(String uType) {
         unitType = uType;
     }
+
+    /**
+     * gets the map unit type attribute
+     * @returns the map unit type
+     */
+
     public String getUnitType() {
         return unitType;
     }
+    /**
+      * sets the coordinate map length attribute
+      * @param len the length of the coordinate map
+      */
+
     public void setLength(String len) {
         length = len;
     }
+
+    /**
+     * gets the coordinate map length attribute
+     * @returns the length of the coordinate map
+     */
+
     public String getLength() {
         return length;
     }
+    /**
+      * sets the sequence number attribute
+      * @param seqNum the order of the coordinate map in its collection
+      */
+
     public void setSequenceNum(String seqNum) {
         sequenceNum = seqNum;
     }
+
+    /**
+     * gets the sequence number attribute
+     * @returns order of the coordinate map in its collection
+     */
+
     public String getSequenceNum() {
         return sequenceNum;
     }
+
+    /**
+      * sets the coordinate map name attribute
+      * @param name name of the coordinate map
+      */
+
     public void setMapName(String name) {
         mapName = name;
     }
+
+    /**
+     * gets the coordinate map name attribute
+     * @returns the coordinate map name
+     */
+
     public String getMapName() {
         return mapName;
     }
+
+    /**
+      * sets the coordinate map name abbreviation attribute
+      * @param abbrev the coordinate map name abbreviation
+      */
+
     public void setMapAbbrev(String abbrev) {
         mapAbbreviation = abbrev;
     }
+
+    /**
+     * gets the coordinate map name abbreviation
+     * @returns the coordinate map name abbreviation
+     */
+
     public String getMapAbbrev() {
         return mapAbbreviation;
     }
+
+    /**
+      * sets the coordinate map version ttribute
+      * @param version the version of the coordinate map
+      */
+
     public void setMapVersion(String version) {
         mapVersion = version;
     }
+
+    /**
+     * gets the coordinate map version
+     * @returns the coordinate map version
+     */
+
     public String getMapVersion() {
         return mapVersion;
     }
-    public void setSeqRetParam(String param) {
-        seqRetrievalParam = param;
-    }
-    public String getSeqRetParam() {
-        return seqRetrievalParam;
-    }
+
+    /**
+     * resets instance variables
+     */
+
      public void reset() {
          mapCollection = null;
          coordMapObject = null;
-         mapMGIType =  null;
+         mapMGITypeKey =  null;
          mapType = null;
          unitType = null;
          length = null;
@@ -111,7 +243,6 @@ public class CoordMapRawAttributes {
          mapName = null;
          mapAbbreviation = null;
          mapVersion = null;
-         seqRetrievalParam = null;
      }
 
 }

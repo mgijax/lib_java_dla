@@ -1,27 +1,19 @@
+//  $Header
+//  $Name
+
 package org.jax.mgi.shr.dla.coordloader;
 
 import org.jax.mgi.shr.dla.DLALoader;
 import org.jax.mgi.shr.timing.Stopwatch;
 import org.jax.mgi.shr.config.CoordLoadCfg;
-import org.jax.mgi.shr.ioutils.RecordDataIterator;
 import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
-import org.jax.mgi.shr.dbutils.ScriptWriter;
 import org.jax.mgi.shr.dbutils.DataIterator;
-import org.jax.mgi.shr.config.ScriptWriterCfg;
 import org.jax.mgi.shr.exception.MGIException;
-import org.jax.mgi.shr.ioutils.RecordFormatException;
-import org.jax.mgi.dbs.mgd.MolecularSource.UnresolvedAttributeException;
-import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
-import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
-import org.jax.mgi.dbs.mgd.MGITypeConstants;
-import org.jax.mgi.dbs.mgd.AccessionLib;
 import org.jax.mgi.shr.ioutils.InputDataFile;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Vector;
-import java.util.Iterator;
 import java.util.HashSet;
 
 /**
@@ -61,10 +53,10 @@ public class CoordLoader extends DLALoader {
     // coordinate processor
     CoordProcessor coordProcessor;
 
-    //  cache of seqids we have already processed
+    //  cache of seqids of sequence records we have already processed
     private HashSet coordIdsAlreadyProcessed;
 
-    // count of sequence records whose seqids we have already processed
+    // count of sequence records we have already processed
     private int coordIdsAlreadyProcessedCtr;
 
 
@@ -73,8 +65,6 @@ public class CoordLoader extends DLALoader {
 
     /**
      * Initializes instance variables depending on load mode
-     * @assumes Nothing
-     * @effects instance variables will be instantiated
      * @throws MGIException if errors occur during initialization
      */
     public void initialize() throws MGIException {
@@ -111,29 +101,24 @@ public class CoordLoader extends DLALoader {
 
     /**
      * Deletes this load's collection and all members of that collection
-     * @assumes nothing
      * @effects deletes collection, map, and feature objects from a database
      * @throws MGIException if errors occur while deleting
      */
 
     public void preprocess() throws MGIException {
-        // delete the collection and all its members
         coordProcessor.deleteCoordinates();
     }
 
     /**
-     * to perform a database load into the RADAR and/or MGD
-     * database
-     * @assumes nothing
-     * @effects database records created within the RADAR and/or MGD
-     * database. If stream is a BCP stream, creates bcp files which may be
-     * temporary or persistent depending on configuration
-     * @throws MGIException throw if an error occurs while performing the
+     * Gets records from input file, resolves attributes, creates coordinate
+     * database objects
+     * @effects database records created. If stream is a BCP stream,
+     * creates bcp files
+     * @throws MGIException thrown if an error occurs while processing the
      * load
      */
     public void run()  throws MGIException {
 
-       // report the load mode we are running under
        logger.logdInfo("CoordLoader running", true);
 
        // Timing the load
@@ -145,10 +130,11 @@ public class CoordLoader extends DLALoader {
 
        // iterate thru the records and process them
        while(iterator.hasNext()) {
+           // get the next CoordinateInput object
            input = (CoordinateInput)iterator.next();
            logger.logdDebug(input.getCoordMapFeatureRawAttributes().getObjectId());
            try {
-
+               // determine if repeated coordinate
                String currentSeqid = input.getCoordMapFeatureRawAttributes().getObjectId();
                logger.logdDebug(currentSeqid, false);
                if (coordIdsAlreadyProcessed.contains(currentSeqid)) {
@@ -167,7 +153,7 @@ public class CoordLoader extends DLALoader {
            catch (IOException e) {
                throw new MGIException(e.getMessage());
            }
-
+           // process the coordinate any exceptions stop the load
            coordProcessor.processInput(input);
            processedCtr++;
            if (processedCtr  > 0 && processedCtr % 100 == 0) {
@@ -206,9 +192,6 @@ public class CoordLoader extends DLALoader {
     /**
     * Reports load statistics; load time, # coordinates processed, #
     * repeated coordinates in the input etc.
-    * @assumes nothing
-    * @effects nothing
-    * @throws Nothing
     */
     private void reportLoadStatistics() {
         String message = "Total Load time in minutes: " +
@@ -223,8 +206,29 @@ public class CoordLoader extends DLALoader {
                         + coordIdsAlreadyProcessedCtr, false);
         logger.logpInfo("Total Repeat Coordinates written to repeat file: "
                         + coordIdsAlreadyProcessedCtr, false);
-
-
     }
-
 }
+//  $Log
+
+ /**************************************************************************
+ *
+ * Warranty Disclaimer and Copyright Notice
+ *
+ *  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+ *  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+ *  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+ *  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+ *  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+ *  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+ *
+ *  This software and data are provided to enhance knowledge and encourage
+ *  progress in the scientific community and are to be used only for research
+ *  and educational purposes.  Any reproduction or use for commercial purpose
+ *  is prohibited without the prior express written permission of The Jackson
+ *  Laboratory.
+ *
+ * Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+ *
+ * All Rights Reserved
+ *
+ **************************************************************************/

@@ -4,24 +4,18 @@
 package org.jax.mgi.shr.dla.assemblyloader;
 
 import org.jax.mgi.shr.ioutils.InputDataFile;
-import org.jax.mgi.shr.timing.Stopwatch;
 import org.jax.mgi.shr.dla.seqloader.SeqLoader;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
-import java.util.Vector;
-import java.util.Iterator;
-
 
 /**
  * @is an object which extends Seqloader and implements the Seqloader
  * getDataIterator method to set the DataIterator with a InputDataFileIterator
- *
  * @has See superclass
- *
  * @does
  * <UL>
  * <LI>implements superclass (Seqloader) getDataIterator to set superclass
- *      DataIterator from an EMBLInputFile
+ *      DataIterator
  * <LI>It has an empty implementation of the superclass (DLALoader)
  *     preProcess method
  * <LI>It has an empty implementation of the superclass (Seqloader)
@@ -31,25 +25,20 @@ import java.util.Iterator;
  * @version 1.0
  */
 
-
 public class AssemblySeqloader extends SeqLoader {
 
     /**
-      * This load has no preprocessing
-      * @assumes nothing
-      * @effects noting
-      * @throws MGIException if errors occur during preprocessing
-      */
+     * This load has no preprocessing
+     */
 
-    protected void preprocess() { }
+     protected void preprocess() { }
 
     /**
      * creates and sets the superclass OrganismChecker and RecordDataIterator
      * with a GBOrganismChecker and creates and creates a GBInputFile
      * with a GBSequenceInterpretor; gets an iterator from the GBInputFile
-     * @assumes nothing
-     * @effects nothing
-     * @throws MGIException
+     * @throws MGIException if errors creating InputDatafile, or getting
+     *  iterator over the InputDataFile
      */
     protected void getDataIterator() throws MGIException {
 
@@ -61,13 +50,10 @@ public class AssemblySeqloader extends SeqLoader {
     }
 
     /**
-      * This load has no application specific post processing
-      * @assumes nothing
-      * @effects noting
-      * @throws MGIException if errors occur during preprocessing
-      */
+     * This loader has no application specific post processing
+     */
 
-   protected void appPostProcess() throws MGIException {
+    protected void appPostProcess() {
 
    }
 }

@@ -1,9 +1,7 @@
-package org.jax.mgi.shr.config;
-
 // $Header
 //  $Name
 
-import java.sql.Timestamp;
+package org.jax.mgi.shr.config;
 
 import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
@@ -28,9 +26,6 @@ public class CoordLoadCfg extends Configurator {
 
     /**
     * Constructs a CoordLoadCfg object
-    * @assumes Nothing
-    * @effects Nothing
-    * @param None
     * @throws ConfigException if a configuration manager cannot be obtained
     */
 
@@ -38,11 +33,8 @@ public class CoordLoadCfg extends Configurator {
     }
 
     /**
-     * Gets the map organism name for the load
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
-     * @return the map organism name
+     * Gets the map coordinate organism name for the load
+     * @return the map coordinat organism name
      * @throws ConfigException if "COORD_ORGANISM" not found in configuration file
      */
     public String getMapOrganism() throws ConfigException {
@@ -50,10 +42,7 @@ public class CoordLoadCfg extends Configurator {
     }
 
     /**
-    * Gets the coordinate map version
-    * @assumes Nothing
-    * @effects Nothing
-    * @param None
+    * Gets the map coordinate version
     * @return Provider name
     * @throws ConfigException if "COORD_VERSION" not found in configuration file
     */
@@ -62,11 +51,8 @@ public class CoordLoadCfg extends Configurator {
    }
 
     /**
-     * Gets the map collection name for the load
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
-     * @return the map collection name
+     * Gets the map coordinate collection name for the load
+     * @return the map coordinate collection name
      * @throws ConfigException if "COORD_COLLECTION" not found in configuration file
      */
     public String getMapCollectionName() throws ConfigException {
@@ -75,11 +61,9 @@ public class CoordLoadCfg extends Configurator {
 
     /**
      * Gets the map collection abbreviation for the load
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
      * @return the map collection abbreviation
-     * @throws ConfigException if "COORD_COLLECTION_ABBREV" not found in configuration file
+     * @throws ConfigException - doesn't really because it has a default value
+     * of empty string
      */
 
     public String getMapCollectionAbbrev() throws ConfigException {
@@ -88,9 +72,6 @@ public class CoordLoadCfg extends Configurator {
 
     /**
      * Gets the coordinate map type
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
      * @return coordinate map type
      * @throws ConfigException if "COORD_TYPE" not found in configuration file
      */
@@ -99,9 +80,6 @@ public class CoordLoadCfg extends Configurator {
     }
     /**
    * Gets the coordinate map units
-   * @assumes Nothing
-   * @effects Nothing
-   * @param None
    * @return coordinate map units
    * @throws ConfigException if "COORD_UNITS" not found in configuration file
    */
@@ -112,11 +90,9 @@ public class CoordLoadCfg extends Configurator {
 
     /**
     * Gets the coordinate map name
-    * @assumes Nothing
-    * @effects Nothing
-    * @param None
     * @return coordinate map name
-    * @throws ConfigException if "COORD_NAME" not found in configuration file
+    * @throws ConfigException - doesn't really because it has a default value
+     * of empty string
     */
 
      public String getMapName() throws ConfigException {
@@ -125,11 +101,9 @@ public class CoordLoadCfg extends Configurator {
 
      /**
      * Gets the coordinate map abbreviation
-     * @assumes Nothing
-     * @effects Nothing
-     * @param None
      * @return coordinate map abbreviation
-     * @throws ConfigException if "COORD_ABBREV" not found in configuration file
+     * @throws ConfigException - doesn't really because it has a default value
+     * of empty string
      */
 
       public String getMapAbbrev() throws ConfigException {
@@ -137,9 +111,6 @@ public class CoordLoadCfg extends Configurator {
       }
       /**
       * Gets the coordinate feature MGIType name
-      * @assumes Nothing
-      * @effects Nothing
-      * @param None
       * @return  coordinate feature MGIType name
       * @throws ConfigException if "COORD_FEATURE_MGITYPE" not found in configuration file
       */
@@ -147,93 +118,59 @@ public class CoordLoadCfg extends Configurator {
        public String getFeatureMGIType() throws ConfigException {
          return getConfigString("COORD_FEATURE_MGITYPE");
        }
+    /**
+     * Gets the Jobstream name
+     * @return the Jobstream name
+     * @throws ConfigException if "JOBSTREAM" not found in configuration file
+     */
+    public String getJobstreamName() throws ConfigException {
+        return getConfigString("JOBSTREAM");
+    }
+    /**
+     * get the coordinate interpreter object to use.
+     * @return interpreter object.
+     * @throws ConfigException thrown if "COORD_INTERPRETOR" not found in configuration
+     *   file or interpreter object could not be created from the value
+     */
+    public Object getInterpreterClass() throws ConfigException {
+        return getConfigObject("COORD_INTERPRETER");
+    }
+
+    /**
+     * get the coordinate map processor object to use.
+     * @return coordinate map processor object.
+     * @throws ConfigException thrown if "COORD_PROCESSOR" not found in configuration
+     * or processo object could not be created from the configuration value
+     */
+    public Object getMapProcessorClass() throws ConfigException {
+        return getConfigObject("COORD_PROCESSOR");
+    }
+
+    /**
+     * get the logicalDB name for the coordIds
+     * @return logicalDB
+     * @assumes nothing
+     * @effects nothing
+     * @throws ConfigException thrown if "COORD_LOGICALDB" not found in
+     *    configuration file
+     */
+    public String getLogicalDB() throws ConfigException {
+        return getConfigString("COORD_LOGICALDB");
+    }
 
    /**
-   * Gets the coordinate map sequence retrieval parameter
-   * @assumes Nothing
-   * @effects Nothing
-   * @param None
-   * @return the coordinate map sequence retrieval parameter
-   * @throws ConfigException if "COORD_SEQ_RETR_PARAM" not found in configuration file
-   */
-  public String getSeqRetrievalParam() throws ConfigException {
-      return getConfigString("COORD_SEQ_RETR_PARAM", "");
-  }
-
-  /**
-   * Gets the Jobstream name
-   * @assumes Nothing
-   * @effects Nothing
-   * @param None
-   * @return the Jobstream name
-   * @throws ConfigException if "SEQ_JOBSTREAM" not found in configuration file
-   */
-  public String getJobstreamName() throws ConfigException {
-    return getConfigString("JOBSTREAM");
-  }
-  /**
-   * get the interpreter to use.
-   * @return interpreter object.
-   * @assumes nothing
-   * @effects nothing
-   * @throws ConfigException thrown if interpreter object could not be created
-   * from the configuration
-   */
-  public Object getInterpreterClass() throws ConfigException {
-    return getConfigObject("COORD_INTERPRETER");
-  }
-
-  /**
-   * get the map processor to use.
-   * @return map processor object.
-   * @assumes nothing
-   * @effects nothing
-   * @throws ConfigException thrown if resolver object could not be created
-   * from the configuration
-   */
-  public Object getMapProcessorClass() throws ConfigException {
-    return getConfigObject("COORD_PROCESSOR");
-  }
-
-  /**
-   * get the map feature resolver to use
-   * @return map feature resolver object.
-   * @assumes nothing
-   * @effects nothing
-   * @throws ConfigException thrown if error retrieving value
-   * from the configuration
-   */
-  /*
-  public Object getMapFeatureResolverClass() throws ConfigException {
-    return getConfigObject("COORD_FEATURE_RESOLVER");
-  }
-*/
-  /**
-    * get the logicalDB name for the coordIds
-    * @return logicalDB
-    * @assumes nothing
-    * @effects nothing
-    * @throws ConfigException thrown if error reading config file
-    * from the configuration
+    * get the coordinate repeat file name
+    * @return the coordinate repeat file name
+    * @throws ConfigException thrown if "COORD_REPEAT_FILE" not found in
+    *    configuration file
     */
-   public String getLogicalDB() throws ConfigException {
-     return getConfigString("COORD_LOGICALDB");
-   }
-   /**
-  * get the logicalDB name for the coordIds
-  * @return logicalDB
-  * @assumes nothing
-  * @effects nothing
-  * @throws ConfigException thrown if error reading config file
-  * from the configuration
-  */
- public String getRepeatFileName() throws ConfigException {
-   return getConfigString("COORD_REPEAT_FILE");
- }
+    public String getRepeatFileName() throws ConfigException {
+        return getConfigString("COORD_REPEAT_FILE");
+    }
 
 }
 
-
+//  $Log
 /**************************************************************************
 *
 * Warranty Disclaimer and Copyright Notice

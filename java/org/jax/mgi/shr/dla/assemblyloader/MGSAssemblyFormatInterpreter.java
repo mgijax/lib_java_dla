@@ -1,3 +1,6 @@
+//  $Header
+//  $Name
+
 package org.jax.mgi.shr.dla.assemblyloader;
 
 import java.util.*;
@@ -6,7 +9,6 @@ import java.sql.Timestamp;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
-import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
 import org.jax.mgi.shr.dla.seqloader.SequenceInterpreter;
@@ -17,23 +19,20 @@ import org.jax.mgi.shr.dla.seqloader.RefAssocRawAttributes;
 import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
 
 /**
- * An object that parses an MGS Assembly format record and obtains
- *     values from a Configurator to create a SequenceInput data object.<BR>
- *     Determines if a record is the header record (1st record in file)
- *     or a sequence record<BR>
+ * An object that creates a SequenceInput object representing a MGS Assembly
+ * Sequence<BR>
  * @has
  *   <UL>
  *   <LI>A SequenceInput object into which it bundles:
  *   <LI>A SequenceRawAttributes object
  *   <LI>An AccessionRawAttributes object for its seqid
- *   <LI> A RefAssocRawAttributes object for its reference
- *   <LI> A MSRawAttributes
+ *   <LI>A RefAssocRawAttributes object for its reference
+ *   <LI>A MSRawAttributes
  *   </UL>
  * @does
  *   <UL>
- *   <LI>Determines if a MGS Assembly format sequence record is the header record
- *       or a sequence record
- *   <LI>Parses a MGS Assembly format sequence record
+ *   <LI>Parses a MGS Assembly format sequence record and obtains
+ *     values from a Configurator to create a SequenceInput data object.
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -63,7 +62,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     // for seqDate and seqRecordDate
     private Timestamp seqDate;
 
-    // record attributes
+    // File record attributes
     String record;
     String seqid;
     Integer startBP;
@@ -81,10 +80,10 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     // raw attributes for a sequence - reused by calling reset()
     private SequenceRawAttributes rawSeq = new SequenceRawAttributes();
 
-    // raw attributes for a sequences source - reused by calling reset()
+    // raw attributes for a sequences source, once set-same for all sequences
     private MSRawAttributes rawMS = new MSRawAttributes();
 
-    // raw attributes for a sequences reference = reusded by calling reset()
+    // raw attributes for a sequences reference, once set-same for all sequences
     private RefAssocRawAttributes rawRefAssoc = new RefAssocRawAttributes();
 
     // raw attributes for the sequence's seqid = reused by calling reset()
@@ -92,9 +91,6 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
     /**
      * Constructs a MGSAssemblyFormatInterpreter
-     * @assumes Nothing
-     * @effects Nothing
-     * @param Nothing
      * @throws ConfigException if can't find configuration file
      */
 
@@ -110,15 +106,13 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
   }
 
   /**
-  * a predicate that returns false if 'record' is a commented record, else true
-  * @assumes Nothing
-  * @effects Nothing
+  * a predicate that returns false if 'record' starts with '#' (indicating a
+  * comment), else true
   * @param record A MGS assembly format record
-  * @return true if we want to load this record
-  * @throws Nothing
+  * @return true if record does not start with '#'
   */
  public boolean isValid(String record) {
-     if (!record.startsWith("#")) {
+     if (record != null && !record.startsWith("#")) {
          return true;
      }
      else {
@@ -127,14 +121,9 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
  }
 
     /**
-    * Parses a MGS assembly formatsequence record and  creates a SequenceInpu
+    * Parses a MGS assembly format sequence record and  creates a SequenceInput
     * object from Configuration and parsed values
-    * @assumes Nothing
-    * @effects Nothing
-    * @param rcd A header record or a sequence record<BR>
-    * header record example: <BR>
-    * NCBI Gene \t NCBI Build 32 \t J:90438 NCBI Gene \t ncbi_assemblyseqload \t
-    *         mouse, laboratory;C57BL/6J;Not Specified;Not Specified;Pooled;Not Specified \n
+    * @param rcd a sequence record<BR>
     * sequence record example: <BR>
     * 240677 \t 1 \t 3068294 \t 3069180 \t + \t GENE \n
     * @return A SequenceInput object representing 'rcd'
@@ -147,7 +136,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         rawSeq.reset();
         rawAcc.reset();
 
-        // get seqid, start/end BP,  and description from the record
+        // get values from the record
         parseRecord(rcd);
 
         // add rawMS and rawRefAssoc to SequenceInput object
@@ -161,15 +150,19 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
        return sequenceInput;
    }
+   /**
+   * gets configurable MGS sequence attributes
+   * @throws ConfigException if attribute not configured
+   */
 
    private void getConfig() throws ConfigException {
-       // misc
+       // sequence and reference attributes
        seqType = sequenceCfg.getSeqType();
        seqQuality = sequenceCfg.getQuality();
        jNum = sequenceCfg.getJnumber();
        version = sequenceCfg.getReleaseNo();
        seqDate = sequenceCfg.getReleaseDate();
-       // source
+       // source attributes
        organism = sequenceCfg.getOrganism();
        strain = sequenceCfg.getStrain();
        tissue = sequenceCfg.getTissue();
@@ -177,26 +170,39 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
        gender = sequenceCfg.getGender();
        cellLine = sequenceCfg.getCellLine();
    }
+   /**
+    * sets source attributes in the MSRawAttributes object
+    */
 
-    private void createRawSource() throws ConfigException {
-        rawMS.setOrganism(sequenceCfg.getOrganism());
-        rawMS.setStrain(sequenceCfg.getStrain());
-        rawMS.setTissue(sequenceCfg.getTissue());
-        rawMS.setAge(sequenceCfg.getAge());
-        rawMS.setGender(sequenceCfg.getGender());
-        rawMS.setCellLine(sequenceCfg.getCellLine());
+    private void createRawSource() {
+        rawMS.setOrganism(organism);
+        rawMS.setStrain(strain);
+        rawMS.setTissue(tissue);
+        rawMS.setAge(age);
+        rawMS.setGender(gender);
+        rawMS.setCellLine(cellLine);
     }
 
+    /**
+     * sets reference attributes in the RefAssocRawAttributes object
+     */
+
     private void createRawReference() throws ConfigException {
-        rawRefAssoc.setRefId(sequenceCfg.getJnumber());
+        rawRefAssoc.setRefId(jNum);
         rawRefAssoc.setMgiType(seqMGIType);
         rawRefAssoc.setRefAssocType(refAssocType);
     }
+    /**
+     * parses attributes from the record
+     * @param record  a sequence record
+     * @throws RecordFormatException if we can't parse an attribute because of
+     *         record formatting errors
+     */
 
    private void  parseRecord(String rcd) throws RecordFormatException {
        // save the record
        record = rcd;
-       // get the seqid and description from the non-header record
+       // split record into tokens
        ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
        if (splitLine.size() != 6) {
            RecordFormatException e = new RecordFormatException();
@@ -204,13 +210,18 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
                    "6 tab delimited elements expected.\n" + rcd);
             throw e;
         }
-
+        // get the attributes
         seqid = ((String)splitLine.get(0)).trim();
         startBP = new Integer( ((String)splitLine.get(2)).trim() );
         endBP = new Integer( ((String)splitLine.get(3)).trim() );
-        // strip of the CRT
         description = ( (String)splitLine.get(5)).trim();
    }
+
+   /**
+    * sets sequence attributes in the SequenceRawAttributes object; set
+    * the SequenceRawAttributes in the SequenceInput object
+    */
+
    private void createRawSequence() {
        rawSeq.setRecord(record);
        rawSeq.setType(seqType);
@@ -221,14 +232,21 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
           (new Integer(endBP.intValue() - startBP.intValue() + 1)).toString());
        rawSeq.setDescription(description);
        rawSeq.setVersion(version);
-       // use default null value for division
+       // Note: uses default null value for division
        rawSeq.setVirtual(virtual);
-       // use default null value for rawType, rawLibrary, rawOrganism, rawStrain,
+       // Note: uses default null value for rawType, rawLibrary, rawOrganism, rawStrain,
        // rawTissue, rawAge, rawSex, rawCellLine, numberOf Organisms
        rawSeq.setSeqRecDate(seqDate);
        rawSeq.setSeqDate(seqDate);
+       // set rawSeq in the SequenceInput object
        sequenceInput.setSeq(rawSeq);
    }
+
+   /**
+    * sets accession attributes in the AccessionRawAttributes object; set
+    * the AccessionRawAttributes in the SequenceInput object
+    */
+
    private void createRawAccession() {
        rawAcc.setAccid(seqid);
        rawAcc.setIsPreferred(preferredAcc);
@@ -238,4 +256,28 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
        sequenceInput.setPrimaryAcc(rawAcc);
    }
 }
+//  $Log
+
+ /**************************************************************************
+ *
+ * Warranty Disclaimer and Copyright Notice
+ *
+ *  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
+ *  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
+ *  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
+ *  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
+ *  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
+ *  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
+ *
+ *  This software and data are provided to enhance knowledge and encourage
+ *  progress in the scientific community and are to be used only for research
+ *  and educational purposes.  Any reproduction or use for commercial purpose
+ *  is prohibited without the prior express written permission of The Jackson
+ *  Laboratory.
+ *
+ * Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
+ *
+ * All Rights Reserved
+ *
+ **************************************************************************/
 
