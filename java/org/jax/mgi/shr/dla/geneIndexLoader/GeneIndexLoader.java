@@ -96,7 +96,7 @@ public class GeneIndexLoader extends FASTALoader
         seqAttr.setStrain(null);
         seqAttr.setTissue(null);
         seqAttr.setStatus(seqcfg.getStatus());
-        seqAttr.setType(seqcfg.getType());
+        seqAttr.setType(seqcfg.getSeqType());
         seqAttr.setVersion(seqcfg.getReleaseNo());
         seqAttr.setVirtual("true");
         logger.logdInfo("GeneIndexLoader completed initialization", true);

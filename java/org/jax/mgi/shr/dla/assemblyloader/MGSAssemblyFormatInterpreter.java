@@ -163,7 +163,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
    private void getConfig() throws ConfigException {
        // misc
-       seqType = sequenceCfg.getType();
+       seqType = sequenceCfg.getSeqType();
        seqQuality = sequenceCfg.getQuality();
        jNum = sequenceCfg.getJnumber();
        version = sequenceCfg.getReleaseNo();
