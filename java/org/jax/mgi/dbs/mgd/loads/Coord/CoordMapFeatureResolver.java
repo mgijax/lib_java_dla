@@ -72,8 +72,8 @@ public class CoordMapFeatureResolver {
         state.setMapKey(mapKey);
         state.setMGITypeKey(MGITypeKey);
         state.setObjectKey(accLookup.lookup(rawAttr.getObjectId()));
-        state.setStartCoordinate(new Float(rawAttr.getStartCoord()));
-        state.setEndCoordinate(new Float(rawAttr.getEndCoord()));
+        state.setStartCoordinate(new Double(rawAttr.getStartCoord()));
+        state.setEndCoordinate(new Double(rawAttr.getEndCoord()));
         state.setStrand(rawAttr.getStrand());
         return state;
     }
