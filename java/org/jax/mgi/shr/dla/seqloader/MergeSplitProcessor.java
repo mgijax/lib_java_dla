@@ -4,6 +4,7 @@
 package org.jax.mgi.shr.dla.seqloader;
 
 import org.jax.mgi.shr.dbutils.ScriptWriter;
+import org.jax.mgi.shr.dla.seqloader.SeqQCReporter;
 import org.jax.mgi.shr.dbutils.ScriptException;
 import org.jax.mgi.shr.dla.DLALogger;
 import org.jax.mgi.shr.dla.DLALoggingException;
@@ -66,6 +67,7 @@ public class MergeSplitProcessor {
     private MergeSplitHelper mergeSplitHelper;
     private HashMap mergeSplitSeqs;
     private DLALogger logger;
+    private SeqQCReporter qcReporter;
 
     /**
      * Constructs a MergeSplitProcessor
@@ -75,9 +77,10 @@ public class MergeSplitProcessor {
      * @throws
      */
 
-     public MergeSplitProcessor()
+     public MergeSplitProcessor(SeqQCReporter reporter)
          throws KeyNotFoundException, DBException, CacheException,
          ConfigException, DLALoggingException {
+         qcReporter = reporter;
          mergeSplitHelper = new MergeSplitHelper();
          mergeSplitSeqs = new HashMap();
          logger = DLALogger.getInstance();
@@ -120,30 +123,32 @@ public class MergeSplitProcessor {
         for (Iterator mapI = secondaryToPrimary.keySet().iterator();
             mapI.hasNext();) {
                // get the key; a secondary id that is primary in MGI
-               Integer secondary = (Integer) mapI.next();
+               String fromSeqid = (String) mapI.next();
                //System.out.println("mapKey: " + secondary);
                // get the value; a Vector of primary ids
-               Vector currentV = (Vector) secondaryToPrimary.get(secondary);
+               Vector currentV = (Vector) secondaryToPrimary.get(fromSeqid);
                if (currentV.isEmpty()) {
                    //throw exception
                    logger.logdDebug("Throw Exception in MergeSplitProcessor.process" +
                                     "Vector of primary ids is empty");
                }
                else if (currentV.size() > 1) {
-                   //call stored split stored procedure
+                   //call split stored procedure
                    //System.out.println("Calling SEQ_split");
                    logger.logdDebug("Calling SEQ_split");
                    for (Iterator i = currentV.iterator(); i.hasNext();) {
-                       writer.write(splitSQL + secondary.toString() + " " + (String)i.next());
+                       String toSeqid = (String)i.next();
+                       writer.write(splitSQL + fromSeqid + " " + toSeqid);
                    }
                }
                else {
                    // call merge stored procedure
                    //System.out.println("Calling SEQ_merge");
+                   String toSeqid = (String)currentV.get(0);
                    logger.logdDebug("Calling SEQ_merge");
-                   writer.write(mergeSQL + secondary.toString() + " " + currentV.get(0));
+                   qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
+                   writer.write(mergeSQL + fromSeqid + " " + toSeqid);
                }
-
         }
     }
 }
