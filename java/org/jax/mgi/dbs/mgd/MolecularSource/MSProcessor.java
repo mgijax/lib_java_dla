@@ -389,7 +389,6 @@ public class MSProcessor
         }
         if (ms == null)
         {
-            qcReporter.reportLibraryNameNotFound(attr.getLibraryName());
             attr.setLibraryName(null); // change to anonymous
         }
         return ms;
