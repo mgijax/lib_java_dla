@@ -4,6 +4,8 @@ CHANGES:
 1) SeqloaderExceptionFactory added exception
 2) SeqProcessor and IncremSeqProcessor processInput method - changed
    exception handling
+3) SeqEventDetecter - changed name of already processed seqid cache and added
+   update event seqs to the cache
 
 DATE: 04/02/2004
 STAFF: mbw
