@@ -52,10 +52,12 @@ public class SeqRefAssocProcessor {
      * @throws TranslationException
      * @throws DBException
      */
-    public SeqRefAssocProcessor ()
-        throws DBException, ConfigException, CacheException {
+    public SeqRefAssocProcessor()
+        throws DBException, ConfigException, CacheException
+    {
         resolver = new RefAssocAttributeResolver();
     }
+
     /**
      * Processes a set of pubmed and medline associations for a sequence reference
      * If no pubmed reference or if can't resolve pubmed then attempt to
@@ -76,21 +78,25 @@ public class SeqRefAssocProcessor {
 
     public MGI_Reference_AssocState process(
         SeqRefAssocPair seqRefAssocPair, Integer objectKey)
-        throws KeyNotFoundException, DBException, CacheException {
+        throws KeyNotFoundException, DBException, CacheException
+    {
         // reset state
         state = null;
 
         // try to get the pubmed state first
         raw = seqRefAssocPair.getPubmed();
-        if(raw != null) {
+        if (raw != null)
+        {
             // see if MGI has this reference, if not state=null;
             state = resolver.resolveAttributes(
                 raw, objectKey, LogicalDBConstants.PUBMED);
         }
         // either no pubmed id or pubmed id not in MGI, so try to get the medline id
-        if(state == null) {
+        if (state == null)
+        {
             raw = seqRefAssocPair.getMedline();
-            if(raw != null) {
+            if (raw != null)
+            {
                 // see if MGI has this reference, if not state=null;
                 state = resolver.resolveAttributes(
                     raw, objectKey, LogicalDBConstants.MEDLINE);
@@ -99,8 +105,41 @@ public class SeqRefAssocProcessor {
         }
         // state could be null
         return state;
-        }
     }
+
+    /**
+     * Processes a jnumber association for a sequence reference
+     * @assumes Nothing
+     * @effects Nothing
+     * @param rawRef raw reference association attributes
+     * @param objectKey The object key with which to associate the reference
+     * @return MGI_ReferenceAssocState an object representing resolved reference
+     *         association attributes. This object may be null.
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws DBException
+     * @throws TranslationException
+     * @throws KeyNotFoundException
+     */
+    public MGI_Reference_AssocState process(
+        RefAssocRawAttributes rawRef, Integer objectKey)
+        throws KeyNotFoundException, DBException, CacheException
+    {
+        // reset state
+        state = null;
+        if (rawRef != null)
+        {
+            // see if MGI has this reference, if not state=null;
+            state = resolver.resolveAttributes(
+                raw, objectKey, LogicalDBConstants.MGI);
+        }
+        // state could be null
+        return state;
+    }
+}
+
+
+
 
 //  $Log
 
