@@ -1,4 +1,4 @@
-package org.jax.mgi.dbs.mgd.MolecularSource;
+package org.jax.mgi.dbs.mgd.loads.SeqSrc;
 
 import junit.framework.*;
 import org.jax.mgi.shr.dbutils.*;

@@ -1,8 +1,9 @@
-package org.jax.mgi.dbs.mgd.MolecularSource;
+package org.jax.mgi.dbs.mgd.loads.SeqSrcAssoc;
 
 import junit.framework.*;
 import org.jax.mgi.shr.dbutils.*;
 import org.jax.mgi.shr.config.*;
+import org.jax.mgi.dbs.mgd.loads.SeqSrc.*;
 
 public class TestMSSeqAssoc
     extends TestCase
