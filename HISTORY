@@ -1,3 +1,23 @@
+DATE: 03/31/2004
+STAFF: mbw
+CHANGES:
+1) removed age from MSRawAttributes 
+2) made MSAttrResolver abstract and created 2 new subclasses: GBMSAttrResolver and NonGBMSAttrResolver
+3) changed the MSResolver to check logicaldb and determine which flavor of the MSAttrResolver to create
+
+DATE: 03/30/2004
+STAFF: mbw
+CHANGES:
+1) added age to MSRawAttributes and no longer calculates the age value in the MSAttrResolver (it uses the value found in MSRawAttributes)
+
+DATE: 03/29/2004
+STAFF: mbw
+CHANGES:
+1) changed query in MSCollapsedCache to use 'is null' vs '= null'
+2) added a load stream and a qc stream to DLALoader
+3) changed parameter names in SequenceLoadCfg to be prefixed with the string SEQ and added a few new parameters
+4) added new lookups for load and qc streams inside the DLALoaderCfg class
+
 DATE: 03/29/2004
 STAFF: sc
 CHANGES:
