@@ -26,7 +26,7 @@ public class DLAExceptionHandler {
     }
     catch (DLALoggingException e) {
       System.err.print("Cannot obtain a Logger. This is really bad news." +
-                       "Exiting stage left");
+                       "Exiting program unequivocally");
       System.exit(DLASystemExit.FATAL_ERROR);
     }
   }
@@ -83,6 +83,9 @@ public class DLAExceptionHandler {
 
 }
 // $Log$
+// Revision 1.2  2003/05/08 20:40:02  mbw
+// incorporated changes from code reviews
+//
 // Revision 1.1  2003/04/22 22:31:57  mbw
 // initial version
 //
