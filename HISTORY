@@ -3,6 +3,7 @@ STAFF:mbw
 RELEASE: dev
 CHANGES:
 1) MSAttrResolver - changed the way strain was being resolved using the raw organism value 
+2) MSCollapsedCache - revised so that new entries no longer override previous ones
 
 
 TAG: lib_java_dla-1-0-13
