@@ -1,4 +1,11 @@
-TAG: lib_java_dla-1-0-29
+DATE: 07/23/2004
+STAFF: sc
+CHANGES:
+1) added changes needed because of changes to lib_java_core
+   addressed in TR5965. Classes copied from trunk:
+   DLAException.java, DLALoader.java, DLALogger.java
+
+TAG: lib_java_dla-1-0-29 (this should have been suffixed with BP, but was not)
 DATE: 07/20/2004
 STAFF: sc
 CHANGES: 

@@ -140,10 +140,8 @@ public abstract class DLALoader {
       this.loadDBMgr.setLogger(logger);
       this.qcBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
       this.qcBCPMgr.setLogger(logger);
-      this.qcBCPMgr.setSQLDataManager(qcDBMgr);
       this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
       this.loadBCPMgr.setLogger(logger);
-      this.loadBCPMgr.setSQLDataManager(loadDBMgr);
       this.loadStream = createSQLStream(config.getLoadStreamName(),
                                         loadDBMgr, loadBCPMgr);
       this.qcStream = createSQLStream(config.getQCStreamName(),
@@ -152,8 +150,7 @@ public abstract class DLALoader {
     }
     catch (Exception e) {
       DLAException e2 = (DLAException)
-          dlaExceptionFactory.getException(InitException);
-      e2.setParent(e);
+          dlaExceptionFactory.getException(InitException, e);
       DLAExceptionHandler.handleException(e2);
       DLASystemExit.fatalExit();
     }
@@ -273,7 +270,7 @@ public abstract class DLALoader {
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Batch_Stream"))
           return new BCP_Batch_Stream(DBMgr, BCPMgr);
       else if (name.equals("org.jax.mgi.shr.dbutils.dao.BCP_Script_Stream"))
-          return new BCP_Script_Stream(DBMgr.getScriptWriter(), BCPMgr);
+          return new BCP_Script_Stream(DBMgr.getScriptWriter(), DBMgr, BCPMgr);
       else
       {
           DLAExceptionFactory factory = new DLAExceptionFactory();

@@ -5,13 +5,13 @@ package org.jax.mgi.shr.dla;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.logging.FileHandler;
 import java.io.IOException;
 import java.lang.Throwable;
 
 import org.jax.mgi.shr.config.DLALoggerCfg;
 import org.jax.mgi.shr.config.ConfigException;
+import org.jax.mgi.shr.log.Logger;
 
 /**
  * @is an object that logs messages of various severity levels to a set of
@@ -58,18 +58,18 @@ import org.jax.mgi.shr.config.ConfigException;
  * @version 1.0
  */
 
-public class DLALogger implements org.jax.mgi.shr.log.Logger {
+public class DLALogger implements Logger {
 
   // the Singleton instance
   private static DLALogger instance = null;
   // the java1.4 Logger instance for the process log
-  private Logger processLogger = null;
+  private java.util.logging.Logger processLogger = null;
   // the java1.4 Logger instance for the curator log
-  private Logger curatorLogger = null;
+  private java.util.logging.Logger curatorLogger = null;
   // the java1.4 Logger instance for the validation log
-  private Logger validationLogger = null;
+  private java.util.logging.Logger validationLogger = null;
   // the java1.4 Logger instance for the diagnostics log
-  private Logger diagnosticsLogger = null;
+  private java.util.logging.Logger diagnosticsLogger = null;
   // the java 1.4 FileHandler object for the process log
   private FileHandler logpHandler;
   // the java 1.4 FileHandler object for the curator log
@@ -167,6 +167,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     }
     return instance;
   }
+
 
   /**
    * logs an informational message with a standard header
@@ -405,6 +406,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     * @effects a message will be written to the diagnostics log if
     * the debug state is true
     * @param  msg string message.
+    * @param doStamping indicator of whether or not to time stamp the message
     */
   public void logdDebug(String msg, boolean doStamping) {
     if (doStamping) {
@@ -597,13 +599,13 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     // get a named Logger class from the java 1.4 frameworks.
     // naming these logs is for java 1.4 internal use.
     // remove the default handlers for each log.
-    processLogger = Logger.getLogger(PROC_LOG);
+    processLogger = java.util.logging.Logger.getLogger(PROC_LOG);
     removeHandlers(processLogger);
-    curatorLogger = Logger.getLogger(CUR_LOG);
+    curatorLogger = java.util.logging.Logger.getLogger(CUR_LOG);
     removeHandlers(curatorLogger);
-    validationLogger = Logger.getLogger(VAL_LOG);
+    validationLogger = java.util.logging.Logger.getLogger(VAL_LOG);
     removeHandlers(validationLogger);
-    diagnosticsLogger = Logger.getLogger(DIAG_LOG);
+    diagnosticsLogger = java.util.logging.Logger.getLogger(DIAG_LOG);
     removeHandlers(diagnosticsLogger);
     // do not use any java 1.4 global handler
     setGlobalHandlerOff();
@@ -614,7 +616,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
    */
   private void setGlobalHandlerOff() {
     Handler[] handlers =
-      Logger.getLogger( "" ).getHandlers();
+      java.util.logging.Logger.getLogger( "" ).getHandlers();
     for ( int index = 0; index < handlers.length; index++ ) {
       handlers[index].setLevel(Level.OFF);
     }
@@ -624,7 +626,7 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
    * remove any handlers on a given logger
    * @param logger the logger for which to remove handlers
    */
-  private void removeHandlers(Logger logger) {
+  private void removeHandlers(java.util.logging.Logger logger) {
     Handler[] handlers = logger.getHandlers();
     for ( int index = 0; index < handlers.length; index++ ) {
       logger.removeHandler(handlers[index]);
@@ -650,6 +652,12 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
   }
 }
 // $Log$
+// Revision 1.11  2004/07/22 21:16:12  mbw
+// changed how the Logger classes are being qualified
+//
+// Revision 1.10  2003/11/25 20:10:21  dbm
+// Make logInfo() method perform stamping
+//
 // Revision 1.9  2003/10/31 15:26:23  mbw
 // removed timestamp from logInfo
 //

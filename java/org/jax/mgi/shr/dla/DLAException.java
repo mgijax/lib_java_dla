@@ -26,4 +26,10 @@ public class DLAException extends MGIException {
     super(pMessage, pDataRelated);
   }
 
+  public DLAException(String pMessage, Exception parent, boolean pDataRelated) {
+    super(pMessage, pDataRelated);
+    super.setParent(parent);
+  }
+
+
 }
