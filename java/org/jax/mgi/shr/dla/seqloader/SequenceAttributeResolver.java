@@ -93,26 +93,91 @@ public class SequenceAttributeResolver {
       state.setSequenceQualityKey(qualityLookup.lookup(rawAttributes.getQuality()));
       state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
       state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
-
+      //
       // cleanse the incoming decription data
+      //
       String desc = rawAttributes.getDescription();
-      desc = desc.replaceAll("'","''");
-      if (desc.length() > 255)
+      if (desc != null) {
+        desc = desc.replaceAll("'", "''");
+        if (desc.length() > 255) {
           desc = desc.substring(0, 254);
-          state.setDescription(desc);
+        }
+      }
+      state.setDescription(desc);
+      //
+      // cleanse library
+      //
+      String lib = rawAttributes.getLibrary();
+      if (lib != null) {
+        lib = lib.replaceAll("'", "''");
+        if (lib.length() > 255) {
+          lib = lib.substring(0, 254);
+        }
+      }
+      state.setRawLibrary(lib);
+      //
+      // cleanse strain
+      //
+      String strain = rawAttributes.getStrain();
+      if (strain != null) {
+        strain = strain.replaceAll("'", "''");
+        if (strain.length() > 255) {
+          strain = strain.substring(0, 254);
+        }
+      }
+      state.setRawStrain(strain);
+      //
+      // cleanse tissue
+      //
+      String tissue = rawAttributes.getTissue();
+      if (tissue != null) {
+        tissue = tissue.replaceAll("'", "''");
+        if (tissue.length() > 255) {
+          tissue = tissue.substring(0, 254);
+        }
+      }
+      state.setRawTissue(tissue);
+      //
+      // cleanse age
+      //
+      String age = rawAttributes.getAge();
+      if (age != null) {
+        age = age.replaceAll("'", "''");
+        if (age.length() > 100) {
+          age = age.substring(0, 99);
+        }
+      }
+      state.setRawAge(age);
+      //
+      // cleanse sex
+      //
+      String sex = rawAttributes.getSex();
+      if(sex != null) {
+        sex = sex.replaceAll("'", "''");
+        if (sex.length() > 100) {
+          sex = sex.substring(0, 99);
+        }
+      }
+      state.setRawSex(sex);
+      //
+      // cleanse cell line
+      //
+      String cell = rawAttributes.getCellLine();
+      if(cell != null) {
+        cell = cell.replaceAll("'", "''");
+        if (cell.length() > 100) {
+          cell = cell.substring(0, 99);
+        }
+      }
+      state.setRawCellLine(cell);
+
       // copy remaining raw attributes to the sequence state
       state.setLength(new Integer(rawAttributes.getLength()));
       state.setVersion(rawAttributes.getVersion());
       state.setDivision(rawAttributes.getDivision());
       state.setVirtual(rawAttributes.getVirtual());
       state.setRawType(rawAttributes.getType());
-      state.setRawLibrary(rawAttributes.getLibrary());
       state.setRawOrganism(rawAttributes.getRawOrganisms());
-      state.setRawStrain(rawAttributes.getStrain());
-      state.setRawTissue(rawAttributes.getTissue());
-      state.setRawAge(rawAttributes.getAge());
-      state.setRawSex(rawAttributes.getSex());
-      state.setRawCellLine(rawAttributes.getCellLine());
       state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
       state.setSeqrecordDate(rawAttributes.getSeqRecDate());
       state.setSequenceDate(rawAttributes.getSeqDate());
@@ -122,6 +187,9 @@ public class SequenceAttributeResolver {
 }
 
 //  $Log$
+//  Revision 1.6  2004/04/14 17:08:24  mbw
+//  added functionality to cleanse decscription data of single quotes and of lengths that are greater than 255
+//
 //  Revision 1.4  2004/03/29 17:20:12  sc
 //  no longer abstract - this class now doe the interpreting
 //
