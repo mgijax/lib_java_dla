@@ -109,7 +109,8 @@ public abstract class DLALoader {
   public DLALoader() {
     try {
       logger = DLALogger.getInstance();
-      logger.logpInfo("Performing base loader initialization",true);
+      logger.logdInfo("Performing initialization",true);
+      logger.logpInfo("Beginning load processing",true);
       radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
       radarDBMgr.setLogger(logger);
       mgdDBMgr = new SQLDataManager(new DatabaseCfg("MGD"));
@@ -121,7 +122,6 @@ public abstract class DLALoader {
       mgdBCPMgr.setLogger(logger);
       mgdBCPMgr.setSQLDataManager(mgdDBMgr);
       primaryInputFile = new InputDataFile();
-      logger.logpInfo("Performing sub loader initialization",true);
       initialize();
     }
     catch (MGIException e) {
@@ -184,7 +184,7 @@ public abstract class DLALoader {
    */
   public void load() {
     try {
-      logger.logpInfo("Beginning run",true);
+      logger.logdInfo("Beginning load processing",true);
       run();
     }
     catch (MGIException e) {
@@ -195,10 +195,9 @@ public abstract class DLALoader {
       systemExit.fatalExit();
     }
     try {
-      logger.logpInfo("Performing base loader finalization",true);
+      logger.logdInfo("Performing finalization",true);
       radarDBMgr.closeResources();
       mgdDBMgr.closeResources();
-      logger.logpInfo("Beginning sub loader finalization",true);
       cleanup();
     }
     catch (MGIException e) {
@@ -208,6 +207,7 @@ public abstract class DLALoader {
       exceptionHandler.handleException(e2);
       systemExit.fatalExit();
     }
+    logger.logdInfo("Load completed",true);
     logger.logpInfo("Load completed",true);
   }
 
