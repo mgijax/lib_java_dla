@@ -1,7 +1,6 @@
 package org.jax.mgi.shr.dla;
 
 import org.jax.mgi.shr.config.DatabaseCfg;
-import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.config.DLALoaderCfg;
 import org.jax.mgi.shr.dbutils.bcp.BCPManager;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
@@ -127,8 +126,8 @@ public abstract class DLALoader {
       DLAException e2 = (DLAException)
           dlaExceptionFactory.getException(InitException);
       e2.setParent(e);
-      exceptionHandler.handleException(e2);
-      systemExit.fatalExit();
+      DLAExceptionHandler.handleException(e2);
+      DLASystemExit.fatalExit();
     }
   }
 
@@ -162,7 +161,7 @@ public abstract class DLALoader {
         DLAException e2 = (DLAException)
             eFactory.getException(InstanceException, e);
         e2.setParent(e);
-        eHandler.handleException(e2);
+        DLAExceptionHandler.handleException(e2);
         DLASystemExit.fatalExit();
       }
     }
@@ -188,8 +187,8 @@ public abstract class DLALoader {
       DLAException e2 = (DLAException)
           dlaExceptionFactory.getException(RunException);
       e2.setParent(e);
-      exceptionHandler.handleException(e2);
-      systemExit.fatalExit();
+      DLAExceptionHandler.handleException(e2);
+      DLASystemExit.fatalExit();
     }
     try {
       logger.logdInfo("Performing finalization",true);
@@ -201,8 +200,8 @@ public abstract class DLALoader {
       DLAException e2 = (DLAException)
           dlaExceptionFactory.getException(FinalizeException);
       e2.setParent(e);
-      exceptionHandler.handleException(e2);
-      systemExit.fatalExit();
+      DLAExceptionHandler.handleException(e2);
+      DLASystemExit.fatalExit();
     }
     logger.logdInfo("Load completed",true);
     logger.logpInfo("Load completed",true);
