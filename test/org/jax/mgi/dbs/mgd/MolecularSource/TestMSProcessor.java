@@ -3,6 +3,7 @@ package org.jax.mgi.dbs.mgd.MolecularSource;
 import junit.framework.*;
 import org.jax.mgi.shr.dbutils.*;
 import org.jax.mgi.shr.dbutils.dao.*;
+import org.jax.mgi.shr.config.DatabaseCfg;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.*;
 import org.jax.mgi.dbs.mgd.lookup.*;
@@ -12,6 +13,7 @@ public class TestMSProcessor
 {
     private MSProcessor msProcessor = null;
     private SQLDataManager sqlMgr = null;
+    private SQLDataManager radar = null;
     private VocabKeyLookup segmentLookup;
     private VocabKeyLookup vectorLookup;
     private TissueKeyLookup tissueLookup;
@@ -19,6 +21,7 @@ public class TestMSProcessor
     private VocabKeyLookup cellLineLookup;
     private StrainKeyLookup strainLookup;
     private OrganismKeyLookup organismLookup;
+    private String jobkey = new String("-200");
 
 
     public TestMSProcessor(String name)
@@ -28,8 +31,10 @@ public class TestMSProcessor
 
     protected void setUp() throws Exception
     {
+        System.getProperties().put("JOBKEY", jobkey);
         super.setUp();
         sqlMgr = new SQLDataManager();
+        radar = new SQLDataManager(new DatabaseCfg("RADAR"));
         this.segmentLookup =
             new VocabKeyLookup(VocabularyTypeConstants.SEGMENTTYPE);
         this.vectorLookup =
@@ -43,13 +48,15 @@ public class TestMSProcessor
             new VocabKeyLookup(VocabularyTypeConstants.CELLLINE);
         doDeletes();
         doInserts();
-        msProcessor = new MSProcessor(new Inline_Stream(sqlMgr));
+        msProcessor = new MSProcessor(new Inline_Stream(sqlMgr),
+                                      new Inline_Stream(radar));
     }
 
     protected void tearDown() throws Exception
     {
         doDeletes();
         sqlMgr = null;
+        radar = null;
         msProcessor = null;
         super.tearDown();
     }
@@ -171,6 +178,14 @@ public class TestMSProcessor
       nav = sqlMgr.executeQuery(sql);
       assertTrue(!nav.next()); // assure record was not edited
       sqlMgr.executeUpdate("delete MGI_AttributeHistory where _object_key = -40");
+      // check qc tables
+      sql = "select count(*) from QC_MS_AttrEdit " +
+            "where _jobstream_key = " + jobkey;
+      nav = radar.executeQuery(sql);
+      RowReference row = nav.getRowReference();
+      nav.next();
+      assertEquals(new Integer(1), row.getInt(1));
+
     }
 
     /**
@@ -208,6 +223,36 @@ public class TestMSProcessor
             "delete prb_source where _source_key = " + ms.getMSKey()
             );
     }
+
+    /**
+     * test new sequence with a named source not found in database
+     * source record should be created
+     * @throws Exception
+     */
+    public void testNewSeqNewNamedSrc() throws Exception
+    {
+        String accid = null;
+        MSRawAttributes raw = new MSRawAttributes();
+        raw.setLibraryName("name5");
+        raw.setCellLine("HeLa");
+        raw.setGender("Male");
+        raw.setOrganism("mouse, laboratory");
+        MolecularSource ms =
+            msProcessor.processNewSeqSrc(accid, raw);
+        assertTrue(ms.getMSKey().intValue() > 0); // a new key was created
+        // cleanup new record
+        sqlMgr.executeUpdate(
+            "delete prb_source where _source_key = " + ms.getMSKey()
+            );
+        // check qc tables
+        String sql = "select count(*) from QC_MS_NoLibFound " +
+                     "where _jobstream_key = " + jobkey;
+        ResultsNavigator nav = radar.executeQuery(sql);
+        RowReference row = nav.getRowReference();
+        nav.next();
+        assertEquals(new Integer(1), row.getInt(1));
+    }
+
 
     /**
      * test new sequence with clones associated with anonymous sources
@@ -256,6 +301,14 @@ public class TestMSProcessor
         MolecularSource ms =
             msProcessor.processNewSeqSrc(accid, raw);
         assertEquals(new Integer(-40), ms.getMSKey());
+        // check qc tables
+        String sql = "select count(*) from QC_MS_NameConflict " +
+                     "where _jobstream_key = " + jobkey;
+        ResultsNavigator nav = radar.executeQuery(sql);
+        RowReference row = nav.getRowReference();
+        nav.next();
+        assertEquals(new Integer(1), row.getInt(1));
+
     }
 
     private void doInserts() throws Exception
@@ -384,6 +437,12 @@ public class TestMSProcessor
 
     private void doDeletes() throws Exception
     {
+        radar.executeUpdate("delete from QC_MS_AttrEdit where " +
+                            "_jobstream_key = " + jobkey);
+        radar.executeUpdate("delete from QC_MS_NameConflict where " +
+                            "_jobstream_key = " + jobkey);
+        radar.executeUpdate("delete from QC_MS_NoLibFound where " +
+                            "_jobstream_key = " + jobkey);
         sqlMgr.executeUpdate(
             "delete acc_accession where _accession_key = -200"
             );
