@@ -133,7 +133,7 @@ public class MergeSplitHelper {
                for (Iterator vecI = currentV.iterator(); vecI.hasNext(); ) {
                    // add each secondary to the newMap with value=primary
                    String secondary = (String) vecI.next();
-                   System.out.println("mapValue: " + secondary);
+                   //System.out.println("mapValue: " + secondary);
                    // add a new mapping
                    if (!secondaryMap.containsKey(secondary)) {
                        Vector x = new Vector();
