@@ -78,6 +78,9 @@ public class NonGBMSAttrResolver extends MSAttrResolver {
         try {
             ms.setOrganismKey(this.organismLookup.lookup(organism));
         }
+        catch (KeyNotFoundException e) {
+           throw new UnresolvedOrganismException(organism);
+        }
         catch (MGIException e) {
             MSExceptionFactory eFactory = new MSExceptionFactory();
             MSException e2 = (MSException)
