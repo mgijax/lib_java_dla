@@ -137,7 +137,7 @@ public class FASTAData
             FASTAData f = new FASTAData();
             int nl_index = s.indexOf(NEWLINE);
             f.setIdentity(s.substring(1, nl_index));
-            f.setSeq(s.substring(nl_index + 1));
+            f.setSeq(s.substring(nl_index + 1).replaceAll(NEWLINE, ""));
             return f;
         }
 
