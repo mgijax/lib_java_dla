@@ -3,7 +3,10 @@
 
 package org.jax.mgi.shr.dla.seqloader;
 
-//import org.jax.mgi.dbs.mgd.lookup.PrimarySeqLookup;
+import org.jax.mgi.shr.dbutils.ScriptWriter;
+import org.jax.mgi.shr.dbutils.ScriptException;
+import org.jax.mgi.shr.dla.DLALogger;
+import org.jax.mgi.shr.dla.DLALoggingException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
@@ -62,6 +65,7 @@ import java.util.HashMap;
 public class MergeSplitProcessor {
     private MergeSplitHelper mergeSplitHelper;
     private HashMap mergeSplitSeqs;
+    private DLALogger logger;
 
     /**
      * Constructs a MergeSplitProcessor
@@ -73,9 +77,10 @@ public class MergeSplitProcessor {
 
      public MergeSplitProcessor()
          throws KeyNotFoundException, DBException, CacheException,
-         ConfigException {
+         ConfigException, DLALoggingException {
          mergeSplitHelper = new MergeSplitHelper();
          mergeSplitSeqs = new HashMap();
+         logger = DLALogger.getInstance();
      }
      /**
       * Detects a Merge/Split event for a sequence by determining if any of the
@@ -106,9 +111,12 @@ public class MergeSplitProcessor {
      * @throws
      */
 
-    public void process() {
+    public void process(ScriptWriter writer) throws ScriptException {
         HashMap secondaryToPrimary = mergeSplitHelper.createHash(mergeSplitSeqs);
-
+        // SEQ_Merge fromSeqid toSeqid
+        // SEQ_Split fromSeqid to Seqid
+        StringBuffer mergeSQL = new StringBuffer("SEQ_Merge ");
+        StringBuffer splitSQL = new StringBuffer("SEQ_Split ");
         for (Iterator mapI = secondaryToPrimary.keySet().iterator();
             mapI.hasNext();) {
                // get the key; a secondary id that is primary in MGI
@@ -118,15 +126,22 @@ public class MergeSplitProcessor {
                Vector currentV = (Vector) secondaryToPrimary.get(secondary);
                if (currentV.isEmpty()) {
                    //throw exception
-                   System.out.println("Throw Exception");
+                   logger.logdDebug("Throw Exception in MergeSplitProcessor.process" +
+                                    "Vector of primary ids is empty");
                }
                else if (currentV.size() > 1) {
                    //call stored split stored procedure
-                   System.out.println("Calling SEQ_split");
+                   //System.out.println("Calling SEQ_split");
+                   logger.logdDebug("Calling SEQ_split");
+                   for (Iterator i = currentV.iterator(); i.hasNext();) {
+                       writer.write(splitSQL + secondary.toString() + " " + (String)i.next());
+                   }
                }
                else {
                    // call merge stored procedure
-                   System.out.println("Calling SEQ_merge");
+                   //System.out.println("Calling SEQ_merge");
+                   logger.logdDebug("Calling SEQ_merge");
+                   writer.write(mergeSQL + secondary.toString() + " " + currentV.get(0));
                }
 
         }
