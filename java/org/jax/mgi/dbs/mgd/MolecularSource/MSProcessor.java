@@ -10,6 +10,7 @@ import org.jax.mgi.shr.log.Logger;
 import org.jax.mgi.shr.log.ConsoleLogger;
 import org.jax.mgi.dbs.mgd.lookup.LibraryKeyLookup;
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
+import org.jax.mgi.dbs.mgd.lookup.NamedSourceLookup;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
 
@@ -53,7 +54,7 @@ public class MSProcessor
     /**
      * the library lookup object for looking up named sources
      */
-    protected LibraryKeyLookup libLookup = null;
+    protected MSLookup libLookup = null;
 
     /**
      * the maximum limit of rows allowed to be return from the
@@ -85,6 +86,7 @@ public class MSProcessor
         this.resolver = new MSResolver();
         this.qcReporter = new MSQCReporter(qcStream);
         this.logger = new ConsoleLogger();
+        this.libLookup = new MSLookup();
     }
 
     /**
@@ -100,6 +102,7 @@ public class MSProcessor
         this.resolver = new MSResolver(logger);
         this.qcReporter = new MSQCReporter(qcStream);
         this.logger = logger;
+        this.libLookup = new MSLookup();
     }
 
 
@@ -374,15 +377,7 @@ public class MSProcessor
         Integer sourceKey = null;
         try
         {
-            if (libLookup == null)
-                libLookup = new LibraryKeyLookup();
-            sourceKey = libLookup.lookup(attr.getLibraryName());
-        }
-        catch (KeyNotFoundException e)
-        {
-            qcReporter.reportLibraryNameNotFound(attr.getLibraryName());
-            attr.setLibraryName(null); // change to anonymous
-            return null;
+            ms = libLookup.findByName(attr.getLibraryName());
         }
         catch (MGIException e)
         {
@@ -392,18 +387,10 @@ public class MSProcessor
             e2.bind(LibraryKeyLookup.class.getName());
             throw e2;
         }
-        // now get a molecular source with this library key
-        try
+        if (ms == null)
         {
-            ms = MSLookup.findBySourceKey(sourceKey);
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 = (MSException)
-                eFactory.getException(LookupErr, e);
-            e2.bind(MSLookup.class.getName());
-            throw e2;
+            qcReporter.reportLibraryNameNotFound(attr.getLibraryName());
+            attr.setLibraryName(null); // change to anonymous
         }
         return ms;
     }
