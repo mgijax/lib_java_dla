@@ -53,7 +53,7 @@ public class MSLookup {
    * @param key the key to use within the query
    * @return the MolecularSource object represented by the database record
    * @throws DBException thrown if there is an error with the database
-   * @throws ConfigExceptio if there is an error with configuration
+   * @throws ConfigException if there is an error with configuration
    */
   public static MolecularSource findBySourceKey(Integer key)
   throws DBException, ConfigException
@@ -91,7 +91,7 @@ public class MSLookup {
    * @return Vector of MolecularSource objects associated to the
    * given accid
    * @throws DBException thrown if there is an error with the database
-   * @throws ConfigExceptio if there is an error with configuration
+   * @throws ConfigException if there is an error with configuration
    * @throws MSException if the maximum number of rows is reached
    */
   public static Vector findAssocClonesByAccid(String accid, int limit)

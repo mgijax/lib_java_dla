@@ -82,10 +82,10 @@ public class MSSeqAssoc extends DAO
     }
 
     /**
-     * returns the MolecularSource object for this instance
+     *changes the association to the MolecularSource object
      * @assumes nothing
      * @effects nothing
-     * @return the MolecularSource
+     * @param ms the new MolecularSource object to associate with
      */
     public void changeMolecularSource(MolecularSource ms)
     {
@@ -136,6 +136,7 @@ public class MSSeqAssoc extends DAO
      * when this method is called
      * @assumes nothing
      * @effects a runtime exception is thrown
+     * @param table the Table instance to get bcp vector for
      * @return the insert sql for this instance once the implementation is
      * completed. currently a runtime exception is called
      */
@@ -166,6 +167,8 @@ public class MSSeqAssoc extends DAO
      * SQLStrategy class when performing updates
      * @assumes nothing
      * @effects nothing
+     * @return the update SQL
+     * @throws DBException thrown if there is an error with the database
      */
     public String getUpdateSQL() throws DBException
     {
@@ -224,8 +227,8 @@ public class MSSeqAssoc extends DAO
     /**
      * find a MSSeqAssoc object from the database with the given
      * sequence key and organism key
-     * @param seqkey
-     * @param organism
+     * @param seqkey the sequence key
+     * @param organismKey the organism key
      * @return the MolecularSource
      * @throws DBException thrown if there is an error with the database
      * @throws ConfigException thrown if there is an error with the

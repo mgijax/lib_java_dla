@@ -343,6 +343,8 @@ public class MolecularSource
    * return whether or not the tissue attribute is curator edited
    * @return true if the tissue attribute is curator edited,
    * false otherwise
+   * @throws MSException thrown if there is an error looking up history
+   * records
    */
   public boolean isTissueCurated()
   throws MSException
@@ -385,6 +387,8 @@ public class MolecularSource
    * return whether or not the age attribute is curator edited
    * @return true if the age attribute is curator edited,
    * false otherwise
+   * @throws MSException thrown if there is an error looking up history
+   * records
    */
   public boolean isAgeCurated()
   throws MSException
@@ -430,6 +434,8 @@ public class MolecularSource
    * return whether or not the cell line attribute is curator edited
    * @return true if the cell line attribute is curator edited,
    * false otherwise
+   * @throws MSException thrown if there is an error looking up history
+   * records
    */
   public boolean isCellLineCurated()
   throws MSException
@@ -475,6 +481,8 @@ public class MolecularSource
    * return whether or not the strain attribute is curator edited
    * @return true if the strain attribute is curator edited,
    * false otherwise
+   * @throws MSException thrown if there is an error looking up history
+   * records
    */
   public boolean isStrainCurated()
   throws MSException
@@ -520,6 +528,8 @@ public class MolecularSource
    * return whether or not the gender attribute is curator edited
    * @return true if the gender attribute is curator edited,
    * false otherwise
+   * @throws MSException thrown if there is an error looking up history
+   * records
    */
   public boolean isGenderCurated()
   throws MSException
@@ -565,6 +575,8 @@ public class MolecularSource
    * return whether or not the organism attribute is curator edited
    * @return true if the organsim attribute is curator edited,
    * false otherwise
+   * @throws MSException thrown if there is an error looking up history
+   * records
    */
   public boolean isOrganismCurated()
   throws MSException
@@ -609,6 +621,7 @@ public class MolecularSource
    * insert this instance to the database.
    * @assumes nothing
    * @effects a record will be inserted into the database
+   * @param stream the SQLStream to insert on
    * @throws DBException thrown if there is an error with the database
    * @throws ConfigException thrown if there is an error with configuration
    * @throws MSException thrown if this object is already in the database

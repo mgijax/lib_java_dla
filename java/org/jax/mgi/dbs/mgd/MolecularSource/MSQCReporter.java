@@ -28,7 +28,8 @@ public class MSQCReporter
     private static String QCErr = MSExceptionFactory.QCErr;
 
     /**
-     *
+     * constructor
+     * @param stream the SQLStream to use
      */
     public MSQCReporter(SQLStream stream)
     {

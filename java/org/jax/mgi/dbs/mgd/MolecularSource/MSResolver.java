@@ -148,7 +148,7 @@ public class MSResolver {
      * object without a database key
      * @assumes nothing
      * @effects nothing
-     * @param rawAttr the raw attributes
+     * @param attributes the raw attributes
      * @return the MolecularSource object
      * @throws MSException thrown if there is an error trying to resolve the
      * attributes
@@ -164,7 +164,7 @@ public class MSResolver {
      * @assumes nothing
      * @effects the collapsed cache and the MSAttrResolver will be initialized
      * @param logger the logger to use
-     * @throws MGIException thrown if there is an error during initialization
+     * @throws MSException thrown if there is an error during initialization
      */
     protected void init(Logger logger) throws MSException
     {

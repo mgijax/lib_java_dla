@@ -37,6 +37,8 @@ public class MSCollapsedCache
 
     /**
      * constructor
+     * @param cacheType the type of cache to use from
+     * org.jax.mgi.shr.cache.CacheConstants
      * @throws ConfigException thrown if there is an error with configuration
      * @throws DBException thrown if there is an error accessing the database
      * @throws CacheException thrown if there is an error with the cache
@@ -54,6 +56,8 @@ public class MSCollapsedCache
      * which match a resolved MolecularSource within the cache
      * @param unresolvedMS an unresolved MolecularSource
      * @return a resolved MolecularSource or null if not in cache
+     * @throws DBException thrown if there is an error with the database
+     * @throws CacheException thrown if there is an error accessing the cache
      */
     public MolecularSource lookup(MolecularSource unresolvedMS)
     throws DBException, CacheException
@@ -137,6 +141,8 @@ public class MSCollapsedCache
      * @effects a new MolecularSource object will be added to the cache if
      * it does not already exist there
      * @param ms the MolecularSource to add
+     * @throws DBException thrown if there is an error with the database
+     * @throws CacheException thrown if there is an error with the cache
      */
     protected void addToCache(MolecularSource ms)
     throws DBException, CacheException

@@ -85,6 +85,8 @@ public class MSProcessor
 
     /**
      * constructor
+     * @param stream the SQLStream for writing molecular source data
+     * @param qcStream the SQLStream for writing qc data
      * @throws MSException thrown if there is an error instantiating the
      * MSResolver
      */
@@ -111,6 +113,9 @@ public class MSProcessor
 
     /**
      * constructor
+     * @param stream the SQLStream for writing molecular source data
+     * @param qcStream the SQLStream for writing qc data
+     * @param logger the Logger to use
      * @throws MSException thrown if there is an error instantiating the
      * MSResolver
      */
@@ -234,10 +239,10 @@ public class MSProcessor
      * determines if the existing molecular source for the given sequence
      * requires updating and reports any discrepancies between curated edited
      * attributes and those that have changed in the molecular source.
-     * @param seqid the sequence accid
+     * @param accid the sequence accid
      * @param seqKey the sequence key
      * @param attr the raw attributes for incoming molecular source
-     * @param rawLibName the raw library name for the existing sequence
+     * @param existingRawLibrary the raw library name for the existing sequence
      * @throws MSException thrown if there is an error resolving attributes
      */
     public void processExistingSeqSrc(String accid,
@@ -595,6 +600,7 @@ public class MSProcessor
      * @param existingSrc the existing molecular source
      * @param existingSrcAssoc the existing sequence/source association
      * @param incomingRaw the incoming raw molecular source values
+     * @param existingRawLibrary the existing raw library name
      * @throws MSException thrown if there is an error getting the changed
      * values onto the SQLStream
      */
@@ -736,6 +742,8 @@ public class MSProcessor
      * @param existingSrcAssoc the existing sequence/source association
      * @param incomingRaw the incoming raw molecular source attributes
      * @param existingRawLibrary the existing raw molecular source library name
+     * @param foundByCloneAssociation true if the source was found through a
+     * clone association and false otherwise
      * @throws MSException thrown if there is an error putting the changed data
      * onto an SQLStream
      */
