@@ -1,3 +1,47 @@
+TAG: lib_java_dla-1-0-34
+DATE: 09/09/2004
+STAFF: sc
+RELEASE: production
+CHANGES: TR5395
+1) merge of assembly branch - see changes since last tag below
+
+DATE: 09/01/2004
+STAFF: sc
+RELEASE: branch
+CHANGES: SequenceLookup bug fix - reset all caches (HashSet) with each invocatio
+n of interpretRows
+         Since the cache not reset, sequences repeated in input were creating ne
+w references
+         since the refs key found in the cache.
+
+DATE: 08/23/2004
+STAFF: sc
+RELEASE: branch
+CHANGES:
+1) SequenceLoadCfg - added several methods to get source info and
+   getInterpreterClass()
+2) org.jax.mgi.shr.dla.assemblyloader.MGSAssemblyFormatInterpreter - no longer
+   gets attributes from a file header - now from configuration
+3) added org.jax.mgi.shr.config.CoordLoadCfg.java
+4) added org.jax.mgi.shr.dla.coordloader classes
+
+DATE: 08/04/2004
+STAFF: sc
+RELEASE: branch
+CHANGES:
+1) copied over changes to DLALoaderCfg, DLALoader and added new class
+   DLALoaderHelper from the trunk to patch a truncate tables bug.
+2) updated SeqLoader to use a DataIterator rather than a RecordDataIterator
+3) java/org/jax/mgi/shr/dla/assemblyloader/AssemblySeqloader.java and
+   java/org/jax/mgi/shr/dla/assemblyloader/MGSAssemblyFormatInterpreter.java
+   added
+
+DATE: 07/30/2004
+STAFF: sc
+RELEASE: branch
+CHANGES: copied over changes to MSCollapsedCache from the trunk to patch a
+         caching bug.
+
 DATE: 10/07/2004
 STAFF: mbw
 RELEASE: dev
@@ -57,6 +101,46 @@ TAG: lib_java_dla-1-0-29
 DATE: 07/20/2004
 STAFF: sc
 CHANGES:
+1) SeqLoader - need to delete sequences when in delete/reload mode - oops.
+
+TAG: lib_java_dla-1-0-28-BP-2
+DATE: 07/23/2004
+STAFF: sc
+RELEASE:
+CHANGES: see changes since last tag below
+
+DATE: 07/27/2004
+STAFF: sc
+CHANGES: SequenceAttributeResolver.java - truncate rawOrganism to 255.
+CHANGES:TR5395
+1) Added org.jax.mgi.dbs.mgd.MolecularSource.GenericMSAttrResolver
+2) Added org.jax.mgi.shr.dla.assemblyloader.AssemblyFormatInterpreter.java and
+   AssemblySeqloader.java
+3) MSCollapsedCache.java - Added age to the PRB_Source query. Age needs to be 
+   part of the cache (lookup) key
+4) MSRawAttributes.java - Added age attribute and getAge and setAge methods
+5) MSResolver.java - Added checking for ncbi and ensembl to the if-then-else
+   which checks logicalDB to determine which MSAttrResolver to create.
+6) MolecularSource.java - Added age to the toStringMethod. Added checking for 
+   `Not Specified' in setAge when determining how to set ageMin and ageMax.
+7) SequenceLoadCfg.java - Added getInterpreterClass method.
+8) SeqLoader.java - Changed RecordDataIterator to interface DataIterator. run()
+   run() method catch block now tests MSException to see if it is an instance 
+   of UnresolvedAttributeException - new exception for assembly load as all 
+   source attributes must resolve; other seqloads simply skip the sequence 
+   and report. 
+
+DATE: 07/23/2004
+STAFF: sc
+CHANGES:
+1) added changes needed because of changes to lib_java_core
+   addressed in TR5965. Classes copied from trunk:
+   DLAException.java, DLALoader.java, DLALogger.java
+
+TAG: lib_java_dla-1-0-29 (this should have been lib_java_dla-1-0-28-BP-1)
+DATE: 07/20/2004
+STAFF: sc
+CHANGES: 
 1) SeqLoader - need to delete sequences when in delete/reload mode - oops.
 
 TAG: lib_java_dla-1-0-28-BP
