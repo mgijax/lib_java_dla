@@ -138,6 +138,16 @@ public class MSExceptionFactory extends ExceptionFactory {
         "Could not add the following MolecularSource to the cache due " +
         "to a resource error: ??", false));
   }
+  /**
+   * no source was found for the given sequence and organism
+   */
+  public static final String NoSourceFound =
+      "org.jax.mgi.dbs.mgd.NoSourceFound";
+  static {
+    exceptionsMap.put(NoSourceFound, new MSException(
+        "Could not find molecular source for existing sequence with " +
+        "accid = ?? and organism key = ??", false));
+  }
 
 
 
