@@ -203,9 +203,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         rawSeq.setProvider(provider);
         rawSeq.setStatus(seqStatus);
 
-        // set age then add 'ms' to 'sequenceInput'
-        // 3/31/04 remove this when MSProcessor fixed
-        ms.setAge(SeqloaderConstants.NOT_APPLICABLE);
+        // add 'ms' to 'sequenceInput'
         sequenceInput.addMSource(ms);
 
         // set rawSeq in 'sequenceInput
