@@ -5,11 +5,12 @@ import org.jax.mgi.shr.config.DLALoaderCfg;
 
 
 /**
- * <p>@is </p>
- * <p>@has </p>
- * <p>@does </p>
- * <p>@company The Jackson Laboratory</p>
- * @author not attributable
+ * A class which can be invoked on the command line to start a DLALoader.
+ * @has nothing
+ * @does starts the given DLALoader by instantiating the class and running the
+ * load() method
+ * @company The Jackson Laboratory
+ * @author M Walker
  *
  */
 
