@@ -1,3 +1,13 @@
+DATE: 04/15/2004
+STAFF: sc
+CHANGES:
+1) IncremSeqProcessor - changed parameters to call to 
+   SeqQCReporter.reportRawSourceConflicts
+2) MergeSplitProcessor - added throw of SeqloaderException 
+3) SeqQCReporter - changed params to reportRawSourceConflicts
+4) SeqloaderConstants - Added LIBRARY = library, ORGANISM = organism as 
+   controlled vocabulary for QC_SEQ_RawSourceConflict.attrName
+
 DATE: 04/14/2004
 STAFF: mbw
 CHANGES:
