@@ -1,3 +1,14 @@
+TAG: lib_java_dla-1-0-10
+DATE: 02/12/2004
+STAFF: mbw
+RELEASE:
+CHANGES: tag for development build
+
+DATE: 02/11/2004
+STAFF: mbw
+RELEASE:
+CHANGES: applied performance tweaks to MoleculorSource Processor
+
 TAG: lib_java_dla-1-0-9
 DATE: 02/11/2004
 STAFF: sc
