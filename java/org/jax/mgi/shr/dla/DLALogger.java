@@ -6,17 +6,8 @@ package org.jax.mgi.shr.dla;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.Formatter;
-import java.util.logging.LogManager;
 import java.util.logging.FileHandler;
-import java.util.logging.SimpleFormatter;
-import java.util.Enumeration;
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.PrintStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Properties;
 import java.lang.Throwable;
 
 import org.jax.mgi.shr.config.DLALoggerCfg;
@@ -402,6 +393,33 @@ public class DLALogger implements org.jax.mgi.shr.log.Logger {
     setClassNameMethodName();
     // log message to diagnostic log only if logging level is at FINEST
     diagnosticsLogger.logp(Level.FINEST, clientClass, clientMethod, msg);
+  }
+  
+  /**
+    * Writes a debug message to the diagnostics log.
+    * A standard header stamp will be included.
+    * This message will only be written if the debug
+    * state is set to true. The setDebug method is
+    * used to toggle the debug state.
+    * @assumes nothing
+    * @effects a message will be written to the diagnostics log if
+    * the debug state is true
+    * @param  msg string message.
+    */
+  public void logdDebug(String msg, boolean doStamping) {
+    if (doStamping) {
+      logdDebug(msg);
+    }
+    else {
+      if (logdFormatter != BRIEF_FORMATTER) {
+        // switch the formatter to non-stamped
+        logdHandler.setFormatter(messageOnlyFormatter);
+        // set the indicator to non-stamped
+        logdFormatter = BRIEF_FORMATTER;
+      }
+      // log message without header
+      diagnosticsLogger.finest(msg);
+    }
   }
 
   /**
