@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
+import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.dbs.mgd.MolecularSource.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.MGIRefAssocTypeConstants;
 import org.jax.mgi.shr.dla.seqloader.SequenceInterpreter;
@@ -42,27 +43,27 @@ import org.jax.mgi.shr.dla.seqloader.AccessionRawAttributes;
 public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
   /**
-   * The set of attributes with values common to all assembly sequences
+   * Configured attributes
    */
 
     private String seqType;
     private String seqQuality;
+    private String jNum;
+    private String version;
+    private String organism;
+    private String strain;
+    private String tissue;
+    private String age;
+    private String gender;
+    private String cellLine;
+
     private Boolean preferredAcc = Boolean.TRUE;
     private Boolean privateAcc = Boolean.FALSE;
 
     // for seqDate and seqRecordDate
-    private Timestamp timeStamp;
+    private Timestamp seqDate;
 
-    // Header record attributes
-    String header;
-    //String logicalDBName - configurator needs access as other classes (MSP) use
-    // configurator to get this value
-    String version;
-    String jNum;
-    //String loadName; Note jobstream needs this too so no good to have in file
-    String source;
-
-    // non-header record attributes
+    // record attributes
     String seqid;
     Integer startBP;
     Integer endBP;
@@ -102,35 +103,32 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
      */
 
     public MGSAssemblyFormatInterpreter() throws ConfigException {
-        // these values common to all Assembly sequences
-        seqType = sequenceCfg.getType();
-        seqQuality = sequenceCfg.getQuality();
         // override superclass setting
         refAssocType = new Integer(MGIRefAssocTypeConstants.LOAD);
-        timeStamp = new Timestamp(new Date().getTime());
+        // gets configuration values
+        getConfig();
+        // creates the single reference
+        createRawReference();
+        // creates the single source
+        createRawSource();
   }
 
-    /**
-     * returns false if 'record' is the header record, else true
-     * @assumes Nothing
-     * @effects Nothing
-     * @param record A MGSAssembly format sequence record
-     * @return true if we want to load this sequence
-     * @throws Nothing
-     */
-
-    public boolean isValid(String record) {
-        if (headerFound == false) {
-            // this is the header record - get it and return false
-            header = record;
-            headerFound = true;
-            return false;
-        }
-        else {
-          // this is a non-header record
-          return true;
-        }
-    }
+  /**
+  * a predicate that returns false if 'record' is a commented record, else true
+  * @assumes Nothing
+  * @effects Nothing
+  * @param record A MGS assembly format record
+  * @return true if we want to load this record
+  * @throws Nothing
+  */
+ public boolean isValid(String record) {
+     if (!record.startsWith("#")) {
+         return true;
+     }
+     else {
+         return false;
+     }
+ }
 
     /**
     * Parses a MGS assembly formatsequence record and  creates a SequenceInpu
@@ -152,7 +150,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         sequenceInput.reset();
         rawSeq.reset();
         rawAcc.reset();
-
+        /*
         // process header line if we haven't already
         if (headerProcessed == false) {
           // get the header information - this method creates the
@@ -161,6 +159,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
            parseHeader(header);
            headerProcessed = true;
         }
+        */
         // get seqid, start/end BP,  and description from the record
         parseRecord(rcd);
 
@@ -175,6 +174,38 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
        return sequenceInput;
    }
+
+   private void getConfig() throws ConfigException {
+       // misc
+       seqType = sequenceCfg.getType();
+       seqQuality = sequenceCfg.getQuality();
+       jNum = sequenceCfg.getJnumber();
+       version = sequenceCfg.getReleaseNo();
+       seqDate = sequenceCfg.getReleaseDate();
+       // source
+       organism = sequenceCfg.getOrganism();
+       strain = sequenceCfg.getStrain();
+       tissue = sequenceCfg.getTissue();
+       age = sequenceCfg.getAge();
+       gender = sequenceCfg.getGender();
+       cellLine = sequenceCfg.getCellLine();
+   }
+
+    private void createRawSource() throws ConfigException {
+        rawMS.setOrganism(sequenceCfg.getOrganism());
+        rawMS.setStrain(sequenceCfg.getStrain());
+        rawMS.setTissue(sequenceCfg.getTissue());
+        rawMS.setAge(sequenceCfg.getAge());
+        rawMS.setGender(sequenceCfg.getGender());
+        rawMS.setCellLine(sequenceCfg.getCellLine());
+    }
+
+    private void createRawReference() throws ConfigException {
+        rawRefAssoc.setRefId(sequenceCfg.getJnumber());
+        rawRefAssoc.setMgiType(seqMGIType);
+        rawRefAssoc.setRefAssocType(refAssocType);
+    }
+ /*
    private void parseHeader(String header) throws RecordFormatException {
      ArrayList splitHeader = StringLib.split(header, SeqloaderConstants.TAB);
            if (splitHeader.size() != 6) {
@@ -230,6 +261,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
            rawRefAssoc.setRefAssocType(refAssocType);
 
    }
+      */
    private void  parseRecord(String rcd) throws RecordFormatException {
        // get the seqid and description from the non-header record
        ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
@@ -259,8 +291,8 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
        rawSeq.setVirtual(virtual);
        // use default null value for rawType, rawLibrary, rawOrganism, rawStrain,
        // rawTissue, rawAge, rawSex, rawCellLine, numberOf Organisms
-       rawSeq.setSeqRecDate(timeStamp);
-       rawSeq.setSeqDate(timeStamp);
+       rawSeq.setSeqRecDate(seqDate);
+       rawSeq.setSeqDate(seqDate);
        sequenceInput.setSeq(rawSeq);
    }
    private void createRawAccession() {
