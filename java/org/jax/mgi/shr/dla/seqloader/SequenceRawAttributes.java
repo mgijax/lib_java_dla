@@ -5,15 +5,14 @@ package org.jax.mgi.shr.dla.seqloader;
 import java.sql.Timestamp;
 
 /**
- * @is An object that represents raw values for SEQ_Sequence
- *
+ * An object that represents raw values needed to create a SEQ_Sequence object
  * @has
  *   <UL>
- *   <LI> SEQ_Sequence column attributes
+ *   <LI> raw attributes needed to create a SEQ_Sequence object
  *   </UL>
  * @does
  *   <UL>
- *   <LI>>provides getters and setters for each column attribute
+ *   <LI>>provides getters and setters for each attribute
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -43,6 +42,10 @@ public class SequenceRawAttributes {
     private String quality = null;
     private String status = null;
     private String seqRecord = null;
+
+    // added 07/06/04 to support Genbank TPA sequences. General purpose
+    // misc attribute
+    private String misc =  null;
 
     /**
      * set the type attribute
@@ -236,6 +239,15 @@ public class SequenceRawAttributes {
     public void setStatus (String status) {this.status = status;}
 
     /**
+    * set the miscellaneous attribute
+    * @assumes Nothing
+    * @effects Nothing
+    * @param status the misc attribute
+    */
+
+    public void setMisc (String misc) {this.misc = misc;}
+
+   /**
      * set the sequence record attribute
      * @assumes Nothing
      * @effects Nothing
@@ -428,6 +440,15 @@ public class SequenceRawAttributes {
      public String getStatus () {return status;}
 
      /**
+      * get the miscellaneous attribute
+      * @assumes Nothing
+      * @effects Nothing
+      * @return the misc attribute
+      */
+
+      public String getMisc () {return misc;}
+
+     /**
       * get the sequence record attribute
       * @assumes Nothing
       * @effects Nothing
@@ -463,10 +484,14 @@ public class SequenceRawAttributes {
         provider = null;
         quality = null;
         status = null;
+        misc = null;
     }
 }
 
 //  $Log$
+//  Revision 1.3  2004/06/30 19:36:59  mbw
+//  javadocs only
+//
 //  Revision 1.2  2004/02/02 19:45:17  sc
 //  development since last tag
 //
