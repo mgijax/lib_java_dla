@@ -68,10 +68,11 @@ public class IncremSeqProcessor extends SeqProcessor {
 
        // Create a Reference Association Processor
        refAssocProcessor = new SeqRefAssocProcessor();
+      logger = DLALogger.getInstance();
 
         // Create a Molecular Source Processor
-       msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream);
-       logger = DLALogger.getInstance();
+       msProcessor = new MSProcessor (mgdSqlStream, qcSqlStream, logger);
+
     }
 
 
