@@ -1,3 +1,11 @@
+TAG: lib_java_dla-1-0-41
+DATE: 03/30/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+1) EMBLOrganismChecker - fixed ORG_EXPRESSION to tie expression to
+   beginning of a line (adde ^)
+
 TAG: lib_java_dla-1-0-40
 DATE: 03/29/2005
 STAFF: sc
