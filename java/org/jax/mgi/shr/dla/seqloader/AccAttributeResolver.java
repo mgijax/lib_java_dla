@@ -28,10 +28,9 @@ import org.jax.mgi.dbs.mgd.lookup.TranslationException;
  * @version 1.0
  */
 
-
 public class AccAttributeResolver {
 
-    // lookup a key for the logical db
+    // lookup a logical db key
     private LogicalDBLookup logicalDBLookup;
 
     /**
@@ -40,9 +39,10 @@ public class AccAttributeResolver {
      * @assumes Nothing
      * @effects Nothing
      * @param None
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws DBException
+     * @throws CacheException if error creating a LogicalDBLookup cache
+     * @throws ConfigException if error configuring a LogicalDBLookup's
+     *          SQLDataManager
+     * @throws DBException if error creating a LogicalDBLookups SQLDataManager
      */
 
     public AccAttributeResolver() throws  DBException, CacheException,
@@ -53,21 +53,18 @@ public class AccAttributeResolver {
     /**
      * resolves raw accession attributes and creates a ACC_AccessionState
      * @assumes Nothing
-     * @effects Nothing
+     * @effects Queries a database
      * @param rawAttributes A AccessionRawAttributes object
      * @param objectKey the primary key of the object associated with the accid
      * @return accessionState an ACC_AccessionState object
-     * @throws CacheException
-     * @throws ConfigException
-     * @throws DBException
-     * @throws TranslationException
-     * @throws KeyNotFoundException if key not found
+     * @throws CacheException - if logicalDBLookup cache error
+     * @throws DBException - if logicalDBLookup error querying the database
+     * @throws KeyNotFoundException if logical db key not found
      */
 
     public ACC_AccessionState resolveAttributes(
         AccessionRawAttributes rawAttributes, Integer objectKey)
-        throws KeyNotFoundException, TranslationException, DBException,
-        CacheException, ConfigException {
+        throws KeyNotFoundException, DBException, CacheException {
 
         // create a new accession state
         ACC_AccessionState state = new ACC_AccessionState();
@@ -76,7 +73,7 @@ public class AccAttributeResolver {
         state.setLogicalDBKey(logicalDBLookup.lookup(
             rawAttributes.getLogicalDB()));
 
-        // // copy remaining raw attributes to the state
+        // copy remaining raw attributes to the state
         state.setMGITypeKey(rawAttributes.getMgiType());
         state.setAccID(rawAttributes.getAccID());
         state.setNumericPart(rawAttributes.getNumericPart());
