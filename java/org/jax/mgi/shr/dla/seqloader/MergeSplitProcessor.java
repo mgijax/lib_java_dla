@@ -68,6 +68,8 @@ public class MergeSplitProcessor {
     private HashMap mergeSplitSeqs;
     private DLALogger logger;
     private SeqQCReporter qcReporter;
+    private int mergeCtr = 0;
+    private int splitCtr = 0;
 
     /**
      * Constructs a MergeSplitProcessor
@@ -118,8 +120,8 @@ public class MergeSplitProcessor {
         HashMap secondaryToPrimary = mergeSplitHelper.createHash(mergeSplitSeqs);
         // SEQ_Merge fromSeqid toSeqid
         // SEQ_Split fromSeqid to Seqid
-        StringBuffer mergeSQL = new StringBuffer("SEQ_Merge ");
-        StringBuffer splitSQL = new StringBuffer("SEQ_Split ");
+        String mergeProc = "SEQ_merge ";
+        String splitProc= "SEQ_split ";
         for (Iterator mapI = secondaryToPrimary.keySet().iterator();
             mapI.hasNext();) {
                // get the key; a secondary id that is primary in MGI
@@ -137,21 +139,60 @@ public class MergeSplitProcessor {
                    logger.logcInfo("Writing SEQ_split call(s):", false);
                    for (Iterator i = currentV.iterator(); i.hasNext();) {
                        String toSeqid = (String)i.next();
-                       String cmd = splitSQL + fromSeqid + " " + toSeqid;
+                       String cmd = splitProc +
+                           SeqloaderConstants.SPC +
+                           SeqloaderConstants.SGL_QUOTE +
+                           fromSeqid + SeqloaderConstants.SGL_QUOTE +
+                           SeqloaderConstants.COMMA +
+                           SeqloaderConstants.SGL_QUOTE + toSeqid +
+                           SeqloaderConstants.SGL_QUOTE;
                        logger.logcInfo(cmd, false);
                        writer.write(cmd);
+                       writer.go();
+                       splitCtr++;
                    }
                }
                else {
                    // write out call to merge stored procedure
                    logger.logcInfo("Writing SEQ_merge call:", false);
                    String toSeqid = (String)currentV.get(0);
-                   String cmd = mergeSQL + fromSeqid + " " + toSeqid;
+                   String cmd = mergeProc +
+                       SeqloaderConstants.SPC +
+                       SeqloaderConstants.SGL_QUOTE +
+                       fromSeqid + SeqloaderConstants.SGL_QUOTE +
+                       SeqloaderConstants.COMMA +
+                       SeqloaderConstants.SGL_QUOTE + toSeqid +
+                       SeqloaderConstants.SGL_QUOTE;
+
                    logger.logcInfo(cmd, false);
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
                    writer.write(cmd);
+                   writer.go();
+                   mergeCtr++;
                }
         }
+    }
+
+    /**
+     * gets the current count of 'merge' events
+     * @assumes The split event counter is 0 unless the process method has been called
+     * @effects Nothing
+     * @return int current count of 'merge' events
+     * @throws Nothing
+     */
+    public int getMergeEventCount() {
+        return mergeCtr;
+    }
+
+    /**
+     * gets the current count of 'split' events
+     * @assumes The split event counter is 0 unless the process method has been called
+     * @effects Nothing
+     * @return int current count of 'split' events
+     * @throws Nothing
+     */
+    public int getSplitEventCount() {
+        return splitCtr;
     }
 }
 
