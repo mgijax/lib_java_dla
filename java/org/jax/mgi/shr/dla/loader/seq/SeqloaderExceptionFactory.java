@@ -57,7 +57,7 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
        "org.jax.mgi.shr.dla.seqloader.SeqQueryErr";
    static {
      exceptionsMap.put(SeqQueryErr, new SeqloaderException(
-         "Error querying for the Sequence object for ??",
+         "Error querying for set of Sequence objects: ??",
          false));
    }
 
