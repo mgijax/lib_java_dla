@@ -80,6 +80,7 @@ public class MolecularSource
    */
   private static final String NOT_APPLICABLE = "Not Applicable";
   private static final String NOT_RESOLVED = "Not Resolved";
+  private static final String NOT_SPECIFIED = "Not Specified";
   private static final Float ageMin = new Float(-1.0);
   private static final Float ageMax = new Float(-1.0);
 
@@ -249,7 +250,8 @@ public class MolecularSource
   {
     this.state.setAge(age);
     if (age.equals(NOT_APPLICABLE) ||
-        age.equals(NOT_RESOLVED))
+        age.equals(NOT_RESOLVED) ||
+        age.equals(NOT_SPECIFIED))
     {
       this.state.setAgeMax(ageMax);
       this.state.setAgeMin(ageMin);
@@ -725,6 +727,7 @@ public class MolecularSource
       return this.getOrganismKey() + DELIMITER +
         this.getStrainKey() + DELIMITER +
         this.getTissueKey() + DELIMITER +
+        this.getAge()  + DELIMITER +
         this.getGenderKey() + DELIMITER +
         this.getCellLineKey() + DELIMITER +
         this.getVectorTypeKey() + DELIMITER +
