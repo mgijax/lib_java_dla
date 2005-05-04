@@ -86,7 +86,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
     // vars that hold sequence record line(s) for later parsing
     private String idSection;
-    private String acSection;
+    private StringBuffer acSection;
     private StringBuffer dtSection;
     private StringBuffer deSection;
     private StringBuffer osSection;
@@ -106,7 +106,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
         // Initialize vars that hold sequence record sections
         idSection = null;
-        acSection = null;
+        acSection = new StringBuffer();
         dtSection = new StringBuffer();
         deSection = new StringBuffer();
         osSection = new StringBuffer();
@@ -156,8 +156,8 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
             e.bindRecord("The ID section is empty");
             throw e;
         }
-        if (acSection != null ) {
-            parseAC(acSection);
+        if (acSection.length() > 0 ) {
+            parseAC(acSection.toString());
         }
         else {
             RecordFormatException e = new RecordFormatException();
@@ -216,7 +216,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     protected void parseRecord(String rcd) {
         // re-initialize vars that hold sequence record sections
         idSection = null;
-        acSection = null;
+        acSection = new StringBuffer();
         dtSection = new StringBuffer();
         deSection = new StringBuffer();
         osSection = new StringBuffer();
@@ -244,7 +244,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
             }
             //
             else if (line.startsWith(AC)) {
-                acSection = line;
+                acSection.append(line + SeqloaderConstants.CRT);
             }
             else if (line.startsWith(DT)) {
                 dtSection.append(line + SeqloaderConstants.CRT);
