@@ -1,4 +1,12 @@
-TAB: lib_java_dla-1-0-42
+TAG: lib_java_dla-1-0-43
+DATE: 06/09/2005
+STAFF: sc
+RELEASE: prod
+CHANGES: TR6906
+1) SeqDeleterProcessor, SequenceUpdater updated to NOT 
+   status dummies as deleted.
+
+TAG: lib_java_dla-1-0-42
 DATE: 05/04/2005
 STAFF: sc
 RELEASE: prod
