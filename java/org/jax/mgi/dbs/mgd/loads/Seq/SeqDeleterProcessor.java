@@ -107,7 +107,7 @@ public class SeqDeleterProcessor {
     // current number of sequences deleted
     int deleteCtr = 0;
     // current number of sequences not deleted because their status is 'split'
-    int splitDelCtr = 0;
+    int notDelCtr = 0;
 
     /**
      * Constructs a SeqProcessor that adds and deletes sequence to/from
@@ -276,10 +276,11 @@ public class SeqDeleterProcessor {
 
       private void processDelete(Sequence s) throws DBException, CacheException {
           String statusString = termNameLookup.lookup(s.getSequenceState().getSequenceStatusKey());
-          // don't update split or delete status - SequenceUpdater has this logic, but
+          // don't update split, delete, or dummy status - SequenceUpdater has this logic, but
           // I want to count the number of sequences actually deleted.
           if ( ! (statusString.equals(SeqloaderConstants.SPLIT_STATUS) ||
-                                     statusString.equals(SeqloaderConstants.DELETE_STATUS))) {
+                                     statusString.equals(SeqloaderConstants.DELETE_STATUS)
+                                     || statusString.equals(SeqloaderConstants.DUMMY_SEQ_STATUS))) {
                   // increment the delete counter
                   deleteCtr++;
                   // get a copy of the sequence state
@@ -295,14 +296,14 @@ public class SeqDeleterProcessor {
                   s.sendToStream();
          }
          else {
-             // increment the split counter
+             // increment the split/del/notloaded counter
              logger.logcInfo("NOT DELETED " + SeqloaderConstants.TAB +
                              s.getAccPrimary().getAccID() + " Status=" +
                              statusString, false);
              logger.logdDebug("NOT DELETED " + SeqloaderConstants.TAB +
                               s.getAccPrimary().getAccID() + " Status=" +
                               statusString, false);
-             splitDelCtr++;
+             notDelCtr++;
          }
       }
    /**
@@ -315,8 +316,8 @@ public class SeqDeleterProcessor {
    public Vector getProcessedReport() {
        Vector report = new Vector();
        report.add("Total sequences deleted: " + deleteCtr);
-       report.add("Total sequences not deleted because statused as 'split' or 'deleted': "
-                  + splitDelCtr);
+       report.add("Total sequences not deleted because statused as 'split' 'not loaded' or 'deleted': "
+                  + notDelCtr);
        return report;
    }
 }

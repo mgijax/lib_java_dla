@@ -416,14 +416,15 @@ public class SequenceUpdater {
                 }
             }
             // update sequence status key
-            // incoming ACTIVE can update existing DELETED, NOTLOADED
-            // incoming DELETED can update existing ACTIVE, NOTLOADED
+            // incoming ACTIVE can update existing DELETED
+            // incoming DELETED can update existing ACTIVE
             // e.g. incoming refseq ACTIVE should update existing refseq DELETED
             // because deleted refseqs can become active again.
             if(! inputSeqStatusKey.equals(existingSeqStatusKey)) {
                 String statusString = termNameLookup.lookup(existingSeqStatusKey);
-                // don't update split status
-                if ( ! statusString.equals(SeqloaderConstants.SPLIT_STATUS)) {
+                // don't update split or not loaded status
+                if ( ! (statusString.equals(SeqloaderConstants.SPLIT_STATUS) ||
+                        statusString.equals(SeqloaderConstants.DUMMY_SEQ_STATUS))) {
                     logger.logdDebug("Updating Sequence Status to " + inputSeqStatusKey);
                     existingSeqState.setSequenceStatusKey(inputSeqStatusKey);
                     update = true;
