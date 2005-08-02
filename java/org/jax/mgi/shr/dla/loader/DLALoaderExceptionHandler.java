@@ -8,7 +8,7 @@ import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
 /**
- * An object which handles exceptions of type MGIException
+ * An object which handles exceptions of type DLALoaderException
  * @has An instance of a logger and static variables for totaling system
  * warnings and errors
  * @does provides a standard way to handle caught exceptions which include
@@ -46,6 +46,9 @@ public class DLALoaderExceptionHandler {
 
 }
 // $Log$
+// Revision 1.2.6.1  2004/12/09 18:08:44  mbw
+// fixed javadocs warnings
+//
 // Revision 1.2  2004/12/07 20:10:38  mbw
 // merged tr6047 onto the trunk
 //
