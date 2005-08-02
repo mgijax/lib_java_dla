@@ -31,7 +31,7 @@ import java.sql.Timestamp;
 
 
 /**
- * an object for looking up Sequence objects from the database.
+ * An object for looking up Sequence objects from the database.
  * @has
  *   <UL>
  *   <LI> a query and an interpretor to build a Sequence object
@@ -638,6 +638,7 @@ public class SequenceLookup {
      * not already exist. Queries a database.
      * @param seqId the seqid of the Sequence for which to query
      * @param logicalDBKey the logicalDBKey of the seqid
+     * @throws DBException
      * @return the Sequence object represented by the database query
      */
     public Sequence findBySeqId(String seqId, int logicalDBKey)
@@ -666,7 +667,7 @@ public class SequenceLookup {
     }
 
     /**
-     * @is an object that knows how to build a Sequence object from
+     * an object that knows how to build a Sequence object from
      * multiple rows of a result set. All rows with the same sequence key
      * belong to the same Sequence
      * @has
@@ -713,6 +714,7 @@ public class SequenceLookup {
          * @assumes Nothing
          * @effects Nothing
          * @param row the current RowReference
+         * @return a row of data
          * @throws DBException if error getting columns for a row reference
          */
 
@@ -966,7 +968,7 @@ public class SequenceLookup {
         }
 
         /**
-         * @is an object that represents a row of data from the query we are
+         * an object that represents a row of data from the query we are
          * interpreting
          * @has
          *   <UL>
@@ -1054,7 +1056,7 @@ public class SequenceLookup {
              * @assumes Nothing
              * @effects Nothing
              * @param row a RowReference
-             * @throws ConfigException if can't find the Configuration file
+             * @throws DBException
              */
 
             public RowData(RowReference row) throws DBException {

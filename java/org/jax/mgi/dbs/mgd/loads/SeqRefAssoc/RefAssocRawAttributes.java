@@ -1,10 +1,7 @@
-//  $Header$
-//  $Name$
-
 package org.jax.mgi.dbs.mgd.loads.SeqRefAssoc;
 
 /**
- * an object that represents raw values for MGI_Reference_Assoc
+ * An object that represents raw values for MGI_Reference_Assoc
  * @has
  *   <UL>
  *   <LI>MGI_Reference_Assoc column attributes
@@ -117,6 +114,12 @@ public class RefAssocRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.2.6.1  2004/12/10 18:15:13  mbw
+//  javadocs only
+//
+//  Revision 1.2  2004/12/07 20:09:49  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:10:17  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

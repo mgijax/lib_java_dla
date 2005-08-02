@@ -3,7 +3,7 @@ package org.jax.mgi.shr.dla.input.fasta;
 
 
 /**
- * @is an interface used for filtering fasta data for the purposes specific to
+ * An interface used for filtering fasta data for the purposes specific to
  * a specific loader process
  * @has nothing
  * @does rejects or changes a given FASTAData object

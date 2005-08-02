@@ -43,6 +43,10 @@ public class CoordMapFeatureResolver {
 
     /**
      * Constructs a CoordMapFeatureResolver object
+     * @throws DBException
+     * @throws CacheException
+     * @throws KeyNotFoundException
+     * @throws ConfigException
      */
 
     public CoordMapFeatureResolver() throws DBException,
@@ -59,13 +63,17 @@ public class CoordMapFeatureResolver {
      * resolves a CoordMapFeatureRawAttributes to a MAP_Coord_FeatureState given
      * a mapKey
      * @effects queries a database
+     * @param rawAttr coordinat raw attributes
+     * @param mapKey map key
      * @throws DBException if database error resolving object key
      * @throws CacheException if caching error resolving object key
      * @throws KeyNotFoundException if object key cannot be resolved
      * load
+     * @return MAP_Coord_FeatureState
      */
 
-    public MAP_Coord_FeatureState resolve(CoordMapFeatureRawAttributes rawAttr, Integer mapKey)
+    public MAP_Coord_FeatureState resolve(CoordMapFeatureRawAttributes rawAttr,
+                                          Integer mapKey)
             throws DBException, CacheException, KeyNotFoundException{
 
         MAP_Coord_FeatureState state = new MAP_Coord_FeatureState();

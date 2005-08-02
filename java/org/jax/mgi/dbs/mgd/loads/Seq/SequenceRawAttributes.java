@@ -1,6 +1,3 @@
-//  $Header$
-//  $Name$
-
 package org.jax.mgi.dbs.mgd.loads.Seq;
 import java.sql.Timestamp;
 
@@ -242,7 +239,7 @@ public class SequenceRawAttributes {
     * set the miscellaneous attribute
     * @assumes Nothing
     * @effects Nothing
-    * @param status the misc attribute
+    * @param misc the misc attribute
     */
 
     public void setMisc (String misc) {this.misc = misc;}
@@ -489,6 +486,12 @@ public class SequenceRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.2.6.1  2004/12/09 18:08:18  mbw
+//  fixed javadocs warnings
+//
+//  Revision 1.2  2004/12/07 20:09:46  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:10:16  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

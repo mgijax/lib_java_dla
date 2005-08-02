@@ -30,7 +30,7 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.dla.log.DLALogger;
 
 /**
- * @is a base class which implements the DLA standards for database loaders.
+ * A base class which implements the DLA standards for database loaders.
  * @abstract this class provides the 'basic needs' objects for performing
  * database loads such as SQLDataManagers, Loggers, BCPManagers, SQLStreams
  * and ExceptionHandlers
@@ -148,7 +148,7 @@ public abstract class DLALoader {
       DLALoaderExceptionFactory.FormatException;
 
   /**
-   * @is a default constructor
+   * a default constructor
    * @has nothing
    * @does instantiates the 'basic-needs' classes for performing
    * database loads in accordance with the DLA standards
@@ -319,6 +319,8 @@ public abstract class DLALoader {
   /**
    * create a new SQLStream based on the given name
    * @param name the name of the SQLStream to create
+   * @param DBMgr the database manager
+   * @param BCPMgr the bcp manager
    * @return the new SQLStream
    */
   protected SQLStream createSQLStream(String name, SQLDataManager DBMgr,

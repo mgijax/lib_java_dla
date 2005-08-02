@@ -1,6 +1,3 @@
-//  $Header$
-//  $Name$
-
 package org.jax.mgi.shr.dla.loader.seq;
 
 import org.jax.mgi.shr.ioutils.InputDataFile;
@@ -9,7 +6,7 @@ import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
 import org.jax.mgi.shr.dla.loader.DLALoaderException;
 
 /**
- * @is an object which extends Seqloader and implements the Seqloader
+ * An object which extends Seqloader and implements the Seqloader
  * getDataIterator method to set the DataIterator with a InputDataFileIterator
  * @has See superclass
  * @does

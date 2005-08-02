@@ -15,7 +15,7 @@ import org.jax.mgi.dbs.mgd.MGD;
 import org.jax.mgi.dbs.SchemaConstants;
 
 /**
- * @is a CachedLookup for storing and retrieving MAP_CoordinateKey objects
+ * A CachedLookup for storing and retrieving MAP_CoordinateKey objects
  * @has a cache, a full initialization query,
  * a "add" query for adding from the database to the cache and a
  * RowDataInterpreter
@@ -42,8 +42,10 @@ public class CoordMapKeyCache extends FullCachedLookup {
 
     /**
      * constructor
-     * @param cacheType the type of cache to use from
      * org.jax.mgi.shr.cache.CacheConstants
+     * @param collKey collection key
+     * @param vers map version
+     * @param mgiTypeKey mgi type key
      * @throws ConfigException thrown if there is an error with configuration
      * @throws DBException thrown if there is an error accessing the database
      * @throws CacheException thrown if there is an error with the cache
@@ -58,7 +60,7 @@ public class CoordMapKeyCache extends FullCachedLookup {
 
     /**
      * take the given object key if it is in the caceh
-     * @param objectKey
+     * @param objectKey object key
      * @return the map key
      * @throws DBException thrown if there is an error with the database
      * @throws CacheException thrown if there is an error accessing the cache

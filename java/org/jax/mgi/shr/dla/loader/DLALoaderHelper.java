@@ -19,6 +19,8 @@ public class DLALoaderHelper
       /**
        * truncate the list of tables
        * @param list the list of tables to truncate
+       * @param schema the DBSchema object
+       * @param logger the DLALogger object
        * @assumes nothing
        * @effects the list of tables will be truncated
        * @throws DBException thrown if there is an error accessing the database

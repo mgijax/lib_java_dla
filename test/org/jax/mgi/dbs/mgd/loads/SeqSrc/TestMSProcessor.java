@@ -81,7 +81,7 @@ public class TestMSProcessor
     /**
      * an error should be generated if the source could not be found for an
      * existing sequence
-     * @throws MSException
+     * @throws Exception
      */
     public void testExistingSeqWithoutSrc() throws Exception
     {
@@ -213,7 +213,7 @@ public class TestMSProcessor
 
     /**
      * test collapsing to an existing source for a new sequence
-     * @throws MSException
+     * @throws Exception
      */
     public void testNewSeqNamedSrc() throws Exception
     {

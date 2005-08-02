@@ -185,6 +185,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
     /**
      * sets reference attributes in the RefAssocRawAttributes object
+     * @throws ConfigException if there is an error accessing the configuration
      */
 
     private void createRawReference() throws ConfigException {
@@ -194,7 +195,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     }
     /**
      * parses attributes from the record
-     * @param record  a sequence record
+     * @param rcd  a sequence record
      * @throws RecordFormatException if we can't parse an attribute because of
      *         record formatting errors
      */

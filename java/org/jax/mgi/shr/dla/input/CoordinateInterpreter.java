@@ -52,8 +52,6 @@ abstract public class CoordinateInterpreter implements RecordDataInterpreter {
        * that are common to all Coordinate Maps
        * @assumes Nothing
        * @effects Nothing
-       * @param record Nothing
-       * @return Nothing
        * @throws ConfigException if error getting configured values
        */
     public CoordinateInterpreter() throws ConfigException {

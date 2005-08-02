@@ -102,6 +102,7 @@ public class MGSCoordinateFormatInterpreter extends CoordinateInterpreter {
     * @return A SequenceInput object representing 'rcd'
     * @throws RecordFormatException if we can't parse an attribute because of
     *         record formatting errors
+    * @throws ConfigException if there is an error accessing the configuration
     */
     public Object interpret(String rcd) throws RecordFormatException, ConfigException {
         input.reset();
@@ -125,8 +126,7 @@ public class MGSCoordinateFormatInterpreter extends CoordinateInterpreter {
     * parses an MGS coordinate map format record
     * @assumes Nothing
     * @effects Nothing
-    * @param record A MGSAssembly format sequence record
-    * @return true if we want to load this sequence
+    * @param rcd A MGSAssembly format sequence record
     * @throws RecordFormatException if there are less than 5 columns in the file
     */
 

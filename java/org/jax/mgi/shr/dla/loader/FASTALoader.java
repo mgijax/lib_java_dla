@@ -16,7 +16,7 @@ import org.jax.mgi.shr.dla.input.fasta.FASTAData;
 
 
 /**
- * @is a DLALoader class for loading FASTA files
+ * A DLALoader class for loading FASTA files
  * @has a FASTAInputFile and a SeqProcessor
  * @does creates SequenceInput objects from the incoming FASTA data and passes
  * them to the SeqProcessor for processing them into the database

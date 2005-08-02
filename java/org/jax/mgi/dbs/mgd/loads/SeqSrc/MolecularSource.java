@@ -14,7 +14,7 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.hist.PRB_SourceAttrHistory;
 
 /**
- * @is an object which represents a molecular source
+ * An object which represents a molecular source
  * @has a PRB_SourceDAO object and a SQLStream object for commiting instances
  * to the PRB_Source table
  * @does provides accessors for the attributes, looks up to see if

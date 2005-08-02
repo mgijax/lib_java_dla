@@ -1,7 +1,7 @@
 package org.jax.mgi.dbs.mgd.loads.SeqSrc;
 
 /**
- * @is An object that stores raw attribute values for a MolecularSource object.
+ * An object that stores raw attribute values for a MolecularSource object.
  * @has the following attributes:
  * <UL>
  * <li> library name </li>

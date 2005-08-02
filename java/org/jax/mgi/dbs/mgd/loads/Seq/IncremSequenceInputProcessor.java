@@ -41,7 +41,7 @@ import org.jax.mgi.dbs.rdr.qc.SeqQCReporter;
 import org.jax.mgi.shr.dla.loader.seq.*;
 
 /**
- * an object that incrementally processes sequence by resolving a sequence, its
+ * An object that incrementally processes sequence by resolving a sequence, its
  * accession ids, references, and molecular sources raw attributes
  *     then adding or updating them in a database.
  * @has
@@ -318,7 +318,6 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
       * @param seqInput SequenceInput object - a set of raw attributes to resolve
       *        and update a sequence
       * @param existingSequence Sequence object for the existing sequence to update
-      * @return nothing
       * @throws ConfigException if error reading config file
       * @throws CacheException if error using lookups
       * @throws DBException if lookup error querying database
@@ -416,8 +415,7 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
     * @assumes Nothing
     * @effects Deletes dummy sequence and inserts real sequence
     * @param seqInput SequenceInput object representing the real sequence
-    * @param exisingSequence - Sequence object representing the dummy sequence
-    * @return nothing
+    * @param existingSequence - Sequence object representing the dummy sequence
     * @throws SeqloaderException if there are configuration, cacheing, database,
     *         translation, or lookup errors. These errors cause load to fail
     * @throws RepeatSequenceException errors writing to repeat sequence file -

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import org.jax.mgi.shr.dla.input.SequenceInput;
 
 /**
- * an object that determines sequences that have been merged or split and
+ * An object that determines sequences that have been merged or split and
  *     reassociates merged or split sequences with their proper MGI sequence object
  * @has
  *   <UL>
@@ -77,7 +77,13 @@ public class MergeSplitProcessor {
      * Constructs a MergeSplitProcessor
      * @assumes Nothing
      * @effects Nothing
-     * @param logicalDBKey LogicalDB of load
+     * @param seqidLookup the AccessionLookup object
+     * @param reporter the SeqQCReporter
+     * @throws KeyNotFoundException
+     * @throws DBException
+     * @throws CacheException
+     * @throws ConfigException
+     * @throws DLALoggingException
      */
 
      public MergeSplitProcessor(AccessionLookup seqidLookup, SeqQCReporter reporter)
@@ -95,10 +101,14 @@ public class MergeSplitProcessor {
       *       Integers) that are merges or splits for later processing.
       * @assumes
       * @effects
-      * @param logicalDB to create an AccessionLookup for Sequences
+      * @param seqInput the SequenceInput object
+      * @throws KeyNotFoundException
+      * @throws DBException
+      * @throws CacheException
       */
 
-    public void preProcess(SequenceInput seqInput)
+
+     public void preProcess(SequenceInput seqInput)
         throws KeyNotFoundException, DBException, CacheException {
         Vector v = mergeSplitHelper.getMergeSplitSeqs(seqInput);
         if( ! v.isEmpty() ) {
@@ -108,8 +118,11 @@ public class MergeSplitProcessor {
     /**
      * Determines a Merge or Split event for a secondary seqid that is primary
      *    in MGI and processes accordingly
+     * @param writer the ScriptWriter object
      * @assumes
      * @effects
+     * @throws ScriptException
+     * @throws SeqloaderException
      */
 
     public void process(ScriptWriter writer)

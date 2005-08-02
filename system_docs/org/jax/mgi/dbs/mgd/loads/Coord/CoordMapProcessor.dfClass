@@ -1,0 +1,68 @@
+package id3x3p3e2hzjaige2jc949f;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference52 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.ChromosomeCoordMapProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference53 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapKeyCache:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference54 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference55 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapFeatureResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference56 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapProcessor#cache:oiref>=460,256,550,256:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor:oiref>=30,190,175,117,1:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.ChromosomeCoordMapProcessor:oiref>=270,20,280,117,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapFeatureResolver:oiref>=10,20,240,101,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor#mapProcessor:oiref>=205,248,270,248:oigroup>
+<oigroup:<oiref:java#Extends#org.jax.mgi.dbs.mgd.loads.Coord.ChromosomeCoordMapProcessor#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapProcessor:oiref>=365,137,365,190:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapProcessor:oiref>=270,190,190,133,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapProcessor#resolver:oiref>=370,323,370,380:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapKeyCache:oiref>=550,190,290,149,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapResolver:oiref>=280,380,197,101,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Coord.CoordinateInputProcessor#featureResolver:oiref>=117,190,117,121:oigroup>
+*/
+class __positions {
+}

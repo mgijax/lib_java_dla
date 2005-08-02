@@ -1,13 +1,10 @@
-// $Header$
-// $Name$
-
 package org.jax.mgi.shr.dla.log;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * @is A Formatter object that formats the content of a log message
+ * A Formatter object that formats the content of a log message
  * without prepending a standard header stamp.
  * @has A message record.
  * @does Formats a message record without a standard header
@@ -34,6 +31,12 @@ public class MessageOnlyFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.2.6.1  2004/12/09 18:08:51  mbw
+// fixed javadocs warnings
+//
+// Revision 1.2  2004/12/07 20:10:49  mbw
+// merged tr6047 onto the trunk
+//
 // Revision 1.1.2.1  2004/11/05 16:18:07  mbw
 // classes were renamed or moved as part of large refactoring effort (see tr604)
 //

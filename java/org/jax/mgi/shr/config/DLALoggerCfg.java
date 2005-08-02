@@ -1,13 +1,10 @@
-// $Header$
-// $Name$
-
 package org.jax.mgi.shr.config;
 
 import java.io.File;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @is an object for configuring a DataLoadLogger.
+ * An object for configuring a DataLoadLogger.
  * @has a set of DataLoadLogger configuration parameters and a reference
  * to a ConfigurationManager
  * @does provides methods for getting and setting configuration paramaters
@@ -156,6 +153,15 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.7.18.2  2004/12/10 18:15:22  mbw
+// javadocs only
+//
+// Revision 1.7.18.1  2004/12/09 18:08:29  mbw
+// fixed javadocs warnings
+//
+// Revision 1.7  2004/02/25 21:42:37  mbw
+// fixed compiler warnings only
+//
 // Revision 1.6  2003/06/04 15:14:12  mbw
 // javadoc edits
 //

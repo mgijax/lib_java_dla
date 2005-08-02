@@ -1,0 +1,52 @@
+package id293fpe2hzjaige2jcseuz;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceInputProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceAttributeResolver:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference68 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.IncremSequenceInputProcessor:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference69 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceLookup:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference70 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.IncremSequenceInputProcessor:oiref>=10,334,240,133,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Seq.IncremSequenceInputProcessor#seqLookup:oiref>=250,398,320,398:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Seq.SequenceInputProcessor#seqResolver:oiref>=201,60,281,60:oigroup>
+<oigroup:<oiref:java#Extends#org.jax.mgi.dbs.mgd.loads.Seq.IncremSequenceInputProcessor#org.jax.mgi.dbs.mgd.loads.Seq.SequenceInputProcessor:oiref>=110,334,110,264:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceAttributeResolver:oiref>=281,10,249,101,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceInputProcessor:oiref>=19,10,182,254,1:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceLookup:oiref>=320,330,155,133,1:oigroup> 
+*/
+class __positions {
+}

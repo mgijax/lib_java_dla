@@ -93,6 +93,7 @@ public class GBOrganismChecker implements OrganismChecker {
     * @effects nothing
     * @throws ConfigException if config file does not define mouse human and rat
     * decider vars
+    * @throws DLALoggingException
     */
 
     public GBOrganismChecker () throws ConfigException, DLALoggingException {
@@ -219,7 +220,7 @@ public class GBOrganismChecker implements OrganismChecker {
     }
 
     /**
-     * @is an object that applies this predicate to the classification section
+     * an object that applies this predicate to the classification section
      * of a GenBank sequence record
      * "Does this classification string represent a mouse?"
      * @has a name, see also superclass
@@ -259,7 +260,7 @@ public class GBOrganismChecker implements OrganismChecker {
        }
      }
      /**
-      * @is an object that applies this predicate to the classification section
+      * an object that applies this predicate to the classification section
       * of a GenBank sequence record
       * "Does this classification string represent a rat?"
       * @has A name, See also superclass
@@ -299,7 +300,7 @@ public class GBOrganismChecker implements OrganismChecker {
         }
       }
       /**
-       * @is an object that applies this predicate to the classification section
+       * an object that applies this predicate to the classification section
        * of a GenBank sequence record
        * "Does this classification string represent a human?"
        * @has A name, See also superclass
@@ -340,7 +341,7 @@ public class GBOrganismChecker implements OrganismChecker {
         }
 
      /**
-        * @is an object that queries a classification string to determine if
+        * an object that queries a classification string to determine if
         *     it is for a given organism
         * @has mapping of controlled vocabulary
         *       to string expressions e.g. "mouse" : "Muridae; Murinae; Mus"
@@ -387,6 +388,12 @@ public class GBOrganismChecker implements OrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
+//  fixed javadocs warnings
+//
+//  Revision 1.2  2004/12/07 20:10:32  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:05:23  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

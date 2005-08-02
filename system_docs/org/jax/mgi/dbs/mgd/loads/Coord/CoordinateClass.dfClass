@@ -1,0 +1,42 @@
+package id46zrxe2hzjaige2jchhju;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.Coordinate:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapFeatureRawAttributes:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference57 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapRawAttributes:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference58 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapRawAttributes:oiref>=40,20,186,405,1:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.Coordinate:oiref>=270,20,360,245,0:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Coord.CoordMapFeatureRawAttributes:oiref>=280,300,250,245,0:oigroup> 
+*/
+class __positions {
+}

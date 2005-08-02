@@ -68,6 +68,7 @@ public class SequenceUpdater {
      *         the logicalDB from the SequenceLoadCfg object
      * @throws CacheException if error creating a LogicalDBLookup
      * @throws KeyNotFoundException if logicalDB is not configured
+     * @throws DLALoggingException
      */
 
     public SequenceUpdater()

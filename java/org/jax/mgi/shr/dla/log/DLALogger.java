@@ -12,7 +12,7 @@ import org.jax.mgi.shr.log.Logger;
 
 
 /**
- * @is an object that logs messages of various severity levels to a set of
+ * An object that logs messages of various severity levels to a set of
  * predetermined log files in terms with the DLA logging standards.
  * @has log files, message handlers, message formatters and a configurator.
  *
@@ -650,6 +650,7 @@ public class DLALogger implements Logger {
   }
 }
 // $Log$
+//
 // Revision 1.1.2.1  2004/11/05 16:18:06  mbw
 // classes were renamed or moved as part of large refactoring effort (see tr604)
 //

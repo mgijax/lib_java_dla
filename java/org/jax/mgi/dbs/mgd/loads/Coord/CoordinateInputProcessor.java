@@ -23,7 +23,7 @@ import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.dbs.SchemaConstants;
 
 /**
- * an object that resolves raw date and creates map collection, a coordinate map
+ * An object that resolves raw date and creates map collection, a coordinate map
  *  and a coord map feature objects in a database.
  * @has
  *   <UL>
@@ -126,6 +126,7 @@ public class CoordinateInputProcessor {
      *      or executing the stream
      * @throws CacheException if errors creating map object or resolving feature
      * @throws TranslationException if errors creating map object
+     * @throws ConfigException if there is an error accessing the configuration
      */
 
     public void processInput(CoordinateInput input) throws ConfigException,
@@ -153,7 +154,7 @@ public class CoordinateInputProcessor {
      * collection
      * @assumes Nothing
      * @effects deletes records from a database
-     * @throws CoordLoaderException if error getting SQLDataManager or executing
+     * @throws CoordloaderException if error getting SQLDataManager or executing
      *         a delete.
      */
 

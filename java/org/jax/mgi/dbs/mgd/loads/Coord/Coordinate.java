@@ -64,7 +64,7 @@ public class Coordinate {
 
      /**
        * gets a copy of the MAP_Coord_CollectionState
-       * @returns a copy of the MAP_Coord_CollectionState
+       * @return a copy of the MAP_Coord_CollectionState
        */
 
      public MAP_Coord_CollectionState getCoordMapCollectionState () {
@@ -73,7 +73,7 @@ public class Coordinate {
 
      /**
        * gets the MAP_Coord_Collection key
-       * @returns Integer the MAP_Coord_Collection key
+       * @return Integer the MAP_Coord_Collection key
        */
 
      public Integer getCoordMapCollectionKey () {
@@ -95,7 +95,7 @@ public class Coordinate {
 
       /**
         * gets a copy of the MAP_CoordinateState
-        * @returns a copy of the MAP_CoordinateState
+        * @return a copy of the MAP_CoordinateState
         */
 
       public MAP_CoordinateState getCoordinateMapState () {
@@ -104,7 +104,7 @@ public class Coordinate {
 
       /**
         * gets the MAP_Coordinate key
-        * @returns Integer the MAP_Coordinate key
+        * @return Integer the MAP_Coordinate key
         */
 
       public Integer getCoordinateMapKey () {
@@ -126,7 +126,7 @@ public class Coordinate {
 
        /**
          * gets a copy of the MAP_Coord_FeatureState
-         * @returns a copy of the MAP_Coord_FeatureState
+         * @return a copy of the MAP_Coord_FeatureState
          */
 
        public MAP_Coord_FeatureState getCoordMapFeatureState () {
@@ -135,7 +135,7 @@ public class Coordinate {
 
        /**
          * gets the MAP_Coord_Feature key
-         * @returns Integer the MAP_Coord_Feature key
+         * @return Integer the MAP_Coord_Feature key
          */
 
        public Integer getCoordMapFeatureKey () {
