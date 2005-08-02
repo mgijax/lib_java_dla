@@ -21,7 +21,7 @@ public class DLALoaderExceptionFactory extends ExceptionFactory {
    * Could not initialize the loader
    */
   public static final String InitException =
-      "org.jax.mgi.shr.shrdbutils.InitException";
+      "org.jax.mgi.shr.dla.InitException";
   static {
     exceptionsMap.put(InitException, new DLALoaderException(
         "Could not initialize loader", false));
@@ -31,7 +31,7 @@ public class DLALoaderExceptionFactory extends ExceptionFactory {
    * Error occurred while trying to run loader
    */
   public static final String RunException =
-      "org.jax.mgi.shr.shrdbutils.RunException";
+      "org.jax.mgi.shr.dla.RunException";
   static {
     exceptionsMap.put(RunException, new DLALoaderException(
         "Exception occured during loader run() method", false));
@@ -41,7 +41,7 @@ public class DLALoaderExceptionFactory extends ExceptionFactory {
    * Error occurred while trying to run loader
    */
   public static final String PreProcessException =
-      "org.jax.mgi.shr.shrdbutils.PreProcessException";
+      "org.jax.mgi.shr.dla.PreProcessException";
   static {
     exceptionsMap.put(PreProcessException, new DLALoaderException(
         "Exception occured during pre processing", false));
@@ -51,17 +51,28 @@ public class DLALoaderExceptionFactory extends ExceptionFactory {
    * Error occurred while trying to run loader
    */
   public static final String PostProcessException =
-      "org.jax.mgi.shr.shrdbutils.PostProcessException";
+      "org.jax.mgi.shr.dla.PostProcessException";
   static {
     exceptionsMap.put(PostProcessException, new DLALoaderException(
         "Exception occured during post processing", false));
   }
 
   /**
+   * Error occurred while trying to run report formatting
+   */
+  public static final String FormatException =
+      "org.jax.mgi.shr.dla.FormatException";
+  static {
+    exceptionsMap.put(FormatException, new DLALoaderException(
+        "Exception occured during report formatting", false));
+  }
+
+
+  /**
    * Could not instantiate a new DLALoader object from configuration
    */
   public static final String InstanceException =
-      "org.jax.mgi.shr.shrdbutils.InstanceException";
+      "org.jax.mgi.shr.dla.InstanceException";
   static {
     exceptionsMap.put(InstanceException, new DLALoaderException(
         "Could not instantiate a new DLALoader object from configuration",
@@ -72,7 +83,7 @@ public class DLALoaderExceptionFactory extends ExceptionFactory {
    * The named SQLStream is not supported
    */
   public static final String SQLStreamNotSupported =
-      "org.jax.mgi.shr.shrdbutils.SQLStreamNotSupported";
+      "org.jax.mgi.shr.dla.SQLStreamNotSupported";
   static {
     exceptionsMap.put(SQLStreamNotSupported, new DLALoaderException(
         "The SQLStream ?? is not supported",
