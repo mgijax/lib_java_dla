@@ -12,11 +12,13 @@ import org.jax.mgi.shr.config.HTMLFormatterCfg;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * <p>@is </p>
- * <p>@has </p>
- * <p>@does </p>
- * <p>@company The Jackson Laboratory</p>
- * @author not attributable
+ * is an extension of OutputFormatter used for creating HTML formatted 
+ * output
+ * @has a Configurator for reading configuration settings
+ * @does formats HTML output files
+ * @abstract the format method must be implemented at the base class level
+ * @company The Jackson Laboratory
+ * @author M Walker
  *
  */
 
