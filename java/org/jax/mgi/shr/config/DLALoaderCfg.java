@@ -17,6 +17,7 @@ import org.jax.mgi.shr.config.ConfigException;
 public class DLALoaderCfg extends Configurator {
 
   public DLALoaderCfg() throws ConfigException {
+      super();
   }
 
   /**
@@ -88,5 +89,20 @@ public class DLALoaderCfg extends Configurator {
   {
       return getConfigStringArrayNull("DLA_TRUNCATE_QC_TABLES");
   }
+
+
+
+  /**
+   * get whether or not to only run the post report formatters
+   * @assumes nothing
+   * @effects nothing
+   * @return true if ok to only run post report formatters, false otherwise
+   */
+  public Boolean getOkToFormatReportsOnly()
+  throws ConfigException
+  {
+      return getConfigBoolean("DLA_FORMAT_REPORTS_ONLY", new Boolean(false));
+  }
+
 
 }
