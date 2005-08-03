@@ -149,65 +149,8 @@ public abstract class DLALoader {
 
   /**
    * a default constructor
-   * @has nothing
-   * @does instantiates the 'basic-needs' classes for performing
-   * database loads in accordance with the DLA standards
    */
-  public DLALoader() throws DLALoaderException {
-      boolean okToFormatReportsOnly = false;
-      try
-      {
-          this.dlaConfig = new DLALoaderCfg();
-          this.logger = DLALogger.getInstance();
-          okToFormatReportsOnly =
-              dlaConfig.getOkToFormatReportsOnly().booleanValue();
-      }
-      catch (Exception e) {
-          DLALoaderException e2 = (DLALoaderException)
-              dlaExceptionFactory.getException(InitException, e);
-          throw e2;
-      }
-
-      if (okToFormatReportsOnly) {
-          try {
-              this.logger.logdInfo("Formatting reports only", true);
-              OutputManager.postFormat();
-              this.logger.logdInfo("Formatting complete", true);
-          }
-          catch (Exception e) {
-              DLALoaderException e2 = (DLALoaderException)
-                  dlaExceptionFactory.getException(FormatException, e);
-              throw e2;
-          }
-      }
-      else {
-          try {
-              String loadPrefix = dlaConfig.getLoadPrefix();
-              this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
-              this.qcDBMgr.setLogger(logger);
-              this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
-              this.radarDBMgr.setLogger(logger);
-              this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
-              this.loadDBMgr.setLogger(logger);
-              this.qcBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
-              this.qcBCPMgr.setLogger(logger);
-              this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
-              this.loadBCPMgr.setLogger(logger);
-              this.loadStream = createSQLStream(dlaConfig.getLoadStreamName(),
-                                                loadDBMgr, loadBCPMgr);
-              this.qcStream = createSQLStream(dlaConfig.getQCStreamName(),
-                                              qcDBMgr, qcBCPMgr);
-              this.inputConfig = new InputDataCfg();
-              OutputManager.initialize();
-          }
-          catch (Exception e) {
-              DLALoaderException e2 = (DLALoaderException)
-                  dlaExceptionFactory.getException(InitException, e);
-              throw e2;
-          }
-
-      }
-  }
+  public DLALoader() {}
 
   /**
    * executes the initialize(), run() and post() methods
@@ -219,9 +162,44 @@ public abstract class DLALoader {
    * available if they were configured to remain after executing them.
    */
   public void load() throws MGIException {
+      this.dlaConfig = new DLALoaderCfg();
+      this.logger = DLALogger.getInstance();
       // only run load if not getOkToFormatReportsOnly() returns false
-      if (!dlaConfig.getOkToFormatReportsOnly().booleanValue())
+      if (dlaConfig.getOkToFormatReportsOnly().booleanValue())
       {
+          this.logger.logdInfo("Formatting reports only", true);
+          try
+          {
+              OutputManager.postFormat();
+          }
+          catch (Exception e) {
+              DLALoaderException e2 = (DLALoaderException)
+                  dlaExceptionFactory.getException(FormatException, e);
+              throw e2;
+          }
+
+          this.logger.logdInfo("Formatting complete", true);
+      }
+      else
+      {
+          String loadPrefix = dlaConfig.getLoadPrefix();
+          this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
+          this.qcDBMgr.setLogger(logger);
+          this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
+          this.radarDBMgr.setLogger(logger);
+          this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
+          this.loadDBMgr.setLogger(logger);
+          this.qcBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
+          this.qcBCPMgr.setLogger(logger);
+          this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
+          this.loadBCPMgr.setLogger(logger);
+          this.loadStream = createSQLStream(dlaConfig.getLoadStreamName(),
+                                            loadDBMgr, loadBCPMgr);
+          this.qcStream = createSQLStream(dlaConfig.getQCStreamName(),
+                                          qcDBMgr, qcBCPMgr);
+          this.inputConfig = new InputDataCfg();
+          OutputManager.initialize();
+
           String[] loadTables = this.dlaConfig.getTruncateLoadTables();
           String[] qcTables = this.dlaConfig.getTruncateQCTables();
           try {
