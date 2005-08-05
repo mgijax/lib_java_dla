@@ -38,7 +38,7 @@ public class CoordMapFeatureRawAttributes {
 
     /**
     * gets the record attribute
-    * @returns the record
+    * @return the record
     */
 
     public String getRecord () {
@@ -56,7 +56,7 @@ public class CoordMapFeatureRawAttributes {
 
     /**
     * gets the object id attribute
-    * @returns String to be used to determine Feature object key
+    * @return String to be used to determine Feature object key
     */
 
     public String getObjectId() {
@@ -74,7 +74,7 @@ public class CoordMapFeatureRawAttributes {
 
     /**
     * gets the start  attribute
-    * @returns the start coordinate
+    * @return the start coordinate
     */
 
     public String getStartCoord() {
@@ -92,7 +92,7 @@ public class CoordMapFeatureRawAttributes {
 
     /**
     * gets the end coordinate attribute
-    * @returns the end coordinate
+    * @return the end coordinate
     */
 
     public String getEndCoord() {
@@ -110,7 +110,7 @@ public class CoordMapFeatureRawAttributes {
 
     /**
     * gets the stran attribute
-    * @returns the strand
+    * @return the strand
     */
 
     public String getStrand() {

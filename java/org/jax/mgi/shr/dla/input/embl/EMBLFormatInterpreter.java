@@ -22,8 +22,10 @@ import org.jax.mgi.shr.dla.input.DateConverter;
 
     /**
      * An object that parses SwissProt sequence records and obtains
-     *     values from a Configurator to create a SequenceInput data object.<BR>
-     *     Determines if a SwissProt sequence record is valid.<BR>
+     *     values from a Configurator to create a SequenceInput data object.
+     * <BR>
+     *     Determines if a SwissProt sequence record is valid.
+     * <BR>
      * @has
      *   <UL>
      *   <LI>A SequenceInput object into which it bundles:

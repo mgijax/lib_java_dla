@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * an object that incrementally processes sequence by resolving a sequence, its
+ * An object that incrementally processes sequence by resolving a sequence, its
  * accession ids, references, and molecular sources raw attributes
  *     then adding or updating them in a database.
  * @has

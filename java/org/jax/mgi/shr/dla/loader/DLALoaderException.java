@@ -3,7 +3,7 @@ package org.jax.mgi.shr.dla.loader;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is An MGIException which represents errors occuring within a DLA
+ * An MGIException which represents errors occuring within a DLA
  * application.
  * @has an exception message, a data related indicator and a parent
  * exception which can be null.

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import org.jax.mgi.shr.dla.input.SequenceInput;
 
 /**
- * an object that determines sequences that have been merged or split and
+ * An object that determines sequences that have been merged or split and
  *     reassociates merged or split sequences with their proper MGI sequence object
  * @has
  *   <UL>
@@ -109,7 +109,8 @@ public class MergeSplitProcessor {
       * @throws CacheException
       */
 
-    public void preProcess(SequenceInput seqInput)
+
+     public void preProcess(SequenceInput seqInput)
         throws KeyNotFoundException, DBException, CacheException {
         Vector v = mergeSplitHelper.getMergeSplitSeqs(seqInput);
         if( ! v.isEmpty() ) {
@@ -119,6 +120,7 @@ public class MergeSplitProcessor {
     /**
      * Determines a Merge or Split event for a secondary seqid that is primary
      *    in MGI and processes accordingly
+     * @param writer the ScriptWriter object
      * @assumes
      * @effects
      * @param writer the ScriptWriter which to write the merge and split stored

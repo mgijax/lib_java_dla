@@ -20,7 +20,7 @@ import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.CacheException;
 
 /**
- * @is an object for looking up MolecularSource objects from the database
+ * An object for looking up MolecularSource objects from the database
  * @has static lookup methods
  * @does provides a variety of ways to lookup MolecularSource objects
  * @author MWalker

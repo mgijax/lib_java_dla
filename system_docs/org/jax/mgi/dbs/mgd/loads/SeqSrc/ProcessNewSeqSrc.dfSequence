@@ -1,0 +1,394 @@
+package id2plhrdss66od7dss77lol;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node20:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node27:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node32:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node37:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node58:oiref><oihard>
+@__modelType reference 
+*/
+class reference59 {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node68:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node70:oiref><oihard>
+@__modelType reference 
+*/
+class reference71 {
+}}/**
+The ProcessNewSeqSrc method of the MSProcessor
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.node65:oiref>=259,309,14,41,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link66:oiref>=273,320,728,320:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node27.node:oiref>=728,155,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node58:oiref>=55,30,93,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link50:oiref>=264,400,994,400:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link72:oiref>=264,480,1238,480:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link66:oiref>=277,300,259,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.node:oiref>=250,130,14,380,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node37:oiref>=956,30,90,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20:oiref>=210,30,94,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link51:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link73:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link50:oiref>=268,380,359,16,0:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link72:oiref>=268,460,276,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link30:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node68.link:oiref>=1040,390,1008,410:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node32.node:oiref>=861,205,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node58.link60:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node70:oiref>=1191,30,108,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link48:oiref>=264,205,861,205:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node27.node67:oiref>=728,320,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link49:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link48:oiref>=268,185,400,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node68:oiref>=1040,360,200,40,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link29:oiref>=264,155,728,155:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node58.link:oiref>=108,130,250,130:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.node61:oiref>=259,254,14,45,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link29:oiref>=268,135,248,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link62:oiref>=273,269,1111,269:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node27:oiref>=690,30,90,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node.node63:oiref>=1111,269,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node58.link:oiref>=112,110,385,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node32:oiref>=803,30,130,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node37.node:oiref>=994,400,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node:oiref>=1069,30,99,560,1:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node70.node:oiref>=1238,480,14,20,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link62:oiref>=277,249,363,16,0:oigroup>
+<oigroup:<oiref:design#Class#id2plhrdss66od7dss77lol.node20.link64:oiref>=:oigroup>
+
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name MSProcessor 
+*/
+class node20 {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node27:oiref><oihard>
+@sendingInstant 155
+@processingDuration 20
+@sequenceNumber 1.1
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSLookup#findByName#(#java.lang.String#)#:oiref>
+@operationNameAsText 'findByName(String):MolecularSource'
+@showReturnArrow
+*/
+class link29 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node27:oiref><oihard> 
+*/
+class link30 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node32:oiref><oihard>
+@sendingInstant 205
+@processingDuration 20
+@sequenceNumber 1.2
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.mgd.lookup.AssocClonesLookup#lookup#(#java.lang.String#)#:oiref>
+@operationNameAsText 'lookup(java.lang.String):java.lang.String'
+@condition if not found
+@showReturnArrow
+@return source names*/
+class link48 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node32:oiref><oihard> 
+*/
+class link49 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node37:oiref><oihard>
+@sendingInstant 400
+@processingDuration 20
+@sequenceNumber 1.5
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSResolver#resolve#(#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes#)#:oiref>
+@operationNameAsText 'resolve(MSRawAttributes):MolecularSource'
+@condition if not found
+@showReturnArrow 
+*/
+class link50 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node37:oiref><oihard> 
+*/
+class link51 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation5
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node58.link:oiref> 
+*/
+class node {
+}/**
+@shapeType StatementBlock
+@__modelType node
+@name StatementBlock1
+@initialInstant 254
+@processingDuration 45
+@statementType if
+@sequenceNumber 1.3
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@statementExpression source names don't agree
+*/
+class node61 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node:oiref><oihard>
+@sendingInstant 269
+@processingDuration 20 
+@sequenceNumber 1.3.1
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.rdr.qc.MSQCReporter#reportCloneNameDiscrepancy#(#java.lang.String#java.lang.String#java.lang.String#)#:oiref>
+@operationNameAsText 'reportCloneNameDiscrepancy(String,String,String):void'
+*/
+class link62 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node:oiref><oihard> 
+*/
+class link64 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node27:oiref><oihard>
+@sendingInstant 320
+@processingDuration 20 
+@sequenceNumber 1.4.1
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSLookup#findByName#(#java.lang.String#)#:oiref>
+@operationNameAsText 'findByName(String):MolecularSource'
+*/
+class link66 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node70:oiref><oihard>
+@sendingInstant 480
+@processingDuration 20
+@sequenceNumber 1.6
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource#insert#(#org.jax.mgi.shr.dbutils.dao.SQLStream#)#:oiref>
+@operationNameAsText 'insert(SQLStream):void'
+@condition if not inDatabase
+*/
+class link72 {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node70:oiref><oihard> 
+*/
+class link73 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSProcessor:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType StatementBlock
+@__modelType node
+@name StatementBlock2
+@initialInstant 309
+@processingDuration 41
+@statementType else
+@sequenceNumber 1.4
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@alternativeIfBlock <oiref:design#Class#id2plhrdss66od7dss77lol.node20.node61:oiref>
+@minProcessingDuration 41*/
+class node65 {
+}}/**
+@shapeType Object
+@__modelType node
+@name lookup 
+*/
+class node27 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node20.link29:oiref> 
+*/
+class node {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation6
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node20.link66:oiref> 
+*/
+class node67 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSLookup:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name lookup 
+*/
+class node32 {
+/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.lookup.AssocClonesLookup:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node20.link48:oiref> 
+*/
+class node {
+}}/**
+@shapeType Object
+@__modelType node
+@name MSResolver 
+*/
+class node37 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node20.link50:oiref> 
+*/
+class node {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSResolver:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name qc 
+*/
+class node {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation4
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node20.link62:oiref> 
+*/
+class node63 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.jax.mgi.dbs.rdr.qc.MSQCReporter:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name seqProcessor
+@stereotype actor 
+*/
+class node58 {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node20:oiref><oihard>
+@sendingInstant 130
+@processingDuration 380
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id2plhrdss66od7dss77lol.diagram:oiref>
+@operation <oiref:java#Member#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSProcessor#processNewSeqSrc#(#java.lang.String#org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes#)#:oiref>
+@operationNameAsText 'processNewSeqSrc(String,MSRawAttributes):MolecularSource'
+@minProcessingDuration 295
+@showReturnArrow 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node20:oiref><oihard> 
+*/
+class link60 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Anonymous MolecularSource 
+*/
+class node68 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id2plhrdss66od7dss77lol.node37.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Object
+@__modelType node
+@name ms*/
+class node70 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation7
+@activationMessage <oiref:design#Class#id2plhrdss66od7dss77lol.node20.link72:oiref> 
+*/
+class node {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource:oiref><oihard> 
+*/
+class link {
+}}

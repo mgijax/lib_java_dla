@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 /**
- * a base class which extend DLALoader and implements the DLALoader methods
+ * A base class which extend DLALoader and implements the DLALoader methods
  * 'initialize', 'preprocess', 'run', and 'postprocess'
  * @has a set of  objects for doing Coordinate loads<br>
  * <UL>
@@ -30,8 +30,8 @@ import java.util.HashSet;
  * @does performs initialization of objects for coordinate loads, and
  *       processes coordinates. Keeps count of repeated coordinates in the input
  *       and writes them out to a file.
- * @note assumes a delete/reload strategy - see preprocess method
- * @note assumes it is iterating over a file; could subclass to set a different
+ * @notes assumes a delete/reload strategy - see preprocess method
+ * @notes assumes it is iterating over a file; could subclass to set a different
  *       kind of iterator e.g. a RowDataIterator over a ResultSet.
  * @author sc
  * @version 1.0

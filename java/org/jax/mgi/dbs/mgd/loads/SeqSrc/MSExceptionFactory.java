@@ -3,7 +3,7 @@ package org.jax.mgi.dbs.mgd.loads.SeqSrc;
 import org.jax.mgi.shr.exception.ExceptionFactory;
 
 /**
- * @is An ExceptionFactory.
+ * An ExceptionFactory.
  * @has a hashmap of predefined MSExceptions stored by a name key
  * @does looks up MSExceptions by name
  * @company The Jackson Laboratory

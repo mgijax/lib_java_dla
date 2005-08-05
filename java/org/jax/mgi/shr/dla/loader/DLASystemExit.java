@@ -4,7 +4,7 @@ import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
 /**
- * @is A static class which assigns names to a set of constants defined
+ * A static class which assigns names to a set of constants defined
  * for system exits codes and provides an exit method for DLA applications.
  * @has A set of exit codes used as possible values for the parameter to
  * the System.exit method

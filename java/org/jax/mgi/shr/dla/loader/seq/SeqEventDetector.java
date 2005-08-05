@@ -12,7 +12,7 @@ import org.jax.mgi.dbs.mgd.loads.Seq.Sequence;
 import org.jax.mgi.shr.dla.input.SequenceInput;
 
 /**
- * @is an object that determines sequence events
+ * An object that determines sequence events
  * @has
  *   <UL>
  *   <LI>A MergeSplitProcessor to handle merge and split events

@@ -16,7 +16,7 @@ import org.jax.mgi.dbs.rdr.qc.*;
 import org.jax.mgi.dbs.mgd.loads.SeqSrcAssoc.*;
 
 /**
- * an object for processing raw molecular source attributes for a given
+ * An object for processing raw molecular source attributes for a given
  * sequence object.
  * @has
  * <ul>

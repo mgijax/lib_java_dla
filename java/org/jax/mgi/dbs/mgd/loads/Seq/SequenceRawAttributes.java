@@ -492,6 +492,9 @@ public class SequenceRawAttributes {
 //  Revision 1.2.8.1  2005/01/24 19:07:42  sc
 //  javadocs only
 //
+//  Revision 1.2.6.1  2004/12/09 18:08:18  mbw
+//  fixed javadocs warnings
+//
 //  Revision 1.2  2004/12/07 20:09:46  mbw
 //  merged tr6047 onto the trunk
 //

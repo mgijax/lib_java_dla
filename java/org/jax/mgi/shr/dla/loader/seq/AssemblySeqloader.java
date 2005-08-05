@@ -8,7 +8,7 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
 
 /**
- * @is an object which extends Seqloader and implements the Seqloader
+ * An object which extends Seqloader and implements the Seqloader
  * getDataIterator method to set the DataIterator with a InputDataFileIterator
  * @has See superclass
  * @does

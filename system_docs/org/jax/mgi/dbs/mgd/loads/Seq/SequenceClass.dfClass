@@ -1,0 +1,43 @@
+package idtp61e2hzjaige2jcqvck;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.Sequence:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceUpdater:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference66 {
+}/**
+@__ref <oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceRawAttributes:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference67 {
+}}/**
+
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.Sequence:oiref>=223,10,200,517,1:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceRawAttributes:oiref>=443,10,190,789,1:oigroup>
+<oigroup:<oiref:java#Class#org.jax.mgi.dbs.mgd.loads.Seq.SequenceUpdater:oiref>=10,10,133,101,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.jax.mgi.dbs.mgd.loads.Seq.Sequence#seqUpdater:oiref>=223,60,143,60:oigroup> 
+*/
+class __positions {
+}

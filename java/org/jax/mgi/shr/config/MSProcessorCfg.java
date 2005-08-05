@@ -4,7 +4,7 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @is A Configurator for configuring the MSProcessor
+ * A Configurator for configuring the MSProcessor
  * @has A set of configuration values and accessors for them
  * @does Reads values of configuration parameters from configuration
  * files and java system properties and makes these value available to the
@@ -32,6 +32,7 @@ public class MSProcessorCfg extends Configurator {
    * @assumes nothing
    * @effects if true and if the lookup cache is configured to be full, a
    * high performance hit is to be expected on the initial lookup
+   * @throws ConfigException if there is an error accessing the configuration
    */
   public Boolean getOkToSearchAssocClones() throws ConfigException {
     return getConfigBoolean("MS_OK_TO_SEARCH_ASSOC_CLONES", new Boolean(true));
@@ -48,6 +49,7 @@ public class MSProcessorCfg extends Configurator {
    * @assumes nothing
    * @effects if true a high performance hit is to be expected on the
    * initial lookup
+   * @throws ConfigException if there is an error accessing the configuration
    */
   public Boolean getUseAssocClonesFullCache() throws ConfigException {
     return getConfigBoolean("MS_USE_ASSOC_CLONES_FULL_CACHE",

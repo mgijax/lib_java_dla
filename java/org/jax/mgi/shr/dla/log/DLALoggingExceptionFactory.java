@@ -4,10 +4,10 @@ import org.jax.mgi.shr.exception.ExceptionFactory;
 
 
 /**
- * @is An ExceptionFactory which returns LoggingExceptions
- * from the its storage of Exceptions.
- * @has a hashmap of Exceptions
- * @does returns Exceptions by name
+ * An ExceptionFactory which returns LoggingExceptions
+ * from a collection of named instances
+ * @has a hashmap of LoggingException instances
+ * @does returns a LoggingException by name
  * @company Jackson Laboratory
  * @author M Walker
  * @version 1.0

@@ -1,5 +1,4 @@
-// $Header$                                                                                      //  $Header$
-// $Header$                                                                                      //  $Header$
+// $Header$
 //  $Name$
 
 package org.jax.mgi.shr.config;
@@ -10,7 +9,7 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @is an object that retrieves Configuration pararmeters for sequence loaders
+ * An object that retrieves Configuration pararmeters for sequence loaders
  * @has Nothing
  *   <UL>
  *   <LI> a configuration manager
@@ -161,7 +160,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence strain for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence strain
    * @throws ConfigException if "SEQ_STRAIN" not found in configuration file
    */
@@ -173,7 +171,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence tissue for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence tissue
    * @throws ConfigException if "SEQ_TISSUE" not found in configuration file
    */
@@ -185,7 +182,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence age for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence age
    * @throws ConfigException if "SEQ_AGE" not found in configuration file
    */
@@ -197,7 +193,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence gender for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence gender
    * @throws ConfigException if "SEQ_GENDER" not found in configuration file
    */
@@ -209,7 +204,6 @@ public class SequenceLoadCfg extends Configurator {
    * Gets the sequence cell line for this load
    * @assumes Nothing
    * @effects Nothing
-   * @param None
    * @return the sequence cell lline
    * @throws ConfigException if "SEQ_CELLLINE" not found in configuration file
    */
@@ -277,8 +271,17 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.12  2005/02/09 14:52:36  sc
+//  tr6473
+//
 //  Revision 1.11.12.1  2005/01/21 19:17:10  sc
 //  added getQueryBatchSize with default of 400
+//
+//  Revision 1.11.10.2  2004/12/10 18:15:22  mbw
+//  javadocs only
+//
+//  Revision 1.11.10.1  2004/12/09 18:08:30  mbw
+//  fixed javadocs warnings
 //
 //  Revision 1.11  2004/10/20 17:47:57  mbw
 //  removed getType() and getReferenceAssocType() methods (see TR6135, item 3)

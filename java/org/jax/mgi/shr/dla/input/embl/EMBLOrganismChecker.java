@@ -23,7 +23,7 @@ import org.jax.mgi.shr.dla.input.*;
 
 /**
  * An object that determines if a EMBL sequence record is an organism represented
- *      by a configurable set of organisms represented by deciders. e.g.
+ *      by a configurable set of organisms represented by deciders.
  *     Given a set of deciders, mouse, human, and rat, returns true if the sequence
  *      record is for an organism in that set.<BR>
  *     Also provides methods to query a string to see if it is a specific organism.
@@ -87,7 +87,8 @@ public class EMBLOrganismChecker implements OrganismChecker {
     * Constructs an EMBLOrganismChecker with a set of deciders
     * @assumes nothing
     * @effects nothing
-    * @throws An exception if there are no deciders or unsupported provider
+    * @throws ConfigException if there is an error accessing the configuration
+    * @throws DLALoggingException if there is an error accessing the logs
     */
 
     public EMBLOrganismChecker () throws ConfigException, DLALoggingException {
@@ -161,7 +162,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
        * returns true if 'OSString' is for a mouse
        * @assumes Nothing
        * @effects Nothing
-       * @param organism - an OS line from an EMBL format sequence record
+       * @param OSString - an OS line from an EMBL format sequence record
        * @return true if OSString is for a mouse
        */
 
@@ -173,7 +174,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
        * returns true if 'OSString' is for a rat
        * @assumes Nothing
        * @effects Nothing
-       * @param organism - an OS line from an EMBL format sequence record
+       * @param OSString - an OS line from an EMBL format sequence record
        * @return true if OSString is for a rat
        */
 
@@ -185,7 +186,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
        * returns true if 'OSString' is for a human
        * @assumes Nothing
        * @effects Nothing
-       * @param organism - an OS line from an EMBL format sequence record
+       * @param OSString - an OS line from an EMBL format sequence record
        * @return true if OSString is for a human
        */
 
@@ -234,7 +235,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
     }
 
     /**
-     * @is an object that applies this predicate to the OS section
+     * an object that applies this predicate to the OS section
      * of a EMBL format sequence record
      * "Does this OS section represent a mouse?"
      * @has A name, See also superclass
@@ -274,7 +275,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
        }
      }
      /**
-     * @is an object that applies this predicate to the OS section
+     * an object that applies this predicate to the OS section
      * of a EMBL format sequence record
      * "Does this OS section represent a rat?"
      * @has A name, See also superclass
@@ -316,7 +317,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
       }
 
       /**
-       * @is an object that applies this predicate to the OS section
+       * an object that applies this predicate to the OS section
        * of a EMBL format sequence record
        * "Does this OS section represent a human?"
        * @has A name, See also superclass
@@ -357,7 +358,7 @@ public class EMBLOrganismChecker implements OrganismChecker {
         }
 
      /**
-        * @is an object that queries the OS lines of a EMBL format record
+        * an object that queries the OS lines of a EMBL format record
         * @has mapping of controlled vocabulary
         *       to string expressions e.g. "mouse" : "Mus musculus"
         * @does Given a set of OS lines, <BR>e.g. OS   Mus musculus (Mouse),

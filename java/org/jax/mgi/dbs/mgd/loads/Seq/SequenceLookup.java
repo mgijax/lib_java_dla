@@ -1,6 +1,5 @@
 //  $Header$
 //  $Header$
-
 //  $Name$
 
 package org.jax.mgi.dbs.mgd.loads.Seq;
@@ -37,7 +36,7 @@ import java.sql.Timestamp;
 import java.sql.Array;
 
 /**
- * an object for looking up Sequence objects from the database.
+ * An object for looking up Sequence objects from the database.
  * @has
  *   <UL>
  *   <LI> a query and an interpretor to build a Sequence object
@@ -731,7 +730,7 @@ public class SequenceLookup {
         return tempBuffer.toString();
     }
     /**
-     * @is an object that knows how to build a Sequence object from
+     * an object that knows how to build a Sequence object from
      * multiple rows of a result set. All rows with the same sequence key
      * belong to the same Sequence
      * @has
@@ -1034,7 +1033,7 @@ public class SequenceLookup {
         }
 
         /**
-         * @is an object that represents a row of data from the query we are
+         * an object that represents a row of data from the query we are
          * interpreting
          * @has
          *   <UL>

@@ -21,8 +21,10 @@ import org.jax.mgi.dbs.mgd.loads.Seq.*;
 
     /**
      * An object that parses a GenBank format sequence records and obtains
-     *     values from a Configurator to create a SequenceInput data object.<BR>
-     *     Determines if a GenBank format sequence record is valid.<BR>
+     *     values from a Configurator to create a SequenceInput data object.
+     * <BR>
+     *     Determines if a GenBank format sequence record is valid.
+     * <BR>
      *     Note that GenBank and RefSeq data providers both use this format, but
      *     RefSeq's do not require a reference section and protein RefSeq's
      *     have sequence type in a different column range in the LOCUS line than

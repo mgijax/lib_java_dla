@@ -3,7 +3,7 @@ package org.jax.mgi.shr.dla.log;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * @is An MGIException which represents exceptions occuring during
+ * An MGIException which represents exceptions occuring during
  * logging.
  * @has nothing
  * @does nothing

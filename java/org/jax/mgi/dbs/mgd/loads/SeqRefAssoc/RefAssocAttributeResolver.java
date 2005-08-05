@@ -16,7 +16,7 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
 //import org.jax.mgi.shr.dla.seqloader.*;
 
 /**
- * @is An object that resolves a RefAssocRawAttributes object to a
+ * An object that resolves a RefAssocRawAttributes object to a
  *  MGI_Reference_AssocState
  * @has
  *   <UL>
@@ -67,7 +67,7 @@ public class RefAssocAttributeResolver {
     /**
      * resolves RefAssocRawAttribute object to a MGI_Reference_AssocState
      * @assumes refLogicalDB is for medline, pubmed, or MGI;
-     * returns null MGI_Reference_AssocState otherwise
+     * return null MGI_Reference_AssocState otherwise
      * @effects Nothing
      * @param raw the RefAssocRawAttributes object to be resolved
      * @param objectKey The object key with which to associate the reference
