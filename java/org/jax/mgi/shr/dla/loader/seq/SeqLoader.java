@@ -140,15 +140,6 @@ public abstract class SeqLoader extends DLALoader {
     private BufferedWriter repeatSeqWriter;
 
     /**
-     * constructor
-     * @throws DLALoaderException thrown from the base class
-     */
-    public SeqLoader() throws DLALoaderException
-    {
-        super();
-    }
-
-    /**
      * Initializes instance variables depending on load mode
      * @assumes RecordDataIterator is set by the subclass
      * @effects instance variables will be instantiated
