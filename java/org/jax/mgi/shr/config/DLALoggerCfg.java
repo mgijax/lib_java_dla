@@ -1,6 +1,5 @@
 // $Header$
 // $Name$
-
 package org.jax.mgi.shr.config;
 
 import java.io.File;
@@ -156,11 +155,20 @@ public class DLALoggerCfg extends Configurator {
 }
 
 // $Log$
+// Revision 1.8  2005/08/05 18:57:11  mbw
+// merged code from tr6086
+//
 // Revision 1.7.18.2  2004/12/10 18:15:22  mbw
 // javadocs only
 //
 // Revision 1.7.18.1  2004/12/09 18:08:29  mbw
 // fixed javadocs warnings
+//
+// Revision 1.7.14.1  2005/08/02 16:24:02  mbw
+// merged branch tr6086
+//
+// Revision 1.7.18.2  2004/12/10 18:15:22  mbw
+// javadocs only
 //
 // Revision 1.7  2004/02/25 21:42:37  mbw
 // fixed compiler warnings only

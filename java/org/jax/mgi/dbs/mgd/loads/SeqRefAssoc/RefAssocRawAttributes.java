@@ -1,6 +1,5 @@
 //  $Header$
 //  $Name$
-
 package org.jax.mgi.dbs.mgd.loads.SeqRefAssoc;
 
 /**
@@ -117,20 +116,23 @@ public class RefAssocRawAttributes {
 }
 
 //  $Log$
+//  Revision 1.3  2005/08/05 18:57:03  mbw
+//  merged code from tr6086
+//
+//  Revision 1.2.6.1  2004/12/10 18:15:13  mbw
+//  javadocs only
+//
+//  Revision 1.2.2.1  2005/08/02 16:23:48  mbw
+//  merged branch tr6086
+//
 //  Revision 1.2.6.1  2004/12/10 18:15:13  mbw
 //  javadocs only
 //
 //  Revision 1.2  2004/12/07 20:09:49  mbw
 //  merged tr6047 onto the trunk
 //
-//  Revision 1.1.2.1  2004/11/05 16:10:17  mbw
-//  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
 //  Revision 1.4  2004/07/08 15:03:49  sc
 //  javdocs changes
-//
-//  Revision 1.3  2004/06/30 19:35:42  mbw
-//  javadocs only
 //
 //  Revision 1.2  2004/06/30 17:25:35  sc
 //  merging sc2 branch to trunk

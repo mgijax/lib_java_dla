@@ -34,8 +34,11 @@ public abstract class FASTALoader extends DLALoader
   // the sequence processor
   protected SequenceInputProcessor seqProcessor = null;
 
-  // constructor
-  public FASTALoader()
+  /**
+   * constructor
+   * @throws DLALoaderException thrown from the base class
+   */
+  public FASTALoader() throws DLALoaderException
   {
       super();
   }

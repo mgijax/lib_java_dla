@@ -495,6 +495,12 @@ public class SequenceRawAttributes {
 //  Revision 1.2.6.1  2004/12/09 18:08:18  mbw
 //  fixed javadocs warnings
 //
+//  Revision 1.2.2.1  2005/08/02 16:23:46  mbw
+//  merged branch tr6086
+//
+//  Revision 1.2.6.1  2004/12/09 18:08:18  mbw
+//  fixed javadocs warnings
+//
 //  Revision 1.2  2004/12/07 20:09:46  mbw
 //  merged tr6047 onto the trunk
 //
@@ -519,7 +525,6 @@ public class SequenceRawAttributes {
 //  Revision 1.1  2003/12/08 18:40:46  sc
 //  initial commit
 //
-
 /**************************************************************************
 *
 * Warranty Disclaimer and Copyright Notice

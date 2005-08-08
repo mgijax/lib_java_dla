@@ -1,6 +1,5 @@
 // $Header$
 // $Name$
-
 package org.jax.mgi.shr.dla.log;
 
 import java.util.logging.Formatter;
@@ -89,6 +88,12 @@ public class DLALogFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.3  2005/08/05 18:57:29  mbw
+// merged code from tr6086
+//
+// Revision 1.2.2.1  2005/08/02 16:24:27  mbw
+// merged branch tr6086
+//
 // Revision 1.2.6.1  2004/12/09 18:08:50  mbw
 // fixed javadocs warnings
 //
@@ -106,9 +111,6 @@ public class DLALogFormatter extends Formatter{
 //
 // Revision 1.4  2003/10/28 21:00:17  mbw
 // fixed imports
-//
-// Revision 1.3  2003/05/22 15:49:12  mbw
-// javadocs edits
 //
 // Revision 1.2  2003/05/08 20:40:02  mbw
 // incorporated changes from code reviews

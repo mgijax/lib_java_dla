@@ -1,5 +1,4 @@
 //  $Header$
-//  $Header$
 //  $Name$
 
 package org.jax.mgi.dbs.mgd.loads.Seq;

@@ -1,6 +1,5 @@
 //  $Header$
 //  $Name$
-
 package org.jax.mgi.shr.dla.input;
 
 /**
@@ -96,6 +95,18 @@ public abstract class SeqDecider {
 }
 
 //  $Log$
+//  Revision 1.3  2005/08/05 18:57:13  mbw
+//  merged code from tr6086
+//
+//  Revision 1.2.6.2  2004/12/10 18:15:24  mbw
+//  javadocs only
+//
+//  Revision 1.2.6.1  2004/12/09 18:08:32  mbw
+//  fixed javadocs warnings
+//
+//  Revision 1.2.2.1  2005/08/02 16:24:05  mbw
+//  merged branch tr6086
+//
 //  Revision 1.2.6.2  2004/12/10 18:15:24  mbw
 //  javadocs only
 //

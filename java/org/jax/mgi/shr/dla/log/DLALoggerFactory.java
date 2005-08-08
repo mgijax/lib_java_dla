@@ -28,13 +28,11 @@ public class DLALoggerFactory implements LoggerFactory
         try
         {
             instance = (Logger)DLALogger.getInstance();
+            return instance;
         }
         catch (DLALoggingException e)
         {
-            // just return null without throwing an exception
+            throw new RuntimeException(e.toString());
         }
-        return instance;
     }
-
-
 }

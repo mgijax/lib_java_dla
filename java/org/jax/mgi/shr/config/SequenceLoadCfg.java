@@ -1,6 +1,5 @@
 // $Header$
 //  $Name$
-
 package org.jax.mgi.shr.config;
 
 import java.sql.Timestamp;
@@ -271,6 +270,9 @@ public class SequenceLoadCfg extends Configurator {
 }
 
 //  $Log$
+//  Revision 1.13  2005/08/05 18:57:12  mbw
+//  merged code from tr6086
+//
 //  Revision 1.12  2005/02/09 14:52:36  sc
 //  tr6473
 //
@@ -282,6 +284,12 @@ public class SequenceLoadCfg extends Configurator {
 //
 //  Revision 1.11.10.1  2004/12/09 18:08:30  mbw
 //  fixed javadocs warnings
+//
+//  Revision 1.11.6.1  2005/08/02 16:24:02  mbw
+//  merged branch tr6086
+//
+//  Revision 1.11.10.2  2004/12/10 18:15:22  mbw
+//  javadocs only
 //
 //  Revision 1.11  2004/10/20 17:47:57  mbw
 //  removed getType() and getReferenceAssocType() methods (see TR6135, item 3)

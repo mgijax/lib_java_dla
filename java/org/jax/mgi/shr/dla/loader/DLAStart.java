@@ -1,6 +1,7 @@
 package org.jax.mgi.shr.dla.loader;
 
 import org.jax.mgi.shr.config.DLALoaderCfg;
+import org.jax.mgi.shr.exception.MGIException;
 
 
 
@@ -32,7 +33,7 @@ public class DLAStart
      * @param args command line argument specifying which loader to run. This
      * argument can be alternatively placed in the configuration file.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MGIException {
       DLALoaderExceptionFactory eFactory = new DLALoaderExceptionFactory();
       DLALoader loader = null;
       try
@@ -47,7 +48,15 @@ public class DLAStart
           DLALoaderExceptionHandler.handleException(e2);
           DLASystemExit.fatalExit();
       }
-      loader.load();
+      try
+      {
+          loader.load();
+      }
+      catch (DLALoaderException e)
+      {
+          DLALoaderExceptionHandler.handleException(e);
+          DLASystemExit.fatalExit();
+      }
       DLASystemExit.exit();
     }
 

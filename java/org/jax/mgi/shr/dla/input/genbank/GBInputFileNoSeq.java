@@ -1,6 +1,5 @@
 //  $Header$
 //  $Name$
-
 package org.jax.mgi.shr.dla.input.genbank;
 
 import org.jax.mgi.shr.config.ConfigException;
@@ -54,6 +53,15 @@ public class GBInputFileNoSeq extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.3  2005/08/05 18:57:18  mbw
+//  merged code from tr6086
+//
+//  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
+//  fixed javadocs warnings
+//
+//  Revision 1.2.2.1  2005/08/02 16:24:13  mbw
+//  merged branch tr6086
+//
 //  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
 //  fixed javadocs warnings
 //
@@ -62,12 +70,6 @@ public class GBInputFileNoSeq extends InputDataFile
 //
 //  Revision 1.1.2.1  2004/11/05 16:05:23  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
-//  Revision 1.3  2004/06/30 19:24:09  mbw
-//  javadocs only
-//
-//  Revision 1.2  2004/06/29 17:07:01  mbw
-//  fixed class names in constructor to reflect filename
 //
 //  Revision 1.1  2004/06/29 17:05:39  mbw
 //  renamed class

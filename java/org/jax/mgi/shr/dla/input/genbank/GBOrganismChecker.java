@@ -389,6 +389,9 @@ public class GBOrganismChecker implements OrganismChecker {
 }
 
 //  $Log$
+//  Revision 1.4  2005/08/05 18:57:19  mbw
+//  merged code from tr6086
+//
 //  Revision 1.3  2005/02/09 14:51:57  sc
 //  tr6473
 //
@@ -397,6 +400,9 @@ public class GBOrganismChecker implements OrganismChecker {
 //
 //  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
 //  fixed javadocs warnings
+//
+//  Revision 1.2.2.1  2005/08/02 16:24:13  mbw
+//  merged branch tr6086
 //
 //  Revision 1.2  2004/12/07 20:10:32  mbw
 //  merged tr6047 onto the trunk

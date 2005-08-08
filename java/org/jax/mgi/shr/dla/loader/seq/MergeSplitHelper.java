@@ -1,7 +1,5 @@
 //  $Header$
 //  $Name$
-
-
 package org.jax.mgi.shr.dla.loader.seq;
 
 import java.util.Vector;
@@ -88,8 +86,6 @@ public class MergeSplitHelper {
     * @assumes nothing
     * @effects queries a database
     * @param seqInput object representing raw values of a Sequence
-    * @returns a Vector of 2ndary seqids from the current sequence being processed
-    * that are in MGI as primary
     * @throws KeyNotFoundException
     * @throws DBException
     * @throws CacheException
@@ -120,7 +116,6 @@ public class MergeSplitHelper {
          * Create a HashMap of secondary seqid keys (that are primary in MGI) with
          *  primary seqids values from a HashMap of Primary seqid keys
          *  and 2ndary seqid values (that are primary in MGI)
-         * @param primaryMap the HashMap of primary seqid keys
          * @assumes nothing
          * @effects nothing
          * @param primaryMap Primary seqid keys and 2ndary seqid values

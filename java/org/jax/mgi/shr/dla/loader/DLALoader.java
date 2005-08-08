@@ -1,8 +1,13 @@
 package org.jax.mgi.shr.dla.loader;
 
+import java.util.HashMap;
+
+import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.config.DatabaseCfg;
 import org.jax.mgi.shr.config.DLALoaderCfg;
 import org.jax.mgi.shr.config.InputDataCfg;
+import org.jax.mgi.shr.config.OutputDataCfg;
+import org.jax.mgi.shr.config.ConfigurationManager;
 import org.jax.mgi.shr.dbutils.bcp.BCPManager;
 import org.jax.mgi.shr.config.BCPManagerCfg;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
@@ -17,7 +22,10 @@ import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.dbutils.DBSchema;
 import org.jax.mgi.shr.dbutils.ScriptWriter;
 import org.jax.mgi.shr.dbutils.DBException;
+import org.jax.mgi.shr.ioutils.OutputManager;
 import org.jax.mgi.shr.ioutils.InputDataFile;
+import org.jax.mgi.shr.ioutils.OutputDataFile;
+import org.jax.mgi.shr.ioutils.IOUException;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.dla.log.DLALogger;
 
@@ -66,6 +74,11 @@ public abstract class DLALoader {
    * An SQL data manager for providing database access to the radar database
    */
   protected SQLDataManager qcDBMgr;
+
+  /**
+   * An SQL data manager for providing database access to the radar database
+   */
+  protected SQLDataManager radarDBMgr;
 
   /**
    * An SQL data manager for providing database access to the radar database
@@ -131,39 +144,17 @@ public abstract class DLALoader {
       DLALoaderExceptionFactory.SQLStreamNotSupported;
   private static final String PreProcessException =
       DLALoaderExceptionFactory.PreProcessException;
+  private static final String FormatException =
+      DLALoaderExceptionFactory.FormatException;
 
   /**
    * a default constructor
    * @has nothing
    * @does instantiates the 'basic-needs' classes for performing
    * database loads in accordance with the DLA standards
+   * a default constructor
    */
-  public DLALoader() {
-    try {
-      this.logger = DLALogger.getInstance();
-      this.dlaConfig = new DLALoaderCfg();
-      String loadPrefix = dlaConfig.getLoadPrefix();
-      this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
-      this.qcDBMgr.setLogger(logger);
-      this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
-      this.loadDBMgr.setLogger(logger);
-      this.qcBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
-      this.qcBCPMgr.setLogger(logger);
-      this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
-      this.loadBCPMgr.setLogger(logger);
-      this.loadStream = createSQLStream(dlaConfig.getLoadStreamName(),
-                                        loadDBMgr, loadBCPMgr);
-      this.qcStream = createSQLStream(dlaConfig.getQCStreamName(),
-                                      qcDBMgr, qcBCPMgr);
-      this.inputConfig = new InputDataCfg();
-    }
-    catch (Exception e) {
-      DLALoaderException e2 = (DLALoaderException)
-          dlaExceptionFactory.getException(InitException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
-    }
-  }
+  public DLALoader() {}
 
   /**
    * executes the initialize(), run() and post() methods
@@ -174,62 +165,97 @@ public abstract class DLALoader {
    * RADAR and/or MGD database. If bcp is being used then bcp files may be
    * available if they were configured to remain after executing them.
    */
-  public void load() {
-    String[] loadTables = this.dlaConfig.getTruncateLoadTables();
-    String[] qcTables = this.dlaConfig.getTruncateQCTables();
-    try {
-      logger.logdInfo("Performing load initialization",true);
-      if (loadTables != null)
-          DLALoaderHelper.truncateTables(loadTables,
-                                         this.loadDBMgr.getDBSchema(),
-                                         logger);
-      if (qcTables != null)
-          DLALoaderHelper.truncateTables(qcTables,
-                                         this.qcDBMgr.getDBSchema(),
-                                         logger);
-      initialize();
-    }
-    catch (Exception e) {
-      DLALoaderException e2 = (DLALoaderException)
-          dlaExceptionFactory.getException(InitException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
-    }
-    try {
-      logger.logdInfo("Performing load pre processing",true);
-      preprocess();
-    }
-    catch (Exception e) {
-      DLALoaderException e2 = (DLALoaderException)
-          dlaExceptionFactory.getException(PreProcessException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
-    }
-    try {
-      logger.logdInfo("Performing load processing",true);
-      run();
-    }
-    catch (Exception e) {
-      DLALoaderException e2 = (DLALoaderException)
-          dlaExceptionFactory.getException(RunException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
-    }
-    try {
-      logger.logdInfo("Performing post processing",true);
-      postprocess();
-      qcDBMgr.closeResources();
-      loadDBMgr.closeResources();
-    }
-    catch (Exception e) {
-      DLALoaderException e2 = (DLALoaderException)
-          dlaExceptionFactory.getException(PostProcessException, e);
-      DLALoaderExceptionHandler.handleException(e2);
-      DLASystemExit.fatalExit();
-    }
-    logger.logdInfo("Load completed",true);
-    logger.logpInfo("Load completed",false);
-    DLASystemExit.exit();
+  public void load() throws MGIException {
+      this.dlaConfig = new DLALoaderCfg();
+      this.logger = DLALogger.getInstance();
+      // only run load if not getOkToFormatReportsOnly() returns false
+      if (dlaConfig.getOkToFormatReportsOnly().booleanValue())
+      {
+          this.logger.logdInfo("Formatting reports only", true);
+          try
+          {
+              OutputManager.postFormat();
+          }
+          catch (Exception e) {
+              DLALoaderException e2 = (DLALoaderException)
+                  dlaExceptionFactory.getException(FormatException, e);
+              throw e2;
+          }
+
+          this.logger.logdInfo("Formatting complete", true);
+      }
+      else
+      {
+          String loadPrefix = dlaConfig.getLoadPrefix();
+          this.qcDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
+          this.qcDBMgr.setLogger(logger);
+          this.radarDBMgr = new SQLDataManager(new DatabaseCfg("RADAR"));
+          this.radarDBMgr.setLogger(logger);
+          this.loadDBMgr = new SQLDataManager(new DatabaseCfg(loadPrefix));
+          this.loadDBMgr.setLogger(logger);
+          this.qcBCPMgr = new BCPManager(new BCPManagerCfg("RADAR"));
+          this.qcBCPMgr.setLogger(logger);
+          this.loadBCPMgr = new BCPManager(new BCPManagerCfg(loadPrefix));
+          this.loadBCPMgr.setLogger(logger);
+          this.loadStream = createSQLStream(dlaConfig.getLoadStreamName(),
+                                            loadDBMgr, loadBCPMgr);
+          this.qcStream = createSQLStream(dlaConfig.getQCStreamName(),
+                                          qcDBMgr, qcBCPMgr);
+          this.inputConfig = new InputDataCfg();
+          OutputManager.initialize();
+
+          String[] loadTables = this.dlaConfig.getTruncateLoadTables();
+          String[] qcTables = this.dlaConfig.getTruncateQCTables();
+          try {
+              logger.logdInfo("Performing load initialization", true);
+              if (loadTables != null)
+                  DLALoaderHelper.truncateTables(loadTables,
+                      this.loadDBMgr.getDBSchema(),
+                      logger);
+              if (qcTables != null)
+                  DLALoaderHelper.truncateTables(qcTables,
+                      this.qcDBMgr.getDBSchema(),
+                      logger);
+              initialize();
+          }
+          catch (Exception e) {
+              DLALoaderException e2 = (DLALoaderException)
+                  dlaExceptionFactory.getException(InitException, e);
+              throw e2;
+          }
+          try {
+              logger.logdInfo("Performing load pre processing", true);
+              preprocess();
+          }
+          catch (Exception e) {
+              DLALoaderException e2 = (DLALoaderException)
+                  dlaExceptionFactory.getException(PreProcessException, e);
+              throw e2;
+          }
+          try {
+              logger.logdInfo("Performing load processing", true);
+              run();
+          }
+          catch (Exception e) {
+              DLALoaderException e2 = (DLALoaderException)
+                  dlaExceptionFactory.getException(RunException, e);
+              throw e2;
+          }
+          try {
+              logger.logdInfo("Performing post processing", true);
+              postprocess();
+              qcDBMgr.closeResources();
+              loadDBMgr.closeResources();
+          }
+          catch (Exception e) {
+              DLALoaderException e2 = (DLALoaderException)
+                  dlaExceptionFactory.getException(PostProcessException, e);
+              throw e2;
+          }
+          OutputManager.close();
+          logger.logdInfo("Load completed", true);
+          logger.logpInfo("Load completed", false);
+      }
   }
 
   /**
@@ -270,6 +296,7 @@ public abstract class DLALoader {
    * post processing
    */
   protected abstract void postprocess() throws MGIException;
+
 
   /**
    * create a new SQLStream based on the given name

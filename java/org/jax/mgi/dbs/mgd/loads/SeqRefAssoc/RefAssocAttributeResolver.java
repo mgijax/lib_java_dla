@@ -1,6 +1,5 @@
 //  $Header$
 //  $Name$
-
 package org.jax.mgi.dbs.mgd.loads.SeqRefAssoc;
 
 import org.jax.mgi.shr.config.ConfigException;

@@ -1,6 +1,5 @@
 // $Header$
 // $Name$
-
 package org.jax.mgi.shr.dla.log;
 
 import java.util.logging.Formatter;
@@ -34,8 +33,14 @@ public class MessageOnlyFormatter extends Formatter{
 }
 
 // $Log$
+// Revision 1.3  2005/08/05 18:57:30  mbw
+// merged code from tr6086
+//
 // Revision 1.2.6.1  2004/12/09 18:08:51  mbw
 // fixed javadocs warnings
+//
+// Revision 1.2.2.1  2005/08/02 16:24:28  mbw
+// merged branch tr6086
 //
 // Revision 1.2  2004/12/07 20:10:49  mbw
 // merged tr6047 onto the trunk
@@ -48,9 +53,6 @@ public class MessageOnlyFormatter extends Formatter{
 //
 // Revision 1.4  2003/05/22 15:49:14  mbw
 // javadocs edits
-//
-// Revision 1.3  2003/05/08 20:40:07  mbw
-// incorporated changes from code reviews
 //
 // Revision 1.2  2003/04/29 19:30:30  mbw
 // changed package name

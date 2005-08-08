@@ -32,7 +32,7 @@ import java.util.HashSet;
  * @does performs initialization of objects for sequence deleters, and
  *       statuses Sequences as deleted. Keeps count of repeated seqids in the input
  *       and writes them out to a file.
- * @note assumes it is iterating over a file; could subclass to set a different
+ * @notes assumes it is iterating over a file; could subclass to set a different
  *       kind of iterator e.g. a RowDataIterator over a ResultSet.
  * @author sc
  * @version 1.0

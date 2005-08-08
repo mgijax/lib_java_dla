@@ -54,6 +54,15 @@ public class GBInputFile extends InputDataFile
 
 
 //  $Log$
+//  Revision 1.3  2005/08/05 18:57:18  mbw
+//  merged code from tr6086
+//
+//  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
+//  fixed javadocs warnings
+//
+//  Revision 1.2.2.1  2005/08/02 16:24:13  mbw
+//  merged branch tr6086
+//
 //  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
 //  fixed javadocs warnings
 //

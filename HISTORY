@@ -4,6 +4,11 @@ STAFF: mbw
 RELEASE: prod
 CHANGES: merged code from branch tr6086
 
+TAG: lib_java_dla-tr6404-1
+DATE: 08/03/2005
+STAFF: mbw
+CHANGES: integration testing
+
 TAG: lib_java_dla-tr6086-1
 DATE: 08/03/2005
 STAFF: mbw
@@ -95,6 +100,11 @@ to be in MGI (Update, Dummy, Non events)
 TAG: lib_java_dla-tr6473-BP
 DATE: 01/12/2005
 STAFF: sc
+RELEASE: dev
+
+TAG: lib_java_dla-tr6086-BP
+DATE: 12/08/2004
+STAFF: mbw
 RELEASE: dev
 
 TAG: lib_java_dla-tr6086-BP

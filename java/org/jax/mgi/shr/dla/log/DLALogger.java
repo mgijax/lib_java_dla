@@ -1,6 +1,5 @@
 // $Header$
 // $Name$
-
 package org.jax.mgi.shr.dla.log;
 
 import java.util.logging.Handler;
@@ -489,7 +488,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logp);
       throw e2;
     }
@@ -516,7 +515,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logc);
       throw e2;
     }
@@ -547,7 +546,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logd);
       throw e2;
     }
@@ -575,7 +574,7 @@ public class DLALogger implements Logger {
       DLALoggingExceptionFactory eFactory =
           new DLALoggingExceptionFactory();
       DLALoggingException e2 =
-          (DLALoggingException)eFactory.getException(InitializeErr);
+          (DLALoggingException)eFactory.getException(InitializeErr, e);
       e2.bind(logv);
       throw e2;
     }
@@ -653,6 +652,9 @@ public class DLALogger implements Logger {
   }
 }
 // $Log$
+// Revision 1.3  2005/08/05 18:57:29  mbw
+// merged code from tr6086
+//
 // Revision 1.2.6.2  2004/12/10 18:15:36  mbw
 // javadocs only
 //
@@ -661,6 +663,8 @@ public class DLALogger implements Logger {
 //
 // Revision 1.2  2004/12/07 20:10:48  mbw
 // merged tr6047 onto the trunk
+// Revision 1.2.2.2  2005/08/02 16:24:28  mbw
+// merged branch tr6086
 //
 // Revision 1.1.2.1  2004/11/05 16:18:06  mbw
 // classes were renamed or moved as part of large refactoring effort (see tr604)

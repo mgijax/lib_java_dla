@@ -47,6 +47,15 @@ public class GeneIndexLoader extends FASTALoader
     private FASTAFilter fastaFilter = null;
 
     /**
+     * constructor
+     * @throws DLALoaderException thrown from the base class
+     */
+    public GeneIndexLoader() throws DLALoaderException
+    {
+        super();
+    }
+
+    /**
      * initialize the instance variable
      * @assumes nothing
      * @effects nothing
