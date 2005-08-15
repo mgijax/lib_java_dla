@@ -1,0 +1,18 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Revision History lib_java_dla</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body>
+<A NAME="r32"><!-- --></A>
+<table cellpadding="10">
+<th>Summary of lib_java_dla additions in release 3.2</th>
+<tr><td><A href="/usrlocalmgi/live/lib/java/lib_java_dla/javadocs/org/jax/mgi/shr/dla/loader/DLALoader.html">DLALoader</A> now has an <A href="/usrlocalmgi/live/lib/java/lib_java_core/javadocs/org/jax/mgi/shr/ioutils/OutputManager.html">OutputManager</A> instance (lib_java_core), freeing loads from having to create, sort and format output files, which will be done by the base class. All loads extend <A href="/usrlocalmgi/live/lib/java/lib_java_dla/javadocs/org/jax/mgi/shr/dla/loader/DLALoader.html">DLALoader</A>, so our existing loads will have retroactive access to this functionality. With this feature you will be able to configure your output files in the configuration file and have the <A href="/usrlocalmgi/live/lib/java/lib_java_dla/javadocs/org/jax/mgi/shr/dla/loader/DLALoader.html">DLALoader</A> base class manage them. To write to a file, your load will be able to make calls such as <A href="http://shire.informatics.jax.org/usrlocalmgi/live/lib/java/lib_java_core/javadocs/org/jax/mgi/shr/ioutils/OutputDataFile.html#writeln(java.lang.String)">OutputManager.writeln("REPORT1", "some text")</A>. This is a static method and is similar to using System.out.println("some text"), but using files instead of sysout.</td></tr>
+<tr><td><A href="/usrlocalmgi/live/lib/java/lib_java_dla/javadocs/org/jax/mgi/shr/dla/loader/DLALoader.html">DLALoader</A> now has a configuration parameter which allows you to run the load in a mode which only does report formatting (it does not rerun the load). To do this, you would set DLA_FORMAT_REPORTS_ONLY=true in the config file or add it to the command line (-DDLA_FORMAT_REPORTS_ONLY=true). For example, if the previous run of the load created output files and you decide you want to change the format of the files, you can change the <A href="/usrlocalmgi/live/lib/java/lib_java_core/javadocs/org/jax/mgi/shr/ioutils/OutputFormatter.html">OutputFormatter</A> class without changing the load. The load can then be rerun without creating new data, but only apply the new formatting to existing raw data.</td></tr>
+<tr><td>Javadcos have been cleaned up and new package level documentation (design docs, class diagrams, etc) have been added.</td></tr>
+</table>
+</body>
+</html>
