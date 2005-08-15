@@ -1,1 +1,1 @@
-classpath=/usr/local/mgi/live/lib/java1.4/core.jar:/usr/local/mgi/live/lib/java1.4/dbsmgd.jar:/usr/local/mgi/live/lib/java1.4/dbsrdr.jar:/usr/local/java1.4/lib/junit.jar
+classpath=/usr/local/mgi/live/lib/java/core.jar:/usr/local/mgi/live/lib/java/dbsmgd.jar:/usr/local/mgi/live/lib/java/dbsrdr.jar:/usr/local/java/lib/junit.jar
