@@ -120,7 +120,6 @@ public class MergeSplitProcessor {
     /**
      * Determines a Merge or Split event for a secondary seqid that is primary
      *    in MGI and processes accordingly
-     * @param writer the ScriptWriter object
      * @assumes
      * @effects
      * @param writer the ScriptWriter which to write the merge and split stored
