@@ -35,7 +35,10 @@ public class HTMLFormatterCfg extends Configurator {
     public HTMLFormatterCfg() throws ConfigException {
       super();
     }
-
+    /**
+     * get the name of the web server to which all MGI database calls are made
+     * @return the name of the webserver
+     */
     public String getWebServerUrl()
     {
         return getConfigString("FMT_WEB_SERVER_URL", DEFAULT_WEBURL);
