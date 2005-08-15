@@ -172,7 +172,7 @@ public abstract class HTMLFormatter implements OutputFormatter
 
     /**
      * format an anchor tag for a call to Entrez Gene
-     * @param EntrezGene accession id to use in formatting the tag
+     * @param egID EntrezGene accession id to use in formatting the tag
      * @return the anchor tag
      */
     public String formatEntrezGeneAnchorTag(String egID)
@@ -204,7 +204,7 @@ public abstract class HTMLFormatter implements OutputFormatter
     /**
      * formats anchor tags to the Entrez Gene database for a list of
      * comma separated list of Entrez Gene accession ids
-     * @param accidList string containing a comma separated list of Entrez
+     * @param egList string containing a comma separated list of Entrez
      * Gene accession ids
      * @return the string newly formated with anchor tags replacing the
      * given Entrez Gene accession ids

@@ -7,7 +7,7 @@ import java.io.File;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * @is an object for configuring a DataLoadLogger.
+ * A class for configuring a DataLoadLogger.
  * @has a set of DataLoadLogger configuration parameters and a reference
  * to a ConfigurationManager
  * @does provides methods for getting and setting configuration paramaters
