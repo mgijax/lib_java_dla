@@ -7,7 +7,7 @@ import org.jax.mgi.shr.config.Configurator;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * an object that retrieves Configuration pararmeters for the SeqDeleter
+ * An object that retrieves Configuration pararmeters for the SeqDeleter
  * @has
  *   <UL>
  *   <LI> a configuration manager
