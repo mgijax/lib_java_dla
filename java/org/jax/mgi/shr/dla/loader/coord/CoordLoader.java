@@ -61,6 +61,8 @@ public class CoordLoader extends DLALoader {
     // count of sequence records we have already processed
     private int coordIdsAlreadyProcessedCtr;
 
+    // true if we are going to process repeats
+    private String processRepeats;
 
     // writer for all coordinates repeated in the input
     private BufferedWriter repeatSeqWriter;
@@ -80,7 +82,7 @@ public class CoordLoader extends DLALoader {
      */
     public void initialize() throws MGIException {
         loadCfg = new CoordLoadCfg();
-
+        processRepeats = loadCfg.getCoordRepeatsOk();
         // Create a DataInput File
         InputDataFile inData = new InputDataFile();
 
@@ -89,12 +91,14 @@ public class CoordLoader extends DLALoader {
                 (RecordDataInterpreter)loadCfg.getInterpreterClass());
 
         // writes repeated input coordinates to a file
-       try {
-             repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
-                 getRepeatFileName()));
-        }
-        catch (IOException e) {
-             throw new MGIException(e.getMessage());
+        if (processRepeats.equals("false")) {
+            try {
+                repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
+                    getRepeatFileName()));
+            }
+            catch (IOException e) {
+                throw new MGIException(e.getMessage());
+            }
         }
 
         // number of valid coordinates WITHOUT processing errors:
@@ -145,25 +149,30 @@ public class CoordLoader extends DLALoader {
            // get the next CoordinateInput object
            input = (CoordinateInput)iterator.next();
            logger.logdDebug(input.getCoordMapFeatureRawAttributes().getObjectId());
-           try {
-               // determine if repeated coordinate
-               String currentSeqid = input.getCoordMapFeatureRawAttributes().getObjectId();
-               logger.logdDebug(currentSeqid, false);
-               if (coordIdsAlreadyProcessed.contains(currentSeqid)) {
-                   // we have a repeated coordinate; count it, write it out,
-                   // go on to next coordinate record in the input
-                   coordIdsAlreadyProcessedCtr++;
-                   repeatSeqWriter.write(input.getCoordMapFeatureRawAttributes().getRecord() +"\n");
-                   logger.logdDebug("Repeat Sequence: " + currentSeqid);
-                   continue;
+           if (processRepeats.equals("false")) {
+               try {
+                   // determine if repeated coordinate
+                   String currentSeqid = input.getCoordMapFeatureRawAttributes().
+                       getObjectId();
+                   logger.logdDebug(currentSeqid, false);
+                   if (coordIdsAlreadyProcessed.contains(currentSeqid)) {
+                       // we have a repeated coordinate; count it, write it out,
+                       // go on to next coordinate record in the input
+                       coordIdsAlreadyProcessedCtr++;
+                       repeatSeqWriter.write(input.
+                                             getCoordMapFeatureRawAttributes().
+                                             getRecord() + "\n");
+                       logger.logdDebug("Repeat Sequence: " + currentSeqid);
+                       continue;
+                   }
+                   else {
+                       // add the coordinate id to the set we have processed
+                       coordIdsAlreadyProcessed.add(currentSeqid);
+                   }
                }
-               else {
-                   // add the coordinate id to the set we have processed
-                   coordIdsAlreadyProcessed.add(currentSeqid);
+               catch (IOException e) {
+                   throw new MGIException(e.getMessage());
                }
-           }
-           catch (IOException e) {
-               throw new MGIException(e.getMessage());
            }
            // process the coordinate any exceptions stop the load
            coordProcessor.processInput(input);
@@ -187,14 +196,15 @@ public class CoordLoader extends DLALoader {
         logger.logdInfo("CoordLoader beginning post process", true);
         logger.logdInfo("Closing load stream", false);
         this.loadStream.close();
-
-        // close the repeat coordinate writer
-        logger.logdInfo("Closing repeat coordinate writer", false);
-        try {
-            repeatSeqWriter.close();
-        }
-        catch (IOException e) {
-            throw new MGIException(e.getMessage());
+        if (processRepeats.equals("false")) {
+            // close the repeat coordinate writer
+            logger.logdInfo("Closing repeat coordinate writer", false);
+            try {
+                repeatSeqWriter.close();
+            }
+            catch (IOException e) {
+                throw new MGIException(e.getMessage());
+            }
         }
 
         reportLoadStatistics();
@@ -214,8 +224,10 @@ public class CoordLoader extends DLALoader {
         message = "Total Coordinates Processed = " + processedCtr;
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
-        logger.logdInfo("Total Repeat Coordinates written to repeat file: "
-                        + coordIdsAlreadyProcessedCtr, false);
+        if (processRepeats.equals("true")) {
+            logger.logdInfo("Total Repeat Coordinates written to repeat file: "
+                            + coordIdsAlreadyProcessedCtr, false);
+        }
         logger.logpInfo("Total Repeat Coordinates written to repeat file: "
                         + coordIdsAlreadyProcessedCtr, false);
     }
