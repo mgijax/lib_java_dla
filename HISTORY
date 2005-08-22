@@ -1,3 +1,10 @@
+DATE: 08/22/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+1) CoordLoadCfg - added get method for COORD_REPEATS_OK
+2) CoordLoader - check COORD_REPEATS_OK to determine when to load repeats
+ 
 TAG: lib_java_dla-snp-BP
 DATE: 08/11/2005
 STAFF: sc
