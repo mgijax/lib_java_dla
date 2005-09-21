@@ -1,3 +1,8 @@
+TAG: lib_java_dla-tr7081-1
+DATE: 09/21/2005
+STAFF: mbw
+CHANGES: merged changes from tr5972 and snp branches
+
 TAG: lib_java_dla-tr7081-BP
 DATE: 09/21/2005
 STAFF: mbw
@@ -24,6 +29,19 @@ STAFF: mbw
 RELEASE: prod
 CHANGES: javadocs only
 
+TAG: lib_java_dla-snp-1
+DATE: 09/01/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+
+DATE: 08/22/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+1) CoordLoadCfg - added get method for COORD_REPEATS_OK
+2) CoordLoader - check COORD_REPEATS_OK to determine when to load repeats
+ 
 TAG: lib_java_dla-snp-BP
 DATE: 08/11/2005
 STAFF: sc
