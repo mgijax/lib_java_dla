@@ -16,6 +16,8 @@ import org.jax.mgi.shr.config.ConfigException;
 
 public class DLALoaderCfg extends Configurator {
 
+    private String DEFAULT_REPORTDIR = ".";
+
   public DLALoaderCfg() throws ConfigException {
       super();
   }
@@ -102,6 +104,11 @@ public class DLALoaderCfg extends Configurator {
   throws ConfigException
   {
       return getConfigBoolean("DLA_FORMAT_REPORTS_ONLY", new Boolean(false));
+  }
+
+  public String getReportsDir()
+  {
+      return getConfigString("RPTDIR", DEFAULT_REPORTDIR);
   }
 
 
