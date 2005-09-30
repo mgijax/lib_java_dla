@@ -19,6 +19,13 @@ public class PIRSFInputFile extends InputXMLDataFile
     private String TAG =  "iProClassEntry";
     private String filename = null;
 
+    public PIRSFInputFile() throws ConfigException, IOUException
+    {
+        super();
+        this.filename = super.getFilename();
+    }
+
+
     public PIRSFInputFile(String filename) throws ConfigException, IOUException
     {
         super(filename);
