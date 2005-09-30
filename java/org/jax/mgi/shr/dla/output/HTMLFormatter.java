@@ -181,6 +181,17 @@ public abstract class HTMLFormatter implements OutputFormatter
     }
 
     /**
+     * format an anchor tag for a call to PIRSF
+     * @param superfamilyID superfamily id to use in formatting the tag
+     * @return the anchor tag
+     */
+    public String formatPIRSFAnchorTag(String superfamilyID)
+    {
+        return "<a href=\"http://pir.georgetown.edu/cgi-bin/ipcSF?id=" + superfamilyID + "\">" + superfamilyID + "</a>";
+    }
+
+
+    /**
      * formats anchor tags to the MGI accession report cgi for a list of
      * comma separated list of accids
      * @param accidList string containing a comma separated list of accids
@@ -222,6 +233,29 @@ public abstract class HTMLFormatter implements OutputFormatter
       buff.deleteCharAt(buff.length() - 1);
       return buff.toString();
     }
+
+    /**
+     * formats anchor tags to the PIRSF database for a list of
+     * comma separated list of PIRSF accession ids
+     * @param pirsfList string containing a comma separated list of PIRSF
+     * accession ids
+     * @return the string newly formated with anchor tags replacing the
+     * given PIRSF accession ids
+     */
+    public String formatPIRSFList(String pirsfList)
+    {
+      StringBuffer buff = new StringBuffer();
+      String[]accids = pirsfList.split(",");
+      for (int i = 0; i < accids.length; i++)
+      {
+          String accid = accids[i];
+          buff.append(this.formatPIRSFAnchorTag(accid) + ", ");
+      }
+      buff.deleteCharAt(buff.length() - 1);
+      buff.deleteCharAt(buff.length() - 1);
+      return buff.toString();
+    }
+
 
     /**
      * formats anchor tags for a given SVASet string representation
