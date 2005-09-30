@@ -1,11 +1,18 @@
 package org.jax.mgi.shr.dla.ext;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.io.File;
 
 import org.jax.mgi.shr.unix.AbstractCommand;
+import org.jax.mgi.shr.unix.CommandException;
 import org.jax.mgi.shr.config.CommandsCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
+import org.jax.mgi.shr.ioutils.*;
+import org.jax.mgi.shr.log.Logger;
+import org.jax.mgi.shr.dla.log.*;
 
 /**
  * Is a class for executing the annotload command from a Java application
@@ -92,7 +99,6 @@ public class AnnotationLoad extends AbstractCommand {
      * This method is called by the superclass during the run() method prior
      * to calling getCommandLine() in order for this instance to access any
      * configuration settings it needs to create the command line string.
-     * @param cfg the configuration object
      * @throws ConfigException thrown if there is an error accessing the
      * configuration
      */
@@ -107,6 +113,62 @@ public class AnnotationLoad extends AbstractCommand {
         this.mode = this.cfg.getAnnotLoadMode();
         this.annotationTypeName = this.cfg.getAnnotLoadType();
         this.jnumber = this.cfg.getAnnotLoadReference();
+    }
+
+    public void postrun()
+    throws CommandException
+    {
+        /*
+        try
+        {
+            SimpleDateFormat dateFormatter = new SimpleDateFormat(
+                "MMddyyyy");
+            Calendar c = Calendar.getInstance();
+            String date = dateFormatter.format(c.getTime());
+            Logger logger = super.getLogger();
+            File file = new File(this.filename);
+            String errorFilename = file.getName() + "." + date + "." +
+                "error";
+            InputDataFile errorsFile = new InputDataFile(errorFilename);
+            RecordDataIterator i = errorsFile.getIterator();
+            boolean foundMessage = false;
+            while (i.hasNext())
+            {
+                String line = (String) i.next();
+                if (line.startsWith("Start Date"))
+                    continue;
+                if (line.startsWith("End Date"))
+                    continue;
+                if (line.length() == 0)
+                    continue;
+                foundMessage = true;
+                break;
+            }
+            i = errorsFile.getIterator();
+
+            if (foundMessage)
+            {
+                String message = "Detected possible errors while " +
+                    "running annotation load. See " +
+                    errorFilename + " for details";
+
+                if (logger instanceof DLALogger)
+                {
+                    DLALogger dlaLogger = (DLALogger)logger;
+                    dlaLogger.logpInfo(message, false);
+                }
+                else
+                {
+                    logger.logError(message);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new CommandException("Error running post method in " +
+                                       "AnnotationLoad", e);
+        }
+            */
     }
 
 }
