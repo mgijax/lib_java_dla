@@ -118,7 +118,6 @@ public class AnnotationLoad extends AbstractCommand {
     public void postrun()
     throws CommandException
     {
-        /*
         try
         {
             SimpleDateFormat dateFormatter = new SimpleDateFormat(
@@ -139,12 +138,11 @@ public class AnnotationLoad extends AbstractCommand {
                     continue;
                 if (line.startsWith("End Date"))
                     continue;
-                if (line.length() == 0)
+                if (line.startsWith(System.getProperty("line.separator")))
                     continue;
                 foundMessage = true;
                 break;
             }
-            i = errorsFile.getIterator();
 
             if (foundMessage)
             {
@@ -168,7 +166,6 @@ public class AnnotationLoad extends AbstractCommand {
             throw new CommandException("Error running post method in " +
                                        "AnnotationLoad", e);
         }
-            */
     }
 
 }
