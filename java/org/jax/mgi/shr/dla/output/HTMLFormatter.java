@@ -56,19 +56,6 @@ public abstract class HTMLFormatter implements OutputFormatter
       configure(cfg);
     }
 
-    /**
-     * run processes prior to formatting the output
-     * @assumes nothing
-     * @effects empty method call which can be overriden by the base class
-     */
-    public void preprocess() {}
-
-    /**
-     * run processes after formatting the output
-     * @assumes nothing
-     * @effects empty method call which can be overriden by the base class
-     */
-    public void postprocess() {}
 
     /**
      * set the title of the html page
@@ -135,7 +122,12 @@ public abstract class HTMLFormatter implements OutputFormatter
      */
     public String getStandardHeader()
     {
-       return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n\"http://www.w3.org/TR/html4/loose.dtd\">\n<html>\n<head>\n<title>" + this.pageTitle + "</title>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"></head>\n<body <FONT STYLE=\"'Times New Roman', Times, serif\">\n";
+       return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional" +
+              "//EN\"\n\"http://www.w3.org/TR/html4/loose.dtd\">\n<html>" +
+              "\n<head>\n<title>" + this.pageTitle + "</title>\n<meta " +
+              "http-equiv=\"Content-Type\" content=\"text/html; charset=" +
+              "iso-8859-1\"></head>\n<body <FONT STYLE=\"'Times New Roman'" +
+              ", Times, serif\">\n";
     }
 
     /**
@@ -167,7 +159,8 @@ public abstract class HTMLFormatter implements OutputFormatter
      */
     public String formatAccidAnchorTag(String accid)
     {
-        return "<a href=\"http://" + this.webServerURL + "/searches/accession_report.cgi?id=" + accid + "\">" + accid + "</a>";
+        return "<a href=\"http://" + this.webServerURL + "/searches/" +
+            "accession_report.cgi?id=" + accid + "\">" + accid + "</a>";
     }
 
     /**
@@ -177,7 +170,9 @@ public abstract class HTMLFormatter implements OutputFormatter
      */
     public String formatEntrezGeneAnchorTag(String egID)
     {
-        return "<a href=\"http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=gene&cmd=Retrieve&dopt=Graphics&list_uids=" + egID + "\">" + egID + "</a>";
+        return "<a href=\"http://www.ncbi.nlm.nih.gov/entrez/query.fcgi" +
+            "?db=gene&cmd=Retrieve&dopt=Graphics&list_uids=" + egID + "\">" +
+            egID + "</a>";
     }
 
     /**
@@ -187,7 +182,8 @@ public abstract class HTMLFormatter implements OutputFormatter
      */
     public String formatPIRSFAnchorTag(String superfamilyID)
     {
-        return "<a href=\"http://pir.georgetown.edu/cgi-bin/ipcSF?id=" + superfamilyID + "\">" + superfamilyID + "</a>";
+        return "<a href=\"http://pir.georgetown.edu/cgi-bin/ipcSF?id=" +
+            superfamilyID + "\">" + superfamilyID + "</a>";
     }
 
 
@@ -205,6 +201,7 @@ public abstract class HTMLFormatter implements OutputFormatter
       for (int i = 0; i < accids.length; i++)
       {
           String accid = accids[i];
+          accid = accid.trim();
           buff.append(this.formatAccidAnchorTag(accid) + ", ");
       }
       buff.deleteCharAt(buff.length() - 1);
@@ -227,6 +224,7 @@ public abstract class HTMLFormatter implements OutputFormatter
       for (int i = 0; i < accids.length; i++)
       {
           String accid = accids[i];
+          accid = accid.trim();
           buff.append(this.formatEntrezGeneAnchorTag(accid) + ", ");
       }
       buff.deleteCharAt(buff.length() - 1);
@@ -249,6 +247,7 @@ public abstract class HTMLFormatter implements OutputFormatter
       for (int i = 0; i < accids.length; i++)
       {
           String accid = accids[i];
+          accid = accid.trim();
           buff.append(this.formatPIRSFAnchorTag(accid) + ", ");
       }
       buff.deleteCharAt(buff.length() - 1);
