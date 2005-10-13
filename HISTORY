@@ -1,3 +1,29 @@
+TAG: lib_java_dla-3-4-0-0
+DATE: 10/13/2005
+STAFF: mbw
+RELEASE: 3.4 alpha
+CHANGES: tr7081 branch merge to trunk
+
+TAG: lib_java_dla-tr7081-4
+DATE: 10/06/2005
+STAFF: mbw
+CHANGES: modified dla.output classes to support additional reporting functionality
+
+TAG: lib_java_dla-tr7081-3
+DATE: 09/30/2005
+STAFF: mbw
+CHANGES: development build
+
+TAG: lib_java_dla-tr7081-2
+DATE: 09/30/2005
+STAFF: mbw
+CHANGES: development build
+
+TAG: lib_java_dla-tr7081-1
+DATE: 09/21/2005
+STAFF: mbw
+CHANGES: merged changes from tr5972 and snp branches
+
 TAG: lib_java_dla-tr7081-BP
 DATE: 09/21/2005
 STAFF: mbw
@@ -24,6 +50,19 @@ STAFF: mbw
 RELEASE: prod
 CHANGES: javadocs only
 
+TAG: lib_java_dla-snp-1
+DATE: 09/01/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+
+DATE: 08/22/2005
+STAFF: sc
+RELEASE: prod
+CHANGES:
+1) CoordLoadCfg - added get method for COORD_REPEATS_OK
+2) CoordLoader - check COORD_REPEATS_OK to determine when to load repeats
+ 
 TAG: lib_java_dla-snp-BP
 DATE: 08/11/2005
 STAFF: sc

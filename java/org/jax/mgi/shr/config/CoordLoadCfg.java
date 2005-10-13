@@ -157,6 +157,15 @@ public class CoordLoadCfg extends Configurator {
     public String getLogicalDB() throws ConfigException {
         return getConfigString("COORD_LOGICALDB");
     }
+    /**
+     * get the coordinate repeat ok value
+     * @return the coordinate repeats ok value
+     * @throws ConfigException thrown if "COORD_REPEATS_OK" not found in
+     *    configuration file
+     */
+    public String getCoordRepeatsOk() throws ConfigException {
+        return getConfigString("COORD_REPEATS_OK");
+    }
 
    /**
     * get the coordinate repeat file name
