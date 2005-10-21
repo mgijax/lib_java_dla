@@ -7,7 +7,7 @@ import java.io.File;
 
 import org.jax.mgi.shr.unix.AbstractCommand;
 import org.jax.mgi.shr.unix.CommandException;
-import org.jax.mgi.shr.config.CommandsCfg;
+import org.jax.mgi.shr.config.AnnotloadCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.ioutils.*;
@@ -27,11 +27,15 @@ import org.jax.mgi.shr.dla.log.*;
 
 public class AnnotationLoad extends AbstractCommand {
 
+    /**
+     * mode value (see vocload documentation)
+     */
     public static final String MODE_NEW = "new";
+    /**
+     * mode value (see vocload documentation)
+     */
     public static final String MODE_APPEND = "append";
-    public static final String MODE_PREVIEW = "preview";
-
-    private CommandsCfg cfg = null;
+    private AnnotloadCfg cfg = null;
     private SQLDataManager sqlMgr = null;
     private String path = null;
     private String server = null;
@@ -45,9 +49,16 @@ public class AnnotationLoad extends AbstractCommand {
     private boolean okToLoadObsolete = false;
 
     /**
+     * mode value (see vocload documentation)
+     */
+    public static final String MODE_PREVIEW = "preview";
+
+    /**
      * constructor
      * @param filename the name of the file containing the input data for the
      * annotload command
+     * @param sqlMgr the SQLDataManager to use for obtaining a database to
+     * load into
      * @throws ConfigException thrown if there is an error accessing the
      * configuration
      */
@@ -55,7 +66,7 @@ public class AnnotationLoad extends AbstractCommand {
     throws ConfigException
     {
         super();
-        this.cfg = new CommandsCfg();
+        this.cfg = new AnnotloadCfg();
         this.filename = filename;
         this.sqlMgr = sqlMgr;
     }
@@ -64,15 +75,19 @@ public class AnnotationLoad extends AbstractCommand {
      * constructor
      * @param filename the name of the file containing the input data for the
      * annotload command
+     * @param sqlMgr the SQLDataManager to use for obtaining a database to
+     * load into
+     * @param annotCfg the annotation load configurator for reading a
+     * subset of configuration parameters using parameter prefixing
      * @throws ConfigException thrown if there is an error accessing the
      * configuration
      */
     public AnnotationLoad(String filename, SQLDataManager sqlMgr,
-                          CommandsCfg commandsCfg)
+                          AnnotloadCfg annotCfg)
     throws ConfigException
     {
         super();
-        this.cfg = commandsCfg;
+        this.cfg = annotCfg;
         this.filename = filename;
         this.sqlMgr = sqlMgr;
     }
@@ -82,6 +97,8 @@ public class AnnotationLoad extends AbstractCommand {
      * get the command line for executing the annotload. This is called by the
      * super class during the run() method
      * @return the command line string
+     * @throws ConfigException thrown if there is an error accessing the
+     * configuration
      */
     protected String getCommandLine()
     throws ConfigException
@@ -115,6 +132,11 @@ public class AnnotationLoad extends AbstractCommand {
         this.jnumber = this.cfg.getAnnotLoadReference();
     }
 
+    /**
+     * evaluates the errors file from the vocload and raises an exception if
+     * entries are found
+     * @throws CommandException thrown if errors are found in the errors file
+     */
     public void postrun()
     throws CommandException
     {
