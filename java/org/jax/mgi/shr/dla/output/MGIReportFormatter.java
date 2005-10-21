@@ -17,8 +17,8 @@ import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.stringutil.Sprintf;
 
 /**
- * is an extension of OutputFormatter used for creating runtime reports
- * from a load application
+ * is an extension of OutputFormatter used for formatting runtime reports
+ * from a load application using a standard mgi report format
  * @has a Configurator for reading configuration settings
  * @does formats output to meet MGI reporting standards
  * @abstract the format method must be implemented at the base class level
@@ -43,6 +43,8 @@ public abstract class MGIReportFormatter implements OutputFormatter
      * run processes prior to formatting the output
      * @assumes nothing
      * @effects empty method call which can be overriden by the base class
+     * @throws IOUException thrown if there is an error accessing the
+     * file system
      */
     public void preprocess() throws IOUException
     {
@@ -76,10 +78,23 @@ public abstract class MGIReportFormatter implements OutputFormatter
      */
     public void postprocess() {}
 
+    /**
+     * get the names of columns for this report
+     * @return the column names
+     */
     public abstract ColumnHeader[] getColumnHeaders();
 
+    /**
+     * get the report description for this report
+     * @return the report description
+     */
     public abstract String getReportDescription();
 
+    /**
+     * formats a data item
+     * @param data the data item to format
+     * @return the formatted string
+     */
     public String format(Object data)
     {
         this.linecnt++;
@@ -92,11 +107,10 @@ public abstract class MGIReportFormatter implements OutputFormatter
 
 
     /**
-     * get the html header text for this html page which calls
-     * the getStandardHeader method
+     * get the report header text
      * @assumes nothing
      * @effects nothing
-     * return the html header text
+     * @return the report header text
      */
     public String getHeader()
     {
@@ -122,12 +136,12 @@ public abstract class MGIReportFormatter implements OutputFormatter
     }
 
     /**
-     * get the standard html header text for this html page
+     * get the standard report header text
      * @assumes nothing
      * @effects nothing
-     * return the standard html header text
+     * @return the standard report header
      */
-    public String getStandardHeader()
+    protected String getStandardHeader()
     {
         String newline = System.getProperty("line.separator");
         SimpleDateFormat formatter =
@@ -150,7 +164,7 @@ public abstract class MGIReportFormatter implements OutputFormatter
      * get the trailer text for this report
      * @assumes nothing
      * @effects nothing
-     * return the trailer text
+     * @return the trailer text
      */
     public String getTrailer()
     {
@@ -158,12 +172,12 @@ public abstract class MGIReportFormatter implements OutputFormatter
     }
 
     /**
-     * get the trailer text for this report
+     * get the standard trailer text for this report
      * @assumes nothing
      * @effects nothing
-     * return the trailer text
+     * @return the standard trailer text
      */
-    public String getStandardTrailer()
+    protected String getStandardTrailer()
     {
         String newline = System.getProperty("line.separator");
         String trailer = "(" + linecnt + " rows affected)" + newline +
@@ -199,7 +213,7 @@ public abstract class MGIReportFormatter implements OutputFormatter
      * return the string 'rpt' to be used as the report name sufix
      * @assumes nothing
      * @effects nothing
-     * return the string 'rpt'
+     * @return the string 'rpt'
      */
 
     public String getFileSuffix()
@@ -207,11 +221,30 @@ public abstract class MGIReportFormatter implements OutputFormatter
         return "rpt";
     }
 
+    /**
+     *
+     * is a class which represents a column header
+     * @has a column name and a column width
+     * @does nothing
+     * @author M Walker
+     * @version 1.0
+     */
     public class ColumnHeader
     {
+        /**
+         * name of the column
+         */
         public String name = null;
+        /**
+         * the column width
+         */
         public int size;
 
+        /**
+         * constructor
+         * @param name the name of the column
+         * @param width the width of the column
+         */
         public ColumnHeader(String name, int width)
         {
             this.name = name;
