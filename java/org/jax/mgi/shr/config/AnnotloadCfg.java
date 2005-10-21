@@ -14,7 +14,7 @@ import org.jax.mgi.shr.log.LoggerFactory;
 
 
 
-public class CommandsCfg extends Configurator {
+public class AnnotloadCfg extends Configurator {
 
     private String DEFAULT_ANNOTLOAD_PATH =
         "/usr/local/mgi/live/dataload/annotload/annotload.py";
@@ -27,7 +27,7 @@ public class CommandsCfg extends Configurator {
    * configuration file
    */
 
-  public CommandsCfg() throws ConfigException {
+  public AnnotloadCfg() throws ConfigException {
     super();
   }
 
@@ -39,38 +39,64 @@ public class CommandsCfg extends Configurator {
    * @throws ConfigException throws if there is a configuration error
    */
 
-  public CommandsCfg(String pParameterPrefix) throws ConfigException {
+  public AnnotloadCfg(String pParameterPrefix) throws ConfigException {
     super();
     super.parameterPrefix = pParameterPrefix;
   }
 
+  /**
+   * get whether or not to prevent bcping the results into the database. The
+   * default is false.
+   * @return true if the bcp should be prevented, false otherwise
+   * @throws ConfigException thrown if there is an error reading the
+   * boolean value from the configuration
+   */
   public Boolean getOkToPreventAnnotLoadUpdate() throws ConfigException
   {
-      return super.getConfigBoolean("CMD_OK_TO_PREVENT_ANNOTLOAD_UPDATE",
+      return super.getConfigBoolean("OK_TO_PREVENT_ANNOTLOAD_UPDATE",
                                     new Boolean(false));
   }
 
-
-  public String getAnnotLoadPath() throws ConfigException
+  /**
+   * get the command path for the annotload. The default value is
+   * usr/local/mgi/live/dataload/annotload/annotload.py
+   * @return the command path name
+   */
+  public String getAnnotLoadPath()
   {
-      return super.getConfigString("CMD_ANNOTLOAD_PATH",
+      return super.getConfigString("ANNOTLOAD_PATH",
                                         DEFAULT_ANNOTLOAD_PATH);
   }
 
-  public String getAnnotLoadMode() throws ConfigException
+  /**
+   * get the mode of the annotload. The default is 'new'. See annotload
+   * documentation for more details.
+   * @return the mode
+   */
+  public String getAnnotLoadMode()
   {
-      return super.getConfigString("CMD_ANNOTLOAD_MODE",
+      return super.getConfigString("ANNOTLOAD_MODE",
                                         DEFAULT_ANNOTLOAD_MODE);
   }
 
+  /**
+   * get the annotation type.
+   * @return the annotation type
+   * @throws ConfigException thrown if this parameter is not set
+   */
   public String getAnnotLoadType() throws ConfigException
   {
-      return super.getConfigString("CMD_ANNOTLOAD_TYPE");
+      return super.getConfigString("ANNOTLOAD_TYPE");
   }
 
+  /**
+   * get the annot load jnumber
+   * @return the jnumber
+   * @throws ConfigException thrown if this value is not set
+   */
   public String getAnnotLoadReference() throws ConfigException
   {
-      return super.getConfigString("CMD_ANNOTLOAD_JNUMBER");
+      return super.getConfigString("ANNOTLOAD_JNUMBER");
   }
 
 
