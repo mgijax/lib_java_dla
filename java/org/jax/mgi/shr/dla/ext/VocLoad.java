@@ -42,6 +42,8 @@ public class VocLoad extends AbstractCommand {
      * constructor
      * @param filename the name of the file containing the input data for the
      * vocload command
+     * @param sqlMgr the SQLDataManager to use for obtaining a database to
+     * load into
      * @throws ConfigException thrown if there is an error accessing the
      * configuration
      */
@@ -57,6 +59,10 @@ public class VocLoad extends AbstractCommand {
      * constructor
      * @param filename the name of the file containing the input data for the
      * vocload command
+     * @param sqlMgr the SQLDataManager to use for obtaining a database to
+     * load into
+     * @param config configurator for accessing a subset of configuration
+     * parameters using parameter prefixing
      * @throws ConfigException thrown if there is an error accessing the
      * configuration
      */
@@ -73,6 +79,8 @@ public class VocLoad extends AbstractCommand {
      * get the command line for executing the vocload. This is called by the
      * super class during the run() method
      * @return the command line string
+     * @throws ConfigException thrown if there is an error accessing the
+     * configuration
      */
     protected String getCommandLine()
     throws ConfigException
@@ -89,51 +97,94 @@ public class VocLoad extends AbstractCommand {
         return cmd;
     }
 
+    /**
+     * set the path for the vocload command
+     * @param path the path of the vocload command
+     */
     public void setCommandPath(String path)
     {
         this.path = path;
     }
 
+    /**
+     * set the name of the RCD file to use
+     * @param rcdfile the name of th ercd file
+     */
     public void setRCDFile(String rcdfile)
     {
         this.rcdfile = rcdfile;
     }
 
+    /**
+     * set the name of the vocabulary to load
+     * @param vocabName the name of the vocabulary
+     */
     public void setVocabName(String vocabName)
     {
         this.vocabName = vocabName;
     }
 
+    /**
+     * get whether or not to prevent the vocload from bcping the reulst into
+     * the database.
+     * @param bool thue if results should be bcped into the database, false
+     * otherwise.
+     */
     public void setOkToPreventUpdate(Boolean bool)
     {
         this.okToPreventUpdate = bool;
     }
 
+    /**
+     * set whether this is a full load or not
+     * @param bool true if this is a full load, false otherwise
+     */
     public void setIsFull(Boolean bool)
     {
         this.okToPreventUpdate = bool;
     }
 
+    /**
+     * get the command path for the vocload
+     * @return the command path
+     */
     public String getCommandPath()
     {
         return this.path;
     }
 
+    /**
+     * get the rcd file to use
+     * @return the rcd file
+     */
     public String getRCDFile()
     {
         return this.rcdfile;
     }
 
+    /**
+     * get the name of the vocabulary to load
+     * @return the name of the vocabulary
+     */
     public String getVocabName()
     {
         return this.vocabName;
     }
 
+    /**
+     * get whether or not to prevent the command from bcping the results into
+     * the database
+     * @return true if the reulst should be bcped in, false otherwise
+     */
     public Boolean getOkToPreventUpdate()
     {
         return this.okToPreventUpdate;
     }
 
+    /**
+     * get whether or this is a full vocabulary load
+     * @return true if it is a full vocabulary load, false otherwise
+     */
     public Boolean getIsFull()
     {
         return this.isFull;

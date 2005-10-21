@@ -84,7 +84,7 @@ public abstract class HTMLFormatter implements OutputFormatter
      * get the title of the html page
      * @assumes nothing
      * @effects nothing
-     * return the title of the html page
+     * @return the title of the html page
      */
     public String getPageTitle()
     {
@@ -95,7 +95,7 @@ public abstract class HTMLFormatter implements OutputFormatter
      * get the name of the web server for making calls to the MGD database
      * @assumes nothing
      * @effects nothing
-     * return the name of the web server
+     * @return the name of the web server
      */
     public String getWebServerURL()
     {
@@ -107,7 +107,7 @@ public abstract class HTMLFormatter implements OutputFormatter
      * the getStandardHeader method
      * @assumes nothing
      * @effects nothing
-     * return the html header text
+     * @return the html header text
      */
     public String getHeader()
     {
@@ -118,7 +118,7 @@ public abstract class HTMLFormatter implements OutputFormatter
      * get the standard html header text for this html page
      * @assumes nothing
      * @effects nothing
-     * return the standard html header text
+     * @return the standard html header text
      */
     public String getStandardHeader()
     {
@@ -134,7 +134,7 @@ public abstract class HTMLFormatter implements OutputFormatter
      * get the html trailer text for this html page
      * @assumes nothing
      * @effects nothing
-     * return the html header text
+     * @return the html header text
      */
     public String getTrailer()
     {
@@ -145,7 +145,7 @@ public abstract class HTMLFormatter implements OutputFormatter
      * return the string 'html'
      * @assumes nothing
      * @effects nothing
-     * return the string 'html'
+     * @return the string 'html'
      */
     public String getFileSuffix()
     {

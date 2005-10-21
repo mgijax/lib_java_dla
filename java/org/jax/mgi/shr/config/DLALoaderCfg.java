@@ -99,6 +99,8 @@ public class DLALoaderCfg extends Configurator {
    * @assumes nothing
    * @effects nothing
    * @return true if ok to only run post report formatters, false otherwise
+   * @throws ConfigException thrown if there is an error reading boolean
+   * values from the configuration file
    */
   public Boolean getOkToFormatReportsOnly()
   throws ConfigException
@@ -106,6 +108,11 @@ public class DLALoaderCfg extends Configurator {
       return getConfigBoolean("DLA_FORMAT_REPORTS_ONLY", new Boolean(false));
   }
 
+  /**
+   * get the reports directory name from the configuration file designated as
+   * "RPTDIR"
+   * @return the reports directory name
+   */
   public String getReportsDir()
   {
       return getConfigString("RPTDIR", DEFAULT_REPORTDIR);
