@@ -12,6 +12,16 @@ import org.jax.mgi.shr.ioutils.IOUException;
 import org.jax.mgi.shr.ioutils.InterpretException;
 import org.jax.mgi.shr.config.ConfigException;
 
+/**
+ * A Representation of the iproclass XML from PIR which contains data from
+ * the PIRSF project currently being used in the pirsfload
+ * @has a pointer to the input file
+ * @does provides an itertaor to iterate over PIRSFSuperFamily objects
+ * from the input file
+ * @company The Jackson Laboratory
+ * @author M Walker
+ */
+
 
 public class PIRSFInputFile extends InputXMLDataFile
 {
@@ -19,28 +29,66 @@ public class PIRSFInputFile extends InputXMLDataFile
     private String TAG =  "iProClassEntry";
     private String filename = null;
 
+    /**
+     * default constructor which obtains the name of the input file from
+     * the configuration
+     * @throws ConfigException thrown if there is an error accessing
+     * the configuration
+     * @throws IOUException thrown if there is an error accessing the
+     * file system
+     */
     public PIRSFInputFile() throws ConfigException, IOUException
     {
         super();
         this.filename = super.getFilename();
     }
 
-
+    /**
+     * constructor which takes the name of the input file as an argument
+     * @param filename the name of the input file
+     * @throws ConfigException thrown if there is an error accessing
+     * the configuration
+     * @throws IOUException thrown if there is an error accessing the
+     * file system
+     */
     public PIRSFInputFile(String filename) throws ConfigException, IOUException
     {
         super(filename);
         this.filename = filename;
     }
 
+    /**
+     * get the iterator for this file
+     * @return an XMLDataIterator instance which provideds iteration over
+     * PIRSFSuperFamily objects found within the file
+     */
     public XMLDataIterator getIterator()
     {
         return super.getIterator(TAG, new PIRSFInterpreter());
     }
 
+    /**
+     * The XMLDataInterpreter for interpreting instances of PIRSFSuperFamily
+     * objects based on the input file
+     * @has nothing
+     * @does implements the XMLDataInterpreter interface to interpret input
+     * xml data as PIRSFSuperFamily instances
+     * @company The Jackson Laboratory
+     * @author M Walker
+     */
+
     public class PIRSFInterpreter
         implements XMLDataInterpreter
     {
         private String TARGET_SOURCE = "Mus musculus(house mouse)";
+        /**
+         * interprets the xml input as a PIRSFSuperFamily instance
+         * @param it the XMLTagIterator from which to obtain the xml data used
+         * to create the PIRSFSuperFamily instance
+         * @return the newly created PIRSFSuperFamily instance
+         * @throws InterpretException thrown if there is an error during
+         * interpreteration
+         */
         public Object interpret(XMLTagIterator it)
         throws InterpretException
         {
@@ -114,21 +162,72 @@ public class PIRSFInputFile extends InputXMLDataFile
 
     }
 
+    /**
+     * A plain old java object for storing PIRSF superfamily information
+     * as obtained from the iproclass input file from PIR. The input file has
+     * multiple entries for any given superfamily. This class represents one
+     * record from the input file, not an aggregrate for the entire superfamily.
+     * @has instance variables pertaining to PIR superfamilies
+     * @does nothing
+     * @company The Jackson Laboratory
+     * @author M Walker
+     */
+
     public class PIRSFSuperFamily
       {
+          /**
+           * the record id from the iproclass data file
+           */
         public String recordID = "unset";
+        /**
+         * the mgi id
+         */
         public String mgiID = "unset";
+        /**
+         * the source organism
+         */
         public String source = "unset";
+        /**
+         * the Entrez Gene id
+         */
         public String locusID = "unset";
+        /**
+         * the Entrez Gene name
+         */
         public String locusName = "unset";
+        /**
+         * the pir id
+         */
         public String pirID = "unset";
+        /**
+         * the pir name
+         */
         public String pirName = "unset";
+        /**
+         * the PIRSF superfamily id which we load into the database
+         */
         public String pirsfID = "unset";
+        /**
+         * the PIRSF superfamily name which we load into the database
+         */
         public String pirsfName = "unset";
+        /**
+         * the refseq ids associated to this superfamily record
+         */
         public HashSet refseqID = new HashSet();
+        /**
+         * the tremble ids associated to this superfamily record
+         */
         public HashSet trembl = new HashSet();
+        /**
+         * the swissprot ids associated to this superfamily record
+         */
         public HashSet sprot = new HashSet();
 
+        /**
+         * override of the toString() method in the Object class
+         * @return a string representation of this instance
+         */
         public String toString()
         {
             return recordID + "\t" + mgiID + "\t" + source + "\t" +
@@ -138,6 +237,10 @@ public class PIRSFInputFile extends InputXMLDataFile
                 trembl.toString();
         }
 
+        /**
+         * override of the equals method in the Object class
+         * @return true if the object is the same as this instance
+         */
         public boolean equals(Object o)
         {
             if (!(o instanceof PIRSFSuperFamily))
@@ -149,6 +252,10 @@ public class PIRSFInputFile extends InputXMLDataFile
                 return false;
         }
 
+        /**
+         * override of the hashCode() method in the Object class
+         * @return a hashcode representation of this instance
+         */
         public int hashCode()
         {
             return this.pirsfID.hashCode();
