@@ -13,7 +13,7 @@ import org.jax.mgi.shr.ioutils.InterpretException;
 import org.jax.mgi.shr.config.ConfigException;
 
 /**
- * A Representation of the iproclass XML from PIR which contains data from
+ * A Representation of the iproclass XML file from PIR which contains data from
  * the PIRSF project currently being used in the pirsfload
  * @has a pointer to the input file
  * @does provides an itertaor to iterate over PIRSFSuperFamily objects
@@ -58,7 +58,8 @@ public class PIRSFInputFile extends InputXMLDataFile
     }
 
     /**
-     * get the iterator for this file
+     * get the iterator for this file which will iterate over
+     * PIRSFSuperFamily instances
      * @return an XMLDataIterator instance which provideds iteration over
      * PIRSFSuperFamily objects found within the file
      */
