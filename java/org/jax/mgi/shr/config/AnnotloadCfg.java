@@ -46,20 +46,22 @@ public class AnnotloadCfg extends Configurator {
 
   /**
    * get whether or not to prevent bcping the results into the database. The
-   * default is false.
+   * default is false. The parameter name read from the configuration is
+   * ANNOTLOAD_OK_TO_PREVENT_UPDATE.
    * @return true if the bcp should be prevented, false otherwise
    * @throws ConfigException thrown if there is an error reading the
    * boolean value from the configuration
    */
   public Boolean getOkToPreventAnnotLoadUpdate() throws ConfigException
   {
-      return super.getConfigBoolean("OK_TO_PREVENT_ANNOTLOAD_UPDATE",
+      return super.getConfigBoolean("ANNOTLOAD_OK_TO_PREVENT_UPDATE",
                                     new Boolean(false));
   }
 
   /**
    * get the command path for the annotload. The default value is
-   * usr/local/mgi/live/dataload/annotload/annotload.py
+   * usr/local/mgi/live/dataload/annotload/annotload.py. The parameter name
+   * read from the configuration is ANNOTLOAD_PATH.
    * @return the command path name
    */
   public String getAnnotLoadPath()
@@ -70,7 +72,8 @@ public class AnnotloadCfg extends Configurator {
 
   /**
    * get the mode of the annotload. The default is 'new'. See annotload
-   * documentation for more details.
+   * documentation for more details. The parameter name read from the
+   * configuration is ANNOTLOAD_MODE.
    * @return the mode
    */
   public String getAnnotLoadMode()
@@ -80,7 +83,8 @@ public class AnnotloadCfg extends Configurator {
   }
 
   /**
-   * get the annotation type.
+   * get the annotation type. The parameter name read from the configuration is
+   * ANNOTLOAD_TYPE. There is no default value.
    * @return the annotation type
    * @throws ConfigException thrown if this parameter is not set
    */
@@ -90,7 +94,8 @@ public class AnnotloadCfg extends Configurator {
   }
 
   /**
-   * get the annot load jnumber
+   * get the annot load jnumber. The parameter name read from the
+   * configuration is ANNOTLOAD_JNUMBER. There is no default value.
    * @return the jnumber
    * @throws ConfigException thrown if this value is not set
    */
