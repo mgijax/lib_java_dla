@@ -1,3 +1,8 @@
+TAG: lib_java_dla-tr7062-1 
+DATE: 11/09/2005
+STAFF: mbw
+CHANGES: modified org.jax.mgi.dbs.mgd.loads.Seq package to suit SEQ_Sequence table changes
+
 TAG: lib_java_dla-tr7062-BP
 DATE: 11/09/2005
 STAFF: mbw
