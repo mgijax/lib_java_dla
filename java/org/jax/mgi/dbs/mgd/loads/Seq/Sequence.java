@@ -45,6 +45,7 @@ import org.jax.mgi.shr.dla.loader.seq.*;
 public class Sequence {
     // the sequence
     private SEQ_SequenceSeqloaderDAO sequenceDAO;
+    private SEQ_Sequence_RawDAO sequence_RawDAO;
 
     // the stream used to accomplish the database inserts, updates, deletes
     private SQLStream stream;
@@ -156,6 +157,18 @@ public class Sequence {
     public SEQ_SequenceState getSequenceState() {
         return ((SEQ_SequenceDAO)sequenceDAO.clone()).getState();
     }
+
+    /**
+     * gets a *copy* of the sequence_raw state
+     * @assumes Nothing
+     * @effects Nothing
+     * @return state a *copy* of the sequence_raw state
+     */
+
+    public SEQ_Sequence_RawState getSequenceRawState() {
+        return ((SEQ_Sequence_RawDAO)sequence_RawDAO.clone()).getState();
+    }
+
 
     /**
      * sets the primary accession of a new sequence
@@ -577,6 +590,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.4  2005/03/29 17:10:44  sc
+//  tr5421
+//
 //  Revision 1.3.2.1  2005/03/02 21:16:13  sc
 //  updated the getState() method to return a *copy* of the SequenceState
 //

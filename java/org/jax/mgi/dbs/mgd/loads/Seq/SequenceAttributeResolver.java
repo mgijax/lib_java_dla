@@ -14,6 +14,7 @@ import org.jax.mgi.dbs.mgd.lookup.SequenceProviderKeyLookup;
 
 import org.jax.mgi.dbs.mgd.VocabularyTypeConstants;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_Sequence_RawState;
 
 
  /**
@@ -96,17 +97,7 @@ public class SequenceAttributeResolver {
       state.setSequenceQualityKey(qualityLookup.lookup(rawAttributes.getQuality()));
       state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
       state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
-      //
-      // cleanse raw organisms
-      // Needed for sequences that may have >1 organism e.g. SwissProt
-      String organisms = rawAttributes.getRawOrganisms();
-      if (organisms != null) {
-          organisms = organisms.replaceAll("'", "''");
-          if (organisms.length() > 255) {
-              organisms = organisms.substring(0,254);
-          }
-      }
-      state.setRawOrganism(organisms);
+
 
       //
       // cleanse decription data
@@ -119,6 +110,52 @@ public class SequenceAttributeResolver {
         }
       }
       state.setDescription(desc);
+
+
+      // copy remaining raw attributes to the sequence state
+      state.setLength(new Integer(rawAttributes.getLength()));
+      state.setVersion(rawAttributes.getVersion());
+      state.setDivision(rawAttributes.getDivision());
+      state.setVirtual(rawAttributes.getVirtual());
+      state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
+      state.setSeqrecordDate(rawAttributes.getSeqRecDate());
+      state.setSequenceDate(rawAttributes.getSeqDate());
+      return state;
+
+    }
+    /**
+      * resolves a SequenceRawAttributes object to a SEQ_SequenceState
+      * @assumes Nothing
+      * @effects Nothing
+      * @param rawAttributes the SequenceRawAttributes object to resolve
+      * @return sequenceState A SEQ_SequenceState
+      * @throws KeyNotFoundException if any of the lookups fail to find a key
+      * @throws TranslationException if type or provider lookups have errors using
+      * their translators
+      * @throws DBException - since these lookups are full cache this exception
+      *     is not thrown
+      * @throws CacheException if error doing lookup
+      * @throws ConfigException - if error doing lookup
+      *
+      */
+    public SEQ_Sequence_RawState resolveRawAttributes(
+        SequenceRawAttributes rawAttributes) throws KeyNotFoundException,
+        TranslationException, DBException, CacheException, ConfigException {
+      // the state we are building
+      SEQ_Sequence_RawState state = new SEQ_Sequence_RawState();
+
+      //
+      // cleanse raw organisms
+      // Needed for sequences that may have >1 organism e.g. SwissProt
+      String organisms = rawAttributes.getRawOrganisms();
+      if (organisms != null) {
+          organisms = organisms.replaceAll("'", "''");
+          if (organisms.length() > 255) {
+              organisms = organisms.substring(0,254);
+          }
+      }
+      state.setRawOrganism(organisms);
+
       //
       // cleanse library
       //
@@ -187,20 +224,17 @@ public class SequenceAttributeResolver {
       state.setRawCellLine(cell);
 
       // copy remaining raw attributes to the sequence state
-      state.setLength(new Integer(rawAttributes.getLength()));
-      state.setVersion(rawAttributes.getVersion());
-      state.setDivision(rawAttributes.getDivision());
-      state.setVirtual(rawAttributes.getVirtual());
       state.setRawType(rawAttributes.getType());
-      state.setNumberOfOrganisms(new Integer(rawAttributes.getNumberOfOrganisms()));
-      state.setSeqrecordDate(rawAttributes.getSeqRecDate());
-      state.setSequenceDate(rawAttributes.getSeqDate());
       return state;
 
     }
+
 }
 
 //  $Log$
+//  Revision 1.2  2004/12/07 20:09:46  mbw
+//  merged tr6047 onto the trunk
+//
 //  Revision 1.1.2.1  2004/11/05 16:10:15  mbw
 //  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
 //

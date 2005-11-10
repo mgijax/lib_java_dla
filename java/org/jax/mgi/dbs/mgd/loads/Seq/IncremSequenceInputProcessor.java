@@ -16,6 +16,7 @@ import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSException;
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_Sequence_RawState;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.shr.exception.MGIException;
@@ -534,11 +535,13 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         String inputRawOrganism = rawSeq.getRawOrganisms();
         String inputRawLibrary = rawSeq.getLibrary();
         String primarySeqid = seqInput.getPrimaryAcc().getAccID();
-        SEQ_SequenceState existingSeqState = existingSequence.getSequenceState();
-
+        SEQ_SequenceState existingSeqState =
+            existingSequence.getSequenceState();
+        SEQ_Sequence_RawState existingSeqRawState =
+            existingSequence.getSequenceRawState();
         // get existing values needed to accomplish update
-        String existingRawOrganism = existingSeqState.getRawOrganism();
-        String existingRawLibrary = existingSeqState.getRawLibrary();
+        String existingRawOrganism = existingSeqRawState.getRawOrganism();
+        String existingRawLibrary = existingSeqRawState.getRawLibrary();
         Integer existingSeqKey = existingSequence.getSequenceKey();
 
         // if input rawOrganism and existing rawOrganism don't match - QC
@@ -558,7 +561,7 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
 
           // obtain old raw library name for call to MSProcessor
           String oldRawLibrary =
-              existingSequence.getSequenceState().getRawLibrary();
+              existingSequence.getSequenceRawState().getRawLibrary();
 
           // update state of existing sequence passing input sequence state
           existingSequence.updateSequenceState(inputSequenceState);

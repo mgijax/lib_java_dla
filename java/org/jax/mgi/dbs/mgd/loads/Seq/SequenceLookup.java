@@ -147,14 +147,14 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence.version + ", " +
             " s." + MGD.seq_sequence.division + ", " +
             " s." + MGD.seq_sequence.virtual + ", " +
-            " s." + MGD.seq_sequence.rawtype + ", " +
-            " s." + MGD.seq_sequence.rawlibrary + ", " +
-            " s." + MGD.seq_sequence.raworganism + ", " +
-            " s." + MGD.seq_sequence.rawstrain + ", " +
-            " s." + MGD.seq_sequence.rawtissue + ", " +
-            " s." + MGD.seq_sequence.rawage + ", " +
-            " s." + MGD.seq_sequence.rawsex + ", " +
-            " s." + MGD.seq_sequence.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtype + ", " +
+            " sr." + MGD.seq_sequence_raw.rawlibrary + ", " +
+            " sr." + MGD.seq_sequence_raw.raworganism + ", " +
+            " sr." + MGD.seq_sequence_raw.rawstrain + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtissue + ", " +
+            " sr." + MGD.seq_sequence_raw.rawage + ", " +
+            " sr." + MGD.seq_sequence_raw.rawsex + ", " +
+            " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -199,6 +199,7 @@ public class SequenceLookup {
             MGD.mgi_reference_assoc._name + " m, " +
             MGD.seq_source_assoc._name + " sa, " +
             MGD.seq_sequence._name + " s,  " +
+            MGD.seq_sequence_raw._name + " sr,  " +
             MGD.acc_accession._name + " aa " +
             //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
@@ -207,6 +208,10 @@ public class SequenceLookup {
             " aa." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key +
+            " AND s." + MGD.seq_sequence._sequence_key + " = " +
+            " sr." + MGD.seq_sequence_raw._sequence_key +
+            " AND s." + MGD.seq_sequence._sequence_key + " = " +
+            " sr." + MGD.seq_sequence_raw._sequence_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " m." + MGD.mgi_reference_assoc._object_key +
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
@@ -285,14 +290,14 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence.version + ", " +
             " s." + MGD.seq_sequence.division + ", " +
             " s." + MGD.seq_sequence.virtual + ", " +
-            " s." + MGD.seq_sequence.rawtype + ", " +
-            " s." + MGD.seq_sequence.rawlibrary + ", " +
-            " s." + MGD.seq_sequence.raworganism + ", " +
-            " s." + MGD.seq_sequence.rawstrain + ", " +
-            " s." + MGD.seq_sequence.rawtissue + ", " +
-            " s." + MGD.seq_sequence.rawage + ", " +
-            " s." + MGD.seq_sequence.rawsex + ", " +
-            " s." + MGD.seq_sequence.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtype + ", " +
+            " sr." + MGD.seq_sequence_raw.rawlibrary + ", " +
+            " sr." + MGD.seq_sequence_raw.raworganism + ", " +
+            " sr." + MGD.seq_sequence_raw.rawstrain + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtissue + ", " +
+            " sr." + MGD.seq_sequence_raw.rawage + ", " +
+            " sr." + MGD.seq_sequence_raw.rawsex + ", " +
+            " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -336,6 +341,7 @@ public class SequenceLookup {
             MGD.acc_accession._name + " a, " +
             MGD.seq_source_assoc._name + " sa, " +
             MGD.seq_sequence._name + " s,  " +
+            MGD.seq_sequence_raw._name + " sr,  " +
             MGD.acc_accession._name + " aa " +
             //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
@@ -344,6 +350,8 @@ public class SequenceLookup {
             " aa." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key  +
+            " AND s." + MGD.seq_sequence._sequence_key + " = " +
+            " sr." + MGD.seq_sequence_raw._sequence_key +
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -428,14 +436,14 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence.version + ", " +
             " s." + MGD.seq_sequence.division + ", " +
             " s." + MGD.seq_sequence.virtual + ", " +
-            " s." + MGD.seq_sequence.rawtype + ", " +
-            " s." + MGD.seq_sequence.rawlibrary + ", " +
-            " s." + MGD.seq_sequence.raworganism + ", " +
-            " s." + MGD.seq_sequence.rawstrain + ", " +
-            " s." + MGD.seq_sequence.rawtissue + ", " +
-            " s." + MGD.seq_sequence.rawage + ", " +
-            " s." + MGD.seq_sequence.rawsex + ", " +
-            " s." + MGD.seq_sequence.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtype + ", " +
+            " sr." + MGD.seq_sequence_raw.rawlibrary + ", " +
+            " sr." + MGD.seq_sequence_raw.raworganism + ", " +
+            " sr." + MGD.seq_sequence_raw.rawstrain + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtissue + ", " +
+            " sr." + MGD.seq_sequence_raw.rawage + ", " +
+            " sr." + MGD.seq_sequence_raw.rawsex + ", " +
+            " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -467,10 +475,13 @@ public class SequenceLookup {
             MGD.mgi_reference_assoc._name + " m, " +
             MGD.seq_source_assoc._name + " sa, " +
             MGD.seq_sequence._name + " s " +
+            MGD.seq_sequence_raw._name + " sr,  " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key +
+            " AND s." + MGD.seq_sequence._sequence_key + " = " +
+            " sr." + MGD.seq_sequence_raw._sequence_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " m." + MGD.mgi_reference_assoc._object_key +
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
@@ -552,14 +563,14 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence.version + ", " +
             " s." + MGD.seq_sequence.division + ", " +
             " s." + MGD.seq_sequence.virtual + ", " +
-            " s." + MGD.seq_sequence.rawtype + ", " +
-            " s." + MGD.seq_sequence.rawlibrary + ", " +
-            " s." + MGD.seq_sequence.raworganism + ", " +
-            " s." + MGD.seq_sequence.rawstrain + ", " +
-            " s." + MGD.seq_sequence.rawtissue + ", " +
-            " s." + MGD.seq_sequence.rawage + ", " +
-            " s." + MGD.seq_sequence.rawsex + ", " +
-            " s." + MGD.seq_sequence.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtype + ", " +
+            " sr." + MGD.seq_sequence_raw.rawlibrary + ", " +
+            " sr." + MGD.seq_sequence_raw.raworganism + ", " +
+            " sr." + MGD.seq_sequence_raw.rawstrain + ", " +
+            " sr." + MGD.seq_sequence_raw.rawtissue + ", " +
+            " sr." + MGD.seq_sequence_raw.rawage + ", " +
+            " sr." + MGD.seq_sequence_raw.rawsex + ", " +
+            " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -590,11 +601,14 @@ public class SequenceLookup {
             MGD.acc_accession._name + " a, " +
             MGD.seq_source_assoc._name + " sa, " +
             MGD.seq_sequence._name + " s " +
+            MGD.seq_sequence_raw._name + " sr,  " +
             //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
             " sa." + MGD.seq_source_assoc._sequence_key +
+            " AND s." + MGD.seq_sequence._sequence_key + " = " +
+            " sr." + MGD.seq_sequence_raw._sequence_key +
             " AND a." + MGD.acc_accession._logicaldb_key + " = ?" +
             " AND a." + MGD.acc_accession._mgitype_key + " = " +
             MGITypeConstants.SEQUENCE +
@@ -808,6 +822,7 @@ public class SequenceLookup {
             // declare the data components
             Sequence sequence = null;
             SEQ_SequenceState seqState = null;
+            SEQ_Sequence_RawState seqRawState = null;
             ACC_AccessionState accState = null;
             sourceSet = new HashSet();
             refAssocKeySet = new HashSet();
@@ -833,14 +848,14 @@ public class SequenceLookup {
               seqState.setVersion(rowData.SEQ_version);
               seqState.setDivision(rowData.SEQ_division);
               seqState.setVirtual(rowData.SEQ_virtual);
-              seqState.setRawType(rowData.SEQ_rawType);
-              seqState.setRawLibrary(rowData.SEQ_rawLibrary);
-              seqState.setRawOrganism(rowData.SEQ_rawOrganism);
-              seqState.setRawStrain(rowData.SEQ_rawStrain);
-              seqState.setRawTissue(rowData.SEQ_rawTissue);
-              seqState.setRawAge(rowData.SEQ_rawAge);
-              seqState.setRawSex(rowData.SEQ_rawSex);
-              seqState.setRawCellLine(rowData.SEQ_rawCellLine);
+              seqRawState.setRawType(rowData.SEQ_rawType);
+              seqRawState.setRawLibrary(rowData.SEQ_rawLibrary);
+              seqRawState.setRawOrganism(rowData.SEQ_rawOrganism);
+              seqRawState.setRawStrain(rowData.SEQ_rawStrain);
+              seqRawState.setRawTissue(rowData.SEQ_rawTissue);
+              seqRawState.setRawAge(rowData.SEQ_rawAge);
+              seqRawState.setRawSex(rowData.SEQ_rawSex);
+              seqRawState.setRawCellLine(rowData.SEQ_rawCellLine);
               seqState.setNumberOfOrganisms(rowData.SEQ_numberOfOrganisms);
               seqState.setSeqrecordDate(rowData.SEQ_seqrecord_date);
               seqState.setSequenceDate(rowData.SEQ_sequence_date);
