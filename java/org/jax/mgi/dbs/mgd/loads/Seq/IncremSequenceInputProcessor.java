@@ -557,7 +557,10 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         }
        else {
           // resolve raw sequence
-          SEQ_SequenceState inputSequenceState = resolveRawSequence(rawSeq);
+          SEQ_SequenceState inputSequenceState =
+              resolveRawSequenceToSequenceState(rawSeq);
+          SEQ_Sequence_RawState inputSequenceRawState =
+              resolveRawSequenceToSequenceRawState(rawSeq);
 
           // obtain old raw library name for call to MSProcessor
           String oldRawLibrary =
@@ -565,6 +568,7 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
 
           // update state of existing sequence passing input sequence state
           existingSequence.updateSequenceState(inputSequenceState);
+          existingSequence.updateSequenceRawState(inputSequenceRawState);
 
           // process Molecular Source - note that MSProcessor handles
           // sequence to source reassociations based on collapsing
