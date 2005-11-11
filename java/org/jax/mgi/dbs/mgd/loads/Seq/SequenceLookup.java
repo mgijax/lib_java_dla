@@ -39,9 +39,10 @@ import java.sql.Array;
  * @has
  *   <UL>
  *   <LI> a query and an interpretor to build a Sequence object
- *   <LI> a Sequence object has a SEQ_SequenceDAO, 1 or more SEQ_Source_AssocDAO's,
- *        0 or more MGI_Reference_AssocDAO's, 1 ACC_AccessionDAO for the primary
- *        seqid, 0 or more ACC_AccessionDAO's for any secondary seqids
+ *   <LI> a Sequence object has a SEQ_SequenceDAO, 1 or more
+ *        SEQ_Source_AssocDAO's,
+ *        0 or more MGI_Reference_AssocDAO's, 1 ACC_AccessionDAO for the
+ *        primary seqid, 0 or more ACC_AccessionDAO's for any secondary seqids
  *   </UL>
  * @does
  *   <UL>
@@ -651,7 +652,8 @@ public class SequenceLookup {
          * @throws ConfigException if config error creating a SQLDataManager
          */
 
-        public SequenceLookup(SQLStream stream, int bSize) throws DBException, ConfigException {
+        public SequenceLookup(SQLStream stream, int bSize)
+            throws DBException, ConfigException {
             // the stream with which to build the Sequence
             this.stream = stream;
 
@@ -679,9 +681,10 @@ public class SequenceLookup {
     public Vector findBySeqId(Set seqIdSet, int logicalDBKey)
         throws DBException {
         int seqIdSetSize = seqIdSet.size();
-        logger.logDebug("SequenceLookup processing batch of size" + seqIdSetSize);
-        logger.logDebug("SequenceLookup looking up the followings sequences: " +
-                        seqIdSet.toString());
+        logger.logDebug("SequenceLookup processing batch of size" +
+                        seqIdSetSize);
+        logger.logDebug("SequenceLookup looking up the followings " +
+                        "sequences: " + seqIdSet.toString());
         // to hold our Sequence objects
         Vector sequenceVector = new Vector();
 
@@ -689,13 +692,14 @@ public class SequenceLookup {
         if(seqIdSet.isEmpty()) {
                return sequenceVector;
         }
-        // if 'seqIds' is not of length batchSize create a new queryWithBindParams
-        // and BindableStatement
+        // if 'seqIds' is not of length batchSize create a new
+        // queryWithBindParams and BindableStatement
         // This happens when seqIds.length() mod batchSize != 0 e.g. the last
         // batch will most likely be < batchSize
 
         if(seqIdSetSize < batchSize) {
-            logger.logDebug("SequenceLookup processing last batch of size " + seqIdSetSize);
+            logger.logDebug("SequenceLookup processing last batch of size "
+                            + seqIdSetSize);
             queryWithBindParams = addBindParams(seqIdSetSize);
             statement = sqlMgr.getBindableStatement(queryWithBindParams);
         }
@@ -866,7 +870,7 @@ public class SequenceLookup {
               // create a Sequence
               try {
                 sequence = new Sequence(seqState, new SEQ_SequenceKey(
-                    rowData.SEQ_Sequence_key), stream);
+                    rowData.SEQ_Sequence_key), seqRawState, stream);
 
                 // flag Sequence as existing
                 sequence.setIsNewSequence(false);
@@ -896,7 +900,8 @@ public class SequenceLookup {
                 // Sequence
                 createSeqSrcAssoc(sequence);
 
-                // create 2ndary accession, if there is one, and set in Sequence
+                // create 2ndary accession, if there is one, and
+                // set in Sequence
                 if (rowData.ACC2_Accession_key != null) {
                   create2ndaryAccession(sequence);
                 }
@@ -905,8 +910,8 @@ public class SequenceLookup {
                   createRefAssoc(sequence);
                 }
 
-                // get additional source, ref assoc, 2ndary accessions, and set
-                // them in the Sequence
+                // get additional source, ref assoc, 2ndary accessions,
+                // and set them in the Sequence
                 while (i.hasNext()) {
                   rowData = (RowData) i.next();
 
@@ -1021,7 +1026,8 @@ public class SequenceLookup {
          * we are building
          * @assumes Nothing
          * @effects Nothing
-         * @param sequence the Sequence for which to create a reference association
+         * @param sequence the Sequence for which to create a reference
+         * association
          */
 
         private void createRefAssoc(Sequence sequence) {
