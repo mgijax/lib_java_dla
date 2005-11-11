@@ -23,19 +23,23 @@ import org.jax.mgi.shr.dla.loader.seq.*;
      *   <UL>
      *   <LI>SEQ_SequenceDAO
      *   <LI>ACC_AccessionDAO's for its primary seqid and any 2ndary seqids
-     *   <LI>MGI_ReferenceAssocDAO's for any references associated with the sequence
+     *   <LI>MGI_ReferenceAssocDAO's for any references associated with the
+     *       sequence
      *   <LI>SEQ_SourceAssocDAO's for sources associated with the sequence
      *   <LI>Knows if its SEQ_SequenceDAO exists in MGI or is a new sequence
-     *   <LI>If the SEQ_SequenceDAO exists in MGI, knows if its state has changed
+     *   <LI>If the SEQ_SequenceDAO exists in MGI, knows if its state has
+     *       changed
      *   </UL>
      * @does
      *   <UL>
      *   <LI>creates DAO objects for Sequence, primary and 2ndary seqids,
      *       reference association(s) and source association(s).
-     *   <LI>Updates a sequence and adds new reference associations in a database
+     *   <LI>Updates a sequence and adds new reference associations in a
+     *       database
      *   <LI>Adds a sequence, its seqids, reference and source associations to
      *       a database
-     *   <LI>Provides methods to get *copies only* of States for each of its DAO's
+     *   <LI>Provides methods to get *copies only* of States for each of its
+     *       DAO's
      *   </UL>
      * @company The Jackson Laboratory
      * @author sc
@@ -64,8 +68,8 @@ public class Sequence {
     // should be 'deleted' (we'll just qc them)
     private HashSet inputRefKeySet = new HashSet();
 
-    // the current set of ref keys (Integer) for this sequence includes existing
-    // and new ref keys
+    // the current set of ref keys (Integer) for this sequence includes
+    // existing and new ref keys
     // we use this in order to avoid compare between two
     // MGI_Reference_AssocState objects
     private HashSet currentRefKeySet = new HashSet();
@@ -95,12 +99,23 @@ public class Sequence {
     // this is a new Sequence
     private SequenceUpdater seqUpdater;
 
+    // Updates the SequenceRawState object. seqRawUpdater is not initialized if
+    // this is a new Sequence
+    private SequenceRawUpdater seqRawUpdater;
+
+
     // true if this object represents a new sequence (not in the database)
     private boolean isNewSequence = true;
 
     // true if this object represents an existing object in the database and
-    // it needs to be updated
+    // the sequence state needs to be updated
     private boolean isChangedSequence = false;
+
+    // true if this object represents an existing object in the database and
+    // the sequence raw state needs to be updated
+    private boolean isChangedRawSequence = false;
+
+
 
     // true if this object represents a dummy sequence in MGI
     private boolean isDummySequence = false;
@@ -112,26 +127,30 @@ public class Sequence {
      * @assumes state does not exist in the database
      * @effects queries a database for the next sequence key
      * @param seqState a SequenceState representing a new sequence
-     * @param stream the stream which to pass the DAO objects to perform database
-     *        inserts, updates, and deletes
+     * @param stream the stream which to pass the DAO objects to perform
+     * database inserts, updates, and deletes
      * @throws ConfigException if error creating SEQ_SequenceSeqloaderDAO
      * @throws DBException if error creating SEQ_SequenceSeqloaderDAO
      */
 
-    public Sequence(SEQ_SequenceState seqState, SQLStream stream)
+    public Sequence(SEQ_SequenceState seqState,
+                    SEQ_Sequence_RawState seqRawState,
+                    SQLStream stream)
         throws ConfigException, DBException {
         this.stream = stream;
         sequenceDAO = new SEQ_SequenceSeqloaderDAO(seqState);
+        sequence_RawDAO = new SEQ_Sequence_RawDAO(seqRawState);
     }
 
    /**
-    * Constructs a Sequence object by creating a SEQ_SequenceSeqloaderDAO for 'state'
+    * Constructs a Sequence object by creating a SEQ_SequenceSeqloaderDAO
+    * for 'state'
     * @assumes state exists in the database
     * @effects queries a database (SequenceUpdater to get logicalDB key)
     * @param state a SEQ_SequenceState representing an existing sequence
     * @param key the SEQ_SequenceKey for 'state'
-    * @param stream the stream which to pass the DAO objects to perform database
-    *        inserts, updates, and deletes
+    * @param stream the stream which to pass the DAO objects to perform
+    * database inserts, updates, and deletes
     * @throws DBException if error creating SequenceUpdater
     * @throws ConfigException if error creating SequenceUpdater
     * @throws DLALoggingException if error creating SequenceUpdater
@@ -139,12 +158,16 @@ public class Sequence {
     * @throws KeyNotFoundException if error creating SequenceUpdater
     */
 
-    public Sequence(SEQ_SequenceState state, SEQ_SequenceKey key, SQLStream stream)
+    public Sequence(SEQ_SequenceState state, SEQ_SequenceKey key,
+                    SEQ_Sequence_RawState seqRawState, SQLStream stream)
         throws DBException, ConfigException, DLALoggingException,
             CacheException, KeyNotFoundException {
         this.stream = stream;
         sequenceDAO = new SEQ_SequenceSeqloaderDAO(key, state);
         seqUpdater = SequenceUpdater.getInstance();
+        SEQ_Sequence_RawKey rawKey =
+            new SEQ_Sequence_RawKey(key.getKey());
+        sequence_RawDAO = new SEQ_Sequence_RawDAO(rawKey, seqRawState);
     }
 
     /**
@@ -211,8 +234,8 @@ public class Sequence {
     }
 
     /**
-     * Adds a ACC_AccessionDAO to the set of DAO's representing secondary seqids of
-     * a new sequence
+     * Adds a ACC_AccessionDAO to the set of DAO's representing secondary
+     * seqids of a new sequence
      * @assumes Nothing
      * @effects Queries a database for the next accession key
      * @param state ACC_AccessionState representing a 2ndary id of a new
@@ -228,16 +251,18 @@ public class Sequence {
     }
 
     /**
-     * Adds a ACC_AccessionDAO to the set of DAO's representing secondary seqids of
-     * an existing sequence
+     * Adds a ACC_AccessionDAO to the set of DAO's representing secondary
+     * seqids of an existing sequence
      * @assumes Nothing
      * @effects Nothing
-     * @param accKey the ACC_AccessionKey of a 2ndary accession for an existing sequence
-     * @param accState a ACC_AccessionState representing a 2ndary accession for an
-     *        existing sequence
+     * @param accKey the ACC_AccessionKey of a 2ndary accession for an
+     * existing sequence
+     * @param accState a ACC_AccessionState representing a 2ndary accession
+     * for an existing sequence
      */
 
-    public void addAccSecondary(ACC_AccessionKey accKey, ACC_AccessionState accState) {
+    public void addAccSecondary(ACC_AccessionKey accKey,
+                                ACC_AccessionState accState) {
         secondaryAcc.add(new ACC_AccessionDAO(accKey, accState));
     }
 
@@ -275,12 +300,12 @@ public class Sequence {
      * Adds a MGI_Reference_AssocDAO representing a new reference to the set of
      * reference associations for the  sequence (if it does not already have
      * an association for the reference). Used when building a Sequence that
-     * represents a new sequence to MGI or when adding a reference to an existing
-     * sequence in MGI
+     * represents a new sequence to MGI or when adding a reference to an
+     * existing sequence in MGI
      * @assumes Nothing
      * @effects Queries a database for the next reference assoc key
-     * @param state MGI_Reference_AssocState from which to create a DAO to add to
-     *        the set of reference associations of a new sequence
+     * @param state MGI_Reference_AssocState from which to create a DAO to add
+     * to the set of reference associations of a new sequence
      * @throws ConfigException if error creating MGI_Reference_AssocDAO
      * @throws DBException if error creating MGI_Reference_AssocDAO
      */
@@ -307,18 +332,19 @@ public class Sequence {
     }
 
     /**
-     * Adds a MGI_Reference_AssocDAO to the set of reference associations if this
-     * Sequence represent an existing sequence. Used when building the sequence
-     * references from the set of references found in MGI
+     * Adds a MGI_Reference_AssocDAO to the set of reference associations if
+     * this Sequence represent an existing sequence. Used when building the
+     * sequence references from the set of references found in MGI
      * @assumes Nothing
      * @effects Nothing
      * @param key the MGI_Reference_AssocKey of a reference for an existing
      * sequence
-     * @param state MGI_Reference_AssocState from which to create a DAO to add to
-     *        the set of reference associations of an existing sequence
+     * @param state MGI_Reference_AssocState from which to create a DAO to add
+     * to the set of reference associations of an existing sequence
      */
 
-    public void addRefAssoc(MGI_Reference_AssocKey key, MGI_Reference_AssocState state) {
+    public void addRefAssoc(MGI_Reference_AssocKey key,
+                            MGI_Reference_AssocState state) {
         // add a new DAO to the set of ref associations for this sequence
         refAssociations.add(new MGI_Reference_AssocDAO(key, state));
 
@@ -369,7 +395,8 @@ public class Sequence {
          Vector refVector = new Vector(diffSetSize);
          if (diffSetSize > 0 ) {
               for (Iterator i = refAssociations.iterator(); i.hasNext();) {
-                  MGI_Reference_AssocState state = ((MGI_Reference_AssocDAO)i.next()).getState();
+                  MGI_Reference_AssocState state =
+                      ((MGI_Reference_AssocDAO)i.next()).getState();
                   if (diffSet.contains(state.getRefsKey()) ) {
                       refVector.add(state);
                   }
@@ -395,8 +422,8 @@ public class Sequence {
     }
 
     /**
-    * adds a SEQ_Source_AssocState to the set of source associations of an existing
-    *  sequence
+    * adds a SEQ_Source_AssocState to the set of source associations of an
+    * existing sequence
     * @assumes Nothing
     * @effects Nothing
     * @param key the SEQ_Source_AssocKey for an existing sequence
@@ -427,7 +454,8 @@ public class Sequence {
     }
 
     /**
-     * deletes 'delSrcAssoc' from the set of source associations of the sequence
+     * deletes 'delSrcAssoc' from the set of source associations of the
+     * sequence
      * @assumes Nothing
      * @effects Nothing
      * @param delSrcAssoc the source association to be deleted
@@ -452,10 +480,12 @@ public class Sequence {
     }
 
     /**
-     * Updates the sequence object attributes in preparation for a database update
+     * Updates the sequence object attributes in preparation for a database
+     * update
      * @assumes Nothing
      * @effects Nothing
-     * @param updateFrom - the set of attributes from which to update the sequence
+     * @param updateFrom - the set of attributes from which to update the
+     * sequence
      * @throws DBException if error querying a database for attribute history
      * @throws CacheException if error using a lookup
      */
@@ -466,6 +496,25 @@ public class Sequence {
                                 sequenceDAO.getKey().getKey(),
                                 updateFrom);
     }
+
+    /**
+     * Updates the sequence object attributes in preparation for a database
+     * update
+     * @assumes Nothing
+     * @effects Nothing
+     * @param updateFrom - the set of attributes from which to update the
+     * sequence
+     * @throws DBException if error querying a database for attribute history
+     * @throws CacheException if error using a lookup
+     */
+
+    public void updateSequenceRawState(SEQ_Sequence_RawState updateFrom)
+        throws DBException, CacheException {
+        isChangedRawSequence = seqRawUpdater.updateSeq(
+            this.sequence_RawDAO.getState(),
+            sequence_RawDAO.getKey().getKey(), updateFrom);
+    }
+
 
     /**
      * sets the isNewSequence attribute
@@ -543,7 +592,8 @@ public class Sequence {
      * Inserts and deletes 2ndary seqids.
      * @assumes Nothing
      * @effects Performs database Inserts, updates, and deletes.
-     * @throws DBException if error inserting, updating, or deleting in the database
+     * @throws DBException if error inserting, updating, or deleting in the
+     * database
      */
 
     public void sendToStream() throws DBException {
@@ -552,6 +602,7 @@ public class Sequence {
         // if bcp insert MGI_AttributeHistory
         if(isNewSequence) {
             stream.insert(sequenceDAO);
+            stream.insert(sequence_RawDAO);
             i = addAcc.iterator();
             while(i.hasNext()) {
                 stream.insert((ACC_AccessionDAO)i.next());
@@ -562,19 +613,26 @@ public class Sequence {
             }
             // If bcp trigger won't add when adding sequence
             if (stream.isBCP()) {
-                MGI_AttributeHistoryState typeHistoryState = new MGI_AttributeHistoryState();
+                MGI_AttributeHistoryState typeHistoryState =
+                    new MGI_AttributeHistoryState();
                 typeHistoryState.setObjectKey(sequenceDAO.getKey().getKey());
-                typeHistoryState.setMGITypeKey(new Integer(MGITypeConstants.SEQUENCE));
-                typeHistoryState.setColumnName(MGD.seq_sequence._sequencetype_key);
+                typeHistoryState.setMGITypeKey(
+                    new Integer(MGITypeConstants.SEQUENCE));
+                typeHistoryState.setColumnName(
+                    MGD.seq_sequence._sequencetype_key);
                 stream.insert(new MGI_AttributeHistoryDAO(typeHistoryState));
             }
         }
         // Existing sequence that needs updating - update it
-        else if (isChangedSequence ) {
-            stream.update(sequenceDAO);
+        else if (isChangedSequence || isChangedRawSequence) {
+            if (isChangedSequence)
+                stream.update(sequenceDAO);
+            if (isChangedRawSequence)
+                stream.update(sequence_RawDAO);
         }
         else if (isDummySequence ) {
             stream.delete(sequenceDAO);
+            stream.delete(sequence_RawDAO);
         }
         else {
             // for debugging log to debug or print out
@@ -590,6 +648,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.4.16.1  2005/11/10 16:20:01  mbw
+//  changed to suit schema changes on SEQ_Sequence table
+//
 //  Revision 1.4  2005/03/29 17:10:44  sc
 //  tr5421
 //
