@@ -30,10 +30,10 @@ import java.util.HashSet;
  * </UL>
  *
  * @does performs initialization of objects for sequence deleters, and
- *       statuses Sequences as deleted. Keeps count of repeated seqids in the input
- *       and writes them out to a file.
- * @notes assumes it is iterating over a file; could subclass to set a different
- *       kind of iterator e.g. a RowDataIterator over a ResultSet.
+ *       statuses Sequences as deleted. Keeps count of repeated seqids in
+ *       the input and writes them out to a file.
+ * @notes assumes it is iterating over a file; could subclass to set a
+ *       different kind of iterator e.g. a RowDataIterator over a ResultSet.
  * @author sc
  * @version 1.0
  */
@@ -155,7 +155,8 @@ public class SeqDeleter extends DLALoader {
            recordCtr++;
            // report every 100 sequences looked at
            if (recordCtr  > 0 && recordCtr % 100 == 0) {
-               logger.logdInfo("Looked at " + recordCtr + " delete records", false);
+               logger.logdInfo("Looked at " + recordCtr +
+                               " delete records", false);
            }
        }
 
