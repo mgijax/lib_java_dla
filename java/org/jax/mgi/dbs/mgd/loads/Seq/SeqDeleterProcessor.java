@@ -290,8 +290,10 @@ public class SeqDeleterProcessor {
                   // set new state in Sequence
                   s.updateSequenceState(newState);
                   //log the seqid
-                  logger.logcInfo("DELETED " + SeqloaderConstants.TAB + s.getAccPrimary().getAccID(), false);
-                  logger.logdDebug("DELETED " + SeqloaderConstants.TAB + s.getAccPrimary().getAccID(), false);
+                  logger.logcInfo("DELETED " + SeqloaderConstants.TAB +
+                                  s.getAccPrimary().getAccID(), false);
+                  logger.logdDebug("DELETED " + SeqloaderConstants.TAB +
+                                   s.getAccPrimary().getAccID(), false);
                   // write out the update
                   s.sendToStream();
          }
@@ -316,8 +318,8 @@ public class SeqDeleterProcessor {
    public Vector getProcessedReport() {
        Vector report = new Vector();
        report.add("Total sequences deleted: " + deleteCtr);
-       report.add("Total sequences not deleted because statused as 'split' 'not loaded' or 'deleted': "
-                  + notDelCtr);
+       report.add("Total sequences not deleted because statused as " +
+                  "'split' 'not loaded' or 'deleted': " + notDelCtr);
        return report;
    }
 }
