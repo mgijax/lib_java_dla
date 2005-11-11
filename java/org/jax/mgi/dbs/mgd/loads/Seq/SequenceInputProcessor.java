@@ -166,7 +166,8 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
 
       String spCall = "SEQ_deleteByCreatedBy " + jobStreamName;
       try {
-        SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
+        SQLDataManager sqlMgr =
+            SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         sqlMgr.executeSimpleProc(spCall);
       }
       catch (MGIException e) {
@@ -195,9 +196,13 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        SequenceResolverException, MSException {
 
        SEQ_SequenceState inputSequenceState;
+       SEQ_Sequence_RawState inputSequenceRawState;
        // resolve raw sequence
        try {
-         inputSequenceState = resolveRawSequence(seqInput.getSeq());
+         inputSequenceState =
+             resolveRawSequenceToSequenceState(seqInput.getSeq());
+         inputSequenceRawState =
+           resolveRawSequenceToSequenceRawState(seqInput.getSeq());
        }
         catch (ConfigException e) {
           SeqloaderException e1 =
@@ -228,7 +233,9 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        // source association(s) and seqid(s)
        Sequence inputSequence;
        try {
-         inputSequence = new Sequence(inputSequenceState, mgdStream);
+         inputSequence =
+             new Sequence(inputSequenceState,
+                          inputSequenceRawState, mgdStream);
        }
        catch (MGIException e) {
          SeqloaderException e1 =
@@ -422,7 +429,8 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
    * @throws TranslationException from SequenceAttributeResolver.resolveAttributes
    */
 
-   protected SEQ_SequenceState resolveRawSequence(SequenceRawAttributes rawSeq)
+   protected SEQ_SequenceState
+       resolveRawSequenceToSequenceState(SequenceRawAttributes rawSeq)
           throws SequenceResolverException, ConfigException, CacheException,
               DBException, TranslationException {
 
@@ -437,6 +445,38 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
         }
         return seqState;
    }
+
+   /**
+   * Resolves SequenceRawAttributes to SEQ_Sequence_RawState
+   * @assumes Nothing
+   * @effects queries a database
+   * @param rawSeq the raw sequence to resolve
+   * @return seqRawState a SEQ_Sequence_RawState
+   * @throws SequenceResolverException if any SequenceRawAttributes attributes
+   *          cannot be resolved
+   * @throws ConfigException from SequenceAttributeResolver.resolveAttributes
+   * @throws CacheException from SequenceAttributeResolver.resolveAttributes
+   * @throws DBException from SequenceAttributeResolver.resolveAttributes
+   * @throws TranslationException from SequenceAttributeResolver.resolveAttributes
+   */
+
+   protected SEQ_Sequence_RawState
+       resolveRawSequenceToSequenceRawState(SequenceRawAttributes rawSeq)
+          throws SequenceResolverException, ConfigException, CacheException,
+              DBException, TranslationException {
+
+        // resolve raw sequence
+        SEQ_Sequence_RawState seqRawState = null;
+        try {
+          seqRawState = seqResolver.resolveRawAttributes(rawSeq);
+        }
+        catch (KeyNotFoundException e) {
+          // throw an exception
+          throw new SequenceResolverException(e);
+        }
+        return seqRawState;
+   }
+
 }
 // $Log
 /**************************************************************************
