@@ -303,7 +303,7 @@ public abstract class HTMLFormatter implements OutputFormatter
                 if (field.indexOf("]") > 0)
                 {
                     int length = field.length();
-                    String acc = field.substring(1, length - 2);
+                    String acc = field.substring(1, length - 1);
                     buff.append(" " + formatAccidAnchorTag(acc) + "]");
                 }
                 else
