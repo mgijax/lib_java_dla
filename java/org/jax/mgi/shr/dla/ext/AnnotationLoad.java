@@ -47,6 +47,7 @@ public class AnnotationLoad extends AbstractCommand {
     private String annotationTypeName = null;
     private String jnumber = null;
     private boolean okToLoadObsolete = false;
+    private String outputdir = null;
 
     /**
      * mode value (see vocload documentation)
@@ -104,7 +105,13 @@ public class AnnotationLoad extends AbstractCommand {
     throws ConfigException
     {
         configure();
-        String cmd = this.path + " -S" + this.server + " -D" + this.database +
+        if (!this.filename.startsWith("/"))
+        {
+            String currentPath = System.getProperty("user.dir");
+            this.filename = currentPath + "/" + this.filename;
+        }
+        String cmd = "cd " + this.outputdir + ";" + this.path +
+                     " -S" + this.server + " -D" + this.database +
                      " -U" + this.user + " -P" + this.passwordFile +
                      " -M" + this.mode + " -I" + this.filename +
                      " -R" + this.jnumber + " -A" + this.annotationTypeName;
@@ -130,6 +137,7 @@ public class AnnotationLoad extends AbstractCommand {
         this.mode = this.cfg.getAnnotLoadMode();
         this.annotationTypeName = this.cfg.getAnnotLoadType();
         this.jnumber = this.cfg.getAnnotLoadReference();
+        this.outputdir = this.cfg.getAnnotLoadOutputPath();
     }
 
     /**
@@ -148,8 +156,8 @@ public class AnnotationLoad extends AbstractCommand {
             String date = dateFormatter.format(c.getTime());
             Logger logger = super.getLogger();
             File file = new File(this.filename);
-            String errorFilename = file.getName() + "." + date + "." +
-                "error";
+            String errorFilename = this.outputdir + "/" +
+                file.getName() + "." + date + "." + "error";
             InputDataFile errorsFile = new InputDataFile(errorFilename);
             RecordDataIterator i = errorsFile.getIterator();
             boolean foundMessage = false;
