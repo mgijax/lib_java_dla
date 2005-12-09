@@ -1,3 +1,11 @@
+TAG: lib_java_dla-3-4-1-2
+DATE: 12/09/2005
+STAFF: mbw
+RELEASE: 3.41
+CHANGES: change AnnotationLoad.java to cd to the output directory 
+of the annotload and run the annotload from there and added config 
+parameter to designate the ouput directory
+
 TAG: lib_java_dla-3-4-1-1
 DATE: 12/02/2005
 STAFF: mbw
