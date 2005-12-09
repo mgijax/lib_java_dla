@@ -19,6 +19,7 @@ public class AnnotloadCfg extends Configurator {
     private String DEFAULT_ANNOTLOAD_PATH =
         "/usr/local/mgi/live/dataload/annotload/annotload.py";
     private String DEFAULT_ANNOTLOAD_MODE = "new";
+    private String DEFAULT_ANNOTLOAD_OUTPUTDIR = ".";
 
   /**
    * default constructor which will use unprefixed parameters from the
@@ -103,6 +104,19 @@ public class AnnotloadCfg extends Configurator {
   {
       return super.getConfigString("ANNOTLOAD_JNUMBER");
   }
+
+  /**
+   * get the annot load output directory name. The parameter name read from the
+   * configuration is ANNOTLOAD_OUTPUTDIR. The default value is the current
+   * directory.
+   * @return the output directory name
+   */
+  public String getAnnotLoadOutputPath() throws ConfigException
+  {
+      return super.getConfigString("ANNOTLOAD_OUTPUTDIR",
+                                   DEFAULT_ANNOTLOAD_OUTPUTDIR);
+  }
+
 
 
 
