@@ -266,10 +266,22 @@ public class SequenceLoadCfg extends Configurator {
   public String getQueryBatchSize() throws ConfigException {
     return getConfigString("SEQ_QUERY_BATCHSIZE", "400");
   }
+  /**
+   * If true, add sequence references.
+   * @return whether to add sequence references
+   * @throws ConfigException if "SEQ_OK_TO_LOAD_REFS" not found by the Configurator
+   */
+
+  public Boolean getOkToLoadReferences() throws ConfigException {
+      return getConfigBoolean("SEQ_OK_TO_LOAD_REFS", Boolean.TRUE);
+  }
 
 }
 
 //  $Log$
+//  Revision 1.14  2005/08/08 14:26:23  mbw
+//  merged TR6404 onto trunk
+//
 //  Revision 1.13  2005/08/05 18:57:12  mbw
 //  merged code from tr6086
 //

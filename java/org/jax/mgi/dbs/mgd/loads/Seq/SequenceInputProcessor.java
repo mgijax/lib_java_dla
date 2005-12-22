@@ -92,6 +92,9 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
     // name of the jobtream
     protected String jobStreamName;
 
+    // true if sequence references should be loaded
+    Boolean okToLoadRefs;
+
     // exception factory for seqloader exceptions
     protected SeqloaderExceptionFactory eFactory;
 
@@ -152,6 +155,7 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        // configurator to lookup logicalDB
        config = new SequenceLoadCfg();
        jobStreamName = config.getJobstreamName();
+       okToLoadRefs = config.getOkToLoadReferences();
     }
 
     /**
@@ -287,18 +291,20 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
            }
 
        }
-       // resolve sequence reference associations and set the states
-       // in the Sequence
-       Vector references = seqInput.getRefs();
-       if (!references.isEmpty()) {
-           try {
-             processReferences(inputSequence, references);
-           }
-           catch (MGIException e) {
-             SeqloaderException e1 =
-                 (SeqloaderException) eFactory.getException(
-              SeqloaderExceptionFactory.CreateRefAssocErr, e);
-             throw e1;
+       if (okToLoadRefs.equals(Boolean.TRUE)) {
+           // resolve sequence reference associations and set the states
+           // in the Sequence
+           Vector references = seqInput.getRefs();
+           if (!references.isEmpty()) {
+               try {
+                   processReferences(inputSequence, references);
+               }
+               catch (MGIException e) {
+                   SeqloaderException e1 =
+                       (SeqloaderException) eFactory.getException(
+                       SeqloaderExceptionFactory.CreateRefAssocErr, e);
+                   throw e1;
+               }
            }
        }
 

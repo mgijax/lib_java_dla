@@ -553,60 +553,62 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
           throw new ChangedOrganismException();
         }
        else {
-          // resolve raw sequence
-          SEQ_SequenceState inputSequenceState = resolveRawSequence(rawSeq);
+           // resolve raw sequence
+           SEQ_SequenceState inputSequenceState = resolveRawSequence(rawSeq);
 
-          // obtain old raw library name for call to MSProcessor
-          String oldRawLibrary =
-              existingSequence.getSequenceState().getRawLibrary();
+           // obtain old raw library name for call to MSProcessor
+           String oldRawLibrary =
+               existingSequence.getSequenceState().getRawLibrary();
 
-          // update state of existing sequence passing input sequence state
-          existingSequence.updateSequenceState(inputSequenceState);
+           // update state of existing sequence passing input sequence state
+           existingSequence.updateSequenceState(inputSequenceState);
 
-          // process Molecular Source - note that MSProcessor handles
-          // sequence to source reassociations based on collapsing
-          Iterator msIterator = seqInput.getMSources().iterator();
-          MolecularSource ms;
-          while (msIterator.hasNext()) {
-              stopWatch.start();
-              msProcessor.processExistingSeqSrc(
-                  primarySeqid,
-                  existingSequence.getSequenceKey(),
-                  oldRawLibrary,
-                  (MSRawAttributes) msIterator.next());
-              stopWatch.stop();
-              double time = stopWatch.time();
-              stopWatch.reset();
-              if (highMSPTime < time) {
-                  highMSPTime = time;
-              }
-              else if (lowMSPTime > time) {
-                  lowMSPTime = time;
-              }
-              runningMSPTime += time;
-          }
+           // process Molecular Source - note that MSProcessor handles
+           // sequence to source reassociations based on collapsing
+           Iterator msIterator = seqInput.getMSources().iterator();
+           MolecularSource ms;
+           while (msIterator.hasNext()) {
+               stopWatch.start();
+               msProcessor.processExistingSeqSrc(
+                   primarySeqid,
+                   existingSequence.getSequenceKey(),
+                   oldRawLibrary,
+                   (MSRawAttributes) msIterator.next());
+               stopWatch.stop();
+               double time = stopWatch.time();
+               stopWatch.reset();
+               if (highMSPTime < time) {
+                   highMSPTime = time;
+               }
+               else if (lowMSPTime > time) {
+                   lowMSPTime = time;
+               }
+               runningMSPTime += time;
+           }
 
-          // resolve sequence reference associations and set new ones
-          // in the existing Sequence; reports any existing references
-          // that no longer apply
-          Vector references = seqInput.getRefs();
-          if (!references.isEmpty()) {
-              processReferences(existingSequence, references);
-              // Now report any existing references that may be outdated
-              }
-          Vector oldReferences = existingSequence.getOldRefAssociations();
-          MGI_Reference_AssocState refState;
-          Integer refsKey;
+           if (okToLoadRefs.equals(Boolean.TRUE)) {
+               // resolve sequence reference associations and set new ones
+               // in the existing Sequence; reports any existing references
+               // that no longer apply
+               Vector references = seqInput.getRefs();
+               if (!references.isEmpty()) {
+                   processReferences(existingSequence, references);
+                   // Now report any existing references that may be outdated
+               }
+               Vector oldReferences = existingSequence.getOldRefAssociations();
+               MGI_Reference_AssocState refState;
+               Integer refsKey;
 
-          if (oldReferences != null) {
-              for (Iterator i = oldReferences.iterator(); i.hasNext();) {
-                  refState = (MGI_Reference_AssocState)i.next();
-                  refsKey = refState.getRefsKey();
-                  qcReporter.reportOldReferences(existingSeqKey, refsKey);
-                  }
-          }
+               if (oldReferences != null) {
+                   for (Iterator i = oldReferences.iterator(); i.hasNext(); ) {
+                       refState = (MGI_Reference_AssocState) i.next();
+                       refsKey = refState.getRefsKey();
+                       qcReporter.reportOldReferences(existingSeqKey, refsKey);
+                   }
+               }
 
-        }
+           }
+       }
         // send the existing sequence to its stream for possible update
         existingSequence.sendToStream();
       }
