@@ -165,6 +165,7 @@ public class Sequence {
         this.stream = stream;
         sequenceDAO = new SEQ_SequenceSeqloaderDAO(key, state);
         seqUpdater = SequenceUpdater.getInstance();
+        seqRawUpdater = SequenceRawUpdater.getInstance();
         SEQ_Sequence_RawKey rawKey =
             new SEQ_Sequence_RawKey(key.getKey());
         sequence_RawDAO = new SEQ_Sequence_RawDAO(rawKey, seqRawState);
@@ -220,6 +221,19 @@ public class Sequence {
     public void setAccPrimary(ACC_AccessionKey key,
                               ACC_AccessionState state) {
         primaryAcc = new ACC_AccessionDAO(key, state);
+    }
+
+    /**
+     * sets the preferred organism key within the internal SEQ_SequenceState
+     * object
+     * @assumes nothing
+     * @effects the SEQ_SequenceState object will be changed
+     * @param organismKey the preferred orgainsm key
+     */
+    public void setPrefferedOrganismKey(int organismKey)
+    {
+        SEQ_SequenceState state = sequenceDAO.getState();
+        state.setOrganismKey(new Integer(organismKey));
     }
 
     /**
@@ -648,6 +662,9 @@ public class Sequence {
 }
 
 //  $Log$
+//  Revision 1.4.16.2  2005/11/11 15:59:28  mbw
+//  additional changes to suit modified SEQ_Sequence table in db
+//
 //  Revision 1.4.16.1  2005/11/10 16:20:01  mbw
 //  changed to suit schema changes on SEQ_Sequence table
 //
