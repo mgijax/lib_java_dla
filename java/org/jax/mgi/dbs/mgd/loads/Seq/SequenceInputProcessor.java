@@ -313,12 +313,21 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        // associations
        Iterator msIterator = seqInput.getMSources().iterator();
 
+       // additionally keep track of preferred organism by the following
+       // preference: mouse, human, rat (currently using
+       // lowest _organism_key to do this)
+       int preferredOrganismKey = 0;
+
        while (msIterator.hasNext()) {
            // process the molecular source
            stopWatch.start();
            MolecularSource inputMSSource = msProcessor.processNewSeqSrc(
                seqInput.getPrimaryAcc().getAccID(),
                (MSRawAttributes) msIterator.next());
+          if (preferredOrganismKey == 0 ||
+              inputMSSource.getOrganismKey().intValue() < preferredOrganismKey)
+              preferredOrganismKey =
+                  inputMSSource.getOrganismKey().intValue();
            stopWatch.stop();
            double time = stopWatch.time();
            stopWatch.reset();
@@ -350,6 +359,16 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
              throw e1;
            }
        }
+       // set the preferred organism key in the sequence object
+       if (preferredOrganismKey == 0)
+       {
+           SeqloaderException e1 =
+               (SeqloaderException) eFactory.getException(
+                SeqloaderExceptionFactory.UnallowedOrganismKeyErr);
+           e1.bind(preferredOrganismKey);
+           throw e1;
+       }
+       inputSequence.setPrefferedOrganismKey(preferredOrganismKey);
        // send the new sequence to its stream
        try {
          inputSequence.sendToStream();
