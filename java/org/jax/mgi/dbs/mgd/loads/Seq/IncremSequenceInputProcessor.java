@@ -5,6 +5,7 @@ package org.jax.mgi.dbs.mgd.loads.Seq;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.cache.CacheException;
+import org.jax.mgi.shr.cache.CacheConstants;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
@@ -136,9 +137,19 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         super(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
-        logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-        seqIdLookup = new AccessionLookup(logicalDBKey,
-              MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        logicalDBKey =
+            new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
+        boolean useFullCache =
+            super.config.getUseAssocClonesFullCache().booleanValue();
+        if (useFullCache)
+            seqIdLookup = new AccessionLookup(logicalDBKey,
+                                              MGITypeConstants.SEQUENCE,
+                                              AccessionLib.PREFERRED);
+        else
+            seqIdLookup = new AccessionLookup(logicalDBKey,
+                                              MGITypeConstants.SEQUENCE,
+                                              AccessionLib.PREFERRED,
+                                              CacheConstants.LAZY_CACHE);
         batchSize = new Integer(config.getQueryBatchSize()).intValue();
         seqLookup = new SequenceLookup(mgdSqlStream, batchSize);
         batchCtr = 0;
