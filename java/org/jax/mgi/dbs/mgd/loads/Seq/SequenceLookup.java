@@ -475,8 +475,8 @@ public class SequenceLookup {
             MGD.acc_accession._name + " a, " +
             MGD.mgi_reference_assoc._name + " m, " +
             MGD.seq_source_assoc._name + " sa, " +
-            MGD.seq_sequence._name + " s " +
-            MGD.seq_sequence_raw._name + " sr,  " +
+            MGD.seq_sequence._name + " s, " +
+            MGD.seq_sequence_raw._name + " sr  " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
@@ -601,8 +601,8 @@ public class SequenceLookup {
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.seq_source_assoc._name + " sa, " +
-            MGD.seq_sequence._name + " s " +
-            MGD.seq_sequence_raw._name + " sr,  " +
+            MGD.seq_sequence._name + " s, " +
+            MGD.seq_sequence_raw._name + " sr  " +
             //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
@@ -841,6 +841,9 @@ public class SequenceLookup {
 
               // the sequence state we are building
               seqState = new SEQ_SequenceState();
+
+              // the sequence raw state we are building
+              seqRawState = new SEQ_Sequence_RawState();
 
               // set the sequence state
               seqState.setSequenceTypeKey(rowData.SEQ_SequenceType_key);
