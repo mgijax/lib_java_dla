@@ -193,6 +193,18 @@ public class SeqloaderExceptionFactory extends ExceptionFactory {
         false));
   }
 
+  /**
+   * setting preffered organism to an unallowed value
+   */
+  public static final String UnallowedOrganismKeyErr =
+      "org.jax.mgi.shr.dla.seqloader.UnallowedOrganismKeyErr";
+  static {
+    exceptionsMap.put(UnallowedOrganismKeyErr, new SeqloaderException(
+        "A preferred organism key value of ?? is not allowed",
+        false));
+  }
+
+
 }
 // $Log
 /**************************************************************************
