@@ -225,8 +225,12 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         rxSection = new StringBuffer();
 
         // reset reused instance variables
-        sequenceInput.reset();
-        rawSeq.reset();
+        //sequenceInput.reset();
+        //rawSeq.reset();
+
+        sequenceInput = new SequenceInput();
+        rawSeq = new SequenceRawAttributes();
+
 
         // set the record attribute of the SequenceRawAttributes
         rawSeq.setRecord(rcd);
