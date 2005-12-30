@@ -267,9 +267,31 @@ public class SequenceLoadCfg extends Configurator {
     return getConfigString("SEQ_QUERY_BATCHSIZE", "400");
   }
 
+  /**
+   * get the ok to use a full cache when looking up sequences using the
+   * AccessionLookup. With this option set to true, there will be a high
+   * overhead on the first lookup to fully load the cache. If this option is
+   * set to false then a lazy cache strategy will be used. The configuration
+   * variable is SEQ_USE_ACCESSION_FULL_CACHE and the default is true
+   * @return true if the accession lookup should be fully cached or false
+   * if the lookup should be a lazy cache
+   * @assumes nothing
+   * @effects if true a high performance hit is to be expected on the
+   * initial lookup
+   * @throws ConfigException if there is an error accessing the configuration
+   */
+  public Boolean getUseAssocClonesFullCache() throws ConfigException {
+    return getConfigBoolean("SEQ_USE_ACCESSION_FULL_CACHE",
+                            new Boolean(true));
+  }
+
+
 }
 
 //  $Log$
+//  Revision 1.14  2005/08/08 14:26:23  mbw
+//  merged TR6404 onto trunk
+//
 //  Revision 1.13  2005/08/05 18:57:12  mbw
 //  merged code from tr6086
 //
