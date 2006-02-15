@@ -294,7 +294,11 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         fieldSplitter.nextToken();
 
         // get the sequence update date and set in the raw sequence object
-        Timestamp sequenceDate = DateConverter.convertDate(fieldSplitter.nextToken());
+        String date = fieldSplitter.nextToken();
+
+        // remove trailing ','
+        date = date.substring(0, date.length() -1);
+        Timestamp sequenceDate = DateConverter.convertDate(date);
         rawSeq.setSeqRecDate(sequenceDate);
 
        // get the sequence annotation update line and tokenize it
@@ -305,7 +309,11 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 
        // the sequence record date is the greater of the annotation data and
        // the sequence date
-       Timestamp sequenceAnnotDate = DateConverter.convertDate(fieldSplitter.nextToken());
+       date = fieldSplitter.nextToken();
+       // remove trailing ','
+        date = date.substring(0, date.length() -1);
+
+       Timestamp sequenceAnnotDate = DateConverter.convertDate(date);
 
        // set the sequence date
        rawSeq.setSeqDate(sequenceDate);
