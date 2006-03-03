@@ -123,7 +123,7 @@ public class MGSCoordinateFormatInterpreter extends CoordinateInterpreter {
    }
 
    /**
-    * parses an MGS coordinate map format record
+    * parses an MGS coordinate map format record; allows null 5th column (strand)
     * @assumes Nothing
     * @effects Nothing
     * @param rcd A MGSAssembly format sequence record
@@ -134,11 +134,13 @@ public class MGSCoordinateFormatInterpreter extends CoordinateInterpreter {
 
        // get the seqid and description from the non-header record
        ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
-       // there are actually 6, but the seqloader uses the 6th element
-       if (splitLine.size() < 5) {
+       int size = splitLine.size();
+       // there are actually 6, but the seqloader uses the 6th element, and the 
+       // last column can be null
+       if (size < 4) {
            RecordFormatException e = new RecordFormatException();
                e.bindRecord("The coordinate record is not formatted correctly, " +
-                   "5 tab delimited elements expected.\n" + rcd);
+                   "at least tab delimited elements expected.\n" + rcd);
             throw e;
         }
         record = rcd;
@@ -146,11 +148,10 @@ public class MGSCoordinateFormatInterpreter extends CoordinateInterpreter {
         chromosome = ((String)splitLine.get(1)).trim();
         startBP = ((String)splitLine.get(2)).trim();
         endBP = ((String)splitLine.get(3)).trim();
-        strand = ((String)splitLine.get(4)).trim();
-
+        if(size > 4) {
+            strand = ( (String) splitLine.get(4)).trim();
+        }
    }
-
-
    /**
      * sets values in the CoordMapRawAttributes object and sets the
      * CoordMapRawAttributes object in the CoordInput object
