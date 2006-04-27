@@ -1,3 +1,12 @@
+TAG: lib_java_dla-tr7062-5
+DATE: 04/27/2006
+STAFF: sc
+CHANGES: MGI3.5
+1) SequenceUpdater, SequenceRawUpdater - remove old debug
+2) SequenceLookup - added missing columns to SEQ_Sequence (organism_key)
+   and SEQ_SequenceRaw (createdBy_key, creation_date) queries and data
+   structures
+
 TAG: lib_java_dla-tr7062-4
 DATE: 12/23/2005
 STAFF: mbw
