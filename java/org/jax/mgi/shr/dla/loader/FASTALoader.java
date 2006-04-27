@@ -1,6 +1,5 @@
 package org.jax.mgi.shr.dla.loader;
 
-
 import org.jax.mgi.shr.dla.input.SequenceInput;
 import org.jax.mgi.dbs.mgd.loads.Seq.SequenceInputProcessor;
 import org.jax.mgi.dbs.mgd.loads.Seq.SequenceAttributeResolver;
@@ -106,10 +105,6 @@ public abstract class FASTALoader extends DLALoader
       logger.logdInfo("FASTALoader complete", true);
   }
 
-
-
   abstract public void load(FASTAData data)
       throws MGIException;
-
-
 }

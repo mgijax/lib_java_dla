@@ -1,5 +1,3 @@
-// $Header$
-// $Name$
 package org.jax.mgi.shr.dla.log;
 
 import java.util.logging.Formatter;
@@ -86,60 +84,3 @@ public class DLALogFormatter extends Formatter{
   }
 */
 }
-
-// $Log$
-// Revision 1.3  2005/08/05 18:57:29  mbw
-// merged code from tr6086
-//
-// Revision 1.2.2.1  2005/08/02 16:24:27  mbw
-// merged branch tr6086
-//
-// Revision 1.2.6.1  2004/12/09 18:08:50  mbw
-// fixed javadocs warnings
-//
-// Revision 1.2  2004/12/07 20:10:48  mbw
-// merged tr6047 onto the trunk
-//
-// Revision 1.1.2.1  2004/11/05 16:18:05  mbw
-// classes were renamed or moved as part of large refactoring effort (see tr604)
-//
-// Revision 1.6  2004/07/13 14:57:19  mbw
-// bug fix: fixed timestamp to remove space and quotes
-//
-// Revision 1.5  2004/06/30 19:45:39  mbw
-// changed timestamping format of log entries to match job stream format
-//
-// Revision 1.4  2003/10/28 21:00:17  mbw
-// fixed imports
-//
-// Revision 1.2  2003/05/08 20:40:02  mbw
-// incorporated changes from code reviews
-//
-// Revision 1.1  2003/04/22 22:31:58  mbw
-// initial version
-//
-// Revision 1.2.2.2  2003/03/21 16:18:41  mbw
-// added standard header/footer
-//
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

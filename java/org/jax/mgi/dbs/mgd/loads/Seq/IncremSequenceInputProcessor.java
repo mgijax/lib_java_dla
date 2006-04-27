@@ -1,10 +1,8 @@
-// $Header
-// $Name
-
 package org.jax.mgi.dbs.mgd.loads.Seq;
 
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.cache.CacheException;
+import org.jax.mgi.shr.cache.CacheConstants;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
@@ -16,6 +14,7 @@ import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSException;
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MolecularSource;
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_Sequence_RawState;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.shr.exception.MGIException;
@@ -135,9 +134,19 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         super(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
         eventDetector = new SeqEventDetector(msp);
-        logicalDBKey = new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-        seqIdLookup = new AccessionLookup(logicalDBKey,
-              MGITypeConstants.SEQUENCE, AccessionLib.PREFERRED);
+        logicalDBKey =
+            new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
+        boolean useFullCache =
+            super.config.getUseAssocClonesFullCache().booleanValue();
+        if (useFullCache)
+            seqIdLookup = new AccessionLookup(logicalDBKey,
+                                              MGITypeConstants.SEQUENCE,
+                                              AccessionLib.PREFERRED);
+        else
+            seqIdLookup = new AccessionLookup(logicalDBKey,
+                                              MGITypeConstants.SEQUENCE,
+                                              AccessionLib.PREFERRED,
+                                              CacheConstants.LAZY_CACHE);
         batchSize = new Integer(config.getQueryBatchSize()).intValue();
         seqLookup = new SequenceLookup(mgdSqlStream, batchSize);
         batchCtr = 0;
@@ -529,89 +538,92 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
               KeyNotFoundException, MSException, SequenceResolverException,
               SeqloaderException, ChangedOrganismException {
 
-        // get input values needed to accomplish update
-        SequenceRawAttributes rawSeq = seqInput.getSeq();
-        String inputRawOrganism = rawSeq.getRawOrganisms();
-        String inputRawLibrary = rawSeq.getLibrary();
-        String primarySeqid = seqInput.getPrimaryAcc().getAccID();
-        SEQ_SequenceState existingSeqState = existingSequence.getSequenceState();
+              // get input values needed to accomplish update
+              SequenceRawAttributes rawSeq = seqInput.getSeq();
+              String inputRawOrganism = rawSeq.getRawOrganisms();
+              String inputRawLibrary = rawSeq.getLibrary();
+              String primarySeqid = seqInput.getPrimaryAcc().getAccID();
+              SEQ_SequenceState existingSeqState =
+                  existingSequence.getSequenceState();
+              SEQ_Sequence_RawState existingSeqRawState =
+                  existingSequence.getSequenceRawState();
+              // get existing values needed to accomplish update
+              String existingRawOrganism = existingSeqRawState.getRawOrganism();
+              String existingRawLibrary = existingSeqRawState.getRawLibrary();
+              Integer existingSeqKey = existingSequence.getSequenceKey();
 
-        // get existing values needed to accomplish update
-        String existingRawOrganism = existingSeqState.getRawOrganism();
-        String existingRawLibrary = existingSeqState.getRawLibrary();
-        Integer existingSeqKey = existingSequence.getSequenceKey();
+              // if input rawOrganism and existing rawOrganism don't match - QC
+              if (!inputRawOrganism.equals(existingRawOrganism)) {
+                  // QC report and throw an exception
+                  logger.logcInfo("Sequence: " + primarySeqid +
+                                  " MGI rawOrganism: " + existingRawOrganism +
+                                  " Input rawOrganism: " + inputRawOrganism, false);
+                  qcReporter.reportRawSourceConflicts(existingSeqKey,
+                                                      SeqloaderConstants.ORGANISM,
+                                                      inputRawOrganism);
+                  throw new ChangedOrganismException();
+              }
+              else {
+                  // resolve raw sequence
+                  SEQ_SequenceState inputSequenceState =
+                      resolveRawSequenceToSequenceState(rawSeq);
+                  SEQ_Sequence_RawState inputSequenceRawState =
+                      resolveRawSequenceToSequenceRawState(rawSeq);
 
-        // if input rawOrganism and existing rawOrganism don't match - QC
-        if (!inputRawOrganism.equals(existingRawOrganism)) {
-          // QC report and throw an exception
-          logger.logcInfo("Sequence: " + primarySeqid +
-                          " MGI rawOrganism: " + existingRawOrganism +
-                          " Input rawOrganism: " + inputRawOrganism, false );
-          qcReporter.reportRawSourceConflicts(existingSeqKey,
-                                              SeqloaderConstants.ORGANISM,
-                                              inputRawOrganism);
-          throw new ChangedOrganismException();
-        }
-       else {
-           // resolve raw sequence
-           SEQ_SequenceState inputSequenceState = resolveRawSequence(rawSeq);
+                  // obtain old raw library name for call to MSProcessor
+                  String oldRawLibrary =
+                      existingSequence.getSequenceRawState().getRawLibrary();
 
-           // obtain old raw library name for call to MSProcessor
-           String oldRawLibrary =
-               existingSequence.getSequenceState().getRawLibrary();
+                  // update state of existing sequence passing input sequence state
+                  existingSequence.updateSequenceState(inputSequenceState);
+                  existingSequence.updateSequenceRawState(inputSequenceRawState);
 
-           // update state of existing sequence passing input sequence state
-           existingSequence.updateSequenceState(inputSequenceState);
+                  // process Molecular Source - note that MSProcessor handles
+                  // sequence to source reassociations based on collapsing
+                  Iterator msIterator = seqInput.getMSources().iterator();
+                  MolecularSource ms;
+                  while (msIterator.hasNext()) {
+                      stopWatch.start();
+                      msProcessor.processExistingSeqSrc(
+                          primarySeqid,
+                          existingSequence.getSequenceKey(),
+                          oldRawLibrary,
+                          (MSRawAttributes) msIterator.next());
+                      stopWatch.stop();
+                      double time = stopWatch.time();
+                      stopWatch.reset();
+                      if (highMSPTime < time) {
+                          highMSPTime = time;
+                      }
+                      else if (lowMSPTime > time) {
+                          lowMSPTime = time;
+                      }
+                      runningMSPTime += time;
+                  }
 
-           // process Molecular Source - note that MSProcessor handles
-           // sequence to source reassociations based on collapsing
-           Iterator msIterator = seqInput.getMSources().iterator();
-           MolecularSource ms;
-           while (msIterator.hasNext()) {
-               stopWatch.start();
-               msProcessor.processExistingSeqSrc(
-                   primarySeqid,
-                   existingSequence.getSequenceKey(),
-                   oldRawLibrary,
-                   (MSRawAttributes) msIterator.next());
-               stopWatch.stop();
-               double time = stopWatch.time();
-               stopWatch.reset();
-               if (highMSPTime < time) {
-                   highMSPTime = time;
-               }
-               else if (lowMSPTime > time) {
-                   lowMSPTime = time;
-               }
-               runningMSPTime += time;
-           }
+                  // resolve sequence reference associations and set new ones
+                  // in the existing Sequence; reports any existing references
+                  // that no longer apply
+                  Vector references = seqInput.getRefs();
+                  if (!references.isEmpty()) {
+                      processReferences(existingSequence, references);
+                      // Now report any existing references that may be outdated
+                  }
+                  Vector oldReferences = existingSequence.getOldRefAssociations();
+                  MGI_Reference_AssocState refState;
+                  Integer refsKey;
 
-           if (okToLoadRefs.equals(Boolean.TRUE)) {
-               // resolve sequence reference associations and set new ones
-               // in the existing Sequence; reports any existing references
-               // that no longer apply
-               Vector references = seqInput.getRefs();
-               if (!references.isEmpty()) {
-                   processReferences(existingSequence, references);
-                   // Now report any existing references that may be outdated
-               }
-               Vector oldReferences = existingSequence.getOldRefAssociations();
-               MGI_Reference_AssocState refState;
-               Integer refsKey;
-
-               if (oldReferences != null) {
-                   for (Iterator i = oldReferences.iterator(); i.hasNext(); ) {
-                       refState = (MGI_Reference_AssocState) i.next();
-                       refsKey = refState.getRefsKey();
-                       qcReporter.reportOldReferences(existingSeqKey, refsKey);
-                   }
-               }
-
-           }
-       }
-        // send the existing sequence to its stream for possible update
-        existingSequence.sendToStream();
-      }
+                  if (oldReferences != null) {
+                      for (Iterator i = oldReferences.iterator(); i.hasNext(); ) {
+                          refState = (MGI_Reference_AssocState) i.next();
+                          refsKey = refState.getRefsKey();
+                          qcReporter.reportOldReferences(existingSeqKey, refsKey);
+                      }
+                  }
+              }
+              // send the existing sequence to its stream for possible update
+              existingSequence.sendToStream();
+          }
 
 
     /**
@@ -653,26 +665,3 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
 
     }
 }
-// $Log
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

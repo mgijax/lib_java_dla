@@ -1,6 +1,3 @@
-//  $Header
-//  $Name
-
 package org.jax.mgi.shr.dla.loader.seq;
 
 import org.jax.mgi.shr.dla.loader.DLALoader;
@@ -30,10 +27,10 @@ import java.util.HashSet;
  * </UL>
  *
  * @does performs initialization of objects for sequence deleters, and
- *       statuses Sequences as deleted. Keeps count of repeated seqids in the input
- *       and writes them out to a file.
- * @notes assumes it is iterating over a file; could subclass to set a different
- *       kind of iterator e.g. a RowDataIterator over a ResultSet.
+ *       statuses Sequences as deleted. Keeps count of repeated seqids in
+ *       the input and writes them out to a file.
+ * @notes assumes it is iterating over a file; could subclass to set a
+ *       different kind of iterator e.g. a RowDataIterator over a ResultSet.
  * @author sc
  * @version 1.0
  */
@@ -155,7 +152,8 @@ public class SeqDeleter extends DLALoader {
            recordCtr++;
            // report every 100 sequences looked at
            if (recordCtr  > 0 && recordCtr % 100 == 0) {
-               logger.logdInfo("Looked at " + recordCtr + " delete records", false);
+               logger.logdInfo("Looked at " + recordCtr +
+                               " delete records", false);
            }
        }
 
@@ -222,27 +220,3 @@ public class SeqDeleter extends DLALoader {
         }
     }
 }
-//  $Log
-
- /**************************************************************************
- *
- * Warranty Disclaimer and Copyright Notice
- *
- *  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
- *  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
- *  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
- *  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
- *  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
- *  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
- *
- *  This software and data are provided to enhance knowledge and encourage
- *  progress in the scientific community and are to be used only for research
- *  and educational purposes.  Any reproduction or use for commercial purpose
- *  is prohibited without the prior express written permission of The Jackson
- *  Laboratory.
- *
- * Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
- *
- * All Rights Reserved
- *
- **************************************************************************/

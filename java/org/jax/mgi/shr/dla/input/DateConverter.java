@@ -1,6 +1,3 @@
-//  $Header$
-//  $Name$
-
 package org.jax.mgi.shr.dla.input;
 
 import java.sql.Timestamp;
@@ -67,39 +64,3 @@ public class DateConverter {
         return Timestamp.valueOf(year + dash + month + dash + day + hmsf);
     }
 }
-//  $Log$
-//  Revision 1.1.2.1  2004/11/05 16:03:46  mbw
-//  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
-//  Revision 1.2  2004/07/08 15:03:48  sc
-//  javdocs changes
-//
-//  Revision 1.1  2004/01/06 20:09:35  mbw
-//  initial version imported from lib_java_seqloader
-//
-//  Revision 1.1  2003/12/08 18:40:37  sc
-//  initial commit
-//
-
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

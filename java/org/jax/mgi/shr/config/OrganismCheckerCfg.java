@@ -1,6 +1,3 @@
-// $Header$ 
-//  $Name$
-
 package org.jax.mgi.shr.config;
 
 import org.jax.mgi.shr.config.Configurator;
@@ -72,61 +69,3 @@ public class OrganismCheckerCfg extends Configurator {
     }
 
 }
-
-//  $Log$
-//  Revision 1.5  2005/08/05 18:57:12  mbw
-//  merged code from tr6086
-//
-//  Revision 1.4.10.2  2004/12/10 18:15:22  mbw
-//  javadocs only
-//
-//  Revision 1.4.10.1  2004/12/09 18:08:30  mbw
-//  fixed javadocs warnings
-//
-//  Revision 1.4.6.1  2005/08/02 16:24:02  mbw
-//  merged branch tr6086
-//
-//  Revision 1.4.10.2  2004/12/10 18:15:22  mbw
-//  javadocs only
-//
-//  Revision 1.4  2004/07/28 20:10:11  mbw
-//  javadocs only
-//
-//  Revision 1.3  2004/06/30 17:26:35  sc
-//  merging sc2 branch to trunk
-//
-//  Revision 1.2.4.1  2004/06/30 12:17:42  sc
-//  updated config var names
-//
-//  Revision 1.2  2004/02/27 14:01:25  sc
-//  fixed comments
-//
-//  Revision 1.1  2004/01/06 20:09:29  mbw
-//  initial version imported from lib_java_seqloader
-//
-//  Revision 1.1  2003/12/19 12:55:46  sc
-//  initial commit
-//
-
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

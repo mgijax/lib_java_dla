@@ -264,5 +264,4 @@ public abstract class MGIReportFormatter implements OutputFormatter
         format.deleteCharAt(format.length() - 1);
         return format.toString();
     }
-
 }

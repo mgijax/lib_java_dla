@@ -1,6 +1,3 @@
-//  $Header$
-//  $Name$
-
 package org.jax.mgi.shr.dla.input;
 
 import java.util.Vector;
@@ -214,57 +211,3 @@ public class SequenceInput {
         secondaryAcc.clear();
     }
 }
-//  $Log$
-//  Revision 1.1.2.1  2004/11/05 16:03:46  mbw
-//  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
-//  Revision 1.6  2004/07/08 15:03:49  sc
-//  javdocs changes
-//
-//  Revision 1.5  2004/06/30 19:35:21  mbw
-//  javadocs only
-//
-//  Revision 1.4  2004/06/30 17:25:36  sc
-//  merging sc2 branch to trunk
-//
-//  Revision 1.3.4.1  2004/05/18 15:32:48  sc
-//  updated class/method headers
-//
-//  Revision 1.3  2004/04/06 15:52:57  mbw
-//  added new method to add a RefAssocRawAttrinute
-//
-//  Revision 1.2  2004/02/25 21:42:40  mbw
-//  fixed compiler warnings only
-//
-//  Revision 1.1  2004/01/06 20:09:46  mbw
-//  initial version imported from lib_java_seqloader
-//
-//  Revision 1.2  2003/12/20 16:25:22  sc
-//  changes made from code review~
-//
-//  Revision 1.1  2003/12/08 18:40:44  sc
-//  initial commit
-//
-
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

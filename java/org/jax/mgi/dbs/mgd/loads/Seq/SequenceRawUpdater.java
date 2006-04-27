@@ -1,6 +1,7 @@
 package org.jax.mgi.dbs.mgd.loads.Seq;
 
 import org.jax.mgi.dbs.mgd.dao.SEQ_SequenceState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_Sequence_RawState;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dla.log.DLALogger;
@@ -39,7 +40,7 @@ import java.sql.Timestamp;
  * @version 1.0
  */
 
-public class SequenceUpdater {
+public class SequenceRawUpdater {
     // object to determine the attribute History of a SEQ_Sequence
     // presently history is tracked for sequence type
     Seq_SequenceAttrHistory attrHistory;
@@ -61,7 +62,7 @@ public class SequenceUpdater {
 
     // the singleton instance of the SequenceUpdater. It is returned by
      // the getInstance() method
-     private static SequenceUpdater instance = null;
+     private static SequenceRawUpdater instance = null;
 
      /**
        * get the singleton instance of the SequenceUpdater.
@@ -76,11 +77,11 @@ public class SequenceUpdater {
        * @throws KeyNotFoundException if error creating instance of this class
        * @throws CacheException if error creating instance of this class
        */
-      protected static SequenceUpdater getInstance()
+      protected static SequenceRawUpdater getInstance()
           throws DBException, DLALoggingException, ConfigException,
             KeyNotFoundException, CacheException {
         if (instance == null) {
-          instance = new SequenceUpdater();
+          instance = new SequenceRawUpdater();
         }
         return instance;
       }
@@ -99,7 +100,7 @@ public class SequenceUpdater {
      * @throws DLALoggingException if error getting instance of a logger
      */
 
-    private SequenceUpdater()
+    private SequenceRawUpdater()
         throws DBException,  DLALoggingException, ConfigException,
             KeyNotFoundException, CacheException {
         attrHistory = new Seq_SequenceAttrHistory();
@@ -123,137 +124,152 @@ public class SequenceUpdater {
      * @throws CacheException if error using a lookup
      */
 
-    public boolean updateSeq(SEQ_SequenceState existingSeqState,
+    public boolean updateSeq(SEQ_Sequence_RawState existingSeqState,
                              Integer existingSeqKey,
-                             SEQ_SequenceState inputSeqState)
+                             SEQ_Sequence_RawState inputSeqState)
       throws DBException, CacheException {
 
         boolean update = false;
         // get updateable input sequence attributes
-        Integer inputSeqTypeKey = inputSeqState.getSequenceTypeKey();
-        Timestamp inputSeqDate = inputSeqState.getSequenceDate();
-        Timestamp inputSeqrecordDate = inputSeqState.getSeqrecordDate();
-        Integer inputSeqLength = inputSeqState.getLength();
-        String inputSeqVersion = inputSeqState.getVersion();
-        String inputSeqDivision = inputSeqState.getDivision();
-        String inputSeqDescription = inputSeqState.getDescription();
-        Integer inputSeqStatusKey = inputSeqState.getSequenceStatusKey();
+        String inputSeqRawType = inputSeqState.getRawType();
+        String inputSeqRawLibrary = inputSeqState.getRawLibrary();
+        String inputSeqRawOrganism = inputSeqState.getRawOrganism();
+        String inputSeqRawStrain = inputSeqState.getRawStrain();
+        String inputSeqRawTissue = inputSeqState.getRawTissue();
+        String inputSeqRawAge = inputSeqState.getRawAge();
+        String inputSeqRawSex = inputSeqState.getRawSex();
+        String inputSeqRawCellLine = inputSeqState.getRawCellLine();
 
         // get updateable existing sequence attributes
-        Integer existingSeqTypeKey = existingSeqState.getSequenceTypeKey();
-        Timestamp existingSeqDate = existingSeqState.getSequenceDate();
-        Timestamp existingSeqrecordDate = existingSeqState.getSeqrecordDate();
-        Integer existingSeqLength = existingSeqState.getLength();
-        String existingSeqVersion = existingSeqState.getVersion();
-        String existingSeqDivision = existingSeqState.getDivision();
-        String existingSeqDescription = existingSeqState.getDescription();
-        Integer existingSeqStatusKey = existingSeqState.getSequenceStatusKey();
+        String existingSeqRawType = existingSeqState.getRawType();
+        String existingSeqRawLibrary = existingSeqState.getRawLibrary();
+        String existingSeqRawOrganism = existingSeqState.getRawOrganism();
+        String existingSeqRawStrain = existingSeqState.getRawStrain();
+        String existingSeqRawTissue = existingSeqState.getRawTissue();
+        String existingSeqRawAge = existingSeqState.getRawAge();
+        String existingSeqRawSex = existingSeqState.getRawSex();
+        String existingSeqRawCellLine = existingSeqState.getRawCellLine();
 
 
-        // update sequence record date
-        if ( inputSeqrecordDate.after(existingSeqrecordDate) ) {
-            existingSeqState.setSeqrecordDate(inputSeqrecordDate);
-            update = true;
-        }
-
-        // if SwissProt or TrEMBL, update sequence date
-        // GenBank only updated if the version has changed
-        if ( (logicalDB.intValue() == LogicalDBConstants.SWISSPROT ||
-               logicalDB.intValue() == LogicalDBConstants.TREMBL) &&
-               inputSeqDate.after(existingSeqDate) ) {
-            existingSeqState.setSequenceDate(inputSeqDate);
-            update = true;
-        }
-
-        // update sequence version. Check for null; schema supports null version
-        // if either version is null we don't want to do a String compare
-        // Maybe we should convert to an int and use inputSeqversion > existingSeqVersion
-        if (inputSeqVersion == null || existingSeqVersion == null) {
+        // update raw sequence types. Check for null; schema supports null rawType
+        // if either rawType is null we don't want to do a String compare
+        if (inputSeqRawType == null || existingSeqRawType == null) {
               // if just one is null - update
-              if ( ! (inputSeqVersion == null && existingSeqVersion == null) ) {
-                  existingSeqState.setVersion(inputSeqVersion);
+              if ( ! (inputSeqRawType == null && existingSeqRawType == null) ) {
+                  existingSeqState.setRawType(inputSeqRawType);
                   update = true;
               }
         }
         // Do a string compare, if not equal - update
         else {
-            if ( ! inputSeqVersion.equals(existingSeqVersion) ) {
-              existingSeqState.setVersion(inputSeqVersion);
-
-              // if GenBank also update seqeunceDate from seqrecord date
-              // The GenBank sequenceRecord is determined by inputSeqrecordDate
-              // > existingSeqRecordDate AND inputVersion > existingVersion
-              if ( (logicalDB.intValue()) == (LogicalDBConstants.SEQUENCE)) {
-                  existingSeqState.setSequenceDate(inputSeqrecordDate);
-              }
+            if ( ! inputSeqRawType.equals(existingSeqRawType) ) {
+              existingSeqState.setRawType(inputSeqRawType);
               update = true;
             }
         }
 
-        // update sequence length. Check for null; schema supports null length
-        // if either length is null we don't want to do a String compare
-        if ( inputSeqLength == null || existingSeqLength == null) {
-            // if just one is null - update
-            if (! (inputSeqLength == null && existingSeqLength == null)) {
-                existingSeqState.setLength(inputSeqLength);
-                update = true;
-            }
-        }
-        // Do a string compare, if not equal - update
-        else {
-             if( !inputSeqLength.equals(existingSeqLength)) {
-               existingSeqState.setLength(inputSeqLength);
-               update = true;
-             }
-        }
-
-        // update sequence division. Check for null; schema supports null division
-        // if either division is null we don't want to do a String compare
-        if (inputSeqDivision == null || existingSeqDivision == null) {
+        // update raw library. Check for null; schema supports null rawLibrary
+        // if either library is null we don't want to do a String compare
+        if (inputSeqRawLibrary == null || existingSeqRawLibrary == null) {
               // if just one is null - update
-              if ( ! (inputSeqDivision == null && existingSeqDivision == null) ) {
-                  existingSeqState.setDivision(inputSeqDivision);
+              if ( ! (inputSeqRawLibrary == null && existingSeqRawLibrary == null) ) {
+                  existingSeqState.setRawLibrary(inputSeqRawLibrary);
                   update = true;
               }
         }
         // Do a string compare, if not equal - update
         else {
-            if ( ! inputSeqDivision.equals(existingSeqDivision) ) {
-              existingSeqState.setDivision(inputSeqDivision);
+            if ( ! inputSeqRawLibrary.equals(existingSeqRawLibrary) ) {
+              existingSeqState.setRawLibrary(inputSeqRawLibrary);
               update = true;
             }
         }
 
-        // update description Check for null; schema supports null description
-        // if either description is null we don't want to do a String compare
-            if (inputSeqDescription == null || existingSeqDescription == null) {
+        // update raw strain. Check for null; schema supports null rawStrain
+        // if either strain is null we don't want to do a String compare
+        if (inputSeqRawStrain == null || existingSeqRawStrain == null) {
+              // if just one is null - update
+              if ( ! (inputSeqRawStrain == null && existingSeqRawStrain == null) ) {
+                  existingSeqState.setRawStrain(inputSeqRawStrain);
+                  update = true;
+              }
+        }
+        // Do a string compare, if not equal - update
+        else {
+            if ( ! inputSeqRawStrain.equals(existingSeqRawStrain) ) {
+              existingSeqState.setRawStrain(inputSeqRawStrain);
+              update = true;
+            }
+        }
+
+        // update raw tissue. Check for null; schema supports null rawTissue
+        // if either tissue is null we don't want to do a String compare
+        if (inputSeqRawTissue == null || existingSeqRawTissue == null) {
+              // if just one is null - update
+              if ( ! (inputSeqRawTissue == null && existingSeqRawTissue == null) ) {
+                  existingSeqState.setRawTissue(inputSeqRawTissue);
+                  update = true;
+              }
+        }
+        // Do a string compare, if not equal - update
+        else {
+            if ( ! inputSeqRawTissue.equals(existingSeqRawTissue) ) {
+              existingSeqState.setRawTissue(inputSeqRawTissue);
+              update = true;
+            }
+        }
+
+            // update raw age. Check for null; schema supports null rawAge
+            // if either age is null we don't want to do a String compare
+            if (inputSeqRawAge == null || existingSeqRawAge == null) {
                   // if just one is null - update
-                  if ( ! (inputSeqDescription == null && existingSeqDescription == null) ) {
-                      existingSeqState.setDescription(inputSeqDescription);
+                  if ( ! (inputSeqRawAge == null && existingSeqRawAge == null) ) {
+                      existingSeqState.setRawAge(inputSeqRawAge);
                       update = true;
                   }
             }
             // Do a string compare, if not equal - update
             else {
-                if ( ! inputSeqDescription.equals(existingSeqDescription) ) {
-                  existingSeqState.setDescription(inputSeqDescription);
+                if ( ! inputSeqRawAge.equals(existingSeqRawAge) ) {
+                  existingSeqState.setRawAge(inputSeqRawAge);
                   update = true;
                 }
             }
-            // update sequence status key
-            // incoming ACTIVE can update existing DELETED
-            // incoming DELETED can update existing ACTIVE
-            // e.g. incoming refseq ACTIVE should update existing refseq DELETED
-            // because deleted refseqs can become active again.
-            if(! inputSeqStatusKey.equals(existingSeqStatusKey)) {
-                String statusString = termNameLookup.lookup(existingSeqStatusKey);
-                // don't update split or not loaded status
-                if ( ! (statusString.equals(SeqloaderConstants.SPLIT_STATUS) ||
-                        statusString.equals(SeqloaderConstants.DUMMY_SEQ_STATUS))) {
-                    existingSeqState.setSequenceStatusKey(inputSeqStatusKey);
-                    update = true;
+
+            // update raw sex. Check for null; schema supports null rawSex
+            // if either sex is null we don't want to do a String compare
+            if (inputSeqRawSex == null || existingSeqRawSex == null) {
+                  // if just one is null - update
+                  if ( ! (inputSeqRawSex == null && existingSeqRawSex == null) ) {
+                      existingSeqState.setRawSex(inputSeqRawSex);
+                      update = true;
+                  }
+            }
+            // Do a string compare, if not equal - update
+            else {
+                if ( ! inputSeqRawSex.equals(existingSeqRawSex) ) {
+                  existingSeqState.setRawSex(inputSeqRawSex);
+                  update = true;
                 }
             }
+
+            // update raw cellLine. Check for null; schema supports null rawCellLine
+            // if either cellLine is null we don't want to do a String compare
+            if (inputSeqRawCellLine == null || existingSeqRawCellLine == null) {
+                  // if just one is null - update
+                  if ( ! (inputSeqRawCellLine == null && existingSeqRawCellLine == null) ) {
+                      existingSeqState.setRawCellLine(inputSeqRawCellLine);
+                      update = true;
+                  }
+            }
+            // Do a string compare, if not equal - update
+            else {
+                if ( ! inputSeqRawCellLine.equals(existingSeqRawCellLine) ) {
+                  existingSeqState.setRawCellLine(inputSeqRawCellLine);
+                  update = true;
+                }
+            }
+
         return update;
     }
 }

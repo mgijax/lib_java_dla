@@ -1,6 +1,3 @@
-// $Header
-// $Name
-
 package org.jax.mgi.dbs.mgd.loads.Seq;
 /**
  * Debug stuff
@@ -170,7 +167,8 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
 
       String spCall = "SEQ_deleteByCreatedBy " + jobStreamName;
       try {
-        SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
+        SQLDataManager sqlMgr =
+            SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         sqlMgr.executeSimpleProc(spCall);
       }
       catch (MGIException e) {
@@ -199,9 +197,13 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        SequenceResolverException, MSException {
 
        SEQ_SequenceState inputSequenceState;
+       SEQ_Sequence_RawState inputSequenceRawState;
        // resolve raw sequence
        try {
-         inputSequenceState = resolveRawSequence(seqInput.getSeq());
+         inputSequenceState =
+             resolveRawSequenceToSequenceState(seqInput.getSeq());
+         inputSequenceRawState =
+           resolveRawSequenceToSequenceRawState(seqInput.getSeq());
        }
         catch (ConfigException e) {
           SeqloaderException e1 =
@@ -232,7 +234,9 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        // source association(s) and seqid(s)
        Sequence inputSequence;
        try {
-         inputSequence = new Sequence(inputSequenceState, mgdStream);
+         inputSequence =
+             new Sequence(inputSequenceState,
+                          inputSequenceRawState, mgdStream);
        }
        catch (MGIException e) {
          SeqloaderException e1 =
@@ -312,12 +316,21 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
        // associations
        Iterator msIterator = seqInput.getMSources().iterator();
 
+       // additionally keep track of preferred organism by the following
+       // preference: mouse, human, rat (currently using
+       // lowest _organism_key to do this)
+       int preferredOrganismKey = 0;
+
        while (msIterator.hasNext()) {
            // process the molecular source
            stopWatch.start();
            MolecularSource inputMSSource = msProcessor.processNewSeqSrc(
                seqInput.getPrimaryAcc().getAccID(),
                (MSRawAttributes) msIterator.next());
+          if (preferredOrganismKey == 0 ||
+              inputMSSource.getOrganismKey().intValue() < preferredOrganismKey)
+              preferredOrganismKey =
+                  inputMSSource.getOrganismKey().intValue();
            stopWatch.stop();
            double time = stopWatch.time();
            stopWatch.reset();
@@ -349,6 +362,16 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
              throw e1;
            }
        }
+       // set the preferred organism key in the sequence object
+       if (preferredOrganismKey == 0)
+       {
+           SeqloaderException e1 =
+               (SeqloaderException) eFactory.getException(
+                SeqloaderExceptionFactory.UnallowedOrganismKeyErr);
+           e1.bind(preferredOrganismKey);
+           throw e1;
+       }
+       inputSequence.setPrefferedOrganismKey(preferredOrganismKey);
        // send the new sequence to its stream
        try {
          inputSequence.sendToStream();
@@ -428,7 +451,8 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
    * @throws TranslationException from SequenceAttributeResolver.resolveAttributes
    */
 
-   protected SEQ_SequenceState resolveRawSequence(SequenceRawAttributes rawSeq)
+   protected SEQ_SequenceState
+       resolveRawSequenceToSequenceState(SequenceRawAttributes rawSeq)
           throws SequenceResolverException, ConfigException, CacheException,
               DBException, TranslationException {
 
@@ -443,27 +467,36 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
         }
         return seqState;
    }
+
+   /**
+   * Resolves SequenceRawAttributes to SEQ_Sequence_RawState
+   * @assumes Nothing
+   * @effects queries a database
+   * @param rawSeq the raw sequence to resolve
+   * @return seqRawState a SEQ_Sequence_RawState
+   * @throws SequenceResolverException if any SequenceRawAttributes attributes
+   *          cannot be resolved
+   * @throws ConfigException from SequenceAttributeResolver.resolveAttributes
+   * @throws CacheException from SequenceAttributeResolver.resolveAttributes
+   * @throws DBException from SequenceAttributeResolver.resolveAttributes
+   * @throws TranslationException from SequenceAttributeResolver.resolveAttributes
+   */
+
+   protected SEQ_Sequence_RawState
+       resolveRawSequenceToSequenceRawState(SequenceRawAttributes rawSeq)
+          throws SequenceResolverException, ConfigException, CacheException,
+              DBException, TranslationException {
+
+        // resolve raw sequence
+        SEQ_Sequence_RawState seqRawState = null;
+        try {
+          seqRawState = seqResolver.resolveRawAttributes(rawSeq);
+        }
+        catch (KeyNotFoundException e) {
+          // throw an exception
+          throw new SequenceResolverException(e);
+        }
+        return seqRawState;
+   }
+
 }
-// $Log
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

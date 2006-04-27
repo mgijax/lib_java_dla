@@ -1,5 +1,3 @@
-//  $Header$
-//  $Name$
 package org.jax.mgi.shr.dla.input.genbank;
 
 import org.jax.mgi.shr.config.ConfigException;
@@ -50,53 +48,3 @@ public class GBInputFileNoSeq extends InputDataFile
         setOkToUseRegex(false);
     }
 }
-
-
-//  $Log$
-//  Revision 1.3  2005/08/05 18:57:18  mbw
-//  merged code from tr6086
-//
-//  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
-//  fixed javadocs warnings
-//
-//  Revision 1.2.2.1  2005/08/02 16:24:13  mbw
-//  merged branch tr6086
-//
-//  Revision 1.2.6.1  2004/12/09 18:08:38  mbw
-//  fixed javadocs warnings
-//
-//  Revision 1.2  2004/12/07 20:10:31  mbw
-//  merged tr6047 onto the trunk
-//
-//  Revision 1.1.2.1  2004/11/05 16:05:23  mbw
-//  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
-//  Revision 1.1  2004/06/29 17:05:39  mbw
-//  renamed class
-//
-//  Revision 1.1  2004/06/29 16:55:09  mbw
-//  initial version
-//
-//
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2004 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

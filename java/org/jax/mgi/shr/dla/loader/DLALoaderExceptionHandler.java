@@ -1,6 +1,3 @@
-// $Header$
-// $Name$
-
 package org.jax.mgi.shr.dla.loader;
 
 import org.jax.mgi.shr.exception.MGIException;
@@ -43,82 +40,4 @@ public class DLALoaderExceptionHandler {
       e.printStackTrace();
       logger.logError(e.toString());
   }
-
 }
-// $Log$
-// Revision 1.3  2005/08/05 18:57:23  mbw
-// merged code from tr6086
-//
-// Revision 1.2.6.2  2005/08/02 13:37:13  mbw
-// javadocs only
-//
-// Revision 1.2.6.1  2004/12/09 18:08:44  mbw
-// fixed javadocs warnings
-//
-// Revision 1.2.2.1  2005/08/02 16:24:20  mbw
-// merged branch tr6086
-//
-// Revision 1.2  2004/12/07 20:10:38  mbw
-// merged tr6047 onto the trunk
-//
-// Revision 1.1.2.1  2004/11/05 16:06:39  mbw
-// classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
-// Revision 1.10  2004/10/07 19:41:03  mbw
-// removed error counting and error count logging
-//
-// Revision 1.9  2004/07/01 18:08:27  sc
-// removed e.printStackTrace
-//
-// Revision 1.8  2004/04/02 14:52:17  mbw
-// tweaked error message
-//
-// Revision 1.7  2004/03/29 20:17:46  mbw
-// fixed message printed when logger can not be instantiated
-//
-// Revision 1.6  2003/10/28 20:56:33  mbw
-// fixed imports
-//
-// Revision 1.5  2003/06/04 18:28:56  mbw
-// javadoc edits
-//
-// Revision 1.4  2003/05/22 15:49:11  mbw
-// javadocs edits
-//
-// Revision 1.3  2003/05/13 18:18:24  mbw
-// modified exit message
-//
-// Revision 1.2  2003/05/08 20:40:02  mbw
-// incorporated changes from code reviews
-//
-// Revision 1.1  2003/04/22 22:31:57  mbw
-// initial version
-//
-// Revision 1.4  2003/04/01 21:53:34  mbw
-// resolved impact of class name change
-//
-// Revision 1.3  2003/03/21 15:51:34  mbw
-// added standard header/footer
-//
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

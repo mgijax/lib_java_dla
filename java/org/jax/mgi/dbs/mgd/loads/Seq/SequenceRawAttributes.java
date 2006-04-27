@@ -1,7 +1,5 @@
-//  $Header$
-//  $Name$
-
 package org.jax.mgi.dbs.mgd.loads.Seq;
+
 import java.sql.Timestamp;
 
 /**
@@ -487,63 +485,3 @@ public class SequenceRawAttributes {
         misc = null;
     }
 }
-
-//  $Log$
-//  Revision 1.2.8.1  2005/01/24 19:07:42  sc
-//  javadocs only
-//
-//  Revision 1.2.6.1  2004/12/09 18:08:18  mbw
-//  fixed javadocs warnings
-//
-//  Revision 1.2.2.1  2005/08/02 16:23:46  mbw
-//  merged branch tr6086
-//
-//  Revision 1.2.6.1  2004/12/09 18:08:18  mbw
-//  fixed javadocs warnings
-//
-//  Revision 1.2  2004/12/07 20:09:46  mbw
-//  merged tr6047 onto the trunk
-//
-//  Revision 1.1.2.1  2004/11/05 16:10:16  mbw
-//  classes were renamed and reloacated as part of large refactoring effort (see tr6047)
-//
-//  Revision 1.4  2004/07/12 17:14:12  sc
-//  added misc attribute, setter, and getter as general purpose field to hold whatever
-//
-//  Revision 1.3  2004/06/30 19:36:59  mbw
-//  javadocs only
-//
-//  Revision 1.2  2004/02/02 19:45:17  sc
-//  development since last tag
-//
-//  Revision 1.1  2004/01/06 20:09:48  mbw
-//  initial version imported from lib_java_seqloader
-//
-//  Revision 1.2  2003/12/20 16:25:23  sc
-//  changes made from code review~
-//
-//  Revision 1.1  2003/12/08 18:40:46  sc
-//  initial commit
-//
-/**************************************************************************
-*
-* Warranty Disclaimer and Copyright Notice
-*
-*  THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE SUITABILITY OR
-*  ACCURACY OF THIS SOFTWARE OR DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES,
-*  EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A
-*  PARTICULAR PURPOSE OR THAT THE USE OF THIS SOFTWARE OR DATA WILL NOT
-*  INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, OR OTHER RIGHTS.
-*  THE SOFTWARE AND DATA ARE PROVIDED "AS IS".
-*
-*  This software and data are provided to enhance knowledge and encourage
-*  progress in the scientific community and are to be used only for research
-*  and educational purposes.  Any reproduction or use for commercial purpose
-*  is prohibited without the prior express written permission of The Jackson
-*  Laboratory.
-*
-* Copyright \251 1996, 1999, 2002, 2003 by The Jackson Laboratory
-*
-* All Rights Reserved
-*
-**************************************************************************/

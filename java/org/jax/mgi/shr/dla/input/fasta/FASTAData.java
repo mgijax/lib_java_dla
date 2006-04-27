@@ -157,6 +157,4 @@ public class FASTAData
     {
         return this.id + "\n" + this.seq;
     }
-
-
 }

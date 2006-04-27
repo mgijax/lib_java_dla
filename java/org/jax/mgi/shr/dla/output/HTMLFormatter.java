@@ -333,6 +333,4 @@ public abstract class HTMLFormatter implements OutputFormatter
     {
       this.webServerURL = cfg.getWebServerUrl();
     }
-
-
 }

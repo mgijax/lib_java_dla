@@ -35,6 +35,4 @@ public class DLALoggingExceptionFactory extends ExceptionFactory {
         "Could not configure log files due to error in configuration",
         false));
   }
-
-
 }

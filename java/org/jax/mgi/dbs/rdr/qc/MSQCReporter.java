@@ -1,4 +1,3 @@
-
 package org.jax.mgi.dbs.rdr.qc;
 
 import org.jax.mgi.dbs.rdr.dao.QC_MS_AttrEditDAO;
