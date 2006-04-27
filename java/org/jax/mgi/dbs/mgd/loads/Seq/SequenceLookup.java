@@ -143,6 +143,7 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence._sequencequality_key + ", " +
             " s." + MGD.seq_sequence._sequencestatus_key + ", " +
             " s." + MGD.seq_sequence._sequenceprovider_key + ", " +
+            " s." + MGD.seq_sequence._organism_key + ", " +
             " s." + MGD.seq_sequence.length + ", " +
             " s." + MGD.seq_sequence.description + ", " +
             " s." + MGD.seq_sequence.version + ", " +
@@ -156,6 +157,10 @@ public class SequenceLookup {
             " sr." + MGD.seq_sequence_raw.rawage + ", " +
             " sr." + MGD.seq_sequence_raw.rawsex + ", " +
             " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw._createdby_key + ", " +
+            " sr." + MGD.seq_sequence_raw._modifiedby_key + ", " +
+            " sr." + MGD.seq_sequence_raw.creation_date + ", " +
+            " sr." + MGD.seq_sequence_raw.modification_date + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -286,6 +291,7 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence._sequencequality_key + ", " +
             " s." + MGD.seq_sequence._sequencestatus_key + ", " +
             " s." + MGD.seq_sequence._sequenceprovider_key + ", " +
+            " s." + MGD.seq_sequence._organism_key + ", " +
             " s." + MGD.seq_sequence.length + ", " +
             " s." + MGD.seq_sequence.description + ", " +
             " s." + MGD.seq_sequence.version + ", " +
@@ -299,6 +305,10 @@ public class SequenceLookup {
             " sr." + MGD.seq_sequence_raw.rawage + ", " +
             " sr." + MGD.seq_sequence_raw.rawsex + ", " +
             " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw._createdby_key + ", " +
+            " sr." + MGD.seq_sequence_raw._modifiedby_key + ", " +
+            " sr." + MGD.seq_sequence_raw.creation_date + ", " +
+            " sr." + MGD.seq_sequence_raw.modification_date + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -432,6 +442,7 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence._sequencequality_key + ", " +
             " s." + MGD.seq_sequence._sequencestatus_key + ", " +
             " s." + MGD.seq_sequence._sequenceprovider_key + ", " +
+            " s." + MGD.seq_sequence._organism_key + ", " +
             " s." + MGD.seq_sequence.length + ", " +
             " s." + MGD.seq_sequence.description + ", " +
             " s." + MGD.seq_sequence.version + ", " +
@@ -445,6 +456,10 @@ public class SequenceLookup {
             " sr." + MGD.seq_sequence_raw.rawage + ", " +
             " sr." + MGD.seq_sequence_raw.rawsex + ", " +
             " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw._createdby_key + ", " +
+            " sr." + MGD.seq_sequence_raw._modifiedby_key + ", " +
+            " sr." + MGD.seq_sequence_raw.creation_date + ", " +
+            " sr." + MGD.seq_sequence_raw.modification_date + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -559,6 +574,7 @@ public class SequenceLookup {
             " s." + MGD.seq_sequence._sequencequality_key + ", " +
             " s." + MGD.seq_sequence._sequencestatus_key + ", " +
             " s." + MGD.seq_sequence._sequenceprovider_key + ", " +
+            " s." + MGD.seq_sequence._organism_key + ", " +
             " s." + MGD.seq_sequence.length + ", " +
             " s." + MGD.seq_sequence.description + ", " +
             " s." + MGD.seq_sequence.version + ", " +
@@ -572,6 +588,10 @@ public class SequenceLookup {
             " sr." + MGD.seq_sequence_raw.rawage + ", " +
             " sr." + MGD.seq_sequence_raw.rawsex + ", " +
             " sr." + MGD.seq_sequence_raw.rawcellline + ", " +
+            " sr." + MGD.seq_sequence_raw._createdby_key + ", " +
+            " sr." + MGD.seq_sequence_raw._modifiedby_key + ", " +
+            " sr." + MGD.seq_sequence_raw.creation_date + ", " +
+            " sr." + MGD.seq_sequence_raw.modification_date + ", " +
             " s." + MGD.seq_sequence.numberoforganisms + ", " +
             " s." + MGD.seq_sequence.seqrecord_date +
             " as SEQ_seqrecord_date, " +
@@ -850,19 +870,24 @@ public class SequenceLookup {
               seqState.setSequenceQualityKey(rowData.SEQ_SequenceQuality_key);
               seqState.setSequenceStatusKey(rowData.SEQ_SequenceStatus_key);
               seqState.setSequenceProviderKey(rowData.SEQ_SequenceProvider_key);
+              seqState.setOrganismKey(rowData.SEQ_SequenceOrganism_key);
               seqState.setLength(rowData.SEQ_length);
               seqState.setDescription(rowData.SEQ_description);
               seqState.setVersion(rowData.SEQ_version);
               seqState.setDivision(rowData.SEQ_division);
               seqState.setVirtual(rowData.SEQ_virtual);
-              seqRawState.setRawType(rowData.SEQ_rawType);
-              seqRawState.setRawLibrary(rowData.SEQ_rawLibrary);
-              seqRawState.setRawOrganism(rowData.SEQ_rawOrganism);
-              seqRawState.setRawStrain(rowData.SEQ_rawStrain);
-              seqRawState.setRawTissue(rowData.SEQ_rawTissue);
-              seqRawState.setRawAge(rowData.SEQ_rawAge);
-              seqRawState.setRawSex(rowData.SEQ_rawSex);
-              seqRawState.setRawCellLine(rowData.SEQ_rawCellLine);
+              seqRawState.setRawType(rowData.SeqRaw_rawType);
+              seqRawState.setRawLibrary(rowData.SeqRaw_rawLibrary);
+              seqRawState.setRawOrganism(rowData.SeqRaw_rawOrganism);
+              seqRawState.setRawStrain(rowData.SeqRaw_rawStrain);
+              seqRawState.setRawTissue(rowData.SeqRaw_rawTissue);
+              seqRawState.setRawAge(rowData.SeqRaw_rawAge);
+              seqRawState.setRawSex(rowData.SeqRaw_rawSex);
+              seqRawState.setRawCellLine(rowData.SeqRaw_rawCellLine);
+              seqRawState.setCreatedByKey(rowData.SeqRaw_CreatedBy_key);
+              seqRawState.setModifiedByKey(rowData.SeqRaw_ModifiedBy_key);
+              seqRawState.setCreationDate(rowData.SeqRaw_creation_date);
+              seqRawState.setModificationDate(rowData.SeqRaw_modification_date);
               seqState.setNumberOfOrganisms(rowData.SEQ_numberOfOrganisms);
               seqState.setSeqrecordDate(rowData.SEQ_seqrecord_date);
               seqState.setSequenceDate(rowData.SEQ_sequence_date);
@@ -1105,19 +1130,24 @@ public class SequenceLookup {
             protected Integer SEQ_SequenceQuality_key;
             protected Integer SEQ_SequenceStatus_key;
             protected Integer SEQ_SequenceProvider_key;
+            protected Integer SEQ_SequenceOrganism_key;
             protected Integer SEQ_length;
             protected String SEQ_description;
             protected String SEQ_version;
             protected String SEQ_division;
             protected Boolean SEQ_virtual;
-            protected String SEQ_rawType;
-            protected String SEQ_rawLibrary;
-            protected String SEQ_rawOrganism;
-            protected String SEQ_rawStrain;
-            protected String SEQ_rawTissue;
-            protected String SEQ_rawAge;
-            protected String SEQ_rawSex;
-            protected String SEQ_rawCellLine;
+            protected String SeqRaw_rawType;
+            protected String SeqRaw_rawLibrary;
+            protected String SeqRaw_rawOrganism;
+            protected String SeqRaw_rawStrain;
+            protected String SeqRaw_rawTissue;
+            protected String SeqRaw_rawAge;
+            protected String SeqRaw_rawSex;
+            protected String SeqRaw_rawCellLine;
+            protected Integer SeqRaw_CreatedBy_key;
+            protected Integer SeqRaw_ModifiedBy_key;
+            protected Timestamp SeqRaw_creation_date;
+            protected Timestamp SeqRaw_modification_date;
             protected Integer SEQ_numberOfOrganisms;
             protected Timestamp SEQ_seqrecord_date;
             protected Timestamp SEQ_sequence_date;
@@ -1181,39 +1211,44 @@ public class SequenceLookup {
                 SEQ_SequenceQuality_key = row.getInt(31);
                 SEQ_SequenceStatus_key = row.getInt(32);
                 SEQ_SequenceProvider_key = row.getInt(33);
-                SEQ_length = row.getInt(34);
-                SEQ_description = row.getString(35);
-                SEQ_version = row.getString(36);
-                SEQ_division = row.getString(37);
-                SEQ_virtual = row.getBoolean(38);
-                SEQ_rawType = row.getString(39);
-                SEQ_rawLibrary = row.getString(40);
-                SEQ_rawOrganism = row.getString(41);
-                SEQ_rawStrain = row.getString(42);
-                SEQ_rawTissue = row.getString(43);
-                SEQ_rawAge = row.getString(44);
-                SEQ_rawSex = row.getString(45);
-                SEQ_rawCellLine = row.getString(46);
-                SEQ_numberOfOrganisms = row.getInt(47);
-                SEQ_seqrecord_date = row.getTimestamp(48);
-                SEQ_sequence_date = row.getTimestamp(49);
-                SEQ_CreatedBy_key = row.getInt(50);
-                SEQ_ModifiedBy_key = row.getInt(51);
-                SEQ_creation_date = row.getTimestamp(52);
-                SEQ_modification_date = row.getTimestamp(53);
-                ACC2_Accession_key = row.getInt(54);
-                ACC2_accId = row.getString(55);
-                ACC2_prefixPart = row.getString(56);
-                ACC2_numericPart = row.getInt(57);
-                ACC2_LogicalDB_key = row.getInt(58);
-                ACC2_Object_key = row.getInt(59);
-                ACC2_MGIType_key = row.getInt(60);
-                ACC2_private = row.getBoolean(61);
-                ACC2_preferred = row.getBoolean(62);
-                ACC2_CreatedBy_key = row.getInt(63);
-                ACC2_ModifiedBy_key = row.getInt(64);
-                ACC2_creation_date = row.getTimestamp(65);
-                ACC2_modification_date = row.getTimestamp(66);
+                SEQ_SequenceOrganism_key = row.getInt(34);
+                SEQ_length = row.getInt(35);
+                SEQ_description = row.getString(36);
+                SEQ_version = row.getString(37);
+                SEQ_division = row.getString(38);
+                SEQ_virtual = row.getBoolean(39);
+                SeqRaw_rawType = row.getString(40);
+                SeqRaw_rawLibrary = row.getString(41);
+                SeqRaw_rawOrganism = row.getString(42);
+                SeqRaw_rawStrain = row.getString(43);
+                SeqRaw_rawTissue = row.getString(44);
+                SeqRaw_rawAge = row.getString(45);
+                SeqRaw_rawSex = row.getString(46);
+                SeqRaw_rawCellLine = row.getString(47);
+                SeqRaw_CreatedBy_key = row.getInt(48);
+                SeqRaw_ModifiedBy_key = row.getInt(49);
+                SeqRaw_creation_date = row.getTimestamp(50);
+                SeqRaw_modification_date = row.getTimestamp(51);
+                SEQ_numberOfOrganisms = row.getInt(52);
+                SEQ_seqrecord_date = row.getTimestamp(53);
+                SEQ_sequence_date = row.getTimestamp(54);
+                SEQ_CreatedBy_key = row.getInt(55);
+                SEQ_ModifiedBy_key = row.getInt(56);
+                SEQ_creation_date = row.getTimestamp(57);
+                SEQ_modification_date = row.getTimestamp(58);
+                ACC2_Accession_key = row.getInt(59);
+                ACC2_accId = row.getString(60);
+                ACC2_prefixPart = row.getString(61);
+                ACC2_numericPart = row.getInt(62);
+                ACC2_LogicalDB_key = row.getInt(63);
+                ACC2_Object_key = row.getInt(64);
+                ACC2_MGIType_key = row.getInt(65);
+                ACC2_private = row.getBoolean(66);
+                ACC2_preferred = row.getBoolean(67);
+                ACC2_CreatedBy_key = row.getInt(68);
+                ACC2_ModifiedBy_key = row.getInt(69);
+                ACC2_creation_date = row.getTimestamp(70);
+                ACC2_modification_date = row.getTimestamp(71);
             }
         }
     }

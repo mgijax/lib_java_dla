@@ -155,7 +155,6 @@ public class SequenceUpdater {
 
         // update sequence record date
         if ( inputSeqrecordDate.after(existingSeqrecordDate) ) {
-            logger.logdDebug("Updating Sequence record date");
             existingSeqState.setSeqrecordDate(inputSeqrecordDate);
             update = true;
         }
@@ -182,7 +181,6 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqVersion.equals(existingSeqVersion) ) {
-              logger.logdDebug("Updating Sequence Version");
               existingSeqState.setVersion(inputSeqVersion);
 
               // if GenBank also update seqeunceDate from seqrecord date
@@ -190,7 +188,6 @@ public class SequenceUpdater {
               // > existingSeqRecordDate AND inputVersion > existingVersion
               if ( (logicalDB.intValue()) == (LogicalDBConstants.SEQUENCE)) {
                   existingSeqState.setSequenceDate(inputSeqrecordDate);
-                  logger.logdDebug("Updating Sequence Date");
               }
               update = true;
             }
@@ -208,7 +205,6 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
              if( !inputSeqLength.equals(existingSeqLength)) {
-               logger.logdDebug("Updating Sequence Length");
                existingSeqState.setLength(inputSeqLength);
                update = true;
              }
@@ -226,7 +222,6 @@ public class SequenceUpdater {
         // Do a string compare, if not equal - update
         else {
             if ( ! inputSeqDivision.equals(existingSeqDivision) ) {
-              logger.logdDebug("Updating Sequence Division");
               existingSeqState.setDivision(inputSeqDivision);
               update = true;
             }
@@ -244,7 +239,6 @@ public class SequenceUpdater {
             // Do a string compare, if not equal - update
             else {
                 if ( ! inputSeqDescription.equals(existingSeqDescription) ) {
-                  logger.logdDebug("Updating Sequence Description");
                   existingSeqState.setDescription(inputSeqDescription);
                   update = true;
                 }
@@ -259,7 +253,6 @@ public class SequenceUpdater {
                 // don't update split or not loaded status
                 if ( ! (statusString.equals(SeqloaderConstants.SPLIT_STATUS) ||
                         statusString.equals(SeqloaderConstants.DUMMY_SEQ_STATUS))) {
-                    logger.logdDebug("Updating Sequence Status to " + inputSeqStatusKey);
                     existingSeqState.setSequenceStatusKey(inputSeqStatusKey);
                     update = true;
                 }
