@@ -1,4 +1,0 @@
-   <target name="buildall" description="Executes task 'all'"
-           depends="all">
-   </target>
-

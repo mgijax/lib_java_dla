@@ -1,28 +1,22 @@
 <?xml version="1.0"?>
-<!DOCTYPE definitions [
-  <!ENTITY build.targets SYSTEM "/usr/local/mgi/etc/build.lib.targets.xml">
-  <!ENTITY local.build.targets SYSTEM "build.targets.xml">
-]>
-
-<!-- Enter the name of your current project here 
- -->
+<!-- This XML script is used to build the lib_java_dla product.
+-->
 <project name="lib_java_dla" default="compile" basedir=".">
 
-  <!-- Enter the name of your jar file here minus the dot jar suffix
+   <!-- Get the system environment variables and define any other system
+        properties needed by the build.
    -->
-  <property name="jar.name" value="dla"/>
+   <property environment="env"/>
+   <property name="jar.name" value="dla"/>
+   <property name="classpath" value="${env.MGI_JAVALIB}/core.jar:${env.MGI_JAVALIB}/dbsmgd.jar:${env.MGI_JAVALIB}/dbsrdr.jar:${env.JUNIT}"/>
 
-  <!-- To override property definitions in the following 
-       properties file, add new definitions in preceding lines.
-       The first definition of a property takes precedence 
+   <!-- Import the universal targets.
    -->
-  <property file="build.properties"/>
-  <property file="/usr/local/mgi/etc/build.lib.properties"/>
+   <import file="${env.MGICONFIG}/etc/build.lib.targets.xml"/>
 
-  <!-- Universal targets get included here  
+   <!-- Define product specific targets.
    -->
-  &build.targets;
-  &local.build.targets;
-
+   <target name="buildall" description="Executes task 'all'"
+           depends="all, link">
+   </target>
 </project>
-

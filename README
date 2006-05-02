@@ -1,3 +1,0 @@
-copy build.properties.default to build.properties
-edit build.properties to suit installation
-run ant buildall
