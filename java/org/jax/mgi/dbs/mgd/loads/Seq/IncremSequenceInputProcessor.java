@@ -600,24 +600,25 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
                       }
                       runningMSPTime += time;
                   }
+                  if (okToLoadRefs.equals(Boolean.TRUE)) {
+                      // resolve sequence reference associations and set new ones
+                      // in the existing Sequence; reports any existing references
+                      // that no longer apply
+                      Vector references = seqInput.getRefs();
+                      if (!references.isEmpty()) {
+                          processReferences(existingSequence, references);
+                          // Now report any existing references that may be outdated
+                      }
+                      Vector oldReferences = existingSequence.getOldRefAssociations();
+                      MGI_Reference_AssocState refState;
+                      Integer refsKey;
 
-                  // resolve sequence reference associations and set new ones
-                  // in the existing Sequence; reports any existing references
-                  // that no longer apply
-                  Vector references = seqInput.getRefs();
-                  if (!references.isEmpty()) {
-                      processReferences(existingSequence, references);
-                      // Now report any existing references that may be outdated
-                  }
-                  Vector oldReferences = existingSequence.getOldRefAssociations();
-                  MGI_Reference_AssocState refState;
-                  Integer refsKey;
-
-                  if (oldReferences != null) {
-                      for (Iterator i = oldReferences.iterator(); i.hasNext(); ) {
-                          refState = (MGI_Reference_AssocState) i.next();
-                          refsKey = refState.getRefsKey();
-                          qcReporter.reportOldReferences(existingSeqKey, refsKey);
+                      if (oldReferences != null) {
+                          for (Iterator i = oldReferences.iterator(); i.hasNext(); ) {
+                              refState = (MGI_Reference_AssocState) i.next();
+                              refsKey = refState.getRefsKey();
+                              qcReporter.reportOldReferences(existingSeqKey, refsKey);
+                          }
                       }
                   }
               }
