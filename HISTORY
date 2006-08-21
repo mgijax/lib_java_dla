@@ -3,6 +3,9 @@ DATE: 08/18/2006
 STAFF: sc
 CHANGES:
 1) MSResolver - added VEGA
+2) MGSCoordinateFormatInterpreter and MGSAssemblyFormatInterpreter, updated
+   to use String.split in parseRecord method instead of our frameworks
+   StringLib in order to correctly parse consecutive tabs.
 
 TAG: lib_java_dla-build36-1 
 DATE: 08/16/2006
