@@ -14,6 +14,8 @@ import org.jax.mgi.dbs.mgd.loads.Coord.CoordMapProcessor;
 import org.jax.mgi.dbs.mgd.loads.Coord.CoordMapFeatureResolver;
 import org.jax.mgi.shr.dla.loader.coord.CoordloaderExceptionFactory;
 import org.jax.mgi.shr.dla.input.CoordinateInput;
+import org.jax.mgi.shr.dla.log.DLALogger;
+import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.dla.loader.coord.CoordloaderException;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
@@ -48,10 +50,10 @@ public class CoordinateInputProcessor {
     private CoordLoadCfg coordCfg;
 
     // name of the collection
-    String collectionName;
+    private String collectionName;
 
     // abbreviation for the collection
-    String collectionAbbrev;
+    private String collectionAbbrev;
 
     // the collection key for this load
     private Integer collectionKey;
@@ -67,7 +69,8 @@ public class CoordinateInputProcessor {
 
     // a coordinate Exception Factory
     private CoordloaderExceptionFactory eFactory;
-
+    
+    DLALogger logger;
     /**
      * Constructs a CoordinateInputProcessor
      * @param stream stream for adding coordinates to an  MGD databaseth
@@ -80,7 +83,7 @@ public class CoordinateInputProcessor {
      */
 
     public CoordinateInputProcessor(SQLStream stream) throws DBException, CacheException,
-        ConfigException, KeyNotFoundException {
+        ConfigException, KeyNotFoundException, DLALoggingException {
 
         mgdStream = stream;
         eFactory = new CoordloaderExceptionFactory();
@@ -96,6 +99,7 @@ public class CoordinateInputProcessor {
         mapProcessor = (CoordMapProcessor)coordCfg.getMapProcessorClass();
 
         featureResolver = new CoordMapFeatureResolver();
+	logger = DLALogger.getInstance();
     }
     /**
      * deletes the collection, all coordinate maps and features for the
@@ -137,8 +141,15 @@ public class CoordinateInputProcessor {
                 input.getCoordMapRawAttributes(), coordinate);
 
         // resolve the feature
-        MAP_Coord_FeatureState state = featureResolver.resolve(
+	MAP_Coord_FeatureState state; 
+	try {
+            state = featureResolver.resolve(
             input.getCoordMapFeatureRawAttributes(), mapKey);
+	}
+	catch (KeyNotFoundException e) {
+	    logger.logcInfo(e.getMessage(), true);
+    	    return;
+	}
 
         // set the feature in the coordMap object
         coordinate.setCoordMapFeatureState(state);

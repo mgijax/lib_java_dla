@@ -1,3 +1,26 @@
+TAG: lib_java_dla-3-5-1-1
+DATE: 09/06/2006
+STAFF: sc
+CHANGES: merge build36 branch to trunK
+
+TAG: lib_java_dla-build36-2
+DATE: 08/18/2006 - 08/25/2006
+STAFF: sc
+CHANGES:
+1) MSResolver - added VEGA
+2) MGSCoordinateFormatInterpreter and MGSAssemblyFormatInterpreter, updated
+   to use String.split in parseRecord method instead of our frameworks
+   StringLib in order to correctly parse consecutive tabs.
+3) CoordMapFeatureResolver - throw KeyNotFoundException when can't resolve 
+   accession id 
+4)CoordinateInputProcessor.java - catch the KeyNotFoundException thrown in 3
+  and write out to the curation log
+
+TAG: lib_java_dla-build36-1 
+DATE: 08/16/2006
+STAFF: sc
+CHANGES: TR7679 - throw exception when coordinate id cannot be resolved.
+
 TAG: lib_java_dla-build36-BP
 DATE: 08/16/2006
 STAFF: sc

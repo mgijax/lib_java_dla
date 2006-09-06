@@ -76,7 +76,12 @@ public class CoordMapFeatureResolver {
         MAP_Coord_FeatureState state = new MAP_Coord_FeatureState();
         state.setMapKey(mapKey);
         state.setMGITypeKey(MGITypeKey);
-        state.setObjectKey(accLookup.lookup(rawAttr.getObjectId()));
+        String oId = rawAttr.getObjectId();
+        Integer objectKey = accLookup.lookup(oId);
+        if(objectKey == null) {
+            throw new KeyNotFoundException(oId, "AccessionLookup");
+        }
+        state.setObjectKey(objectKey);
         state.setStartCoordinate(new Double(rawAttr.getStartCoord()));
         state.setEndCoordinate(new Double(rawAttr.getEndCoord()));
         state.setStrand(rawAttr.getStrand());

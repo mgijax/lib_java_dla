@@ -200,19 +200,20 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
    private void  parseRecord(String rcd) throws RecordFormatException {
        // save the record
        record = rcd;
+
        // split record into tokens
-       ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
-       if (splitLine.size() != 6) {
+       String [] splitLine = rcd.split(SeqloaderConstants.TAB);
+       if (splitLine.length != 6) {
            RecordFormatException e = new RecordFormatException();
                e.bindRecord("The sequence record is not formatted correctly, " +
                    "6 tab delimited elements expected.\n" + rcd);
             throw e;
         }
         // get the attributes
-        seqid = ((String)splitLine.get(0)).trim();
-        startBP = new Integer( ((String)splitLine.get(2)).trim() );
-        endBP = new Integer( ((String)splitLine.get(3)).trim() );
-        description = ( (String)splitLine.get(5)).trim();
+        seqid = ((String)splitLine[0]).trim();
+        startBP = new Integer( ((String)splitLine[2]).trim() );
+        endBP = new Integer( ((String)splitLine[3]).trim() );
+        description = ( (String)splitLine[5]).trim();
    }
 
    /**

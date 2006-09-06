@@ -130,24 +130,21 @@ public class MGSCoordinateFormatInterpreter extends CoordinateInterpreter {
    private void  parseRecord(String rcd) throws RecordFormatException {
 
        // get the seqid and description from the non-header record
-       ArrayList splitLine = StringLib.split(rcd, SeqloaderConstants.TAB);
-       int size = splitLine.size();
-       // there are actually 6, but the seqloader uses the 6th element, and the 
-       // last column can be null
-       if (size < 4) {
+       String[] splitLine = rcd.split(SeqloaderConstants.TAB);
+       int size = splitLine.length;
+
+       if (size < 5) {
            RecordFormatException e = new RecordFormatException();
                e.bindRecord("The coordinate record is not formatted correctly, " +
-                   "at least tab delimited elements expected.\n" + rcd);
+                   " at least 5 tab delimited elements expected.\n" + rcd);
             throw e;
         }
         record = rcd;
-        coordId = ((String)splitLine.get(0)).trim();
-        chromosome = ((String)splitLine.get(1)).trim();
-        startBP = ((String)splitLine.get(2)).trim();
-        endBP = ((String)splitLine.get(3)).trim();
-        if(size > 4) {
-            strand = ( (String) splitLine.get(4)).trim();
-        }
+        coordId = ((String)splitLine[0]).trim();
+        chromosome = ((String)splitLine[1]).trim();
+        startBP = ((String)splitLine[2]).trim();
+        endBP = ((String)splitLine[3]).trim();
+        strand = ( (String) splitLine[4]).trim();
    }
    /**
      * sets values in the CoordMapRawAttributes object and sets the
