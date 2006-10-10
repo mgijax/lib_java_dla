@@ -148,66 +148,13 @@ public abstract class MGIReportFormatter implements OutputFormatter
             new SimpleDateFormat("EEE MMM dd HH:mm:ss yyy");
         String date = formatter.format(new Date());
         String header =
-            "The Jackson Laboratory - Mouse Genome Informatics - " +
-            "Mouse Genome Database (MGD)" + newline + "Copyright 1996, " +
-            "1999, 2002 The Jackson Laboratory" + newline +
+            "The Jackson Laboratory - Mouse Genome Informatics (MGI)" + newline +
+	    "Copyright 1996, 1999, 2002, 2005, 2006 The Jackson Laboratory" + newline +
             "All Rights Reserved" + newline +
             "Date Generated:  " + date + newline;
 
-        header = header + newline + "(SERVER=" + server +
-            ";DATABASE=" + database + ")" + newline;
-
         return header;
     }
-
-    /**
-     * get the trailer text for this report
-     * @assumes nothing
-     * @effects nothing
-     * @return the trailer text
-     */
-    public String getTrailer()
-    {
-        return getStandardTrailer();
-    }
-
-    /**
-     * get the standard trailer text for this report
-     * @assumes nothing
-     * @effects nothing
-     * @return the standard trailer text
-     */
-    protected String getStandardTrailer()
-    {
-        String newline = System.getProperty("line.separator");
-        String trailer = "(" + linecnt + " rows affected)" + newline +
-            newline + "WARRANTY DISCLAIMER AND COPYRIGHT NOTICE" +
-            newline +
-            "THE JACKSON LABORATORY MAKES NO REPRESENTATION ABOUT THE " +
-            "SUITABILITY OR" + newline +
-            "ACCURACY OF THIS SOFTWARE OR " +
-            "DATA FOR ANY PURPOSE, AND MAKES NO WARRANTIES," + newline +
-            "EITHER EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND " +
-            "FITNESS FOR A" + newline +
-            "PARTICULAR PURPOSE OR THAT THE " +
-            "USE OF THIS SOFTWARE OR DATA WILL NOT" + newline +
-            "INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS, " +
-            "OR OTHER RIGHTS." + newline +
-            "THE SOFTWARE AND DATA ARE " +
-            "PROVIDED 'AS IS'" + newline + newline +
-            "This software and data are provided to enhance knowledge " +
-            "and encourage" + newline + "progress in the scientific " +
-            "community and are to be used only for research" + newline +
-            "and educational purposes.  Any reproduction or use for " +
-            "commercial purpose" + newline +
-            "is prohibited without the " +
-            "prior express written permission of the Jackson" +
-            newline + "Laboratory." + newline + newline + "Copyright © 1996, " +
-            "1999, 2002 by The Jackson Laboratory";
-
-        return trailer;
-    }
-
 
    /**
      * return the string 'rpt' to be used as the report name sufix
