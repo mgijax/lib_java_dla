@@ -128,25 +128,17 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
                               SQLStream radarSqlStream,
                               SeqQCReporter qcReporter,
                               SequenceAttributeResolver sar,
-                              MergeSplitProcessor msp)
+                              MergeSplitProcessor msp,
+                              AccessionLookup lookup)
         throws CacheException, DBException, ConfigException,  MSException,
                DLALoggingException, KeyNotFoundException {
         super(mgdSqlStream, radarSqlStream, sar);
         this.qcReporter = qcReporter;
+        this.seqIdLookup = lookup;
         eventDetector = new SeqEventDetector(msp);
         logicalDBKey =
             new LogicalDBLookup().lookup(config.getLogicalDB()).intValue();
-        boolean useFullCache =
-            super.config.getUseAssocClonesFullCache().booleanValue();
-        if (useFullCache)
-            seqIdLookup = new AccessionLookup(logicalDBKey,
-                                              MGITypeConstants.SEQUENCE,
-                                              AccessionLib.PREFERRED);
-        else
-            seqIdLookup = new AccessionLookup(logicalDBKey,
-                                              MGITypeConstants.SEQUENCE,
-                                              AccessionLib.PREFERRED,
-                                              CacheConstants.LAZY_CACHE);
+
         batchSize = new Integer(config.getQueryBatchSize()).intValue();
         seqLookup = new SequenceLookup(mgdSqlStream, batchSize);
         batchCtr = 0;
@@ -157,6 +149,7 @@ public class IncremSequenceInputProcessor extends SequenceInputProcessor {
         existingSeqErrCtr = 0;
         existingSeqCtr = 0;
         runningLookupAverage = 0.0;
+	logger.logdInfo(System.getProperty("INFILE_NAME"), true);
     }
 
     /**

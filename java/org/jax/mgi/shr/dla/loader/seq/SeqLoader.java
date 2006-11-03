@@ -16,6 +16,7 @@ import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.LogicalDBLookup;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
+import org.jax.mgi.shr.cache.CacheConstants;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -131,7 +132,7 @@ public abstract class SeqLoader extends DLALoader {
     private ScriptWriter mergeSplitWriter;
 
     // seqids in MGI for a given logical db
-    private AccessionLookup seqidLookup;
+    private AccessionLookup seqIdLookup;
 
     // handles determining and processing merges and splits
     private MergeSplitProcessor mergeSplitProcessor;
@@ -197,23 +198,36 @@ public abstract class SeqLoader extends DLALoader {
             mergeSplitWriter = new ScriptWriter(new ScriptWriterCfg("MGD"), loadDBMgr);
 
             LogicalDBLookup lookup = new LogicalDBLookup();
+            int logicalDBKey = lookup.lookup(loadCfg.getLogicalDB()).intValue();
+            boolean useFullCache =
+                loadCfg.getUseAssocClonesFullCache().booleanValue();
+            if (useFullCache)
+                seqIdLookup = new AccessionLookup(logicalDBKey,
+                                       MGITypeConstants.SEQUENCE,
+                                       AccessionLib.PREFERRED);
+            else
+                seqIdLookup = new AccessionLookup(logicalDBKey,
+                                       MGITypeConstants.SEQUENCE,
+                                       AccessionLib.PREFERRED,
+                                       CacheConstants.LAZY_CACHE);
 
             // lookup of all accession ids in the database for this
             // sequence load's logicalDB
-            seqidLookup = new AccessionLookup(lookup.lookup(
+           /* seqidLookup = new AccessionLookup(lookup.lookup(
                 loadCfg.getLogicalDB()).intValue(),
                 MGITypeConstants.SEQUENCE,
                 AccessionLib.PREFERRED);
-
+*/
             // determines and processes merges and splits
-            mergeSplitProcessor = new MergeSplitProcessor(seqidLookup, qcReporter);
+            mergeSplitProcessor = new MergeSplitProcessor(seqIdLookup, qcReporter);
 
             // a SeqProcessor that handles detection and processing of events
             seqProcessor = new IncremSequenceInputProcessor(loadStream,
                    qcStream,
                    qcReporter,
                    seqResolver,
-                   mergeSplitProcessor);
+                   mergeSplitProcessor,
+                   seqIdLookup);
         }
         // create SeqProcessor that can do deletes and process add events only
         else if (loadMode.equals(SeqloaderConstants.INCREM_INITIAL_LOAD_MODE) ||
