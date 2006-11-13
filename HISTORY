@@ -1,3 +1,9 @@
+TAG: lib_java_dla-3-5-1-4
+DATE: 11/13/2006
+STAFF: sc
+CHANGES:
+1) TR8025 - EMBLFormatInterpreter - updated for new swissprot ID line format
+
 TAG: lib_java_dla-3-5-1-3
 DATE: 11/03/2006
 STAFF: sc
