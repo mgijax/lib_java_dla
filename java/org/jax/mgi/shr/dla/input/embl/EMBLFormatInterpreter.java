@@ -601,7 +601,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
       StringTokenizer fieldSplitter = new StringTokenizer(idLine);
 
        // we want the 5th token
-       for (int i = 0; i < 4; i++) {
+       for (int i = 0; i < 3; i++) {
            fieldSplitter.nextToken();
        }
        // set length in the raw sequence object
