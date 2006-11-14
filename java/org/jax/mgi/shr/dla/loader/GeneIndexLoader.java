@@ -18,13 +18,13 @@ import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.config.GeneIndexLoadCfg;
 
 /**
- * A FASTALoader for loading the TIGR, DoTS and NIA gene indexes
+ * A FASTALoader for loading the DFCI, DoTS and NIA gene indexes
  * @has MSRawAttributes, AccessionRawAttributes, SequenceRawAttributes,
  * RefAssocRawAttributes which are used as input to the SequenceInput object
  * which eventually gets processed by the SequenceProcessor. It also has
  * a SequenceLoadCfg and a GeneIndexLoadCfg for performing configuration and a
  * FASTAFilter for filtering out incoming fasta data
- * @does loads fasta files into the database from TIGR, DoTS and NIA
+ * @does loads fasta files into the database from DFCI, DoTS and NIA
  * @company The Jackson Laboratory
  * @author not attributable
  */
