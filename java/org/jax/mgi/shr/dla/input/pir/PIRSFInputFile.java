@@ -81,7 +81,7 @@ public class PIRSFInputFile extends InputXMLDataFile
     public class PIRSFInterpreter
         implements XMLDataInterpreter
     {
-        private String TARGET_SOURCE = "Mus musculus(house mouse)";
+        private String TARGET_SOURCE = "Mus musculus (Mouse)";
         /**
          * interprets the xml input as a PIRSFSuperFamily instance
          * @param it the XMLTagIterator from which to obtain the xml data used
@@ -101,36 +101,34 @@ public class PIRSFInputFile extends InputXMLDataFile
                 String store = null;
                 while (it.getState() != it.TAG_END)
                 {
-                    if ("pir-id".equals(it.getTagName()))
-                        sf.pirID = it.getText();
-                    else if ("pir-name".equals(it.getTagName()))
-                        sf.pirName = it.getText();
-                    else if ("pirsupfam".equals(it.getTagName()))
-                    {
+		    //  skip SF5 and SF8 PIRSF terms
+
+                    if ("PIRSF_ID".equals(it.getTagName()))
+		    {
                         store = it.getText();
-                        String[] fields = store.split(":");
-                        if (!fields[0].startsWith("SF5") &&
-                            !fields[0].startsWith("SF8"))
-                        {
-                            sf.pirsfID = fields[0];
-                            sf.pirsfName = fields[1].trim();
-                            for (int i = 2; i < fields.length; i++)
-                                sf.pirsfName = sf.pirsfName + ":" +
-                                    fields[i].trim();
-                        }
+		        System.out.println("TAG:  " + store);
+                        if (!store.startsWith("PIRSF5") &&
+                            !store.startsWith("PIRSF8"))
+                            sf.pirsfID = store;
                     }
-                    else if ("mgi-id".equals(it.getTagName()))
-                        sf.mgiID = it.getText();
-                    else if ("trembl-ac".equals(it.getTagName()))
-                        sf.trembl.add(it.getText());
-                    else if ("sprot-ac".equals(it.getTagName()))
-                        sf.sprot.add(it.getText());
-                    else if ("refseq-ac".equals(it.getTagName()))
+
+                    else if ("PIRSF_Name".equals(it.getTagName()))
+                        sf.pirsfName = it.getText();
+
+                    else if ("MGI_ID".equals(it.getTagName()))
+                        sf.mgiID = "MGI:" + it.getText();
+
+                    else if ("UniProtKB_Accession".equals(it.getTagName()))
+                        sf.uniprot.add(it.getText());
+
+		    // translate XXXXXX.v to XXXXX
+
+                    else if ("RefSeq".equals(it.getTagName()))
                     {
                         store = it.getText();
-                        if (store.indexOf(";") > 0)
+                        if (store.indexOf("\\.") > 0)
                         {
-                            String[] fields = store.split(";");
+                            String[] fields = store.split("\\.");
                             if (!fields[0].startsWith("YP"))
                                 sf.refseqID.add(fields[0]);
                         }
@@ -138,18 +136,18 @@ public class PIRSFInputFile extends InputXMLDataFile
                         {
                             sf.refseqID.add(store);
                         }
-
                     }
-                    else if ("locus-id".equals(it.getTagName()))
-                        sf.locusID = it.getText();
-                    else if ("locus-name".equals(it.getTagName()))
-                        sf.locusName = it.getText();
-                    else if ("source-org".equals(it.getTagName()))
+
+                    else if ("Entrez_Gene_ID".equals(it.getTagName()))
+                        sf.entrezID = it.getText();
+
+                    else if ("Source_Organism".equals(it.getTagName()))
                     {
                         sf.source = it.getText();
                         if (!sf.source.equals(TARGET_SOURCE))
                             return null;
                     }
+
                     it.nextTag();
                 }
             }
@@ -191,19 +189,7 @@ public class PIRSFInputFile extends InputXMLDataFile
         /**
          * the Entrez Gene id
          */
-        public String locusID = "unset";
-        /**
-         * the Entrez Gene name
-         */
-        public String locusName = "unset";
-        /**
-         * the pir id
-         */
-        public String pirID = "unset";
-        /**
-         * the pir name
-         */
-        public String pirName = "unset";
+        public String entrezID = "unset";
         /**
          * the PIRSF superfamily id which we load into the database
          */
@@ -217,13 +203,9 @@ public class PIRSFInputFile extends InputXMLDataFile
          */
         public HashSet refseqID = new HashSet();
         /**
-         * the tremble ids associated to this superfamily record
+         * the uniprot ids associated to this superfamily record
          */
-        public HashSet trembl = new HashSet();
-        /**
-         * the swissprot ids associated to this superfamily record
-         */
-        public HashSet sprot = new HashSet();
+        public HashSet uniprot = new HashSet();
 
         /**
          * override of the toString() method in the Object class
@@ -232,10 +214,8 @@ public class PIRSFInputFile extends InputXMLDataFile
         public String toString()
         {
             return recordID + "\t" + mgiID + "\t" + source + "\t" +
-                pirID + "\t" + pirName + "\t" + pirsfID + "\t" +
-                pirsfName + "\t" + locusID + "\t" + locusName + "\t" +
-                refseqID.toString() + "\t" + sprot.toString() + "\t" +
-                trembl.toString();
+                pirsfID + "\t" + pirsfName + "\t" + entrezID + "\t" +
+                refseqID.toString() + "\t" + uniprot.toString();
         }
 
         /**
