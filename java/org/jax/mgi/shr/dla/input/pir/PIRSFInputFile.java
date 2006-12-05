@@ -106,7 +106,6 @@ public class PIRSFInputFile extends InputXMLDataFile
                     if ("PIRSF_ID".equals(it.getTagName()))
 		    {
                         store = it.getText();
-		        System.out.println("TAG:  " + store);
                         if (!store.startsWith("PIRSF5") &&
                             !store.startsWith("PIRSF8"))
                             sf.pirsfID = store;
