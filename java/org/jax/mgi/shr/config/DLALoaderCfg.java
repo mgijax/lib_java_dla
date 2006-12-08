@@ -45,7 +45,6 @@ public class DLALoaderCfg extends Configurator {
     return getConfigString("DLA_DB_PREFIX", "MGD");
   }
 
-
   /**
    * get the name of the SQLStream for loading data (the load stream)
    * @assumes nothing
@@ -71,6 +70,17 @@ public class DLALoaderCfg extends Configurator {
   }
 
   /**
+   * get the name of the Job Stream
+   * @assumes Nothing
+   * @effects Nothing
+   * @return the Jobstream name
+   * @throws ConfigException if "JOBSTREAM" not found in configuration file
+   */
+  public String getJobstreamName() throws ConfigException {
+    return getConfigString("JOBSTREAM");
+  }
+
+  /**
    * get the list of table names to truncate for the load stream
    * @assumes nothing
    * @effects nothing
@@ -91,8 +101,6 @@ public class DLALoaderCfg extends Configurator {
   {
       return getConfigStringArrayNull("DLA_TRUNCATE_QC_TABLES");
   }
-
-
 
   /**
    * get whether or not to only run the post report formatters
@@ -117,6 +125,5 @@ public class DLALoaderCfg extends Configurator {
   {
       return getConfigString("RPTDIR", DEFAULT_REPORTDIR);
   }
-
 
 }
