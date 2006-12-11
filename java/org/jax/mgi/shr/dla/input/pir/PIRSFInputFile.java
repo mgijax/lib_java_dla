@@ -103,16 +103,25 @@ public class PIRSFInputFile extends InputXMLDataFile
                 {
 		    //  skip SF5 and SF8 PIRSF terms
 
-                    if ("PIRSF_ID".equals(it.getTagName()))
+		    //  multiple PIRSF tags may exist per record
+		    //  just grab the first one
+
+		    if ("PIRSF_ID".equals(it.getTagName()))
 		    {
-                        store = it.getText();
-                        if (!store.startsWith("PIRSF5") &&
-                            !store.startsWith("PIRSF8"))
-                            sf.pirsfID = store;
+                        if (sf.pirsfID.equals("unset"))
+		        {
+                            store = it.getText();
+                            if (!store.startsWith("PIRSF5") &&
+                                !store.startsWith("PIRSF8"))
+                                sf.pirsfID = store;
+		        }
                     }
 
                     else if ("PIRSF_Name".equals(it.getTagName()))
-                        sf.pirsfName = it.getText();
+		    {
+                        if (sf.pirsfName.equals("unset"))
+                            sf.pirsfName = it.getText();
+		    }
 
                     else if ("MGI_ID".equals(it.getTagName()))
                         sf.mgiID = "MGI:" + it.getText();
