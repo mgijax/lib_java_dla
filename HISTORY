@@ -1,3 +1,11 @@
+TAG: lib_java_dla-tr8068-2
+DATE: 12/27/2006
+STAFF: sc
+CHANGES: These changes from TR8067 - Update SeqDeleter
+1) RefSeqDeleterInterpreter and SeqDeleter, updated to
+   parse new RefSeq delete file format which can be 
+   2 seqids per line (one transcript, one prot).
+
 TAG: lib_java_dla-tr8068-1
 DATE: 12/21/2006
 STAFF: lec
