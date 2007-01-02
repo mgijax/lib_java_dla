@@ -38,20 +38,20 @@ public class RefSeqDeleterInterpreter   implements RecordDataInterpreter {
     public Object interpret(String rcd) throws RecordFormatException {
 
         ArrayList tokens = StringLib.split(rcd, SeqloaderConstants.TAB);
-        // the seqid to delete is in column 3
+        // the nucleotide accid is in column 2, protein accid in column 5
+	// both are accid sans version`
+	StringBuffer accessions = new StringBuffer();
         try {
-            // column 3 has the seqIdVersion e.g. M15131.1
-            String seqIdVersion = ( (String) tokens.get(2)).trim();
-            // get seqid without version e.g. M15131
-            seqIdToDelete = (String) (StringLib.split(seqIdVersion,
-                SeqloaderConstants.PERIOD)).get(0);
+            accessions.append( ((String) tokens.get(1)).trim() );
+	    accessions.append("/");
+	    accessions.append( ((String) tokens.get(4)).trim() );
         }
         catch (Exception e) {
             RecordFormatException e1 = new RecordFormatException();
             e1.bindRecord("Delete record improperly formatted: " + rcd);
             throw e1;
         }
-        return seqIdToDelete;
+        return accessions.toString();
     }
     /**
      * Not implemented - always return true

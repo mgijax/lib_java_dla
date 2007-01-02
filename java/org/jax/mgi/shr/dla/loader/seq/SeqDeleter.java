@@ -7,13 +7,14 @@ import org.jax.mgi.shr.ioutils.RecordDataInterpreter;
 import org.jax.mgi.shr.dbutils.DataIterator;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.InputDataFile;
+import org.jax.mgi.shr.stringutil.StringLib;
 import org.jax.mgi.dbs.mgd.loads.Seq.SeqDeleterProcessor;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.jax.mgi.shr.dla.input.refseq.RefSeqDeleterInterpreter;
+
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.ArrayList;
 
 /**
  * a base class which extend DLALoader and implements the DLALoader methods
@@ -23,7 +24,6 @@ import java.util.HashSet;
  * <UL>
  *   <LI>A DataIterator for iterating over an input file -  seenote below.
  *   <LI>A SeqDeleterProcessor for processing the deletes
- *   <LI>A BufferedWriter for writing out repeated seqids
  * </UL>
  *
  * @does performs initialization of objects for sequence deleters, and
@@ -49,17 +49,11 @@ public class SeqDeleter extends DLALoader {
     // total processing time for the load
     double totalProcessTime;
 
-    //  set of seqids of sequence records we have already processed
-    private HashSet deletesAlreadyProcessed;
-
-    // current count of seqids we have already processed
-    private int deletesAlreadyLookedAtCtr;
-
-    // writer for all seqids repeated in the input
-    private BufferedWriter repeatSeqWriter;
-
     // processes deletes
     private SeqDeleterProcessor delProcessor;
+
+    // Are we deleting refseqs?
+    private boolean isRefSeq = false;
 
     /**
      * Initializes instance variables
@@ -70,30 +64,20 @@ public class SeqDeleter extends DLALoader {
 
         // Create a DataInput File
         InputDataFile inData = new InputDataFile();
-
+	// create interpreter - what type is it?
+        RecordDataInterpreter interpreter = (RecordDataInterpreter)loadCfg.getInterpreterClass();
+        if (interpreter instanceof RefSeqDeleterInterpreter) {
+		isRefSeq = true;
+	}
         // get an iterator for the InputDataFile with a configured interpreter
-        iterator = inData.getIterator(
-                (RecordDataInterpreter)loadCfg.getInterpreterClass());
+        iterator = inData.getIterator(interpreter);
 
-        // writes repeated seqids to a file
-       try {
-             repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
-                 getRepeatFileName()));
-        }
-        catch (IOException e) {
-             throw new MGIException(e.getMessage());
-        }
         // init count of total records looked at
         recordCtr = 0;
 
         // create the delete processor
         delProcessor = new SeqDeleterProcessor(loadStream);
 
-        // create the set for storing deletes  we have already processed
-        deletesAlreadyProcessed = new HashSet();
-
-         // initcount of seqids already processed
-        deletesAlreadyLookedAtCtr = 0;
     }
 
     /**
@@ -120,44 +104,43 @@ public class SeqDeleter extends DLALoader {
        loadStopWatch.start();
 
        // Data object representing the raw values of the current input record
-       String seqIdToDelete;
+       String toDelete;
+       String firstToDelete;
+       String secondToDelete;
 
        // iterate thru the records and process them
        while(iterator.hasNext()) {
-           // get the next seqid
-           seqIdToDelete = (String)iterator.next();
-           logger.logdDebug(seqIdToDelete, true);
-
-           // determine if repeated delete
-           try {
-               if (deletesAlreadyProcessed.contains(seqIdToDelete)) {
-                   // we have a repeated delete; count it, write it out,
-                   // go on to next delete record in the input
-                   deletesAlreadyLookedAtCtr++;
-                   repeatSeqWriter.write(seqIdToDelete +"\n");
-                   logger.logdDebug("Repeat Sequence: " + seqIdToDelete);
-                   continue;
-               }
-               else {
-                   // add the seqid to the set we have processed
-                   deletesAlreadyProcessed.add(seqIdToDelete);
+	   recordCtr++;
+           // get the next seqid(s)
+           toDelete = (String)iterator.next();
+           firstToDelete = null;
+           secondToDelete = null;
+           if (isRefSeq == true) {
+               ArrayList tokens = StringLib.split(toDelete, "/");
+               firstToDelete = (String)tokens.get(0);
+               if (tokens.size() == 2) {
+                   secondToDelete = (String)tokens.get(1);
                }
            }
-           catch (IOException e) {
-               throw new MGIException(e.getMessage());
+           else {
+               firstToDelete = toDelete;
            }
 
-           // process the delete and count it
-           delProcessor.processDelete(seqIdToDelete);
-           recordCtr++;
-           // report every 100 sequences looked at
-           if (recordCtr  > 0 && recordCtr % 100 == 0) {
+       // process the delete and count it
+       delProcessor.processDelete(firstToDelete);
+       if (secondToDelete != null) {
+           // process the second delete and count it
+           delProcessor.processDelete(secondToDelete);
+	   }
+       // report every 100 sequences looked at
+       if (recordCtr  > 0 && recordCtr % 100 == 0) {
                logger.logdInfo("Looked at " + recordCtr +
                                " delete records", false);
            }
        }
 
        // process the last batch
+       logger.logdDebug("Processing last batch");
        delProcessor.finishDeleteBatch();
 
        loadStopWatch.stop();
@@ -178,15 +161,6 @@ public class SeqDeleter extends DLALoader {
         logger.logdInfo("Closing load stream", false);
         this.loadStream.close();
 
-        // close the repeat coordinate writer
-        logger.logdInfo("Closing repeat delete writer", false);
-        try {
-            repeatSeqWriter.close();
-        }
-        catch (IOException e) {
-            throw new MGIException(e.getMessage());
-        }
-
         reportLoadStatistics();
         logger.logdInfo("SeqDeleter complete", true);
     }
@@ -202,14 +176,9 @@ public class SeqDeleter extends DLALoader {
         logger.logpInfo(message, false);
 
         // report the total deletes looked at (not all are in MGI)
-        message = "Total Delete Records Looked at = " + recordCtr;
+        message = "Total Delete Records Looked at = " + recordCtr + "(RefSeq deletes are two per record - 1 eac nucleotide and protein)";
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
-
-        logger.logdInfo("Total Repeated Deletes written to repeat file: "
-                        + deletesAlreadyLookedAtCtr, false);
-        logger.logpInfo("Total Repeated Deletes written to repeat file: "
-                        + deletesAlreadyLookedAtCtr, false);
 
         logger.logdInfo("MGI delete counts: ", false);
         Vector deleteReports = delProcessor.getProcessedReport();
