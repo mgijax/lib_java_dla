@@ -42,7 +42,7 @@ public class OrganismCheckerCfg extends Configurator {
      */
 
     public Boolean getMouse() throws ConfigException {
-        return new Boolean(getConfigString("SEQ_LOAD_MOUSE"));
+        return new Boolean(getConfigString("SEQ_LOAD_MOUSE", "true"));
     }
 
     /**
@@ -54,7 +54,7 @@ public class OrganismCheckerCfg extends Configurator {
      */
 
     public Boolean getRat() throws ConfigException {
-        return new Boolean(getConfigString("SEQ_LOAD_RAT"));
+        return new Boolean(getConfigString("SEQ_LOAD_RAT", "false"));
     }
     /**
      * Gets whether to load human sequence or not
@@ -65,7 +65,7 @@ public class OrganismCheckerCfg extends Configurator {
      */
 
     public Boolean getHuman() throws ConfigException {
-        return new Boolean(getConfigString("SEQ_LOAD_HUMAN"));
+        return new Boolean(getConfigString("SEQ_LOAD_HUMAN", "false"));
     }
 
 }

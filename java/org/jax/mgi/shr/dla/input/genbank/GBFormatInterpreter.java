@@ -3,18 +3,20 @@ package org.jax.mgi.shr.dla.input.genbank;
 import java.util.*;
 import java.sql.*;
 
-import org.jax.mgi.shr.config.ConfigException;
-import org.jax.mgi.shr.ioutils.RecordFormatException;
-import org.jax.mgi.shr.stringutil.StringLib;
+
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.loads.Acc.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
+import org.jax.mgi.dbs.mgd.loads.Seq.*;
 import org.jax.mgi.shr.dla.input.SequenceInterpreter;
 import org.jax.mgi.shr.dla.input.SequenceInput;
 import org.jax.mgi.shr.dla.input.DateConverter;
 import org.jax.mgi.shr.dla.loader.seq.SeqloaderConstants;
-import org.jax.mgi.dbs.mgd.loads.Seq.*;
+import org.jax.mgi.shr.config.ConfigException;
+import org.jax.mgi.shr.ioutils.RecordFormatException;
+import org.jax.mgi.shr.stringutil.StringLib;
+
 
     /**
      * An object that parses a GenBank format sequence records and obtains
@@ -59,6 +61,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String REFERENCE = "REFERENCE";
     private static String MEDLINE = "MEDLINE";
     private static String PUBMED = "PUBMED";
+    private static String COMMENT = "COMMENT";
     private static String FEATURES = "FEATURES";
     private static String KEYWORDS = "KEYWORDS";
 
@@ -81,6 +84,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static int ANOTHER_SOURCE_LINE = 10;
     private static int KEYWORDS_SECTION = 11;
     private static int ANOTHER_KEYWORDS_LINE = 12;
+    private static int COMMENT_SECTION = 13;
 
     // Strings to find GB seq record source qualifiers
     private static String LIBRARY = "/clone_lib";
@@ -89,6 +93,8 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String AGE = "/dev_stage";
     private static String SEX = "/sex";
     private static String CELLINE = "/cell_line";
+    // added 2/07 for gene traps
+    private static String CLONE = "/clone";
 
     ////////////////////////////////////////////////////////////////////////
     // A SequenceInput, rawSeq and ms declared here so multiple methods
@@ -116,6 +122,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private String organism;
     private StringBuffer classification;
     private StringBuffer reference;
+    private StringBuffer comment;
     private StringBuffer source;
     private StringBuffer keywords;
 
@@ -140,6 +147,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         organism = null;
         classification  = new StringBuffer();
         reference = new StringBuffer();
+	comment = new StringBuffer();
         source = new StringBuffer();
         keywords = new StringBuffer();
     }
@@ -191,15 +199,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             throw e;
         }
 
-        if (definition.length() > 0) {
-            parseDefinition(definition.toString());
-        }
-        else {
-            RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The DEFINITION section is empty");
-            throw e;
-        }
-
         if (version !=  null) {
             parseVersion(version);
         }
@@ -216,12 +215,24 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             e.bindRecord("The ORGANISM section is empty");
             throw e;
         }
+	if(comment.length() > 0 ) {
+	    parseComment(comment.toString());
+ 	}
         if (source.length() > 0 ) {
             parseSource(source.toString());
         }
         else {
             RecordFormatException e = new RecordFormatException();
             e.bindRecord("The SOURCE section is empty");
+            throw e;
+        }
+
+        if (definition.length() > 0) {
+            parseDefinition(definition.toString());
+        }
+        else {
+            RecordFormatException e = new RecordFormatException();
+            e.bindRecord("The DEFINITION section is empty");
             throw e;
         }
 
@@ -287,6 +298,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         reference = new StringBuffer();
         source = new StringBuffer();
         keywords = new StringBuffer();
+        comment = new StringBuffer();
 
         // set the record attribute of the SequenceRawAttributes - we use this
         // to write out repeated sequences
@@ -406,26 +418,41 @@ public class GBFormatInterpreter extends SequenceInterpreter {
               currentSection = ANOTHER_REFERENCE_LINE;
             }
             // records without references won't have a reference line
-            // the next line we want is the FEATURES line where we will start
-            // looking for first features source line
-            else if (line.startsWith(FEATURES)) {
-                currentSection = SOURCE_SECTION;
+            // the next line we want is the COMMENT line
+            else if (line.startsWith(COMMENT)) {
+		  comment.append(line  + SeqloaderConstants.CRT);
+                  currentSection = COMMENT_SECTION;
             }
+	    // added after source section not found when no COMMENT section
+	    else if(line.startsWith(FEATURES)) {
+		 currentSection = SOURCE_SECTION;
+	    }
           }
-
-          // if we are looking for another REFERENCE line
-          else if (currentSection == ANOTHER_REFERENCE_LINE) {
-            // check to see if 'line' is the FEATURES line
-            if (! line.startsWith(FEATURES)){
-                reference.append(line + SeqloaderConstants.CRT);
-            }
-            // if it is the FEATURES line, we are now looking for the
-            // first features source line
-            else {
-              currentSection = SOURCE_SECTION;
-            }
+	   // if we are looking for another REFERENCE line
+	  else if (currentSection ==  ANOTHER_REFERENCE_LINE) {
+	  // check to see if the 'line' is the COMMENT line
+	      if (line.startsWith(COMMENT)){
+                  comment.append(line  + SeqloaderConstants.CRT);
+                    currentSection = COMMENT_SECTION;
+               }
+	       else if (line.startsWith(FEATURES)) {
+			 currentSection = SOURCE_SECTION;
+		}
+		else {
+		    currentSection = ANOTHER_REFERENCE_LINE;
+	       }
           }
-
+	  else if(currentSection == COMMENT_SECTION) {
+		 if (!line.startsWith(FEATURES)) {
+		    comment.append(line  + SeqloaderConstants.CRT);
+		  }
+		  // records without comments won't have a COMMENT line
+            	  // the next line we want is the FEATURES line where we will start
+                  // looking for first features source line
+		 else {
+		     currentSection = SOURCE_SECTION;
+		 }
+	  }
           // if we are looking for the first FEATURES source line, check to
           // see if 'line' is a FEATURES source line
           else if (currentSection == SOURCE_SECTION) {
@@ -491,7 +518,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     */
 
     protected void parseSource(String source) {
-
         // Split the source section into individual lines
         StringTokenizer lineSplitter = new StringTokenizer(
             source, SeqloaderConstants.CRT);
@@ -580,6 +606,9 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                         ms.setCellLine(value);
                         rawSeq.setCellLine(value);
                     }
+		    else if (qualifier.startsWith(CLONE)) {
+			rawSeq.setCloneId(value);
+		    }
                 }
 
             }
@@ -767,6 +796,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 
         // create a primary accession object
         field = fieldSplitter.nextToken().trim();
+        //System.out.println("ACCESSION: " + field);
         createAccession(field, Boolean.TRUE);
 
         // create 2ndary accessions from first ACCESSION line
@@ -813,6 +843,10 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             rawSeq.setDescription(definition.substring(12));
         }
     }
+    protected void parseComment(String comment) {
+            rawSeq.setComment(comment);
+    }
+
 
     /**
      * Parses the LOCUS line of a GenBank sequence record. Sets the length,

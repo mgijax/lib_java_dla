@@ -1,3 +1,21 @@
+TAG: lib_java_dla-3-5-3-1
+DATE: 04/13/2007
+STAFF: sc
+CHANGES: Merg tr8112 branch to trunk
+
+TAG: lib_java_dla-tr8112-1
+DATE: 02/28/2007
+STAFF: sc
+CHANGES:
+1) GBFormatInterpreter - added parsing of the full COMMENT field
+   and the "/clone=" FEATURES source qualifier
+2) SequenceRawAttributes - added cloneId and comment attributes, getters
+  and setters
+3) OrganismCheckerCfg -  added default return values to getMouse() (true), 
+   getRat() (false), getHuman() (false)
+4) SequenceLoadCfg.java - added default return value (false) 
+   for getVirtual()
+
 TAG: lib_java_dla-tr8112-BP
 DATE: 02/28/2007
 STAFF: sc

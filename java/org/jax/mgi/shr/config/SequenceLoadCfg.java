@@ -53,7 +53,7 @@ public class SequenceLoadCfg extends Configurator {
      */
 
     public String getVirtual() throws ConfigException {
-        return getConfigString("SEQ_VIRTUAL");
+        return getConfigString("SEQ_VIRTUAL", "false");
     }
 
     /**

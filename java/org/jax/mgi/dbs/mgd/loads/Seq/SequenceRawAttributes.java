@@ -40,10 +40,14 @@ public class SequenceRawAttributes {
     private String quality = null;
     private String status = null;
     private String seqRecord = null;
-
+    
     // added 07/06/04 to support Genbank TPA sequences. General purpose
     // misc attribute
     private String misc =  null;
+
+    // added 02/2007 to support gene trap sequences
+    private String cloneId = null;
+    private String comment = null;
 
     /**
      * set the type attribute
@@ -244,6 +248,24 @@ public class SequenceRawAttributes {
     */
 
     public void setMisc (String misc) {this.misc = misc;}
+
+    /**
+    * set the cloneId attribute
+    * @assumes Nothing
+    * @effects Nothing
+    * @param id the cloneId attribute
+    */
+
+    public void setCloneId (String id) {this.cloneId = id;}
+
+    /**
+    * set the COMMENT attribute
+    * @assumes Nothing
+    * @effects Nothing
+    * @param c the COMMENT attribute
+    */
+
+    public void setComment(String c) {this.comment = c;}
 
    /**
      * set the sequence record attribute
@@ -447,6 +469,24 @@ public class SequenceRawAttributes {
       public String getMisc () {return misc;}
 
      /**
+      * get the cloneId attribute
+      * @assumes Nothing
+      * @effects Nothing
+      * @return the cloneId attribute
+      */
+
+      public String getCloneId () {return cloneId;}
+
+     /**
+      * get the COMMENT attribute
+      * @assumes Nothing
+      * @effects Nothing
+      * @return the COMMENT attribute
+      */
+
+      public String getComment() {return comment;}
+
+     /**
       * get the sequence record attribute
       * @assumes Nothing
       * @effects Nothing
@@ -483,5 +523,7 @@ public class SequenceRawAttributes {
         quality = null;
         status = null;
         misc = null;
+	cloneId = null;
+	comment = null;
     }
 }
