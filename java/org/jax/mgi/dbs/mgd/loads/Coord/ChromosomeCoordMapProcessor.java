@@ -51,6 +51,7 @@ public class ChromosomeCoordMapProcessor extends CoordMapProcessor {
 
     public ChromosomeCoordMapProcessor() throws ConfigException,
         DBException, CacheException, KeyNotFoundException, TranslationException {
+	super();
         chrLookupByName = new ChromosomeKeyLookup(coordCfg.getMapOrganism());
         chrLookupByKey = new MRK_ChromosomeLookup();
     }

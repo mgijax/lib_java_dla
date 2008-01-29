@@ -52,14 +52,15 @@ public abstract class CoordMapProcessor {
       * @throws CacheException thrown if there is an error creating the cache or resolver
       * @throws TranslationException thrown if there is an error creating the resolver
       */
-
     public CoordMapProcessor() throws ConfigException,
         DBException, CacheException, TranslationException {
         coordCfg = new CoordLoadCfg();
+	// the subclass implements this method
         setMGITypeKey();
-        cache = new CoordMapKeyCache(collectionKey, coordCfg.getMapVersion(),MGITypeKey);
+	cache = new CoordMapKeyCache(coordCfg.getMapVersion(),MGITypeKey);
         resolver = new CoordMapResolver();
     }
+   
     /**
       * method provided for subclasses to implement map processing
       * to get an existing map key or create a new map
@@ -82,9 +83,13 @@ public abstract class CoordMapProcessor {
 
     /**
      * The following two methods exist because an instance of a subclass is
-     * created by a Configurator and cannot take parameters. setMTIType is absract
-     * because only the subclass knows the MGIType. setCollectionKey is implemented
-     * because only the creator of the subclass knows which collection.
+     * created by a Configurator and cannot take parameters. 
+     * 1) setMGIType is abstract because only the subclass knows the MGIType. 
+     * 2) initCache is implemented to do the work of a constructor; it must be called.
+     *    the collectionKey parameter is null when the collection not in the 
+     *    database (a new collection) 
+     * 3) setCollectionKey is implemented and called at the time a new collection
+     *    has been created.
      */
 
     /**
@@ -93,12 +98,27 @@ public abstract class CoordMapProcessor {
      * construct the cache
      */
     public abstract void setMGITypeKey();
-
+    
+    
     /**
-     *  set the collection key for this processors
+     * get the _MGIType_key of this Map
+     **/
+    public Integer getMGITypeKey() {
+	return MGITypeKey;
+    }
+    
+     /**
+     *  set the collection key 
      * @param collKey collection key
      */
-    public void setCollectionKey(Integer collKey) {
+   public void setCollectionKey(Integer collKey) {
         collectionKey = collKey;
+	cache.setCollectionKey(collKey);
     }
+   /**
+    * get the collection key
+    */
+   public Integer getCollectionKey() {
+       return collectionKey;
+   }
 }

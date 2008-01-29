@@ -1,6 +1,6 @@
 package org.jax.mgi.dbs.mgd.loads.Coord;
 
-import org.jax.mgi.shr.cache.FullCachedLookup;
+import org.jax.mgi.shr.cache.LazyCachedLookup;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyValue;
 import org.jax.mgi.shr.dbutils.RowDataInterpreter;
@@ -25,7 +25,7 @@ import org.jax.mgi.dbs.SchemaConstants;
  * @version 1.0
  */
 
-public class CoordMapKeyCache extends FullCachedLookup {
+public class CoordMapKeyCache extends LazyCachedLookup {
 
     // the collection to which the map belongs
     private Integer collectionKey;
@@ -47,10 +47,9 @@ public class CoordMapKeyCache extends FullCachedLookup {
      * @throws DBException thrown if there is an error accessing the database
      * @throws CacheException thrown if there is an error with the cache
      */
-    public CoordMapKeyCache(Integer collKey, String vers, Integer mgiTypeKey)
+    public CoordMapKeyCache(String vers, Integer mgiTypeKey)
             throws ConfigException, DBException, CacheException {
             super(SQLDataManagerFactory.getShared(SchemaConstants.MGD));
-            collectionKey = collKey;
             version = vers;
             MGITypeKey = mgiTypeKey;
     }
@@ -67,15 +66,15 @@ public class CoordMapKeyCache extends FullCachedLookup {
         Integer key = (Integer)super.lookupNullsOk(objectKey);
         return key;
     }
-
-    /**
-     * get the sql string for fully initializing the cache. This method is
-     * required when extending the FullCacheLookup class.
-     * @assumes nothing
-     * @effects nothing
-     * @return the sql string for fully initializing the cache
+   /**
+     * Get the query to add an object to the cache.
+     * @param o coordinate map to be added to cache
+     * @assumes Nothing
+     * @effects Nothing
+     * @return the query to add an object to  the cache
      */
-    public String getFullInitQuery()
+
+    public String getAddQuery(Object o)
     {
         return new String(
              "SELECT " + MGD.map_coordinate._object_key + ", " +
@@ -86,9 +85,26 @@ public class CoordMapKeyCache extends FullCachedLookup {
                  " AND " + MGD.map_coordinate.version + " = '" + version +
                  "' AND " + MGD.map_coordinate._mgitype_key + " = " + MGITypeKey);
     }
+        
+    public void setCollectionKey(Integer cKey) {
+	collectionKey = cKey;
+    }
+    /**
+     * Get the query to partially initialize the cache.
+     * @assumes Nothing
+     * @effects Nothing
+     * @return The query to partially initialize the cache.
+     */
+
+    public String getPartialInitQuery()
+    {
+      return null;
+    }
+
 
     /**
-     * add a new map to the cache
+     * add a new map to the cache; we have added this map to the bcp file, but
+     * it is not yet in the database
      * @assumes nothing
      * @effects a new map will be added to the cache if it is not already there
      * @param objectKey - key to the database object this map represents

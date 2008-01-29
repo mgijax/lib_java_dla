@@ -32,8 +32,11 @@ import org.jax.mgi.shr.dbutils.dao.SQLStream;
   */
 
 public class Coordinate {
+    // Can be null if collection has already been created
     private MAP_Coord_CollectionDAO coordMapCollectionDAO;
+    // Can be null if coordinate MAP has already been created
     private MAP_CoordinateDAO coordMapDAO;
+    // cannot be null
     private MAP_Coord_FeatureDAO coordMapFeatureDAO;
     private SQLStream stream;
 

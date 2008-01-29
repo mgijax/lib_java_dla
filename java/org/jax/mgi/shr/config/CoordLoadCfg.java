@@ -174,4 +174,24 @@ public class CoordLoadCfg extends Configurator {
         return getConfigString("COORD_REPEAT_FILE");
     }
 
+   /**
+    * get the coordinate load mode
+    * @return the coordinate load mode
+    * @throws ConfigException thrown if "COORD_LOAD_MODE" not found in
+    *    configuration file
+    */
+    public String getLoadMode() throws ConfigException {
+        return getConfigString("COORD_LOAD_MODE");
+    }
+   /**
+    * get the coordinate load execution mode - this is a debug mode
+    * when true - don't execute bcp or do deletes
+    * @return the coordinate load execution mode
+    * @throws ConfigException thrown if "MGD_BCP_PREVENT_EXECUTE" not found in
+    *    configuration file
+    */
+    public Boolean getMgdPreventExecute() throws ConfigException {
+        return getConfigBoolean("MGD_BCP_PREVENT_EXECUTE");
+    }
+
 }

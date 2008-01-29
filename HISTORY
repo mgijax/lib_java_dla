@@ -1,3 +1,30 @@
+TAG: lib_java_dla-tr7493-1
+DATE: 01/29/2008
+STAFF: sc
+CHANGES:
+1) Coordinate.java - clarifying comments
+2) SequenceRawAttributes.java - added attributes, get/set methods
+   for TIGM gene traps:
+   a) secondarySource - TIGM vector name in organism qualifier of this section!!
+   b) featureOrganism - for TIGM vector
+   c) note - TIGM sequence tag method
+3) GBFormatInterpreter.java - parsing for 2) above
+4) CoordLoader.java - updated 'processRepeats' to loadMultiCoords
+                    - added load mode 
+		    - added reporting of new statistics for add mode
+5) CoordLoadCfg.java - added getLoadMode(), getMgdPreventExecute()
+6a) FeatureInMGIException -added
+ b) FeatureObjectNotInMGIException - added
+ c) FeatureDifferentInMGIException - added
+7) CoordinateInputProcessor - added load mode and new statistic methods
+8) Coordinate - update comments only
+9) CoordMapProcessor - changes for add mode                                                          - changed interface to CoordMapKeyCache
+10) CoordMapKeyCache - added setCollectionKey method
+                     - removed collection key param from constructor
+11) CoordMapFeatureResolver 
+     - added CoordMapFeatureKeyLookup, CoordMapFeatureLookup
+     - added logger, misc stuff to deal with add mode
+
 TAG: lib_java_dla-tr7493-BP
 DATE: 01/29/2008
 STAFF: sc

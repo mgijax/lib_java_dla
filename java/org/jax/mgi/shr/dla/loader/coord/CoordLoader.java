@@ -22,7 +22,7 @@ import java.util.HashSet;
  * <UL>
  *   <LI>A DataIterator for iterating over an input file - see note below.
  *   <LI>A CoordinateInputProcessor for processing a CoordInput object
- *   <LI>A BufferedWriter for writing out repeated coordinates
+ *   <LI>A BufferedWriter for writing out repeated coordinate features
  * </UL>
  *
  * @does performs initialization of objects for coordinate loads, and
@@ -43,7 +43,7 @@ public class CoordLoader extends DLALoader {
     // provides access to Configuration values
     protected CoordLoadCfg loadCfg;
 
-    // current number of coordinates processed
+    // current number of coordinate features processed
     int processedCtr;
 
     // total processing time for the load
@@ -52,17 +52,17 @@ public class CoordLoader extends DLALoader {
     // coordinate processor
     CoordinateInputProcessor coordProcessor;
 
-    //  cache of seqids of sequence records we have already processed
+    //  cache of ids of coordinate records we have already processed
     private HashSet coordIdsAlreadyProcessed;
 
-    // count of sequence records we have already processed
+    // count of coordinate records we have already processed
     private int coordIdsAlreadyProcessedCtr;
 
-    // true if we are going to process repeats
-    private String processRepeats;
+    // true if we are going to load multiple coordinates for an object
+    private String loadMultiCoord;
 
     // writer for all coordinates repeated in the input
-    private BufferedWriter repeatSeqWriter;
+    private BufferedWriter multiCoordWriter;
 
     /**
      * constructor
@@ -78,8 +78,9 @@ public class CoordLoader extends DLALoader {
      * @throws MGIException if errors occur during initialization
      */
     public void initialize() throws MGIException {
+
         loadCfg = new CoordLoadCfg();
-        processRepeats = loadCfg.getCoordRepeatsOk();
+        loadMultiCoord = loadCfg.getCoordRepeatsOk();
         // Create a DataInput File
         InputDataFile inData = new InputDataFile();
 
@@ -88,16 +89,15 @@ public class CoordLoader extends DLALoader {
                 (RecordDataInterpreter)loadCfg.getInterpreterClass());
 
         // writes repeated input coordinates to a file
-        if (processRepeats.equals("false")) {
-            try {
-                repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
-                    getRepeatFileName()));
-            }
-            catch (IOException e) {
-                throw new MGIException(e.getMessage());
-            }
-        }
-
+	if (loadMultiCoord.equals("false")) {
+	    try {
+		multiCoordWriter = new BufferedWriter(new FileWriter(loadCfg.
+		    getRepeatFileName()));
+	    }
+	    catch (IOException e) {
+		throw new MGIException(e.getMessage());
+	    }
+	}
         // number of valid coordinates WITHOUT processing errors:
         processedCtr = 0;
 
@@ -112,14 +112,17 @@ public class CoordLoader extends DLALoader {
     }
 
     /**
-     * deletes the collection, all coordinate maps and features for the
-     * collection. Creates a new collection object.
+     * depending on load mode does:
+     * 1) deletes Collection, all maps and features, creates new collection
+     * 2) adds to an existing collection, creating collection object if it
+     *    does not exist 
      * @effects deletes collection, map, and feature objects from a database
+     *  depending on mode
      * @throws MGIException if errors occur while deleting
      */
 
     public void preprocess() throws MGIException {
-        coordProcessor.preprocess();
+            
     }
 
     /**
@@ -131,8 +134,6 @@ public class CoordLoader extends DLALoader {
      * load
      */
     public void run()  throws MGIException {
-
-       logger.logdInfo("CoordLoader running", true);
 
        // Timing the load
        Stopwatch loadStopWatch = new Stopwatch();
@@ -146,31 +147,30 @@ public class CoordLoader extends DLALoader {
            // get the next CoordinateInput object
            input = (CoordinateInput)iterator.next();
            logger.logdDebug(input.getCoordMapFeatureRawAttributes().getObjectId());
-           if (processRepeats.equals("false")) {
-               try {
-                   // determine if repeated coordinate
-                   String currentSeqid = input.getCoordMapFeatureRawAttributes().
-                       getObjectId();
-                   logger.logdDebug(currentSeqid, false);
-                   if (coordIdsAlreadyProcessed.contains(currentSeqid)) {
-                       // we have a repeated coordinate; count it, write it out,
-                       // go on to next coordinate record in the input
-                       coordIdsAlreadyProcessedCtr++;
-                       repeatSeqWriter.write(input.
-                                             getCoordMapFeatureRawAttributes().
-                                             getRecord() + "\n");
-                       logger.logdDebug("Repeat Sequence: " + currentSeqid);
-                       continue;
-                   }
-                   else {
-                       // add the coordinate id to the set we have processed
-                       coordIdsAlreadyProcessed.add(currentSeqid);
-                   }
-               }
-               catch (IOException e) {
-                   throw new MGIException(e.getMessage());
-               }
-           }
+	   if (loadMultiCoord.equals("false")) {
+	       try {
+		   // determine if repeated coordinate
+		   String currentCoordId = input.getCoordMapFeatureRawAttributes().
+		       getObjectId();
+		   if (coordIdsAlreadyProcessed.contains(currentCoordId)) {
+		       // we have a repeated coordinate; count it, write it out,
+		       // go on to next coordinate record in the input
+		       coordIdsAlreadyProcessedCtr++;
+		       multiCoordWriter.write(input.
+					     getCoordMapFeatureRawAttributes().
+					     getRecord() + "\n");
+		       logger.logdDebug("Repeat Coordinate: " + currentCoordId);
+		       continue;
+		   }
+		   else {
+		       // add the coordinate id to the set we have processed
+		       coordIdsAlreadyProcessed.add(currentCoordId);
+		   }
+	       }
+	       catch (IOException e) {
+		   throw new MGIException(e.getMessage());
+	       }
+	   }
            // process the coordinate any exceptions stop the load
            coordProcessor.processInput(input);
            processedCtr++;
@@ -193,11 +193,11 @@ public class CoordLoader extends DLALoader {
         logger.logdInfo("CoordLoader beginning post process", true);
         logger.logdInfo("Closing load stream", false);
         this.loadStream.close();
-        if (processRepeats.equals("false")) {
+        if (loadMultiCoord.equals("false")) {
             // close the repeat coordinate writer
             logger.logdInfo("Closing repeat coordinate writer", false);
             try {
-                repeatSeqWriter.close();
+                multiCoordWriter.close();
             }
             catch (IOException e) {
                 throw new MGIException(e.getMessage());
@@ -218,14 +218,34 @@ public class CoordLoader extends DLALoader {
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
 
-        message = "Total Coordinates Processed = " + processedCtr;
+        message = "Total Features Looked at: " + processedCtr;
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
-        if (processRepeats.equals("true")) {
-            logger.logdInfo("Total Repeat Coordinates written to repeat file: "
-                            + coordIdsAlreadyProcessedCtr, false);
-        }
-        logger.logpInfo("Total Repeat Coordinates written to repeat file: "
-                        + coordIdsAlreadyProcessedCtr, false);
+
+	message = "Total Features Repeated in Input (written to repeat file): " + coordIdsAlreadyProcessedCtr;
+        logger.logdInfo(message, false);
+        logger.logpInfo(message, false);
+
+	int featuresInMGICount = coordProcessor.getFeatureInMGICount();
+	message = "Total Coordinates already in MGI - see Curation Log: " + featuresInMGICount;
+	logger.logdInfo(message, false );
+        logger.logpInfo(message, false );
+
+	int featuresDiffInMGICount = coordProcessor.getFeatureDiffInMGICount();
+        message = "Total Features in MGI with different attributes (diff start, end, chr, or strand) - see Curation Log: " + featuresDiffInMGICount;
+        logger.logdInfo(message, false );
+        logger.logpInfo(message, false );
+
+	int featureObjectNotInMGICount = 
+		coordProcessor.getFeatureObjectNotInMGICount();
+	message = "Total Feature Objects (e.g. SEQ_Sequence or MRK_Marker) not in MGI  - see Validation Log: " + featureObjectNotInMGICount;
+	logger.logdInfo(message, false );
+        logger.logpInfo(message, false );
+
+	int totalLoaded = processedCtr - coordIdsAlreadyProcessedCtr - featuresInMGICount - featuresDiffInMGICount - featureObjectNotInMGICount;
+	message = "Total Coordinates Loaded: " + totalLoaded;
+	logger.logdInfo(message, false );
+        logger.logpInfo(message, false );
+
     }
 }
