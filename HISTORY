@@ -1,3 +1,13 @@
+TAG: lib_java_dla-tr7493-2
+DATE: ?/?/2008
+STAFF: sc
+CHANGES:
+1) added org.jax.mgi.shr.dla.loader.seq.genetrap package and to it added
+   a) GeneTrapConstants
+   b) VectorEndExtractor
+   c) ReverseComplDetector
+   d) PointCoordSelector
+
 TAG: lib_java_dla-tr7493-1
 DATE: 01/29/2008
 STAFF: sc
