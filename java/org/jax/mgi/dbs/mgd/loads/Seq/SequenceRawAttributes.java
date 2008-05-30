@@ -30,22 +30,17 @@ public class SequenceRawAttributes {
     private String createdModifiedBy = null;
     private Timestamp seqRecDate = null;
     private Timestamp seqDate = null;
-    // primary source attributes
     private String library = null;
     private String strain = null;
     private String tissue = null;
     private String age = null;
     private String sex = null;
     private String cellLine = null;
-
-    // 2ndary source attributes added 10/01/07 for Gene traps
-    private String secondarySource = null;
-
     private String provider = null;
     private String quality = null;
     private String status = null;
     private String seqRecord = null;
-
+    
     // added 07/06/04 to support Genbank TPA sequences. General purpose
     // misc attribute
     private String misc =  null;
@@ -53,12 +48,6 @@ public class SequenceRawAttributes {
     // added 02/2007 to support gene trap sequences
     private String cloneId = null;
     private String comment = null;
-
-    // added 06/2007 to support gene traps
-    private String note = null;
-
-    // adde 9/2007 to support gene traps
-    private String featureOrganism = null;
 
     /**
      * set the type attribute
@@ -225,15 +214,6 @@ public class SequenceRawAttributes {
     public void setCellLine (String cellLine) {this.cellLine = cellLine;}
 
     /**
-     * set the secondary source attribute - added 10/01/07 for TIGM gene traps
-     * @assumes Nothing
-     * @effects Nothing
-     * @param source the secondary source attribute
-     */
-
-    public void set2ndarySource(String source) {this.secondarySource = source;}
-
-    /**
      * set the sequence provider attribute
      * @assumes Nothing
      * @effects Nothing
@@ -286,25 +266,6 @@ public class SequenceRawAttributes {
     */
 
     public void setComment(String c) {this.comment = c;}
-
-    /**
-    * set the note attribute
-    * @assumes Nothing
-    * @effects Nothing
-    * @param c the note attribute
-    */
-
-    public void setNote(String c) {this.note = c;}
-
-    /**
-    * set the FEATURE organism attribute (this is from the source section
-    * of FEATURE and not to be confused with organism from the ORGANISM section)
-    * @assumes Nothing
-    * @effects Nothing
-    * @param c the FEATURE organism attribute
-    */
-
-   public void setFeatureOrganism(String c) {this.featureOrganism = c;}
 
    /**
      * set the sequence record attribute
@@ -472,16 +433,6 @@ public class SequenceRawAttributes {
     public String getCellLine () {return cellLine;}
 
     /**
-     * get the raw secondary source for the sequence - added 10/01/07 for TIGM
-     * gene traps
-     * @assumes Nothing
-     * @effects Nothing
-     * @return the raw secondary source for the sequence
-     */
-
-    public String get2ndarySource () {return secondarySource;}
-
-    /**
      * get the sequence provider
      * @assumes Nothing
      * @effects Nothing
@@ -536,24 +487,6 @@ public class SequenceRawAttributes {
       public String getComment() {return comment;}
 
      /**
-      * get the note attribute
-      * @assumes Nothing
-      * @effects Nothing
-      * @return the note attribute
-      */
-
-      public String getNote() {return note;}
-
-      /**
-       * get the FEATURE organism attribute
-       * @assumes Nothing
-       * @effects Nothing
-       * @return the FEATURE organism attribute
-       */
-
-       public String getFeatureOrganism() {return featureOrganism;}
-
-     /**
       * get the sequence record attribute
       * @assumes Nothing
       * @effects Nothing
@@ -586,14 +519,11 @@ public class SequenceRawAttributes {
         age = null;
         sex = null;
         cellLine = null;
-        secondarySource = null;
         provider = null;
         quality = null;
         status = null;
         misc = null;
-        cloneId = null;
-        comment = null;
-        note = null;
-        featureOrganism = null;
+	cloneId = null;
+	comment = null;
     }
 }

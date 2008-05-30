@@ -64,6 +64,10 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String COMMENT = "COMMENT";
     private static String FEATURES = "FEATURES";
     private static String KEYWORDS = "KEYWORDS";
+
+    // this is the FEATURES sub-section keyword 'source' as opposed to tag
+    // 'SOURCE'
+    private static String SOURCE = "source";
     private static String ORIGIN = "ORIGIN";
 
     // int constants to indicate the current
@@ -81,12 +85,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static int KEYWORDS_SECTION = 11;
     private static int ANOTHER_KEYWORDS_LINE = 12;
     private static int COMMENT_SECTION = 13;
-    private static int SOURCE_SECTION2 = 14;
-    private static int ANOTHER_SOURCE_LINE2 = 15;
-
-    // this is the FEATURES sub-section keyword 'source' as opposed to tag
-    // 'SOURCE'
-    private static String SOURCE = "source";
 
     // Strings to find GB seq record source qualifiers
     private static String LIBRARY = "/clone_lib";
@@ -97,10 +95,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String CELLINE = "/cell_line";
     // added 2/07 for gene traps
     private static String CLONE = "/clone";
-    // added 6/15 for gene traps
-    private static String NOTE = "/note";
-    // added 9/27 for gene traps (TIGM vector is found here!?)
-    private static String FEATURE_ORGANISM = "/organism";
 
     ////////////////////////////////////////////////////////////////////////
     // A SequenceInput, rawSeq and ms declared here so multiple methods
@@ -130,7 +124,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private StringBuffer reference;
     private StringBuffer comment;
     private StringBuffer source;
-    private StringBuffer secondarySource;
     private StringBuffer keywords;
 
     /**
@@ -154,9 +147,8 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         organism = null;
         classification  = new StringBuffer();
         reference = new StringBuffer();
-        comment = new StringBuffer();
+	comment = new StringBuffer();
         source = new StringBuffer();
-        secondarySource = new StringBuffer();
         keywords = new StringBuffer();
     }
 
@@ -227,7 +219,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 	    parseComment(comment.toString());
  	}
         if (source.length() > 0 ) {
-            parseSource(source.toString()  );
+            parseSource(source.toString());
         }
         else {
             RecordFormatException e = new RecordFormatException();
@@ -474,31 +466,13 @@ public class GBFormatInterpreter extends SequenceInterpreter {
           }
           // if we are looking for another features source line
           else if (currentSection == ANOTHER_SOURCE_LINE) {
-            // get the rest of the FIRST features source section; if we find
-            // the ORIGIN line we are done
+            // we only want ONE features source section; if we find another
+            // features source line or we find the ORIGIN line we are done
             if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN)) {
               source.append(line + SeqloaderConstants.CRT);
             }
-            // if there is a second feature source section get it
-            // added for gene traps 10/01/07
-            else if (line.startsWith (SOURCE) ) {
-                secondarySource.append(line + SeqloaderConstants.CRT);
-                currentSection = ANOTHER_SOURCE_LINE2;
-                //System.out.println("2ndary source: " + secondarySource);
-            }
             else {
               break;
-            }
-          }
-          else if (currentSection == ANOTHER_SOURCE_LINE2) {
-              // get the rest of the SECOND features source section; if we find
-              // another source section or the ORIGIN line we are done
-              if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN)) {
-                  secondarySource.append(line + SeqloaderConstants.CRT);
-                  //System.out.println("2ndary source: " + secondarySource);
-            }
-            else {
-                break;
             }
           }
         }
@@ -572,10 +546,9 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                     // get the qualifier e.g. "/strain" and value e.g. "BALB/c"
                     qualifier = (String) splitLine.get(0);
                     value = (String) splitLine.get(1);
-                    //System.out.println("source qual: " + qualifier);
-                    //System.out.println("source value line one: " + value);
+
                     // The values we are interested are surrounded by double quotes
-                    // Note some values don't have dbl quotes
+                    // Note some values don't have dbl quotes which would cause
                     if(value.charAt(0) != '"' ) {
                       continue;
                     }
@@ -586,7 +559,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                     //       BALB/c"
                     char lastchar;
                     if (value.length() == 1) {
-                       // set lastchar to anything but '"' for while test below
+                       // set lastchar to anything but '"'
                        lastchar = 'x';
                     }
                     // Note: using char because testing for doubleQuote did not work
@@ -602,7 +575,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                         ctr++;
                         if(lineSplitter.hasMoreTokens()) {
                              value = value + " " + lineSplitter.nextToken().trim();
-                             //System.out.println("next value line: " + value);
                              lastchar = value.charAt(value.length()-1);
                         }
                     }
@@ -634,30 +606,13 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                         ms.setCellLine(value);
                         rawSeq.setCellLine(value);
                     }
-                    else if (qualifier.startsWith(CLONE)) {
-                        rawSeq.setCloneId(value);
-                    }
-                    else if (qualifier.startsWith(NOTE)) {
-                        rawSeq.setNote(value);
-                    }
-                    else if (qualifier.startsWith(FEATURE_ORGANISM)) {
-                        rawSeq.setFeatureOrganism(value);
-                    }
+		    else if (qualifier.startsWith(CLONE)) {
+			rawSeq.setCloneId(value);
+		    }
                 }
 
             }
         }
-        // 2ndary source - this is the SECOND source section which we will not
-        // parse furthur.
-        /* For TIGM gene traps looks like:
-               source          1..30
-                     /organism="Gene trapping vector VICTR76"
-                     /mol_type="genomic DNA"
-                     /db_xref="taxon:447635"
-              LTR             <1..30
-        */
-       rawSeq.set2ndarySource(secondarySource.toString());
-
     }
 
     /**
