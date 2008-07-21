@@ -1,3 +1,17 @@
+TAG: lib_java_dla-tr8989-2
+DATE: 05/21/2008
+STAFF: sc
+CHANGES: TR8092, remove references to medline, classes updated:
+ * GBFormatInterpreter
+ * EMBLFormatInterpreter
+ * SequenceInput
+ * SeqRefAssocProcessor
+ * RefAssocRawAttributes
+ * RefAssocAttributeResolver
+ * SequenceInputProcessor 
+classes removed:
+ * SeqRefAssocPair
+
 TAG: lib_java_dla-tr8989-1
 DATE: 05/17/2008
 STAFF: sc
