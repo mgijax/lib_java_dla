@@ -3,7 +3,6 @@ package org.jax.mgi.shr.dla.input.genbank;
 import java.util.*;
 import java.sql.*;
 
-
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.loads.Acc.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
