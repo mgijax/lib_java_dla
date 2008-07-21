@@ -12,7 +12,6 @@ import org.jax.mgi.dbs.mgd.loads.Acc.AccessionRawAttributes;
 import org.jax.mgi.shr.dla.input.SequenceInput;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.RefAssocRawAttributes;
 import org.jax.mgi.dbs.mgd.loads.Seq.SequenceRawAttributes;
-import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.SeqRefAssocPair;
 import org.jax.mgi.shr.dla.loader.seq.SeqloaderConstants;
 import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.config.GeneIndexLoadCfg;
