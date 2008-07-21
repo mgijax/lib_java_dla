@@ -20,7 +20,7 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
  *   <LI>Lookups to resolve raw attributes
  *   <LI>A RefAssocRawAttributes
  *   <LI>A MGI_Reference_AssocState
- *   <LI>PubMed, Medline, and JNumber AccessionLookups
+ *   <LI>PubMed, and JNumber AccessionLookups
  *   </UL>
  * @does
  *   <UL>
@@ -34,9 +34,6 @@ import org.jax.mgi.dbs.mgd.AccessionLib;
 public class RefAssocAttributeResolver {
     // a full cache lookup of pubmed ids
     private AccessionLookup pubmedLookup;
-
-    // a full cache lookup of  medline ids
-    private AccessionLookup medlineLookup;
 
     // a lookup to resolve mgi references
     private JNumberLookup jnumberLookup;
@@ -55,15 +52,12 @@ public class RefAssocAttributeResolver {
         pubmedLookup = new AccessionLookup(LogicalDBConstants.PUBMED,
                                            MGITypeConstants.REF,
                                            AccessionLib.PREFERRED);
-        medlineLookup = new AccessionLookup(LogicalDBConstants.MEDLINE,
-                                           MGITypeConstants.REF,
-                                           AccessionLib.PREFERRED);
        jnumberLookup = new JNumberLookup();
     }
 
     /**
      * resolves RefAssocRawAttribute object to a MGI_Reference_AssocState
-     * @assumes refLogicalDB is for medline, pubmed, or MGI;
+     * @assumes refLogicalDB is for pubmed, or MGI;
      * return null MGI_Reference_AssocState otherwise
      * @effects Nothing
      * @param raw the RefAssocRawAttributes object to be resolved
@@ -79,8 +73,8 @@ public class RefAssocAttributeResolver {
 
     public MGI_Reference_AssocState resolveAttributes(
                 RefAssocRawAttributes raw,
-                Integer objectKey,
-                int refLogicalDB)
+                Integer objectKey)
+                //int refLogicalDB)
                 throws KeyNotFoundException, DBException, CacheException {
         // the reference key with which to create a state
         Integer refKey = null;
@@ -88,18 +82,13 @@ public class RefAssocAttributeResolver {
         MGI_Reference_AssocState state = null;
 
         // if the logical db indicates a pubmed id try to resolve it
-        if(refLogicalDB == LogicalDBConstants.PUBMED) {
+        //if(refLogicalDB == LogicalDBConstants.PUBMED) {
+	
+	if(raw.getRefId().startsWith("J:") ) {
+	    refKey = jnumberLookup.lookup(raw.getRefId());
+	}
+	else {
             refKey = pubmedLookup.lookup(raw.getRefId());
-        }
-
-        // the logical db indicates a medline id try to resolve it
-        else if(refLogicalDB == LogicalDBConstants.MEDLINE) {
-
-            refKey = medlineLookup.lookup(raw.getRefId());
-        }
-        // the logical db indicates a mgi jnumber
-        else if(refLogicalDB == LogicalDBConstants.MGI) {
-            refKey = jnumberLookup.lookup(raw.getRefId());
         }
 
         // if we were able to resolve a reference id create a state
