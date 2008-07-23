@@ -340,37 +340,46 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * RX section example, Note there can be multiple RX lines: <BR>
      * <PRE>
      * RX   MEDLINE=95372385; PubMed=7644510;
+     * OR
+     * RX   PubMed=15994558; DOI=10.1126/science.1110439;
+     * OR
+     * RX   DOI=10.1046/j.1365-313X.1993.04061051.x;
+     * 
+     * the order of the RX line is MEDLINE, PubMed, DOI, AGRICOLA (as of 7/23/2008)
      * </PRE>
      */
 
     protected void parseRX(String rxSection) {
-        String pubmed = null;
-
         // split the RX section into individual lines
         StringTokenizer lineSplitter = new StringTokenizer(
             rxSection, SeqloaderConstants.CRT);
 
-        // get each RX line and split it into tokens on ';' then split each token
-        // on '='
+        // get each RX line and split it into tokens on ';' 
+	// then split each token on '='
         while(lineSplitter.hasMoreTokens()) {
             // get the first RX line without the RX field tag e.g.
-            // line = "MEDLINE=95372385; PubMed=7644510;"
+            // e.g. line = "MEDLINE=95372385; PubMed=7644510;"
             String line = lineSplitter.nextToken().trim().substring(5);
-
-            // first token from rxSplitter looks like: "MEDLINE=95372385;"
-            // second token from rxSplitter looks like: " PubMed=7644510;"
             StringTokenizer rxSplitter = new StringTokenizer(
                line, SeqloaderConstants.SEMI_COLON);
-            if(rxSplitter.hasMoreTokens()) {
-                // medline looks like: "95372385"
-		// we no longer use the medline id
-                String medline = ((String) StringLib.split(rxSplitter.
-		    nextToken(), SeqloaderConstants.EQUAL).get(1)).trim();
+            while(rxSplitter.hasMoreTokens()) {
+		String token = rxSplitter.nextToken().trim();
+		String provider = ((String)StringLib.split(token, SeqloaderConstants.EQUAL).get(0)).trim();
+		if (provider.equals("PubMed")) {
+		    String value = ((String)StringLib.split(token, SeqloaderConstants.EQUAL).get(1)).trim();
+		    RefAssocRawAttributes pm = null;
+		    pm = new RefAssocRawAttributes();
+		    pm.setRefId(value);
+		    pm.setRefAssocType(this.refAssocType);
+		    pm.setMgiType(this.seqMGIType);
+		    sequenceInput.addRef(pm);
+		}
             }
+	    /*
             if(rxSplitter.hasMoreTokens()) {
                 // pubmed looks like: "7644510"
-                pubmed = ((String) StringLib.split(rxSplitter.nextToken(), 
-		    SeqloaderConstants.EQUAL).get(1)).trim();
+                //pubmed = ((String) StringLib.split(rxSplitter.nextToken(), 
+		 //   SeqloaderConstants.EQUAL).get(1)).trim();
            }
 
             // if we got any ids for this reference create reference objects and
@@ -382,7 +391,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
 		pm.setRefAssocType(this.refAssocType);
 		pm.setMgiType(this.seqMGIType);
                 sequenceInput.addRef(pm);
-            }
+            }*/
         }
     }
 
