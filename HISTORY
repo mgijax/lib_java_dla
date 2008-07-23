@@ -1,3 +1,11 @@
+TAG: lib_java_dla-tr8989-3
+DATE: 05/23/2008
+STAFF: sc
+CHANGES: TR8092 remove references to medline
+1) fixed parsing of RX (reference) lines, They had added DOI and 
+   AGRICOLA cross references. The load was only expecting MEDLINE
+   and PubMed this bug led to some PubMed references not
+
 TAG: lib_java_dla-tr8989-2
 DATE: 05/21/2008
 STAFF: sc
