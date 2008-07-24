@@ -401,8 +401,7 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
     * @assumes nothing
     * @effects nothing
     * @param sequence the Sequence which to add references
-    * @param references Vector of SeqRefAssocPairs (pairs of pubmed/medline ids)
-    *        for 'sequence'
+    * @param references Vector of RefAssocRawAttributes (
     * @throws ConfigException - from Sequence.addRefAssoc
     * @throws CacheException - from SeqRefAssocProcessor
     * @throws DBException - from SeqRefAssocProcessor and Sequence.addRefAssoc
@@ -420,21 +419,14 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
         Iterator referenceIterator = references.iterator();
         while(referenceIterator.hasNext()) {
             Object ref = referenceIterator.next();
-        // some providers give both pubmed and medline ids
-        if (ref instanceof SeqRefAssocPair)
-               refAssocState = refAssocProcessor.process(
-                       (SeqRefAssocPair)ref, sequence.getSequenceKey());
-
-        // some providers have a single reference for all sequences
-        else if (ref instanceof RefAssocRawAttributes)
-            refAssocState = refAssocProcessor.process(
-                      (RefAssocRawAttributes)ref, sequence.getSequenceKey());
+        refAssocState = refAssocProcessor.process(
+                  (RefAssocRawAttributes)ref, sequence.getSequenceKey());
 
         // null if reference not in MGI
             if(refAssocState != null) {
                 sequence.addRefAssoc(refAssocState);
         }
-        }
+     }
    }
 
    /**

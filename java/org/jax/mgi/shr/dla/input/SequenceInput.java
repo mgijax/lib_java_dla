@@ -88,15 +88,7 @@ public class SequenceInput {
 
     public void setRefs(Vector refs) {this.refs = refs;}
 
-    /**
-     * add one raw reference association to the set
-     * @assumes Nothing
-     * @effects Nothing
-     * @param ref a SeqRefAssocPair to add to the set of reference associations
-     */
-
-    public void addRef(SeqRefAssocPair ref) {refs.add(ref);}
-
+  
     /**
      * add one raw reference association to the set
      * @assumes Nothing

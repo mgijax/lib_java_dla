@@ -1,5 +1,37 @@
+TAG: lib_java_dla-4-1-1-1
+DATE: 07/24/2008
+STAFF: sc
+CHANGES: TR8092,TR8989 changes merged to trunk 
+
+TAG: lib_java_dla-tr8989-3
+DATE: 07/23/2008
+STAFF: sc
+CHANGES: TR8092 remove references to medline
+1) fixed parsing of RX (reference) lines, They had added DOI and 
+   AGRICOLA cross references. The load was only expecting MEDLINE
+   and PubMed this bug led to some PubMed references not
+
+TAG: lib_java_dla-tr8989-2
+DATE: 07/21/2008
+STAFF: sc
+CHANGES: TR8092, remove references to medline, classes updated:
+ * GBFormatInterpreter
+ * EMBLFormatInterpreter
+ * SequenceInput
+ * SeqRefAssocProcessor
+ * RefAssocRawAttributes
+ * RefAssocAttributeResolver
+ * SequenceInputProcessor 
+classes removed:
+ * SeqRefAssocPair
+
+TAG: lib_java_dla-tr8989-1
+DATE: 07/17/2008
+STAFF: sc
+CHANGES: SequenceUpdater - added back in update of sequence type
+
 TAG: lib_java_dla-tr8989-BP
-DATE: 05/13/2008
+DATE: 07/16/2008
 STAFF: sc
 CHANGES: Seq Load Bug updating Seq Type TR8989 branch
     point tag

@@ -3,7 +3,6 @@ package org.jax.mgi.shr.dla.input.genbank;
 import java.util.*;
 import java.sql.*;
 
-
 import org.jax.mgi.dbs.mgd.loads.SeqSrc.MSRawAttributes;
 import org.jax.mgi.dbs.mgd.loads.Acc.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
@@ -34,8 +33,7 @@ import org.jax.mgi.shr.stringutil.StringLib;
      *   <LI>A SequenceRawAttributes object
      *   <LI>An AccessionRawAttributes object for its primary seqid
      *   <LI>One AccessionRawAttributes object for each secondary seqid
-     *   <LI> A RefAssocRawAttributes object for each reference that has a
-     *        PubMed and/or Medline id
+     *   <LI> A RefAssocRawAttributes object for each PubMed reference 
      *   <LI> A MSRawAttributes
      *   <LI> A set of String constants for parsing
      *   </UL>
@@ -320,7 +318,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         while (lineSplitter.hasMoreTokens()) {
           // be sure to trim each line so String.startsWith works properly
           line = lineSplitter.nextToken().trim();
-
           // if we are currently looking for the LOCUS line check to see if
           // 'line' is the LOCUS line
           if (currentSection== LOCUS_SECTION) {
@@ -411,7 +408,8 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(ORGANISM)) {
               // get the ORGANISM line
               organism = line;
-
+	    }
+	    else if (line.endsWith(SeqloaderConstants.PERIOD)) {
               // now we are looking for the first REFERENCE line
               currentSection = REFERENCE_SECTION;
             }
@@ -419,7 +417,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 
           // if we are currently looking for the first REFERENCE line check to
           // see if 'line' is the REFERENCE line
-          else if (currentSection == REFERENCE_SECTION) {
+          else if (currentSection == REFERENCE_SECTION ) {
             if (line.startsWith(REFERENCE)) {
               // get the first REFERENCE line
               reference.append(line + SeqloaderConstants.CRT);
@@ -447,7 +445,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 			 currentSection = SOURCE_SECTION;
 		}
 		else {
-		    currentSection = ANOTHER_REFERENCE_LINE;
+		    reference.append(line + SeqloaderConstants.CRT);
 	       }
           }
 	  else if(currentSection == COMMENT_SECTION) {
@@ -661,11 +659,10 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     }
 
     /**
-     * Parses sets of MedLine and PubMed ids from all REFERENCE sections in a
+     * Parses PubMed ids from all REFERENCE sections in a
      * GenBank sequence record where they exist. Creates a RefAssocRawAttributes
-     * object for each id, bundles them in a pair, then sets the pair in the
+     * object for each id and sets them in the
      * SequenceInput object.
-     * If a reference has only one id, the other in the SeqRefAssocPair is null.
      * @assumes Nothing
      * @effects Nothing
      * @param reference All REFERENCE sections parsed from a GenBank sequence record
@@ -691,28 +688,24 @@ public class GBFormatInterpreter extends SequenceInterpreter {
      */
 
     protected void parseReference(String reference) {
-        // holders for pubmed and medline ids
+        // a pubmed id
         String pubmed = null;
-        String medline = null;
 
         // split the REFERENCE section into individual lines
         StringTokenizer lineSplitter = new StringTokenizer(
             reference, SeqloaderConstants.CRT);
         String line;
-
         // get the first REFERENCE line and throw it away
         line = lineSplitter.nextToken().trim();
-
-        while(lineSplitter.hasMoreTokens()) {
+        
+	while(lineSplitter.hasMoreTokens()) {
             line = lineSplitter.nextToken().trim();
 
-            // get pubmed/medline id for one reference
+            // get pubmed id for one reference
             while (!line.startsWith(REFERENCE) ){
                 if (line.startsWith(PUBMED)) {
                     pubmed = ( (String) StringLib.split(line).get(1)).trim();
-                }
-                else if (line.startsWith(MEDLINE)) {
-                    medline = ( (String) StringLib.split(line).get(1)).trim();
+		    createReference(pubmed);
                 }
                 if (lineSplitter.hasMoreTokens()) {
                   line = lineSplitter.nextToken().trim();
@@ -721,13 +714,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                 else {
                   break;
                 }
-            }
-            // if we got any ids for this reference create reference objects and
-            // add them to SequenceInput object
-            if (pubmed != null || medline != null) {
-                createReference(pubmed, medline);
-                pubmed = null;
-                medline = null;
             }
         }
     }
@@ -936,17 +922,15 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     }
 
     /**
-     * Creates one RefAssocRawAttributes object each for a pubmed id and a
-     * medline id,  bundles them in a SeqRefAssocPari, then sets the pair in the
-     * SequenceInput object. If 'pubmed' or 'medline' is null, then the
-     * RefAssociationRawAttribute for that id is null
+     * Creates a PubMed RefAssocRawAttributes object, then sets in the 
+     * SequenceInput object. If 'pubmed' is null, then the
+     * RefAssociationRawAttribute is null
      * @assumes Nothing
      * @effects Nothing
      * @param pubmed Pubmed id for a reference or null
-     * @param medline Medline id for the same reference or null
      */
 
-    protected void createReference (String pubmed, String medline) {
+    protected void createReference (String pubmed) {
         // create a pubmed object
         RefAssocRawAttributes pm = null;
         if(pubmed != null) {
@@ -955,16 +939,8 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             pm.setRefAssocType(this.refAssocType);
             pm.setMgiType(this.seqMGIType);
         }
-        // create a medline object
-        RefAssocRawAttributes ml = null;
-        if(medline != null) {
-            ml = new RefAssocRawAttributes();
-            ml.setRefId(medline);
-            ml.setRefAssocType(this.refAssocType);
-            ml.setMgiType(this.seqMGIType);
-        }
         // create a pair and add to the SequenceInput references
-        sequenceInput.addRef(new SeqRefAssocPair(pm, ml));
+        sequenceInput.addRef(pm);
     }
 
     /**

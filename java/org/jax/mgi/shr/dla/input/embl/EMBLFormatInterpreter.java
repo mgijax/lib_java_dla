@@ -30,7 +30,7 @@ import org.jax.mgi.shr.dla.input.DateConverter;
      *   <LI>An AccessionRawAttributes object for its primary seqid
      *   <LI>One AccessionRawAttributes object for each secondary seqid
      *   <LI> A RefAssocRawAttributes object for each reference that has a
-     *        PubMed and/or Medline id
+     *        PubMed id
      *   <LI> A MSRawAttributes for each organism represented by the sequence
      *   <LI> A set of String constants for parsing
      *   </UL>
@@ -329,11 +329,10 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     }
 
     /**
-     * Parses sets of MedLine and PubMed ids from the RX section of a EMBL
+     * Parses PubMed ids from the RX section of a EMBL
      * format sequence record if they exist. Creates a RefAssocRawAttributes
      * object for each id, bundles them in a pair, then sets the pair in the
      * SequenceInput object.
-     * If a reference has only one type of id, the other in the SeqRefAssocPair is null.
      * @assumes Nothing
      * @effects Nothing
      * @param rxSection the RX section parsed from a EMBL format record
@@ -341,45 +340,58 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
      * RX section example, Note there can be multiple RX lines: <BR>
      * <PRE>
      * RX   MEDLINE=95372385; PubMed=7644510;
+     * OR
+     * RX   PubMed=15994558; DOI=10.1126/science.1110439;
+     * OR
+     * RX   DOI=10.1046/j.1365-313X.1993.04061051.x;
+     * 
+     * the order of the RX line is MEDLINE, PubMed, DOI, AGRICOLA (as of 7/23/2008)
      * </PRE>
      */
 
     protected void parseRX(String rxSection) {
-        // pubmed and medline ids
-        String pubmed = null;
-        String medline = null;
-
         // split the RX section into individual lines
         StringTokenizer lineSplitter = new StringTokenizer(
             rxSection, SeqloaderConstants.CRT);
 
-        // get each RX line and split it into tokens on ';' then split each token
-        // on '='
+        // get each RX line and split it into tokens on ';' 
+	// then split each token on '='
         while(lineSplitter.hasMoreTokens()) {
             // get the first RX line without the RX field tag e.g.
-            // line = "MEDLINE=95372385; PubMed=7644510;"
+            // e.g. line = "MEDLINE=95372385; PubMed=7644510;"
             String line = lineSplitter.nextToken().trim().substring(5);
-
-            // first token from rxSplitter looks like: "MEDLINE=95372385;"
-            // second token from rxSplitter looks like: " PubMed=7644510;"
             StringTokenizer rxSplitter = new StringTokenizer(
                line, SeqloaderConstants.SEMI_COLON);
-            if(rxSplitter.hasMoreTokens()) {
-                // medline looks like: "95372385"
-                medline = ((String) StringLib.split(rxSplitter.nextToken(), SeqloaderConstants.EQUAL).get(1)).trim();
+            while(rxSplitter.hasMoreTokens()) {
+		String token = rxSplitter.nextToken().trim();
+		String provider = ((String)StringLib.split(token, SeqloaderConstants.EQUAL).get(0)).trim();
+		if (provider.equals("PubMed")) {
+		    String value = ((String)StringLib.split(token, SeqloaderConstants.EQUAL).get(1)).trim();
+		    RefAssocRawAttributes pm = null;
+		    pm = new RefAssocRawAttributes();
+		    pm.setRefId(value);
+		    pm.setRefAssocType(this.refAssocType);
+		    pm.setMgiType(this.seqMGIType);
+		    sequenceInput.addRef(pm);
+		}
             }
+	    /*
             if(rxSplitter.hasMoreTokens()) {
                 // pubmed looks like: "7644510"
-                pubmed = rxSplitter.nextToken();
+                //pubmed = ((String) StringLib.split(rxSplitter.nextToken(), 
+		 //   SeqloaderConstants.EQUAL).get(1)).trim();
            }
 
             // if we got any ids for this reference create reference objects and
             // add them to SequenceInput object
-            if (pubmed != null || medline != null) {
-                createReference(pubmed, medline);
-                pubmed = null;
-                medline = null;
-            }
+            if (pubmed != null) {
+		RefAssocRawAttributes pm = null;
+		pm = new RefAssocRawAttributes();
+		pm.setRefId(pubmed);
+		pm.setRefAssocType(this.refAssocType);
+		pm.setMgiType(this.seqMGIType);
+                sequenceInput.addRef(pm);
+            }*/
         }
     }
 
@@ -608,38 +620,7 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
        rawSeq.setLength(fieldSplitter.nextToken().trim());
     }
 
-    /**
-     * Creates one RefAssocRawAttributes object each for a pubmed id and a
-     * medline id,  bundles them in a SeqRefAssocPair, then sets the pair in the
-     * SequenceInput object. If 'pubmed' or 'medline' is null, then the
-     * RefAssociationRawAttribute for that id is null
-     * @assumes Nothing
-     * @effects Nothing
-     * @param pubmed Pubmed id for a reference or null
-     * @param medline Medline id for the same reference or null
-     */
-
-    protected void createReference (String pubmed, String medline) {
-        // create a pubmed object
-        RefAssocRawAttributes pm = null;
-        if(pubmed != null) {
-            pm = new RefAssocRawAttributes();
-            pm.setRefId(pubmed);
-            pm.setRefAssocType(this.refAssocType);
-            pm.setMgiType(this.seqMGIType);
-        }
-        // create a medline object
-        RefAssocRawAttributes ml = null;
-        if(medline != null) {
-            ml = new RefAssocRawAttributes();
-            ml.setRefId(medline);
-            ml.setRefAssocType(this.refAssocType);
-            ml.setMgiType(this.seqMGIType);
-        }
-        // create a pair and add to the SequenceInput references
-        sequenceInput.addRef(new SeqRefAssocPair(pm, ml));
-    }
-
+   
     /**
      * Creates an AccessionRawAttributes object and sets it in the SequenceInput
      * object.

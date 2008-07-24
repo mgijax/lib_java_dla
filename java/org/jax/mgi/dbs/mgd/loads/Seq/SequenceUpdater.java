@@ -149,6 +149,23 @@ public class SequenceUpdater {
         String existingSeqDescription = existingSeqState.getDescription();
         Integer existingSeqStatusKey = existingSeqState.getSequenceStatusKey();
 
+	// update sequence type key only if not curator edited
+        if (! inputSeqTypeKey.equals(existingSeqTypeKey) ) {
+            // check type attribute history
+            if( ! attrHistory.isTypeCurated(existingSeqKey)) {
+                logger.logdDebug("Updating Sequence Type");
+                existingSeqState.setSequenceTypeKey(inputSeqTypeKey);
+            }
+            else {
+               // log the sequence key, seqid, new rawType existing rawType
+               logger.logcInfo("Cannot update sequence type key due to curation. " +
+                               "Existing _Sequence_key: " + existingSeqKey +
+                               " has Existing seqTypeKey: " + existingSeqTypeKey +
+                               ". Input seqTypeKey is: " +
+                               inputSeqTypeKey, true);
+            }
+            update = true;
+        }
 
         // update sequence record date
         if ( inputSeqrecordDate.after(existingSeqrecordDate) ) {
