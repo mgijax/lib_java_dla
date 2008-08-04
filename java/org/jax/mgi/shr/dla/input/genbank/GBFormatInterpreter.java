@@ -201,7 +201,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         }
         else {
             RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The LOCUS section is empty");
+            e.bindRecord("The LOCUS section is empty:\n" + rcd);
             throw e;
         }
 
@@ -210,7 +210,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         }
         else {
             RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The VERSION section is empty");
+            e.bindRecord("The VERSION section is empty:\n" + rcd);
             throw e;
         }
         if(organism != null ) {
@@ -218,7 +218,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         }
         else {
             RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The ORGANISM section is empty");
+            e.bindRecord("The ORGANISM section is empty:\n" + rcd);
             throw e;
         }
 	if(comment.length() > 0 ) {
@@ -229,7 +229,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         }
         else {
             RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The SOURCE section is empty");
+            e.bindRecord("The SOURCE section is empty:\n" + rcd);
             throw e;
         }
 
@@ -238,7 +238,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         }
         else {
             RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The DEFINITION section is empty");
+            e.bindRecord("The DEFINITION section is empty:\n" + rcd);
             throw e;
         }
 
@@ -249,7 +249,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         }
         else {
             RecordFormatException e = new RecordFormatException();
-            e.bindRecord("The ACCESSION section is empty");
+            e.bindRecord("The ACCESSION section is empty:\n" + rcd);
             throw e;
         }
 
@@ -408,11 +408,10 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(ORGANISM)) {
               // get the ORGANISM line
               organism = line;
-	    }
-	    else if (line.endsWith(SeqloaderConstants.PERIOD)) {
-              // now we are looking for the first REFERENCE line
+
+	      // now we are looking for the first REFERENCE line
               currentSection = REFERENCE_SECTION;
-            }
+	    }
           }
 
           // if we are currently looking for the first REFERENCE line check to
@@ -482,7 +481,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             else if (line.startsWith (SOURCE) ) {
                 secondarySource.append(line + SeqloaderConstants.CRT);
                 currentSection = ANOTHER_SOURCE_LINE2;
-                //System.out.println("2ndary source: " + secondarySource);
             }
             else {
               break;
@@ -493,7 +491,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
               // another source section or the ORIGIN line we are done
               if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN)) {
                   secondarySource.append(line + SeqloaderConstants.CRT);
-                  //System.out.println("2ndary source: " + secondarySource);
             }
             else {
                 break;
@@ -570,8 +567,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                     // get the qualifier e.g. "/strain" and value e.g. "BALB/c"
                     qualifier = (String) splitLine.get(0);
                     value = (String) splitLine.get(1);
-                    //System.out.println("source qual: " + qualifier);
-                    //System.out.println("source value line one: " + value);
                     // The values we are interested are surrounded by double quotes
                     // Note some values don't have dbl quotes
                     if(value.charAt(0) != '"' ) {
@@ -600,7 +595,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
                         ctr++;
                         if(lineSplitter.hasMoreTokens()) {
                              value = value + " " + lineSplitter.nextToken().trim();
-                             //System.out.println("next value line: " + value);
                              lastchar = value.charAt(value.length()-1);
                         }
                     }
@@ -827,7 +821,6 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 
         // create a primary accession object
         field = fieldSplitter.nextToken().trim();
-        //System.out.println("ACCESSION: " + field);
         createAccession(field, Boolean.TRUE);
 
         // create 2ndary accessions from first ACCESSION line

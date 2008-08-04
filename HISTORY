@@ -1,3 +1,12 @@
+TAG: lib_java_dla-4-1-1-2
+DATE: 08/04/2008
+STAFF: sc
+CHANGES: bug fix
+1) GBFormatInterpreter - while implementing TR8092
+I introduced a small bug which caused an ORGANISM 
+line ending with '.' to be missed when parsing.
+e.g. ORGANISM  Mus sp.
+
 TAG: lib_java_dla-4-1-1-1
 DATE: 07/24/2008
 STAFF: sc
