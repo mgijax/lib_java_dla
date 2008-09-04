@@ -170,17 +170,17 @@ public class SeqDeleter extends DLALoader {
     * repeated deletes in the input, # actual deletes, etc
     */
     private void reportLoadStatistics() {
-        String message = "Total Load time in minutes: " +
+        String message = "Total Load Time in Minutes: " +
             (totalProcessTime/60);
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
 
         // report the total deletes looked at (not all are in MGI)
-        message = "Total Delete Records Looked at = " + recordCtr + "(RefSeq deletes are two per record - 1 eac nucleotide and protein)";
+        message = "Total Delete Records Looked at = " + recordCtr + "(RefSeq deletes are two per record - 1 each nucleotide and protein)";
         logger.logdInfo(message, false);
         logger.logpInfo(message, false);
 
-        logger.logdInfo("MGI delete counts: ", false);
+        logger.logdInfo("MGI Delete Counts: ", false);
         Vector deleteReports = delProcessor.getProcessedReport();
         for(Iterator i = deleteReports.iterator(); i.hasNext();) {
             String line = (String)i.next();

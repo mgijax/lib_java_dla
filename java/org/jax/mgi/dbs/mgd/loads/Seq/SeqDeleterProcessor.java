@@ -317,8 +317,8 @@ public class SeqDeleterProcessor {
        Vector report = new Vector();
        report.add("Total sequences deleted: " + deleteCtr);
        report.add("Total sequences not deleted because statused as " +
-                  "'split' 'not loaded' or 'deleted': " + notDelCtr);
-       report.add("Reporting repeated sequences:");
+                  "'Split' or 'Not Loaded': " + notDelCtr);
+       report.add("Reporting Repeated Sequences:");
        report.add("seqId\tcount");
        for (Iterator i = repeatMap.keySet().iterator();i.hasNext();) {
 	   String id = (String)i.next();
