@@ -90,6 +90,7 @@ public class SeqDeleterProcessor {
      // status key for delete status
      private Integer deleteStatus;
 
+     private HashMap repeatMap;
     // The following are public to provide easy access for debug logging
     // the number of seqids for the SequenceLookup to query for at one time
     public int batchSize;
@@ -105,7 +106,7 @@ public class SeqDeleterProcessor {
     int deleteCtr = 0;
     // current number of sequences not deleted because their status is 'split'
     int notDelCtr = 0;
-
+    
     /**
      * Constructs a SeqProcessor that adds and deletes sequence to/from
      * a database
@@ -153,6 +154,7 @@ public class SeqDeleterProcessor {
         termNameLookup = new VocabTermLookup();
         // batch the seqids to query
         batchMap = new HashMap();
+	repeatMap = new HashMap();
         // current count of sequences in the batch
         batchCtr = 0;
     }
@@ -186,9 +188,21 @@ public class SeqDeleterProcessor {
        // when it reaches the configured batch size
        if (seqKey != null) {
            // add the seqId to the batch
-           batchMap.put(seqIdToDelete, seqIdToDelete);
-           batchCtr++;
-
+	   if (!batchMap.keySet().contains(seqIdToDelete)) {
+	       batchMap.put(seqIdToDelete, seqIdToDelete);
+	       batchCtr++;
+	   }
+	   else {
+	       if (!repeatMap.keySet().contains(seqIdToDelete)) {
+		   repeatMap.put(seqIdToDelete, new Integer(2));
+	       }
+	       else {
+		   Integer count = (Integer) repeatMap.get(seqIdToDelete);
+		   int i = count.intValue();
+		   i++;
+		   repeatMap.put(seqIdToDelete, new Integer(i));
+	       }
+	   }
            // process the batch
            if (batchCtr == batchSize) {
                processDeleteBatch();
@@ -197,11 +211,6 @@ public class SeqDeleterProcessor {
                batchMap = new HashMap();
            }
        }
-       else {
-           logger.logdDebug("Sequence: " + seqIdToDelete + " is not in MGI");
-           logger.logcInfo("Sequence: " + seqIdToDelete + " is not in MGI", false);
-       }
-
    }
        /**
         * processes the last batch
@@ -255,7 +264,6 @@ public class SeqDeleterProcessor {
               throw e1;
           }
           // iterate thru the Sequence objects processing deletes
-          logger.logdDebug("Number of results returned from query: " + sequences.size());
           for (Iterator i = sequences.iterator(); i.hasNext(); ) {
               Sequence s = (Sequence) i.next();
               processDelete(s);
@@ -289,19 +297,11 @@ public class SeqDeleterProcessor {
                   //log the seqid
                   logger.logcInfo("DELETED " + SeqloaderConstants.TAB +
                                   s.getAccPrimary().getAccID(), false);
-                  logger.logdDebug("DELETED " + SeqloaderConstants.TAB +
-                                   s.getAccPrimary().getAccID(), false);
                   // write out the update
                   s.sendToStream();
          }
          else {
              // increment the split/del/notloaded counter
-             logger.logcInfo("NOT DELETED " + SeqloaderConstants.TAB +
-                             s.getAccPrimary().getAccID() + " Status=" +
-                             statusString, false);
-             logger.logdDebug("NOT DELETED " + SeqloaderConstants.TAB +
-                              s.getAccPrimary().getAccID() + " Status=" +
-                              statusString, false);
              notDelCtr++;
          }
       }
@@ -313,10 +313,17 @@ public class SeqDeleterProcessor {
    * @return Vector containing single string for reporting delete statistics
    */
    public Vector getProcessedReport() {
+      logger.logcInfo("Total Deleted: " + deleteCtr, false);
        Vector report = new Vector();
        report.add("Total sequences deleted: " + deleteCtr);
        report.add("Total sequences not deleted because statused as " +
-                  "'split' 'not loaded' or 'deleted': " + notDelCtr);
+                  "'Split' or 'Not Loaded': " + notDelCtr);
+       report.add("Reporting Repeated Sequences:");
+       report.add("seqId\tcount");
+       for (Iterator i = repeatMap.keySet().iterator();i.hasNext();) {
+	   String id = (String)i.next();
+	   report.add(id + "\t " + ((Integer)repeatMap.get(id)).toString());
+       }
        return report;
    }
 }

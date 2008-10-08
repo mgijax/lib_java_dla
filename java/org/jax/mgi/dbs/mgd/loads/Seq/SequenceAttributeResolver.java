@@ -94,19 +94,7 @@ public class SequenceAttributeResolver {
       state.setSequenceQualityKey(qualityLookup.lookup(rawAttributes.getQuality()));
       state.setSequenceStatusKey(statusLookup.lookup(rawAttributes.getStatus()));
       state.setSequenceProviderKey(providerLookup.lookup(rawAttributes.getProvider()));
-
-
-      //
-      // cleanse decription data
-      //
-      String desc = rawAttributes.getDescription();
-      if (desc != null) {
-        desc = desc.replaceAll("'", "''");
-        if (desc.length() > 255) {
-          desc = desc.substring(0, 254);
-        }
-      }
-      state.setDescription(desc);
+      state.setDescription(rawAttributes.getDescription());
 
 
       // copy remaining raw attributes to the sequence state

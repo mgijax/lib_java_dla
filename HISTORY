@@ -1,3 +1,19 @@
+TAG: lib_java_dla-4-1-2-1
+DATE: 10/08/2008
+STAFF: sc
+CHANGES: Merge tr9231 to trunk
+
+TAG: lib_java_dla-tr9231-2
+TAG: lib_java_dla-tr9231-1
+DATE: 09/03/2008
+STAFF: sc
+CHANGES:
+1) SequenceAttributeResolve - removed find a replace of single quotes
+  from the sequence description - we're moving this functionality
+  to lib_java_core
+2) SeqDeleterProcessor - added handling/reporting of repeated sequences
+  in the input
+
 TAG: lib_java_dla-tr9231-BP
 DATE: 09/03/2008
 STAFF: sc
