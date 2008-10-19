@@ -1,3 +1,8 @@
+TAG: lib_java_dla-4-1-2-2
+DATE: 10/19/2008
+STAFF: sc
+CHANGES: EMBLFormatInterpreter - BUG fix > 255 description field
+
 TAG: lib_java_dla-4-1-2-1
 DATE: 10/08/2008
 STAFF: sc

@@ -584,8 +584,14 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
         while(lineTokenizer.hasMoreTokens()){
             descript.append(lineTokenizer.nextToken().substring(5));
         }
-        // set description in the raw sequence
-        rawSeq.setDescription(descript.toString());
+	
+	// set description in the raw sequence; can't be longer than 255
+	if (descript.length() > 255 ){
+	    rawSeq.setDescription((descript.substring(0, 255)).toString());
+	}
+        else {
+            rawSeq.setDescription(descript.toString());
+	}
     }
 
     /**
