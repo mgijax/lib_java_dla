@@ -3,14 +3,12 @@ package org.jax.mgi.dbs.mgd.loads.SeqRefAssoc;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
-import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.JNumberLookup;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
-//import org.jax.mgi.shr.dla.seqloader.*;
 
 /**
  * An object that resolves a RefAssocRawAttributes object to a
@@ -67,7 +65,6 @@ public class RefAssocAttributeResolver {
      *         not in MGI
      * @throws CacheException if error using lookup
      * @throws DBException if error using lookup
-     * @throws KeyNotFoundException - doesn't actually throw this because the
      * lookup has an option to return null instead, and we are using this option.
      */
 
@@ -75,7 +72,7 @@ public class RefAssocAttributeResolver {
                 RefAssocRawAttributes raw,
                 Integer objectKey)
                 //int refLogicalDB)
-                throws KeyNotFoundException, DBException, CacheException {
+                throws DBException, CacheException {
         // the reference key with which to create a state
         Integer refKey = null;
         // the state we are building

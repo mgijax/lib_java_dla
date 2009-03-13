@@ -1,3 +1,16 @@
+TAG: lib_java_dla-gtlf-1
+DATE: 03/13/2009
+STAFF: sc
+CHANGES:
+1) CoordinateInputProcessor - updated for load mode
+2) CoordInDatabaseException - added to support add load mode
+3) CoordloaderConstants - added to support load mode
+4) RefAssocAttributeResolver and SeqRefAssocProcessor - 
+	removed throw of KeyNotFoundException, doesn't throw it
+5) CoordLoadCfg -  added COORD_LOAD_MODE
+6) CoordLoader - updated for load mode
+7) VectorEndExtractor, removed
+
 TAG: lib_java_dla-gtlf-BP
 DATE: 03/13/2009
 STAFF: sc

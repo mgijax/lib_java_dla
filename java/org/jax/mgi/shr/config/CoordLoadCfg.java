@@ -109,7 +109,8 @@ public class CoordLoadCfg extends Configurator {
       /**
       * Gets the coordinate feature MGIType name
       * @return  coordinate feature MGIType name
-      * @throws ConfigException if "COORD_FEATURE_MGITYPE" not found in configuration file
+      * @throws ConfigException if "COORD_FEATURE_MGITYPE" 
+      *         not found in configuration file
       */
 
        public String getFeatureMGIType() throws ConfigException {
@@ -154,6 +155,7 @@ public class CoordLoadCfg extends Configurator {
     public String getLogicalDB() throws ConfigException {
         return getConfigString("COORD_LOGICALDB");
     }
+
     /**
      * get the coordinate repeat ok value
      * @return the coordinate repeats ok value
@@ -172,6 +174,15 @@ public class CoordLoadCfg extends Configurator {
     */
     public String getRepeatFileName() throws ConfigException {
         return getConfigString("COORD_REPEAT_FILE");
+    }
+    /**
+    * get the coordinate load mode
+    * @return the coordinate load mode
+    * @throws ConfigException thrown if "COORD_LOAD_MODE" not found in
+    *    configuration file
+    */
+    public String getLoadMode() throws ConfigException {
+        return getConfigString("COORD_LOAD_MODE");
     }
 
 }
