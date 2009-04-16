@@ -302,10 +302,11 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         organism = null;
         classification = new StringBuffer();
         reference = new StringBuffer();
+	comment = new StringBuffer();
         source = new StringBuffer();
+	secondarySource = new StringBuffer();
         keywords = new StringBuffer();
-        comment = new StringBuffer();
-
+       
         // set the record attribute of the SequenceRawAttributes - we use this
         // to write out repeated sequences
         rawSeq.setRecord(rcd);

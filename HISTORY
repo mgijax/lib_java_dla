@@ -1,8 +1,16 @@
+TAG: lib_java_dla-gtlf-3
+DATE: 03/13/2009
+STAFF: sc
+CHANGES: TR7493
+1) GBFormatInterpreter - fixed bug whereby the comment instance
+    variable was not getting reset (new StringBuffer) and each
+    new comment was getting appended 
+
 TAG: lib_java_dla-gtlf-2
 TAG: lib_java_dla-gtlf-1
 DATE: 03/13/2009
 STAFF: sc
-CHANGES:
+CHANGES: TR7493
 1) CoordinateInputProcessor - updated for load mode
 2) CoordInDatabaseException - added to support add load mode
 3) CoordloaderConstants - added to support load mode
@@ -15,7 +23,7 @@ CHANGES:
 TAG: lib_java_dla-gtlf-BP
 DATE: 03/13/2009
 STAFF: sc
-CHANGES:
+CHANGES: TR7493
 
 TAG: lib_java_dla-4-1-2-2
 DATE: 10/19/2008
