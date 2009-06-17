@@ -127,6 +127,8 @@ public abstract class DLALoader {
   private DLALoaderExceptionFactory dlaExceptionFactory =
       new DLALoaderExceptionFactory();
 
+  // debug
+	Runtime runTime = Runtime.getRuntime();
   /**
    * A DLASystemExit object for managing application exiting as specified
    * within the DLA standards
@@ -189,6 +191,7 @@ public abstract class DLALoader {
       String[] qcTables = this.dlaConfig.getTruncateQCTables();
 
       try {
+			  logger.logdInfo("FreeMem Prior to DLALoader initialization: " + runTime.freeMemory(), false);
               logger.logdInfo("Performing load initialization", true);
               if (loadTables != null)
                   DLALoaderHelper.truncateTables(loadTables,
