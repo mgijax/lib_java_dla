@@ -648,7 +648,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 					seqInput.getPrimaryAcc().getAccID());
 			throw e;
 		}
-        logger.logdInfo("DBGSSGeneTrapInterpreter.interpretSeqGeneTrap seqTagId: " + seqTagID +  " for seqId: " + seqInput.getPrimaryAcc().getAccID(), false);
 		/*  This was used for debugged what turned out to be a singleton error
 		 * in an EGTC record
 		 if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
