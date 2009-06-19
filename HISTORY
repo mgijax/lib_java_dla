@@ -1,10 +1,17 @@
+TAG: lib_java_dla-gtlf-8
+DATE: 06/19/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 5
+1) DBGSSGeneTrapInterpreter - load ref assoc type changed to allele original
+
 TAG: lib_java_dla-gtlf-7
 TAG: lib_java_dla-gtlf-6
 TAG: lib_java_dla-gtlf-5
 TAG: lib_java_dla-gtlf-4
 DATE: 06/17/2009
 STAFF: sc
-CHANGES: TR7493 - moved all genetrapload java classes here
+CHANGES: TR7493 - Post Dev Build 5
+1) moved all genetrapload java classes here
 
 TAG: lib_java_dla-gtlf-3
 DATE: 03/13/2009

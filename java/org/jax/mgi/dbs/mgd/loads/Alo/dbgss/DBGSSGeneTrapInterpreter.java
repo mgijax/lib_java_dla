@@ -562,7 +562,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		RefAssocRawAttributes loadRef = new RefAssocRawAttributes();
 		loadRef.setMgiType(new Integer(MGITypeConstants.ALLELE));
 		loadRef.setRefAssocType(new Integer(
-				MGIRefAssocTypeConstants.ORIGINAL));
+				MGIRefAssocTypeConstants.ALLELE_ORIGINAL));
 		loadRef.setRefId(loadReference);
 		gtInput.setReferenceAssociation(loadRef);
 	}
