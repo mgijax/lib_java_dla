@@ -1,3 +1,13 @@
+TAG: lib_java_dla-gtlf-9
+DATE: 06/23/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 5
+1) fix to package statements in some classes
+2) DBGSSGeneTrapAlleleProcessor - Use cell line id AND creator for 
+   object identity in the database
+3) MutantCellLineLookupByCellLineID = use cell line id AND creator
+   as lookup key
+
 TAG: lib_java_dla-gtlf-8
 DATE: 06/19/2009
 STAFF: sc

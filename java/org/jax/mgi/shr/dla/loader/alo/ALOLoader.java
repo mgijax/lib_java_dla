@@ -190,7 +190,7 @@ public class ALOLoader extends DLALoader {
 		 * report counts
 		 */
 		int newCt = processor.getNewCount();
-        int existingCt = processor.getExistintCount();
+        int existingCt = processor.getExistingCount();
 
 		//processedCt = processedCt - repeatALOCt;
 

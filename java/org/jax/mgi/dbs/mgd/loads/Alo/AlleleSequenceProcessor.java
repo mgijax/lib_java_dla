@@ -1,18 +1,15 @@
 package org.jax.mgi.dbs.mgd.loads.Alo;
 
-import org.jax.mgi.dbs.mgd.lookup.AlleleLookupBySeqKey;
 import org.jax.mgi.dbs.mgd.lookup.MarkerKeyLookupBySeqKey;
 import org.jax.mgi.dbs.mgd.lookup.SequenceKeyLookupBySeqID;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.shr.cache.CacheException;
-import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.config.ALOLoadCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dla.input.alo.ALORawInput;
 import org.jax.mgi.shr.dla.loader.alo.SequenceNotInDatabaseException;
 import org.jax.mgi.shr.dla.log.DLALogger;
-import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**

@@ -6,7 +6,6 @@ import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.loads.Alo.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
 import org.jax.mgi.dbs.mgd.lookup.AlleleLookupByMutantCellLineKey;
-import org.jax.mgi.dbs.mgd.lookup.MutantCellLineLookupByAlleleKey;
 import org.jax.mgi.dbs.mgd.lookup.PubMedIDLookupByAlleleKey;
 import org.jax.mgi.dbs.mgd.query.AlleleSymbolQuery;
 import org.jax.mgi.dbs.mgd.query.AlleleSynonymQuery;
@@ -285,6 +284,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 			MutantCellLineAlleleException, AlleleMutationProcessorException {
 		// System.out.println("In GeneTrapAlleleProcessor.processAlleleWithExistingMCL");
 		// get the incoming cell line name
+
 		String incomingCellLineName = incomingMCL.getCellLine();
 
 		HashSet dbAlleles = alleleLookup.lookup(existingMCLKey);
@@ -394,6 +394,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// resolve references and set in resolvedALO; RefAssocProcessor is an old
 		// class which takes one raw instance and returns a state - this is diff
 		// erent paradigm than new processors for the ALO load
+        //logger.logcInfo("In processReferencesForNewAllele", false);
 		HashSet rawRefs = aloInput.getReferenceAssociations();
 		for (Iterator i = rawRefs.iterator(); i.hasNext();) {
 			RefAssocRawAttributes rawRef = (RefAssocRawAttributes) i.next();
@@ -411,6 +412,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
 		// get references associated with allele in database, if none
 		// HashSet will be empty set
+        //logger.logcInfo("In processReferencesForExistingAllele", false);
 		HashSet existingPubMedIDSet = pubMedLookup.lookup(existingAlleleKey);
         //System.out.println("existingPubMedIDSet for alleleKey: " +
                 //existingAlleleKey + " " + existingPubMedIDSet.toString());
@@ -418,14 +420,16 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
 		// get incoming references
 		HashSet rawRefs = aloInput.getReferenceAssociations();
-
+        //logger.logcInfo("ExistingPubMedIDSet: " + existingPubMedIDSet.toString(), false);
 		for (Iterator i = rawRefs.iterator(); i.hasNext();) {
 			RefAssocRawAttributes incomingRawRef = (RefAssocRawAttributes) i.next();
 			String incomingRefID = incomingRawRef.getRefId();
+            //logger.logcInfo("IncomingRefID: " + incomingRefID, false);
 			// if incomingRefId is not a JNumber and is not in the set of
 			// pubMed IDs associated with the allele, create association
 			//System.out.println("RefID: " + incomingRefID + " for existingAlleleKey: " + existingAlleleKey);
 			if (!incomingRefID.startsWith("J:") && !existingPubMedIDSet.contains(incomingRefID)) {
+                //logger.logcInfo("IncomingRefID does not start with J: and existingPubMedIDSet does not contain: " + incomingRefID, false);
 				//System.out.println("Adding incomingRefId: " + incomingRefID);
 				RefAssocRawAttributes newRawRef = new RefAssocRawAttributes();
 				newRawRef.setMgiType(new Integer(MGITypeConstants.ALLELE));

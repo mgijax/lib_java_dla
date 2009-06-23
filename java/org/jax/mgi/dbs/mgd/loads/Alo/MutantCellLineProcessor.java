@@ -11,7 +11,6 @@ import org.jax.mgi.dbs.mgd.dao.ALL_CellLineState;
 import org.jax.mgi.dbs.mgd.dao.ALL_CellLineKey;
 import org.jax.mgi.dbs.mgd.loads.Acc.*;
 import org.jax.mgi.dbs.mgd.lookup.MGIUserKeyLookup;
-import org.jax.mgi.dbs.mgd.lookup.MutantCellLineLookupByCellLineID;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.shr.cache.CacheException;
@@ -159,9 +158,17 @@ public class MutantCellLineProcessor {
 			MutantCellLine incomingMCL = mclResolver.resolve(mclRaw, derivation);
 			currentIncomingMCLs.add(incomingMCL);
 			Integer incomingDerivKey = incomingMCL.getDerivationKey();
+
+            // create lookup key to determine if MCL in db by MCL ID +  creator
+            String creator = derivation.getCreator();
+            StringBuffer lookupKey = new StringBuffer();
+            lookupKey.append(accID);
+            lookupKey.append("|");
+            lookupKey.append(creator);
 			// lookup the mutant cell line ID in  the database
 			try {
-				MutantCellLine dbMCL = mclLookupByID.lookup(accID);
+                		//logger.logcInfo("MutantCellLineProcessor looking up MCL/creator: " + lookupKey, false);
+				MutantCellLine dbMCL = mclLookupByID.lookup(lookupKey.toString());
 				// if we get here we've found it in the database:
 				// add it to the set of existing MCLs to return
 				existingMCLKeySet.add(dbMCL.getMCLKey());

@@ -204,7 +204,7 @@ public class ALOInputProcessor {
 	 * @effects nothing
 	 * @return number of ALOs found to be in the database
 	 */
-    public int getExistintCount() {
+    public int getExistingCount() {
         return existingCtr;
     }
 }

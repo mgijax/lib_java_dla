@@ -1,4 +1,4 @@
-package org.jax.mgi.dbs.mgd.lookup;
+package org.jax.mgi.dbs.mgd.loads.Alo;
 
 import java.util.HashMap;
 import java.util.HashSet;

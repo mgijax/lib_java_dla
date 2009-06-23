@@ -1,11 +1,10 @@
-package org.jax.mgi.dbs.mgd.lookup;
+package org.jax.mgi.dbs.mgd.loads.Alo;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.jax.mgi.dbs.mgd.loads.Alo.MutantCellLine;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.SchemaConstants;
 import org.jax.mgi.shr.cache.CacheException;

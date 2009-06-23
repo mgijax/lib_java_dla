@@ -1,8 +1,7 @@
-package org.jax.mgi.dbs.mgd.lookup;
+package org.jax.mgi.dbs.mgd.loads.Alo;
 
 import java.util.HashMap;
 
-import org.jax.mgi.dbs.mgd.loads.Alo.MutantCellLine;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.SchemaConstants;
 import org.jax.mgi.shr.cache.CacheException;
@@ -55,9 +54,9 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
   }
 
   /**
-   * look up the sequence key for a seqID 
-   * @param seqKey the seqKey to look up
-   * @return SE_GeneTrapDAO for seqKey
+   * lookup the MutantCellLine given a mutant cell line ID and creator
+   * @param idAndCreator mclID|creator
+   * @return MutantCellLine object for idAndCreator
    * @throws CacheException thrown if there is an error accessing the cache
    * @throws ConfigException thrown if there is an error accessing the
    * configuration
@@ -68,9 +67,9 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
    * configuration file
    * @throws KeyNotFoundException thrown if the key is not found
    */
-  public MutantCellLine lookup(String ID) throws CacheException,
+  public MutantCellLine lookup(String idAndCreator) throws CacheException,
       DBException, ConfigException, KeyNotFoundException {
-      return (MutantCellLine)super.lookup(ID);
+      return (MutantCellLine)super.lookup(idAndCreator);
   }
 
   /**
@@ -85,8 +84,8 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
 	"c._CellLine_key, c.cellLine, c._CellLine_Type_key, " +
 	"v.term as cellLineType, c._Strain_key, s.strain, " +
 	"c._Derivation_key, c.isMutant, c.creation_date, c.modification_date, " +
-	"c._CreatedBy_key, c._ModifiedBy_key " + 
-	"FROM ACC_Accession a, ALL_CellLine c, VOC_Term v, PRB_Strain s, " +
+	"c._CreatedBy_key, c._ModifiedBy_key, c.creator " +
+	"FROM ACC_Accession a, ALL_CellLine_View c, VOC_Term v, PRB_Strain s, " +
 	"ACC_LogicalDB ldb " +
 	"WHERE a._MGIType_key =  " + MGITypeConstants.CELLLINE +
 	" and a._LogicalDB_key = ldb._LogicalDB_key " +
@@ -110,6 +109,12 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
 	    throws DBException, InterpretException {
 	      
 	      String accID = row.getString(1);
+          String creator = row.getString(16);
+          StringBuffer key = new StringBuffer();
+          key.append(accID);
+          key.append("|");
+          key.append(creator);
+
 	      MutantCellLine mcl = null;
 		try {
 		    mcl = new MutantCellLine();
@@ -132,7 +137,8 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
 	      mcl.setModificationDate(row.getTimestamp(13));
 	      mcl.setCreatedByKey(row.getInt(14));
 	      mcl.setModifiedByKey(row.getInt(15));
-              return new KeyValue(accID, mcl);
+              //System.out.println("KEY:" + key.toString());
+              return new KeyValue(key.toString(), mcl);
 	  }
       }
     return new Interpreter();
