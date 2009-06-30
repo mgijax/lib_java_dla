@@ -55,4 +55,13 @@ public class GeneTrapLoadCfg extends ALOLoadCfg {
      public String getSingleHitsFile() throws ConfigException {
          return getConfigString("SINGLE_HITS_ALL");
      }
+
+     /**
+      * Gets the name of the file which to write the set of sequence keys processed
+      * @return the full file path of the sequence key file
+      * @throws ConfigException if "SEQUENCES_PROCESSED" not found in configuration
+      */
+     public String getSeqFile() throws ConfigException {
+         return getConfigString("SEQUENCES_PROCESSED");
+     }
 }

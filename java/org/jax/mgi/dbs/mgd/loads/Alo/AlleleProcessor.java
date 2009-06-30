@@ -83,6 +83,12 @@ public abstract class AlleleProcessor{
 	refAssocProcessor = new SeqRefAssocProcessor();
     }
 
+    /**
+   * subclasses implement this method to accomplish any preprocessing tasks
+   */
+    public abstract void preprocess()
+            throws MGIException;
+
   /**
    * subclasses implement this method to process raw allele attributes
    * returns the Integer allele key of the processed allele, which may be
@@ -92,6 +98,12 @@ public abstract class AlleleProcessor{
    public abstract Integer process(ALORawInput aloInput, ALO resolvedALO, 
 	HashSet objects1, HashSet objects2) 
 	throws MGIException;
+
+   /**
+   * subclasses implement this method to accomplish any postprocessing tasks
+   */
+    public abstract void postprocess()
+            throws MGIException;
 
   /**
    * Processes MGI ID for an allele

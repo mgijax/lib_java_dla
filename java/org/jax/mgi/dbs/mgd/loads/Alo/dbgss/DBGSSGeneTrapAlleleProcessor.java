@@ -66,6 +66,12 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		initSymbolSets();
 	}
 
+    /**
+     * no preprocessing at this time
+     */
+    public void preprocess() throws MGIException {
+
+    }
 	/**
 	 * Processes DBGSS Gene Trap allele, cell line association, mutation and
 	 * reference information
@@ -140,6 +146,12 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		return alleleKey;
 	}
 
+    /**
+     * no postprocessing at this time
+     */
+    public void postprocess() throws MGIException {
+
+    }
 	/**
 	 * Processes DBGSS Gene Trap allele, cell line association, mutation and
 	 * reference information when the incoming cell line is NOT found to be in the

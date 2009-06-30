@@ -72,9 +72,13 @@ public abstract class AlleleSequenceProcessor {
     public Integer getSequencekey() {
 	return sequenceKey;
     }
+     /**
+     * does preprocessing tasks
+     * @throws MGIException, including SequenceNotInDatabaseException
+     *
+     */
     public void preprocess(ALORawInput aloInput, ALO resolvedALO) 
-	   throws CacheException, DBException, TranslationException, 
-	      ConfigException, SequenceNotInDatabaseException {
+	   throws MGIException  {
 	String seqID = aloInput.getSequenceAssociation().getSeqID();
 	this.sequenceKey = sequenceLookup.lookup(seqID);
 	//logger.logcInfo("AlleleSequenceProcessor SEQID: " + seqID + 
@@ -86,13 +90,16 @@ public abstract class AlleleSequenceProcessor {
 	    throw e;
 	}
     }
+
+
+
   /**
    * 
    * @param aloInput ALORawInput object - a set of raw attributes to resolve
    * and add to the database
    * @param resolvedALO - the ALO object to which will will add resolved
    *         sequence information
-* @param allele key of the allele sequence association we are processing
+    * @param allele key of the allele sequence association we are processing
    * @throws ALOResolvingException if errors resolving derivation or mutant
    *         cell line attributes
    * @throws CacheException if errors accessing a Lookup cache
@@ -104,6 +111,10 @@ public abstract class AlleleSequenceProcessor {
 
    public abstract void process(ALORawInput aloInput, ALO resolvedALO, Integer alleleKey) 
 	throws  MGIException;
-   public abstract void postprocess(ALORawInput aloInput, ALO resolvedALO) throws
+
+    /**
+   * subclasses implement this method to accomplish any post processing tasks
+   */
+   public abstract void postprocess() throws
        MGIException;
 }

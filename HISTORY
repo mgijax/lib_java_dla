@@ -1,3 +1,34 @@
+TAG: lib_java_dla-gtlf-10
+DATE: 06/23/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 6
+1) Support for updating sequences from deleted to active:
+a) GeneTrapLoadCfg - added get method for SEQUENCES_PROCESSED
+b) DBGSSGeneTrapAlleleSequenceProcessor 
+- added BufferedWriter to write out sequence keys processed
+- implemented postprocess to close writer
+c) DBGSSGeneTrapAlleleProcessor - added empty implementation of
+  preprocess and postprocess
+d) AlleleSequenceProcessor - added abstract postprocess method
+e) AlleleProcessor - added abstract pre and post process methods
+f) ALOInputProcessor - added postprocess method which calls other
+  processor postprocess methods
+g) ALOLoader.java - call ALOInputProcessor.postprocess
+
+2) indentation updates
+a) DLALoader 
+b) DBGSSGeneTrapAlleleSequenceProcessor
+
+3) reporting
+a) DBGSSGeneTrapAlleleSequenceProcessor - added call to lookups 
+ to resolve allele/marker keys to symbols for reporting
+
+4) MCL object identity
+a) MutantCellLineProcessor - use logicalDB, not creator
+  for object identity
+b) MutantCellLineLookupByCellLineID - update query to use logicalDB
+ instead of creator
+
 TAG: lib_java_dla-gtlf-9
 DATE: 06/23/2009
 STAFF: sc

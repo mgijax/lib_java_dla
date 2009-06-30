@@ -2,9 +2,12 @@ package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.loads.Alo.*;
+import org.jax.mgi.dbs.mgd.lookup.MarkerSymbolLookupByKey;
+import org.jax.mgi.dbs.mgd.lookup.AlleleSymbolLookupByKey;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
+import org.jax.mgi.shr.config.GeneTrapLoadCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dla.input.alo.ALORawInput;
@@ -15,6 +18,9 @@ import org.jax.mgi.shr.dla.loader.alo.SeqAssocWithMarkerException;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.exception.MGIException;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,11 +48,25 @@ import java.sql.Timestamp;
 
 public class DBGSSGeneTrapAlleleSequenceProcessor 
         extends AlleleSequenceProcessor {
+
+	private String CRT = "\n";
+
+	// processes SEQ_GeneTrap information
     private SeqGeneTrapProcessor seqGTProcessor;
+
     // Integer:TimeStamp i.e seqKey:seqrecord date of the first instance of
     // sequence found in input
     private HashMap seqKeysAlreadyProcessed;
 
+	// writes out sequence keys of all GSS sequence processed for downstream
+	// updating to ACTIVE status, if necessary
+    private BufferedWriter seqKeyWriter;
+
+	// lookup symbol for marker key for reporting
+	private MarkerSymbolLookupByKey markerSymbolLookup;
+
+	// lookup symbol for allele key for reporting
+	private AlleleSymbolLookupByKey alleleSymbolLookup;
     /**
      * Constructs a DBGSSGeneTrapAlleleSequenceProcessor
      * @throws MGIException
@@ -54,11 +74,30 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 
     public DBGSSGeneTrapAlleleSequenceProcessor () 
 	    throws MGIException {
-	super();
-	seqGTProcessor = new SeqGeneTrapProcessor();
-	seqKeysAlreadyProcessed = new HashMap();
-    }
+		super();
+		GeneTrapLoadCfg geneTrapConfig = new GeneTrapLoadCfg();
+		seqGTProcessor = new SeqGeneTrapProcessor();
+		seqKeysAlreadyProcessed = new HashMap();
+		try {
+			seqKeyWriter = new BufferedWriter(
+					new FileWriter(geneTrapConfig.getSeqFile()));
+		}
+		catch (IOException e) {
+			throw new MGIException(e.getMessage());
+		}
+		markerSymbolLookup = new MarkerSymbolLookupByKey();
+		alleleSymbolLookup = new AlleleSymbolLookupByKey();
+	}
 
+    public void preprocess(ALORawInput aloInput, ALO resolvedALO)
+        throws MGIException {
+        super.preprocess(aloInput, resolvedALO);
+        try {
+            seqKeyWriter.write(this.sequenceKey.toString() + CRT);
+        } catch (IOException e) {
+            throw new MGIException(e.getMessage());
+        }
+    }
   /**
    * Processes DBGSS Gene Trap allele sequence information, creating associations
    * where the allele is new, and adding associations where necessary when the
@@ -67,8 +106,8 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
    *       a set of raw attributes to resolve and add to the database
    * @param resolvedALO - the ALO object to which will will add resolved
    *         sequence information
-   * @param incomingAlleleKey - allele Key of allele we are processing, may be new or
-   *   already in the database
+   * @param incomingAlleleKey - allele Key of allele we are processing, may be
+   *   new or already in the database
    * @throws ALOResolvingException if errors resolving derivation or mutant
    *         cell line attributes
    * @throws CacheException if errors accessing a Lookup cache
@@ -125,14 +164,15 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	if(markerKeys != null ) {
 	    StringBuffer b = new StringBuffer();
 	    for (Iterator i = markerKeys.iterator(); i.hasNext();) {
-		String s = ((Integer)i.next()).toString();
-		b.append(s);
-		b.append(",");
+			Integer key = (Integer)i.next();
+			String s = markerSymbolLookup.lookup(key);
+			b.append(s);
+			b.append(",");
 	    }
 	    	    
 	    // throw exception to go on to next
 	    SeqAssocWithMarkerException e = new SeqAssocWithMarkerException();
-	    e.bindRecordString(" Sequence ID /Marker Key(s) " + 
+	    e.bindRecordString(" Sequence ID /Marker(s) " + 
 		gtAloInput.getSequenceAssociation().getSeqID() + "/" + b.toString());
 	    throw e;
 	}
@@ -165,40 +205,42 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	    // iterate through the allele keys associated with this sequence in 
 	    // the database; determine if any are not the current sequence
 	    for (Iterator i = alleles.iterator();i.hasNext();) {
-		Allele currentDBAllele = (Allele)i.next();
-		Integer alleleKeyAssocWithSeq = currentDBAllele.getAlleleKey();
-		if (incomingAlleleKey.equals(alleleKeyAssocWithSeq)) {
-		    // this sequence is associated already with the allele in the db
-		    seqIsAssocWithAllele = Boolean.TRUE;
-		} else {
-		    // this sequence is associated with different allele in the db
-		    String s = currentDBAllele.getAlleleSymbol();
-		    b.append(s);
-		    b.append(", ");
-		}
+			Allele currentDBAllele = (Allele)i.next();
+			Integer alleleKeyAssocWithSeq = currentDBAllele.getAlleleKey();
+			if (incomingAlleleKey.equals(alleleKeyAssocWithSeq)) {
+				// this sequence is associated already with the allele in the db
+				seqIsAssocWithAllele = Boolean.TRUE;
+			} else {
+				// this sequence is associated with different allele in the db
+				String s = currentDBAllele.getAlleleSymbol();
+				b.append(s);
+				b.append(", ");
+			}
 	    }
 	
 	    /**
 	     * if 'b' is not empty than we have a discrepancy to report
 	     */
 	    String message = "";
+		String incomingAlleleSymbol =
+				alleleSymbolLookup.lookup(incomingAlleleKey);
 	    if (b.length() != 0) {
-		if (seqIsAssocWithAllele.equals(Boolean.TRUE)) {
-		    message = "Sequence ID " + gtAloInput.
-			getSequenceAssociation().getSeqID() + " IS associated with " +
-			    "current allele key " +  incomingAlleleKey + ", and also" +
-			" associated with the following allele(s): " + b.toString();
-		}
-		else {
-		    message = "Sequence ID " + gtAloInput.
-			getSequenceAssociation().getSeqID() + " is NOT associated with " +
-			    "current allele key " +  incomingAlleleKey + ", but is" +
-			" associated with the following allele(s): " + b.toString();
-		}
-		// throw exception to go on to next
-		SeqAssocWithAlleleException e = new SeqAssocWithAlleleException();
-		e.bindRecordString(message);
-		throw e;
+			if (seqIsAssocWithAllele.equals(Boolean.TRUE)) {
+				message = "Sequence ID " + gtAloInput.
+				getSequenceAssociation().getSeqID() + " IS associated with " +
+					"current allele symbol " +  incomingAlleleSymbol + ", and also" +
+				" associated with the following allele(s): " + b.toString();
+			}
+			else {
+				message = "Sequence ID " + gtAloInput.
+				getSequenceAssociation().getSeqID() + " is NOT associated with " +
+					"current allele symbol " +  incomingAlleleSymbol + ", but is" +
+				" associated with the following allele(s): " + b.toString();
+			}
+			// throw exception to go on to next
+			SeqAssocWithAlleleException e = new SeqAssocWithAlleleException();
+			e.bindRecordString(message);
+			throw e;
 	    } 
 	    /**
 	     * if we get here then this sequence is not associated with any other 
@@ -238,7 +280,12 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	    gtResolvedALO);	
     } 
     
-    public void postprocess(ALORawInput aloInput, ALO resolvedALO) {
-        // empty implementation for now
+    public void postprocess() throws MGIException {
+		System.out.println("Postprocessing DBGSSGeneTrapAlleleSequenceProcessor");
+        try {
+            seqKeyWriter.close();
+        } catch (IOException e) {
+            throw new MGIException (e.getMessage());
+        }
     }
 }

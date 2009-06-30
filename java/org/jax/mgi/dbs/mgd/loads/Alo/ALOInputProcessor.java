@@ -187,6 +187,10 @@ public class ALOInputProcessor {
 	//System.out.println("processedCtr: " + processedCtr);
 	}
 
+    public void postprocess() throws MGIException {
+        alleleProcessor.postprocess();
+        alleleSeqProcessor.postprocess();
+    }
 	/**
 	 * Gets counts of ALOs created
 	 * @assumes nothing

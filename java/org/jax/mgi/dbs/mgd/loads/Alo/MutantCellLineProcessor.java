@@ -158,16 +158,15 @@ public class MutantCellLineProcessor {
 			MutantCellLine incomingMCL = mclResolver.resolve(mclRaw, derivation);
 			currentIncomingMCLs.add(incomingMCL);
 			Integer incomingDerivKey = incomingMCL.getDerivationKey();
-
-            // create lookup key to determine if MCL in db by MCL ID +  creator
-            String creator = derivation.getCreator();
+            Integer ldbKey = incomingMCL.getLogicalDBKey();
+            // create lookup key to determine if MCL in db by MCL ID/ldbKey
             StringBuffer lookupKey = new StringBuffer();
             lookupKey.append(accID);
             lookupKey.append("|");
-            lookupKey.append(creator);
+            lookupKey.append(ldbKey);
 			// lookup the mutant cell line ID in  the database
 			try {
-                		//logger.logcInfo("MutantCellLineProcessor looking up MCL/creator: " + lookupKey, false);
+                //logger.logcInfo("MutantCellLineProcessor looking up MCL/creator: " + lookupKey, false);
 				MutantCellLine dbMCL = mclLookupByID.lookup(lookupKey.toString());
 				// if we get here we've found it in the database:
 				// add it to the set of existing MCLs to return
@@ -198,7 +197,7 @@ public class MutantCellLineProcessor {
 				ALL_CellLineDAO mclDAO = resolvedALO.addCellLine(
 						incomingMCL.getState());
 				Integer mclKey = mclDAO.getKey().getKey();
-				Integer ldbKey = incomingMCL.getLogicalDBKey();
+				
 				ACC_AccessionState accState = createMCLAccessionState(mclKey, accID, ldbKey);
 				// set in resolved ALO
 				resolvedALO.addAccession(accState);

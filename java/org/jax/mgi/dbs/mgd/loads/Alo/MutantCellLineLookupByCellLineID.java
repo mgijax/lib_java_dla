@@ -84,7 +84,7 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
 	"c._CellLine_key, c.cellLine, c._CellLine_Type_key, " +
 	"v.term as cellLineType, c._Strain_key, s.strain, " +
 	"c._Derivation_key, c.isMutant, c.creation_date, c.modification_date, " +
-	"c._CreatedBy_key, c._ModifiedBy_key, c.creator " +
+	"c._CreatedBy_key, c._ModifiedBy_key " +
 	"FROM ACC_Accession a, ALL_CellLine_View c, VOC_Term v, PRB_Strain s, " +
 	"ACC_LogicalDB ldb " +
 	"WHERE a._MGIType_key =  " + MGITypeConstants.CELLLINE +
@@ -109,11 +109,11 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
 	    throws DBException, InterpretException {
 	      
 	      String accID = row.getString(1);
-          String creator = row.getString(16);
+          Integer ldbKey = row.getInt(2);
           StringBuffer key = new StringBuffer();
           key.append(accID);
           key.append("|");
-          key.append(creator);
+          key.append(ldbKey);
 
 	      MutantCellLine mcl = null;
 		try {
@@ -123,7 +123,7 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
 			"MutantCellLineLookupByCellLineID " + e.getMessage());
 		}
 	      mcl.setAccID(accID);
-	      mcl.setLdbKey(row.getInt(2));
+	      mcl.setLdbKey(ldbKey);
 	      mcl.setLdbName(row.getString(3));
 	      mcl.setMCLKey(row.getInt(4));
 	      mcl.setCellLine(row.getString(5));

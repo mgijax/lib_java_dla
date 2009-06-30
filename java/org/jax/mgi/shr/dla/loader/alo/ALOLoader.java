@@ -171,8 +171,10 @@ public class ALOLoader extends DLALoader {
 	 * @throws MGIException if errors occur during preprocessing
 	 */
 	protected void postprocess() throws MGIException {
-		// executes bcp and any sql scripts
-		//System.out.println("Postprocessing ALOLoader");
+        //System.out.println("Postprocessing ALOLoader");
+        processor.postprocess();
+		
+        // executes bcp and any sql script
 		loadStream.close();
 		try {
 			// close repeat writer
