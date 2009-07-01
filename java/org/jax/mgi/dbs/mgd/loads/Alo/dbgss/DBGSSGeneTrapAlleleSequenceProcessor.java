@@ -79,8 +79,9 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 		seqGTProcessor = new SeqGeneTrapProcessor();
 		seqKeysAlreadyProcessed = new HashMap();
 		try {
-			seqKeyWriter = new BufferedWriter(
-					new FileWriter(geneTrapConfig.getSeqFile()));
+		    seqKeyWriter = new BufferedWriter(
+			new FileWriter(
+			    geneTrapConfig.getSeqFile(), true));
 		}
 		catch (IOException e) {
 			throw new MGIException(e.getMessage());

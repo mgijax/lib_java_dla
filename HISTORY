@@ -1,3 +1,10 @@
+TAG: lib_java_dla-gtlf-11
+DATE: 07/01/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 6
+1) DBGSSGeneTrapAlleleSequenceProcessor, set sequences processed
+   filewriter to 'append' 
+
 TAG: lib_java_dla-gtlf-10
 DATE: 06/23/2009
 STAFF: sc

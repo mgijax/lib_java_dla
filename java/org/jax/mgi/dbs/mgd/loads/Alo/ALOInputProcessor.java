@@ -188,6 +188,7 @@ public class ALOInputProcessor {
 	}
 
     public void postprocess() throws MGIException {
+		System.out.println("Postprocessing ALOInputProcessor");
         alleleProcessor.postprocess();
         alleleSeqProcessor.postprocess();
     }
