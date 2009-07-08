@@ -186,10 +186,22 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// cell line strain (which comes from the parent which is attribute of the
 		// Derivation).
 		Integer alleleStrainKey = clDAO.getState().getStrainKey();
+		
+		// if this method is called we know there is only one cl in the set
+		// rather convoluted, but we need to report the logical db when we
+		// find the mcl ID in allele nomen; may be same MCL id, but with different
+		// ldb (MCL ID/LDB is object identity for MCL in database) but because
+		// the MCL ID is in the allele nomen, a MCL and Allele will not be
+		// created, even though they should. Curator will need to create. We
+		// id these cases by reporting the ldb
+		CellLineRawAttributes cl = (CellLineRawAttributes)aloInput.
+				getCellLines().iterator().next();
+		String ldbName = cl.getLogicalDB();
 
 		// check for mclID in allele nomenclature
         // search for this exact string in allele synonym
 		String mclID = clDAO.getState().getCellLine();
+
         // search for this string in allele symbol AND synonym
         String nomenString = "(" + mclID + ")";
         // The symbols which contain "(mclID)"
@@ -219,25 +231,27 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
         if (mclIdInSymbol.length()!= 0 && mclIdInSynonym.length() != 0) {
             CellLineIDInAlleleNomenException e =
                         new CellLineIDInAlleleNomenException();
-			e.bindRecordString("MCL ID: " + mclID + " ALLELE SYMBOLS: " +
-                    mclIdInSymbol.toString() + " ALLELE SYNONYMS: " +
-                        mclIdInSynonym.toString());
+			e.bindRecordString("MCL ID: " + mclID + " LDB Name: " + ldbName +
+					" ALLELE SYMBOLS: " + mclIdInSymbol.toString() +
+					" ALLELE SYNONYMS: " + mclIdInSynonym.toString());
 			throw e;
         }
         // Just synonyms, report them
         else if (mclIdInSynonym.length() != 0) {
             CellLineIDInAlleleNomenException e = new
                 CellLineIDInAlleleNomenException();
-			e.bindRecordString("MCL ID: " + mclID + " ALLELE SYNONYMS: " +
-                    mclIdInSynonym.toString());
+			e.bindRecordString("MCL ID: " + mclID +
+					" LDB Name: " + ldbName +
+					" ALLELE SYNONYMS: " + mclIdInSynonym.toString());
 			throw e;
         }
         // Just symbols, report them
         else if (mclIdInSymbol.length()!= 0) {
             CellLineIDInAlleleNomenException e =
                         new CellLineIDInAlleleNomenException();
-			e.bindRecordString("MCL ID: " + mclID + " ALLELE SYMBOLS: " +
-                    mclIdInSymbol.toString());
+			e.bindRecordString("MCL ID: " + mclID +
+					" LDB Name: " + ldbName +
+					" ALLELE SYMBOLS: " + mclIdInSymbol.toString());
             throw e;
         }
 

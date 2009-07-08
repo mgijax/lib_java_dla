@@ -70,8 +70,8 @@ public class SeqGeneTrapResolver {
       * resolves a set of attributes to a SEQ_GeneTrapState
       * @assumes Point Coordinate is not set
       * @effects Nothing
-      * @param 
-      * @param 
+      * @param raw SeqGeneTrapRawAttributes object to resolve
+      * @param  seqKey 
       * @return SEQ_GeneTrapState
       * @throws ALOResolvingException if any required raw attributes not set or
       *         any of the lookups fail to find a key

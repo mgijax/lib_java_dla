@@ -114,7 +114,8 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
           key.append(accID);
           key.append("|");
           key.append(ldbKey);
-
+		  //System.out.println("lookupKey: " + key.toString());
+		 
 	      MutantCellLine mcl = null;
 		try {
 		    mcl = new MutantCellLine();

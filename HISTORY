@@ -1,3 +1,10 @@
+TAG: lib_java_dla-gtlf-12
+DATE: 07/08/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 7
+1) DBGSSGeneTrapAlleleProcessor - added reporting of MCL ldb
+   in CellLineIDInAlleleNomenException
+
 TAG: lib_java_dla-gtlf-11
 DATE: 07/01/2009
 STAFF: sc

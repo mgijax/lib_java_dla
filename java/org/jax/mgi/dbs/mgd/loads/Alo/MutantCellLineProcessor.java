@@ -164,6 +164,7 @@ public class MutantCellLineProcessor {
             lookupKey.append(accID);
             lookupKey.append("|");
             lookupKey.append(ldbKey);
+			//logger.logcInfo("lookupKey: " + lookupKey.toString(), false);
 			// lookup the mutant cell line ID in  the database
 			try {
                 //logger.logcInfo("MutantCellLineProcessor looking up MCL/creator: " + lookupKey, false);
