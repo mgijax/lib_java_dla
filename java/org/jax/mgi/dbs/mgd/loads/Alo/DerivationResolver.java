@@ -19,7 +19,7 @@ import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
 /**
- * An object that resolves raw mutant derivation attributes to a 
+ * An object that resolves raw derivation attributes to a 
  *   Derivation object. Where the resolved value is a foreign key we include
  *   the term or object attribute that foreign key represents. For example
  *   this class stores the vector key and the vector name, the derivation type
@@ -72,7 +72,6 @@ public class DerivationResolver {
     
      /**
      * Constructs a DerivationResolver
-     * @assumes Nothing
      * @effects queries a database to load each lookup cache
      * @throws TranslationException - if translation error creating or using
      *              strain lookup
@@ -114,8 +113,6 @@ public class DerivationResolver {
       * <LI>Resolves the foreign key to a term or object attribute using 
       *     another Lookup
       * </UL> 
-      * @assumes Nothing
-      * @effects Nothing
       * @param raw the DerivationRawAttributes object to resolve
       * @return A Derivation
       * @throws KeyNotFoundException if any of the lookups fail to find a key

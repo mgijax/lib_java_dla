@@ -31,20 +31,17 @@ public class VectorEndCellLineIDExtractor {
 
      /**
      * Extracts vector end information from a sequence tag id
-     * @throws 
      * @param seqTagId - the sequence tag id from which to determine the vector
      * end information
      * @param creatorName - raw creator from dbGSS
      * @param seqTagMethod - the sequence tag method
-     * @returns KeyValue MutantCellLineID:vectorEnd or null 
+     * @return KeyValue MutantCellLineID:vectorEnd or null 
      * if seqTagId has no vector end information
+	 * @throws NoVectorEndException is vector end is not found in seqTagId
      */
     public KeyValue extract(String seqTagId, String creatorName, 
 	    String seqTagMethod, String seqType) throws NoVectorEndException {
-	//System.out.println("VectorEndCellLineIDExtractor:");
-	//System.out.println("parameters 1) seqTagId: " + seqTagId + 
-	//	" 2) creatorName: " + creatorName + " 3) seqTagMethod: " + 
-	//	seqTagMethod + " 4) seqType: " + seqType);
+	
 	// set default which assumes RNA with NOT APPLICABLE vector end
 	// i.e. cellLineId = seqTagId, null vector end
 	KeyValue clIdToVectorEnd = new KeyValue(
@@ -82,49 +79,47 @@ public class VectorEndCellLineIDExtractor {
    	
      /**
      * Determines vector end information for TIGM
-     * @throws 
      * @param seqTagId - the sequence tag id from which to determine the vector
      * end information
      * @param seqTagMethod - the sequence tag method
-     * @returns vector end or null 
+     * @return vector end or null
+	 * @throws NoVectorEndException if seqTagId contains no vector end
      * @note example of TIGM sequence tag id: IST10126BBR1
      */
     private KeyValue processTIGM(String seqTagId, String seqTagMethod) 
 	    throws NoVectorEndException {
-	//System.out.println("VECLIDextractor, seqTagId: " + seqTagId + " seqTagMethod " + seqTagMethod);
-	int index = -1;
-	String ve = null;
-	if (seqTagMethod.toLowerCase().equals(
-	        DBGSSGeneTrapLoaderConstants.INVERSEPCR)) {
-	     if (seqTagId.indexOf(TIGM_HMF) != -1) {
-		 ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
-		 index = seqTagId.indexOf(TIGM_HMF);
-	     }
-	     else if (seqTagId.indexOf(TIGM_HMR) != -1) {
-		 ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
-		 index = seqTagId.indexOf(TIGM_HMR);
-	     }
-		 else if (seqTagId.indexOf(TIGM_BBF) != -1) {
-		
-		 ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
-		 index = seqTagId.indexOf(TIGM_BBF);
-		  //System.out.println("In TIGM_BBF vector end is " + ve + " index is " + index);
-	     }
-	     else if (seqTagId.indexOf(TIGM_BBR) != -1) {
-		 ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
-		 index = seqTagId.indexOf(TIGM_BBR);
-	     }
-	}
-	if (ve == null) { 
-	    NoVectorEndException e = new NoVectorEndException();
-	    e.bindRecordString(seqTagId);
-	    throw e;
-	}
-	
-	String cellLineId = seqTagId.substring(0, index);
-	//System.out.println("CellLineID: " + cellLineId);
-	return new KeyValue(cellLineId, ve);
-    }
+        int index = -1;
+        String ve = null;
+        if (seqTagMethod.toLowerCase().equals(
+                DBGSSGeneTrapLoaderConstants.INVERSEPCR)) {
+             if (seqTagId.indexOf(TIGM_HMF) != -1) {
+             ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+             index = seqTagId.indexOf(TIGM_HMF);
+             }
+             else if (seqTagId.indexOf(TIGM_HMR) != -1) {
+             ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+             index = seqTagId.indexOf(TIGM_HMR);
+             }
+             else if (seqTagId.indexOf(TIGM_BBF) != -1) {
+
+             ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+             index = seqTagId.indexOf(TIGM_BBF);
+              //System.out.println("In TIGM_BBF vector end is " + ve + " index is " + index);
+             }
+             else if (seqTagId.indexOf(TIGM_BBR) != -1) {
+             ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+             index = seqTagId.indexOf(TIGM_BBR);
+             }
+        }
+        if (ve == null) {
+            NoVectorEndException e = new NoVectorEndException();
+            e.bindRecordString(seqTagId);
+            throw e;
+        }
+
+        String cellLineId = seqTagId.substring(0, index);
+        return new KeyValue(cellLineId, ve);
+        }
    
      /**
      * Determines vector end information for ESDB
@@ -140,29 +135,29 @@ public class VectorEndCellLineIDExtractor {
      */
     private KeyValue processESDB(String seqTagId, String seqTagMethod) 
 	    throws NoVectorEndException {
-	int index = -1;
-	String ve = null;
-	if (seqTagMethod.toLowerCase().equals(
-		DBGSSGeneTrapLoaderConstants.PLASMRESCUE)) {
-	    if(seqTagId.indexOf(ESDB_NL) != -1) {
-		ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
-		index = seqTagId.indexOf(ESDB_NL);
-	    }
-	    else if (seqTagId.indexOf(ESDB_NR) != -1) {
-	        ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
-		index = seqTagId.indexOf(ESDB_NR);
-	    }
-	    else if (seqTagId.indexOf("-") != -1) {
-		ve = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
-		index = seqTagId.indexOf("-");
-	    }
-	}
-	if (ve == null) { 
-	   ve =   DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
-	   return new KeyValue(seqTagId, ve);
-	}
-	String cellLineId = seqTagId.substring(0, index);
-	return new KeyValue(cellLineId, ve);
+        int index = -1;
+        String ve = null;
+        if (seqTagMethod.toLowerCase().equals(
+            DBGSSGeneTrapLoaderConstants.PLASMRESCUE)) {
+            if(seqTagId.indexOf(ESDB_NL) != -1) {
+            ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+            index = seqTagId.indexOf(ESDB_NL);
+            }
+            else if (seqTagId.indexOf(ESDB_NR) != -1) {
+                ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+            index = seqTagId.indexOf(ESDB_NR);
+            }
+            else if (seqTagId.indexOf("-") != -1) {
+            ve = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
+            index = seqTagId.indexOf("-");
+            }
+        }
+        if (ve == null) {
+           ve =   DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
+           return new KeyValue(seqTagId, ve);
+        }
+        String cellLineId = seqTagId.substring(0, index);
+        return new KeyValue(cellLineId, ve);
     }
      /**
      * Determines vector end information for GGTC
@@ -175,26 +170,25 @@ public class VectorEndCellLineIDExtractor {
      */
     private KeyValue processGGTC(String seqTagId, String seqTagMethod) 
 	    throws NoVectorEndException {
-	//System.out.println("processGGTC, seqTagId: " + seqTagId + " seqTagMethod: " + seqTagMethod);
-	int index = 2;
-	String ve = null;
-	if (seqTagMethod.toLowerCase().equals(DBGSSGeneTrapLoaderConstants.SPLINK3) || 
-		seqTagMethod.toLowerCase().equals(DBGSSGeneTrapLoaderConstants.SPLINK5) ) {
-	    if(seqTagId.indexOf(GGTC_5S) != -1) {
-	        ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
-		index = seqTagId.indexOf(GGTC_5S);
-	    }
-	    else if (seqTagId.indexOf(GGTC_3S) != -1) {
-	        ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
-		index = seqTagId.indexOf(GGTC_3S);
-	    }
-	}
-	if (ve == null ) {
-	    NoVectorEndException e = new NoVectorEndException();
-	    e.bindRecordString(seqTagId);
-	    throw e;
-	}
-        String cellLineId = seqTagId.substring(index + 2);
-        return new KeyValue(cellLineId, ve);
+		int index = 2;
+        String ve = null;
+        if (seqTagMethod.toLowerCase().equals(DBGSSGeneTrapLoaderConstants.SPLINK3) ||
+            seqTagMethod.toLowerCase().equals(DBGSSGeneTrapLoaderConstants.SPLINK5) ) {
+            if(seqTagId.indexOf(GGTC_5S) != -1) {
+                ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+            index = seqTagId.indexOf(GGTC_5S);
+            }
+            else if (seqTagId.indexOf(GGTC_3S) != -1) {
+                ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+            index = seqTagId.indexOf(GGTC_3S);
+            }
+        }
+        if (ve == null ) {
+            NoVectorEndException e = new NoVectorEndException();
+            e.bindRecordString(seqTagId);
+            throw e;
+        }
+            String cellLineId = seqTagId.substring(index + 2);
+            return new KeyValue(cellLineId, ve);
     }
 }

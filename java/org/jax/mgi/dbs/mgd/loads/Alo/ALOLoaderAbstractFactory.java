@@ -11,10 +11,9 @@ import org.jax.mgi.shr.dla.loader.alo.DerivationNameCreator;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * An object that provides specific factories, based onthe configured provider, 
+ * An object that provides specific factories, based on the configured provider,
  * via the getFactory() method. For example if configured provider is 'dbGSS' 
  * getFactory() returns an instance of DBGSSGeneTrapFactory
- 
  * @does
  *   <UL>
  *   <LI>Implements the static method getFactory() which will return a specific
@@ -30,18 +29,18 @@ public abstract class ALOLoaderAbstractFactory {
     public static ALOLoaderAbstractFactory getFactory() 
      throws MGIException {
 	
-	// get a configuration instance
-	ALOLoadCfg config = new ALOLoadCfg();
-	String provider = config.getLoadProvider();
-	if (provider.equals(ALOLoaderConstants.DBGSS_GENETRAP)) {
-	    return new DBGSSGeneTrapFactory();
-	}
-	return null;
+        // get a configuration instance
+        ALOLoadCfg config = new ALOLoadCfg();
+
+        // get an instance of a specific factory based on configuration
+        String provider = config.getLoadProvider();
+        if (provider.equals(ALOLoaderConstants.DBGSS_GENETRAP)) {
+            return new DBGSSGeneTrapFactory();
+        }
+        return null;
     }
     
     public abstract DataIterator getDataIterator() throws MGIException;
-    // subclasses of AlleleProcessor now get their own allele lookup
-    //public abstract FullCachedLookup getAlleleLookup() throws MGIException;
     public abstract DerivationNameCreator getDerivationNameCreator()
 	throws MGIException;
     public abstract MutantCellLineProcessor getMCLProcessor() 

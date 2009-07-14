@@ -36,8 +36,6 @@ public class SeqGeneTrapRawAttributes {
 	
      /**
      * set the seqID attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param seqID the sequence accession ID
      */
 
@@ -46,8 +44,6 @@ public class SeqGeneTrapRawAttributes {
     /**
      * set the sequence Tag ID attribute - this is the mutant cell line ID 
      * plus prefix/suffix
-     * @assumes Nothing
-     * @effects Nothing
      * @param seqTagID the sequence tag ID
      */
 
@@ -55,8 +51,6 @@ public class SeqGeneTrapRawAttributes {
 
     /**
      * set sequence tag method attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param seqTagMethod - the sequence tag method
      */
 
@@ -66,8 +60,6 @@ public class SeqGeneTrapRawAttributes {
 
      /**
      * set vector end attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param vectorEnd - the vector end
      */
 
@@ -77,8 +69,6 @@ public class SeqGeneTrapRawAttributes {
     
     /**
      * set reverse complemented attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param reverseComp - yes if reverse complemented else no
      */
 
@@ -88,8 +78,6 @@ public class SeqGeneTrapRawAttributes {
     
     /**
      * set good hit count attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param goodHitCount - number of times this sequence tag hits the genome
      */
 
@@ -99,8 +87,6 @@ public class SeqGeneTrapRawAttributes {
     
      /**
      * set point coordinate attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param pointCoord - insertion site point coordinate of the gene trap
      */
 
@@ -110,74 +96,58 @@ public class SeqGeneTrapRawAttributes {
     
     /**
      * get the seqID attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getSeqID () { return seqID; }
 
     /**
      * get the sequence tag ID attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getSeqTagID () { return seqTagID; }
 
     /**
      * get sequence tag method attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getSeqTagMethod () { return seqTagMethod; }
     
     /**
      * get vector end attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getVectorEnd() { return vectorEnd; }
     
     /**
      * get reverse complemented attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getReverseComp () { return reverseComp; }
     
     /**
      * get number of good hits attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public Integer getGoodHitCount () { return goodHitCount; }
     
     /**
      * get is reverse complemented attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public Double getPointCoord () { return pointCoord; }
     
     /**
      * set all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
      */
     
     public void reset() {
-	seqID = null;
+		seqID = null;
         seqTagID = null;
         seqTagMethod = null;
-	vectorEnd = null;
-	reverseComp = null;
-	goodHitCount = null;
-	pointCoord = null;
+		vectorEnd = null;
+		reverseComp = null;
+		goodHitCount = null;
+		pointCoord = null;
     }
 }
 

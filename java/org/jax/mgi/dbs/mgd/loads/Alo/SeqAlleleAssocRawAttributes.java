@@ -27,8 +27,6 @@ public class SeqAlleleAssocRawAttributes {
      
      /**
      * set the seqID attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param seqID the sequence accession ID
      */
 
@@ -36,8 +34,6 @@ public class SeqAlleleAssocRawAttributes {
 
     /**
      * set the association qualifier attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param qualifier the association qualifier e.g. representative sequence
      */
 
@@ -45,9 +41,7 @@ public class SeqAlleleAssocRawAttributes {
 
     /**
      * set association reference attribute
-     * @assumes Nothing
-     * @effects Nothing
-     * @param reference a J Number
+     * @param reference for association; a J Number
      */
 
     public void setJNum (String reference) { 
@@ -57,36 +51,32 @@ public class SeqAlleleAssocRawAttributes {
     
     /**
      * get the seqID attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return sequence ID
      */
 
     public String getSeqID () { return seqID; }
 
     /**
      * get the association qualifier attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return sequence qualifier
      */
 
     public String getQualifier () { return qualifier; }
 
     /**
      * get the reference (J Number) attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return sequence association reference, jNum
      */
 
     public String getJNum () { return jNum; }
     
     /**
      * set all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
+     * @return reset current instance
      */
     
     public void reset() {
-	seqID = null;
+		seqID = null;
         qualifier = null;
         jNum = null;
         

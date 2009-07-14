@@ -38,7 +38,6 @@ public class SeqAlleleAssocResolver {
 
      /**
      * Constructs a SeqAlleleAssocResolver
-     * @assumes Nothing
      * @effects queries a database to load each lookup cache
      * @throws TranslationException - if translation error creating or using
      *              strain lookup
@@ -53,13 +52,11 @@ public class SeqAlleleAssocResolver {
         qualifierLookup = new VocabKeyLookup(
 	    VocabularyTypeConstants.SEQ_ALLELE_ASSOC_QUAL, 
 		CacheConstants.FULL_CACHE, CacheConstants.FULL_CACHE);
-	jNumLookup = new JNumberLookup();
+        jNumLookup = new JNumberLookup();
     }
 
     /**
       * resolves a set of attributes to a SEQ_Allele_AssocState
-      * @assumes Nothing
-      * @effects Nothing
       * @param alleleKey allele key to be associated with 'seqKey'
       * @param seqKey sequence key to be associated with 'alleleKey'
       * @param qualifier association qualifier term
@@ -74,9 +71,9 @@ public class SeqAlleleAssocResolver {
       *
       */
     public SEQ_Allele_AssocState resolve(Integer alleleKey, Integer seqKey,
-	String qualifier, Integer refsKey) throws KeyNotFoundException, 
-	    TranslationException, DBException, CacheException, ConfigException,
-		 DLALoggingException  {
+        String qualifier, Integer refsKey) throws KeyNotFoundException,
+            TranslationException, DBException, CacheException, ConfigException,
+            DLALoggingException  {
         return resolveAttributes(alleleKey, seqKey, qualifier, refsKey);
     }
 
@@ -84,21 +81,21 @@ public class SeqAlleleAssocResolver {
         String qualifier, String jNum) throws KeyNotFoundException,
             TranslationException, DBException, CacheException, ConfigException,
                  DLALoggingException  {
-	Integer refsKey = jNumLookup.lookup(jNum);
-	return resolveAttributes(alleleKey, seqKey, qualifier, refsKey);
+        Integer refsKey = jNumLookup.lookup(jNum);
+        return resolveAttributes(alleleKey, seqKey, qualifier, refsKey);
     }	
-    private SEQ_Allele_AssocState resolveAttributes(Integer alleleKey, Integer seqKey,
-	String qualifier, Integer refsKey) throws KeyNotFoundException, 
-	    TranslationException, DBException, CacheException, ConfigException,
-		 DLALoggingException  {
-	// the object we are building
+    private SEQ_Allele_AssocState resolveAttributes(Integer alleleKey, 
+			Integer seqKey,String qualifier, Integer refsKey)
+				throws KeyNotFoundException, TranslationException, DBException,
+					CacheException, ConfigException, DLALoggingException  {
+		// the object we are building
         SEQ_Allele_AssocState state = new SEQ_Allele_AssocState();
         Integer qualKey = qualifierLookup.lookup(qualifier);
 
         state.setAlleleKey(alleleKey);
-	state.setSequenceKey(seqKey);
-	state.setRefsKey(refsKey);
-	state.setQualifierKey(qualKey);
+		state.setSequenceKey(seqKey);
+		state.setRefsKey(refsKey);
+		state.setQualifierKey(qualKey);
         return state;
     }
 }

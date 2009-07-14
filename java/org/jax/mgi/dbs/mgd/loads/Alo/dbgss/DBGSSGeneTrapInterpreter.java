@@ -1,6 +1,5 @@
 package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
-import org.jax.mgi.dbs.mgd.loads.Alo.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.*;
@@ -33,9 +32,8 @@ import org.jax.mgi.shr.ioutils.RecordFormatException;
 import org.jax.mgi.shr.stringutil.StringLib;
 
 /**
- * @is An object that parses a GenBank format sequence record.
- *     Determines if the sequence is a Gene Trap sequence
- *     Parses GenBank Gene Trap sequence records
+ * @is An object that parses GenBank format Mouse Gene Trap sequence record
+ * and creates an ALOInput object
  * @has
  *   <UL>
  *   <LI>A SequenceInput object 
@@ -115,9 +113,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	// from section of a GenBank format COMMENT section
 	private static final String EGTC_STRING = "Exchangeable Gene Trap Clones";
 
-	// string to find feature source organism
-	private static String FEATURE_ORGANISM = "/organism";
-
 	// splits a sequence tag id into its cell line id and vector end components
 	private VectorEndCellLineIDExtractor veClExtractor;
 	// lookup raw Creator to get Cell Line Lab Name(term)/Code(abbrev) vocab
@@ -171,10 +166,10 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * Configuration and parsed values. Further parses Gene Trap 
 	 * information from the SequenceInput object to create a
 	 * DBGSSGeneTrapRawInput object
-	 * @assumes Nothing
-	 * @effects Nothing
 	 * @param rcd  GenBank format sequence record
+     * @assumes rcd is a mouse gene trap sequence
 	 * @return A DBGSSGeneTrapRawInput object representing 'rcd'
+	 * @Override GBFormatInterpreter.interpret()
 	 * @throws RecordFormatException from super.interpret if there is an error
 	 *         parsing because of a bad record format
 	 */
@@ -203,7 +198,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 		gtInput.setMutation(molecularMutation);
 		gtInput.setInputRecord(rcd);
-		//System.out.println("Date: " + seqInput.getSeq().getSeqRecDate());
 		gtInput.setSeqRecordDate(seqInput.getSeq().getSeqRecDate());
 		DerivationRawAttributes deriv = ((CellLineRawAttributes) (gtInput.
 				getCellLines().iterator().next())).getDerivation();
@@ -219,15 +213,15 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	/**
 	 * Determines whether this is a gene trap sequence`
 	 * from a configured set of organisms
-	 * @assumes Nothing
-	 * @effects Nothing
 	 * @param record A GenBank format sequence record
+	 * @Override GBFormatInterpreter.isValid
 	 * @return true if this is a gene trap sequence  from a
 	 * configured set of organisms 
 	 */
 	public boolean isValid(String record) {
 		return true;
-	//return super.isValid(record) && isGeneTrap(record);
+        // we now assume that input is mouse and is gene trap
+        //return super.isValid(record) && isGeneTrap(record);
 	}
 
 	/**
@@ -235,6 +229,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * "Class: Gene Trap" in the COMMENT section of a GenBank gene trap record
 	 * @param record - a GenBank format sequence record
 	 * @return true if this is a gene trap sequence
+     * @note we are not using this but keeping it for now
 	 */
 	public boolean isGeneTrap(String record) {
 		boolean isGT = false;
@@ -257,18 +252,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 				}
 			}
 		}
-		// remove this when we go live as gbgtfilter will be filtering these out
-/*
-		if (isGT == true) {
-		// we don't want this creator
-		if (record.indexOf("Chen Y-T") != -1) {
-		isGT = false;
-		}
-		if (record.indexOf("Hicks GG") != 1) {
-		isGT = false;
-		}
-		} */
-		//System.out.println(isGT);
+		
 		return isGT;
 	}
 
@@ -296,6 +280,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * Note: vector type and reference are not set (remain null)
 	 * @param seqInput - Raw Sequence Data from a GenBank Gene Trap sequence rcd
 	 *             the object whose attributes we are parsing
+     * @throws RecordFormatException if format errors
 	 */
 	private DerivationRawAttributes interpretDerivation(
 			SequenceInput seqInput) throws RecordFormatException {
@@ -337,14 +322,12 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * @param seqInput - Raw Sequence Data from a 
 	 * GenBank Gene Trap sequence rcd
 	 * @return String name of the gene trap vector
-	 * Example from CW020141 (CMHD):
-	Vector: Gen-SD5
-	 * Example from AB187228 (EGTC):
-	Cell line ID: 21-7 Gene trap Vector: pU-21
+	 * Example from CW020141 (CMHD): Vector: Gen-SD5
+	 * Example from AB187228 (EGTC): Cell line ID: 21-7 Gene trap Vector: pU-21
 	 * Example from EF806820 (TIGM - from the 2nd source section in the 
-	 * record for for just the LTR)
-	source          1..30
-	/organism="Gene trapping vector VICTR76"
+	 * record for for just the LTR):
+     * source          1..30
+     *      /organism="Gene trapping vector VICTR76"
 	 */
 	private String getVectorName(SequenceInput seqInput, String creator)
 			throws RecordFormatException {
@@ -379,13 +362,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 
 		// vector name still not found, set it to "Not Specified" and report
-
 		if (vectorName == null) {
-			/*logger.logcInfo("Vector Name not found for seqID: " +
-					seqInput.getPrimaryAcc().getAccID() +
-					" setting to 'Not Specified'" + " Note: " + note +
-					" Secondary Source: " + secondarySource, false);
-			 * */
 			vectorName = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
 		}
 
@@ -406,8 +383,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private void interpretCellLine(
 			SequenceInput seqInput, DBGSSGeneTrapRawInput gtInput)
 			throws RecordFormatException {
-		// get the sequence from the SequenceInput object
-		SequenceRawAttributes sequenceRaw = seqInput.getSeq();
 
 		// create an empty cell line raw attributes object
 		CellLineRawAttributes cellLineRaw = new CellLineRawAttributes();
@@ -420,8 +395,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// interpretSeqGeneTrap method splits these two pieces out (it needs
 		// the vector end) and returns the cell line ID
 		try {
-			//System.out.println("DBGSSGeneTrapInterpreter calling interpretSeqGeneTrap");
-			//this.mutantCellLineID = interpretSeqGeneTrap(seqInput, gtInput, seqTagID);
 			this.mutantCellLineID = interpretSeqGeneTrap(seqInput, gtInput);
 		} catch (NoVectorEndException e) {
 			RecordFormatException rfE = new RecordFormatException();
@@ -540,11 +513,10 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private void interpretReferenceAssocs(SequenceInput seqInput,
 			DBGSSGeneTrapRawInput gtInput) {
 		/**
-		 * get the sequence from the SequenceInput object , create a 
-		 * RefAssocRawAttributes object and set its attributes,
+		 * get the set of references from the SequenceInput object and
+         * create RefAssocRawAttributes for the allele
 		 * set RefAssocRawAttributes in the DBGSSGeneTrapRawInput object
 		 */
-		SequenceRawAttributes sequenceRaw = seqInput.getSeq();
 		Vector refs = seqInput.getRefs();
 		// these references are PubMed IDs
 		for (Iterator i = refs.iterator(); i.hasNext();) {
@@ -583,7 +555,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		 * set SeqAlleleAssocRawAttributes in the DBGSSGeneTrapRawInput object
 		 */
 		// create and set sequence allele association raw attributes
-		SequenceRawAttributes sequenceRaw = seqInput.getSeq();
 		SeqAlleleAssocRawAttributes seqAlleleRaw = new SeqAlleleAssocRawAttributes();
 
 		seqAlleleRaw.setSeqID(seqInput.getPrimaryAcc().getAccID());
@@ -630,7 +601,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.GGTC) ||
                 this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
 			seqTagID = getDefinitionSeqTagID(seqInput);
-		//System.out.println("DBGSSGeneTrapInterpreter interpretCellLine getting seqTagID from Definition");
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.CMHD) ||
 				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC) ||
 				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ESDB) ||
@@ -638,8 +608,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
 			seqTagID = sequenceRaw.getCloneId();
             
-		//System.out.println("DBGSSGeneTrapInterpreter interpretCellLine getting seqTagID from /clone=");
-
 		} else {
 			// not a gene trap we are interested in, superclass interpret
 			// method only throw RecordFormatException, so we use it here
@@ -648,16 +616,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 					seqInput.getPrimaryAcc().getAccID());
 			throw e;
 		}
-		/*  This was used for debugged what turned out to be a singleton error
-		 * in an EGTC record
-		 if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
-		    String def = seqInput.getSeq().getDescription();
-		    int index = def.indexOf(seqTagID);
-		    if ( index == -1) {
-		        logger.logcInfo("EGTC SEQTAGID DISCREP : " + seqTagID + " DEFINITION: " + def, false);
-		    } 
-		}*/
-		//System.out.println("DBGSSGeneTrapInterpreter interpretCellLine seqTagID: " + seqTagID);
+		
 		// create the raw accession object for the sequence tag ID association
 		// to the sequence
 		interpretSeqTagIdAccession(seqTagID, gtInput);
@@ -667,10 +626,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// interpretSeqGeneTrap method splits these two pieces out (it needs
 		// the vector end) and returns the cell line ID
 
-
 		/**
-		 * get the sequence from the SequenceInput object, create a 
-		 * SeqGeneTrapRawAttributes object and set its attributes,
+		 * create a SeqGeneTrapRawAttributes object and set its attributes,
 		 * set SeqGeneTrapRawAttributes in the DBGSSGeneTrapRawInput object
 		 */
 		// create and set sequence allele association raw attributes
@@ -678,14 +635,12 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		String seqType = sequenceRaw.getType();
 
 		String seqTagMethod = getSeqTagMethod(seqInput);
-		//System.out.println("SeqTagMethod prior to calling veCLExtractor: " + seqTagMethod);
 		KeyValue kv = veClExtractor.extract(seqTagID, this.rawCreator,
 				seqTagMethod, seqType);
 
 		String cellLineID = (String) kv.getKey();
 		String vectorEnd = (String) kv.getValue();
-		//System.out.println("In Interpretor  clID: " + cellLineID + " vectorEnd " + vectorEnd);
-		seqGTRaw.setSeqID(seqInput.getPrimaryAcc().getAccID());
+				seqGTRaw.setSeqID(seqInput.getPrimaryAcc().getAccID());
 		seqGTRaw.setSeqTagMethod(seqTagMethod);
 		seqGTRaw.setSeqTagID(seqTagID);
 		seqGTRaw.setVectorEnd(vectorEnd);
@@ -833,7 +788,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		if (method == null) {
 			logger.logcInfo("Sequence Tag Method not found for seqID: " +
 					seqInput.getPrimaryAcc().getAccID() + " COMMENT: " + comment, false);
-			// return null
 			return method;
 		}
 		// return method resolved to MGI term

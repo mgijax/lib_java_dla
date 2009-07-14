@@ -138,10 +138,10 @@ public class ALORawInput {
     }
 
     /**
-     * set the MGI Note - raw molecular note attributes
+     * set the molecular Note - raw molecular note attributes
      * @assumes Nothing
      * @effects Nothing
-     * @param mgiNote a MGINote the raw molecular note
+     * @param molecularNote a MGINote representing raw molecular note attributes
      */
 
     public void setMGINote(MGINote molecularNote) {
@@ -152,7 +152,7 @@ public class ALORawInput {
      * set the set of raw reference associations
      * @assumes Nothing
      * @effects Nothing
-     * @param HashSet - set of RefAssocRawAttributes
+     * @param referenceSet - set of RefAssocRawAttributes
      */
 
     public void setReferenceAssociations(HashSet referenceSet) {

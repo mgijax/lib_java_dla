@@ -44,7 +44,6 @@ public class MutantCellLineResolver {
 
      /**
      * Constructs a MutantCellLineResolver
-     * @assumes Nothing
      * @effects queries a database to load each lookup cache
      * @throws TranslationException - if translation error creating or using
      *              strain lookup
@@ -61,14 +60,13 @@ public class MutantCellLineResolver {
 	
         strainLookup = new StrainKeyLookup();
 	
-	ldbLookup = new LogicalDBLookup();
+        ldbLookup = new LogicalDBLookup();
     }
 
     /**
       * resolves a CellLineRawAttributes object to a ALL_CellLineState
       * @assumes Derivation creator name is the same as logicalDB name
-      * @effects Nothing
-      * @param rawAttributes the CellLineRawAttributes object to resolve
+      * @param raw the CellLineRawAttributes object to resolve
       * @param dbDerivation the derivation object for this mutant cell line
       * @return A ALL_CellLineState
       * @throws ALOResolvingException if any of the lookups fail to find a key
@@ -80,128 +78,128 @@ public class MutantCellLineResolver {
     public MutantCellLine resolve(CellLineRawAttributes raw, 
 	Derivation dbDerivation) throws ALOResolvingException, DBException, 
 		CacheException, ConfigException, DLALoggingException  {
-      // the object we are building
-      MutantCellLine resMCL = new MutantCellLine();
-      
-      /**
-       * resolve cell line name 
-       */
-      String cellLine = raw.getCellLine();
-      if (cellLine == null) {
-	  ALOResolvingException resE = new ALOResolvingException();
-	  resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL Name/null");
-	  throw resE;
-      }
-      resMCL.setCellLine(cellLine);
-      
-      /**
-       * resolve cell line type
-       */
-      String type = raw.getType();
-      if (type != null) {
-	  Integer typeKey = null;
-	  try {
-	      typeKey = typeLookup.lookup(type);
-	  } catch (KeyNotFoundException e) {
-	      ALOResolvingException resE = new ALOResolvingException();
-	      resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL Type/" + type);
-	      throw resE;
-	  } catch (TranslationException e) { // won't happen, no translator 
-						  //for this vocab
-	      ALOResolvingException resE = new ALOResolvingException();
-	      resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL Type/" + type);
-	      throw resE;
-	  }
-	  resMCL.setCellLineType(type);
-	  resMCL.setCellLineTypeKey(typeKey);
-      }
-      else {
-	  ALOResolvingException resE = new ALOResolvingException();
-	  resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL Type/null");
-	  throw resE;
-      }
-      /**
-       * resolve cell line strain 
-       */
-      String strain = raw.getStrain();
-      if (strain != null) {
-	  Integer strainKey = null;
-	  try {
-	      strainKey = strainLookup.lookup(raw.getStrain());
-	  } catch (KeyNotFoundException e) {
-	      ALOResolvingException resE = new ALOResolvingException();
-	      resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL Strain/" + strain );
-	      throw resE;
-          } catch (TranslationException e) {
-	      ALOResolvingException resE = new ALOResolvingException();
-	      resE.bindRecordString(" For MCL: " + cellLine + 
-		" MCL Strain/" + strain );
-	      throw resE;
-	  }
-	  resMCL.setStrain(strain);
-	  resMCL.setStrainKey(strainKey);
-      }
-      else { 
-	 resMCL.setStrain(dbDerivation.getParentStrain());
-         resMCL.setStrainKey(dbDerivation.getParentStrainKey());
-      }
-      /**
-       * set the derivation key
-       */
-      resMCL.setDerivationKey(dbDerivation.getDerivationKey());
-      
-      /**
-       * set Boolean flags
-       */
-     
-      Boolean isMutant = raw.getIsMutant();
-      if (isMutant == null ) {
-	  ALOResolvingException resE = new ALOResolvingException();
-	  resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL isMutant/null");
-	  throw resE;
-      }
-      resMCL.setIsMutant(isMutant);
-      
-      /**
-       * resolve accID 
-       */
-      String accID = raw.getCellLineID();
-      if (accID == null) {
-	  ALOResolvingException resE = new ALOResolvingException();
-	  resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL accID/null");
-	  throw resE;
-      }
-      resMCL.setAccID(accID);
-      
-      /**
-       * resolve logical db name 
-       */
-      String ldbName = raw.getLogicalDB();
-      if (ldbName != null) {
-	  Integer ldbKey = null;
-	  try {
-	      ldbKey = ldbLookup.lookup(ldbName);
-	  } catch (KeyNotFoundException e) {
-	      ALOResolvingException resE = new ALOResolvingException();
-	      resE.bindRecordString("For MCL: " + cellLine + 
-		  " MCL LDB/" + ldbName );
-	      throw resE;
-	  }
-	  resMCL.setLdbName(ldbName);
-	  resMCL.setLdbKey(ldbKey);
-      }
-      else {
-	  ALOResolvingException resE = new ALOResolvingException();
-	  resE.bindRecordString("For MCL: " + cellLine + 
-		" MCL logical DB/null");
-	  throw resE;
+        // the object we are building
+        MutantCellLine resMCL = new MutantCellLine();
+
+        /**
+        * resolve cell line name
+        */
+        String cellLine = raw.getCellLine();
+        if (cellLine == null) {
+            ALOResolvingException resE = new ALOResolvingException();
+            resE.bindRecordString("For MCL: " + cellLine +
+            " MCL Name/null");
+            throw resE;
+        }
+        resMCL.setCellLine(cellLine);
+
+        /**
+        * resolve cell line type
+        */
+        String type = raw.getType();
+        if (type != null) {
+            Integer typeKey = null;
+            try {
+              typeKey = typeLookup.lookup(type);
+            } catch (KeyNotFoundException e) {
+                ALOResolvingException resE = new ALOResolvingException();
+                resE.bindRecordString("For MCL: " + cellLine +
+                " MCL Type/" + type);
+                throw resE;
+            } catch (TranslationException e) { // won't happen, no translator
+                              //for this vocab
+                ALOResolvingException resE = new ALOResolvingException();
+                resE.bindRecordString("For MCL: " + cellLine +
+                " MCL Type/" + type);
+                throw resE;
+            }
+            resMCL.setCellLineType(type);
+            resMCL.setCellLineTypeKey(typeKey);
+        }
+        else {
+            ALOResolvingException resE = new ALOResolvingException();
+            resE.bindRecordString("For MCL: " + cellLine +
+            " MCL Type/null");
+            throw resE;
+        }
+        /**
+        * resolve cell line strain
+        */
+        String strain = raw.getStrain();
+        if (strain != null) {
+            Integer strainKey = null;
+            try {
+                strainKey = strainLookup.lookup(raw.getStrain());
+            } catch (KeyNotFoundException e) {
+                ALOResolvingException resE = new ALOResolvingException();
+                resE.bindRecordString("For MCL: " + cellLine +
+                " MCL Strain/" + strain );
+                throw resE;
+            } catch (TranslationException e) {
+                ALOResolvingException resE = new ALOResolvingException();
+                resE.bindRecordString(" For MCL: " + cellLine +
+                " MCL Strain/" + strain );
+                throw resE;
+            }
+            resMCL.setStrain(strain);
+            resMCL.setStrainKey(strainKey);
+        }
+        else {
+            resMCL.setStrain(dbDerivation.getParentStrain());
+             resMCL.setStrainKey(dbDerivation.getParentStrainKey());
+        }
+        /**
+        * set the derivation key
+        */
+        resMCL.setDerivationKey(dbDerivation.getDerivationKey());
+
+        /**
+        * set Boolean flags
+        */
+
+        Boolean isMutant = raw.getIsMutant();
+        if (isMutant == null ) {
+            ALOResolvingException resE = new ALOResolvingException();
+            resE.bindRecordString("For MCL: " + cellLine +
+            " MCL isMutant/null");
+            throw resE;
+        }
+        resMCL.setIsMutant(isMutant);
+
+        /**
+        * resolve accID
+        */
+        String accID = raw.getCellLineID();
+        if (accID == null) {
+            ALOResolvingException resE = new ALOResolvingException();
+            resE.bindRecordString("For MCL: " + cellLine +
+            " MCL accID/null");
+            throw resE;
+        }
+        resMCL.setAccID(accID);
+
+        /**
+        * resolve logical db name
+        */
+        String ldbName = raw.getLogicalDB();
+        if (ldbName != null) {
+            Integer ldbKey = null;
+            try {
+                ldbKey = ldbLookup.lookup(ldbName);
+            } catch (KeyNotFoundException e) {
+                  ALOResolvingException resE = new ALOResolvingException();
+                  resE.bindRecordString("For MCL: " + cellLine +
+                  " MCL LDB/" + ldbName );
+                  throw resE;
+            }
+            resMCL.setLdbName(ldbName);
+            resMCL.setLdbKey(ldbKey);
+        }
+        else {
+            ALOResolvingException resE = new ALOResolvingException();
+            resE.bindRecordString("For MCL: " + cellLine +
+            " MCL logical DB/null");
+            throw resE;
       }      
       return resMCL;
     }

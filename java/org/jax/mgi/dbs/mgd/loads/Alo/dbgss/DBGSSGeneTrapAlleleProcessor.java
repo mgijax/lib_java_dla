@@ -5,7 +5,7 @@ import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.dao.*;
 import org.jax.mgi.dbs.mgd.loads.Alo.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
-import org.jax.mgi.dbs.mgd.lookup.AlleleLookupByMutantCellLineKey;
+import org.jax.mgi.dbs.mgd.loads.Alo.AlleleLookupByMutantCellLineKey;
 import org.jax.mgi.dbs.mgd.lookup.PubMedIDLookupByAlleleKey;
 import org.jax.mgi.dbs.mgd.query.AlleleSymbolQuery;
 import org.jax.mgi.dbs.mgd.query.AlleleSynonymQuery;
@@ -22,19 +22,15 @@ import java.util.Iterator;
 import java.util.HashSet;
 
 /**
- * An object that process allele information by resolving allele attributes to 
- * DAOs representing
+ * An object that processes dbGSS Gene Trap allele information by resolving
+ * dbGSS Gene Trap attributes to a set of DAOs
+ * @does resolves and sets in the ALO the following DAOs
  * <UL>
  * <LI>Allele
  * <LI>Allele MGI ID
  * <LI>Allele Mutant Cell Line association 
  * <LI>Allele Mutation
  * <LI>Allele Reference Associations
- * </UL>
- * @does provides the basic needs objects for Allele Processors
- * <UL>
- * <LI>mutant cell line
- * <LI>mutant cell line ID association to the cell line object
  * </UL>
  * Determines, if possible, object identity in the database, reporting 
  * differences in incoming information with respect to the data in the database 
@@ -80,15 +76,16 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * @param resolvedALO - the ALO object to which will will add resolved
 	 *         allele information
 	 * @param existingMCLKeys - the set of existing mutant cell line objects
-	 * that have been determined to be in the database. For dbGSS Gene Traps
-	 * there is only one MCL per allele.
-	 * @param incomingMCLs - the set of incoming MCL objects. For gene traps this
-	 *  will be a set of one. If MCL found in the database (i.e. existingMCLKeys
-	 * has a value) then we compare the incoming attributes with that in the database
+	 * that have been determined to be in the database (or null) For dbGSS Gene
+	 * Traps there is only one MCL per allele.
+	 * @param incomingMCLs - the set of incoming MCL objects. For gene traps 
+	 *  This is a set of one. If MCL found in the database (i.e. existingMCLKeys
+	 *  has a value) then we compare the incoming attributes with that in the
+     *  database
 	 * @return Integer alleleKey of the processed allele - may be new or existing
 	 *   in the database
-	 * @assumes mutant cell lines have already been resolved, existing MCL keys
-	 *   passed in, new MCL set in resolvedALO
+	 * @assumes mutant cell lines have already been resolved, i.e. existing MCL
+	 *   keys passed in, new MCL set in resolvedALO
 	 * @throws ALOResolvingException if errors resolving derivation or mutant
 	 *         cell line attributes
 	 * @throws DLALoggingException if logging error
@@ -98,23 +95,23 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * @notes CASES:
 	 * 1) MCL in database
 	 *    a) allele in database - compare resolved allele, mutation, reference
-	 *                         associations, and cell line associations  with info
+	 *               associations, and cell line associations  with info
 	 *			     in the database, report discrepancies
 	 *
-	 *    b) allele NOT in database - report, for dbGSS Gene Traps should not have mutant
-	 *			 cell line in db w/o allele
+	 *    b) allele NOT in database - report, for dbGSS Gene Traps should not 
+	 *			     have mutant cell line in db w/o allele
 	 * 2) MCL NOT in database
 	 *    a) allele in database - compare resolved allele, mutation & reference
 	 *			     associations and report; report existing cell line
-	 *			     associations. We detect this by checking the allele
+	 *			     associations. We detect this case by checking the allele
 	 *			     nomen for the incoming mutant cell line ID. This
 	 *			     case is odd because we think we have a new allele
 	 *			     (because the MCL is notin the database), but we
 	 *			     find the MCL ID in the nomenclature of an allele in
 	 *			     the database
-	 *    b) allele NOT in database - if mutant cell line ID not in allele nomen (See 2a),
-	 *                    create allele, allele MGI ID, mutation, reference
-	 *			associations and cell line association
+	 *    b) allele NOT in database - if mutant cell line ID not in allele nomen 
+	 *              (See 2a),create allele, allele MGI ID, mutation, reference
+	 *   			associations and cell line association
 	 * </UL>
 	 */
 	public Integer process(ALORawInput aloInput, ALO resolvedALO,
@@ -126,21 +123,18 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// the allele key of the processed allele - may be new or existing in the
 		// database
 		Integer alleleKey = null;
-		// System.out.println("GeneTrapAlleleProcessor.process existingMCLKeys.size: "
-		//   + existingMCLKeys.size());
 		if (existingMCLKeys.size() > 1) {
 			// we shouldn't have  >1 cell line per gene trap allele
 			// throw an exception
-		} else if (existingMCLKeys.size() == 0) {
-			//System.out.println("Calling processAlleleWithNewMCL SeqID: " + aloInput.getSequenceAssociation().getSeqID());
+			
 
+		} else if (existingMCLKeys.size() == 0) {
 			alleleKey = processAlleleWithNewMCL(aloInput, resolvedALO); // CASE 2
 
 		} else {
 			Integer existingMCLKey = (Integer) existingMCLKeys.iterator().next();
 			MutantCellLine incomingMCL = (MutantCellLine) incomingMCLs.iterator().next();
-			//System.out.println("Calling processAlleleWithExistingMCL SeqID: " + aloInput.getSequenceAssociation().getSeqID());
-			alleleKey = processAlleleWithExistingMCL(aloInput, resolvedALO,
+    		alleleKey = processAlleleWithExistingMCL(aloInput, resolvedALO,
 					existingMCLKey, incomingMCL); // CASE 1
 		}
 		return alleleKey;
@@ -153,9 +147,9 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
     }
 	/**
-	 * Processes DBGSS Gene Trap allele, cell line association, mutation and
+	 * Processes DBGSS Gene Trap allele, mutant cell line association, mutation,
 	 * reference information when the incoming cell line is NOT found to be in the
-	 * database. We will create  new allele as long as there are no alleles in
+	 * database. We will create a new allele as long as there are no alleles in
 	 * the database which have the cell line id in their nomenclature
 	 * @param aloInput ALORawInput object - a set of raw attributes to resolve
 	 * and add to the database
@@ -165,6 +159,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 *              which was found in the database.NOTE: this my NOT the same
 	 *              as the cell line associated with the Allele if the allele is
 	 *              found to be in the database
+     * @assumes one MCL per allele
 	 * @return Integer alleleKey of the processed allele - may be new or existing
 	 *   in the database
 	 * @throws ALOResolvingException if errors resolving derivation or mutant
@@ -173,6 +168,8 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * @throws CacheException if errors accessing a Lookup cache
 	 * @throws DBException if errors adding to LazyCached lookups
 	 * @throws ConfigException if resolvers have errors accessing configuration
+     * @throws CellLineIDInAlleleNomenException if MCL ID found in allele
+     *          symbol or synonym
 	 */
 	private Integer processAlleleWithNewMCL(ALORawInput aloInput, ALO resolvedALO)
 			throws DBException, CacheException, ConfigException, DLALoggingException,
@@ -187,13 +184,12 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// Derivation).
 		Integer alleleStrainKey = clDAO.getState().getStrainKey();
 		
-		// if this method is called we know there is only one cl in the set
-		// rather convoluted, but we need to report the logical db when we
-		// find the mcl ID in allele nomen; may be same MCL id, but with different
-		// ldb (MCL ID/LDB is object identity for MCL in database) but because
+		// if this method is called we know there is only one cl in the set; get
+        // it. Also get the LDB name for reporting when wefind the mcl ID in
+        // allele nomen because it may be same MCL id, but a different
+		// ldb (MCL ID/LDB is object identity for MCL in database). When
 		// the MCL ID is in the allele nomen, a MCL and Allele will not be
-		// created, even though they should. Curator will need to create. We
-		// id these cases by reporting the ldb
+		// created by the load. A Curator will need to create them. 
 		CellLineRawAttributes cl = (CellLineRawAttributes)aloInput.
 				getCellLines().iterator().next();
 		String ldbName = cl.getLogicalDB();
@@ -272,8 +268,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
 		// process molecular mutation associations
 		HashSet mutations = aloInput.getMutations();
-		//System.out.println("GeneTrapAlleleProcessor.processAlleleWithNewCellLine MUTATIONS: " + mutations.toString() + " SIZE: " + mutations.size());
-		mutationProcessor.processMutationForNewAllele(mutations, resolvedALO);
+    	mutationProcessor.processMutationForNewAllele(mutations, resolvedALO);
 
 		// process all reference associations
 		processReferencesForNewAllele(aloInput, resolvedALO, alleleKey);
@@ -295,6 +290,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 *              which was found in the database.NOTE: this my NOT the same
 	 *              as the cell line associated with the Allele if the allele is
 	 *              found to be in the database
+     * @param incomingMCL the incoming MCL resolved
 	 * @assumes all parameters are not null
 	 * @throws ALOResolvingException if errors resolving derivation or mutant
 	 *         cell line attributes
@@ -345,10 +341,9 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		Allele existingAllele = (Allele) dbAlleles.iterator().next();
         resolvedALO.setIsUpdate(Boolean.TRUE);
 		Integer existingAlleleKey = existingAllele.getAlleleKey();
-		//System.out.println("GeneTrapAlleleProcessor.processAlleleWithExistingMCL existing allele key: " + existingAlleleKey);
 		String symbol = existingAllele.getAlleleSymbol();
-		//System.out.println("GeneTrapAlleleProcessor.processAlleleWithExistingMCL existing allele symbol: " + symbol);
-		/**
+
+        /**
 		 * resolve incoming allele so we may compare to allele in the database
 		 * Note, dbGSS gene trap alleles have same strain as Derivation (i.e.
 		 * parent cell lin, this is why we pass existingAllele.getStrainKey()
@@ -391,7 +386,6 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// compare molecular mutation associations, report 1. no mutation
 		// 2. no mutation of this type
 		HashSet mutations = aloInput.getMutations();
-		//System.out.println("GeneTrapAlleleProcessor.processAlleleWithExistingCellLine MUTATIONS: " + mutations.toString() + " SIZE: " + mutations.size());
 		mutationProcessor.processMutationsForExistingAllele(mutations,
 				existingAlleleKey, symbol, resolvedALO);
 		// compare reference associations, create new, report any in db
@@ -410,7 +404,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * and add to the database
 	 * @param resolvedALO - the ALO object to which will will add resolved
 	 *         reference associations
-	 * @param alleleKey - with which to associate the references
+	 * @param newAlleleKey - with which to associate the references
 	 * @throws CacheException if errors accessing a Lookup cache
 	 * @throws DBException if errors adding to LazyCached lookups
 	 * @throws ConfigException if resolvers have errors accessing configuration
@@ -432,32 +426,36 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		}
 	}
 
+    /**
+	 * Adds references to existing alleles where needed
+	 * @param aloInput ALORawInput object - a set of raw attributes to resolve
+	 * and add to the database
+	 * @param resolvedALO - the ALO object to which will will add resolved
+	 *         reference associations
+	 * @param existingAlleleKey - with which to associate the references
+	 * @throws CacheException if errors accessing a Lookup cache
+	 * @throws DBException if errors adding to LazyCached lookups
+	 * @throws ConfigException if resolvers have errors accessing configuration
+	 */
 	private void processReferencesForExistingAllele(ALORawInput aloInput,
 			ALO resolvedALO, Integer existingAlleleKey) throws DBException,
 			CacheException, ConfigException {
 
 		// get references associated with allele in database, if none
 		// HashSet will be empty set
-        //logger.logcInfo("In processReferencesForExistingAllele", false);
 		HashSet existingPubMedIDSet = pubMedLookup.lookup(existingAlleleKey);
-        //System.out.println("existingPubMedIDSet for alleleKey: " +
-                //existingAlleleKey + " " + existingPubMedIDSet.toString());
-
-
+        
 		// get incoming references
 		HashSet rawRefs = aloInput.getReferenceAssociations();
         //logger.logcInfo("ExistingPubMedIDSet: " + existingPubMedIDSet.toString(), false);
 		for (Iterator i = rawRefs.iterator(); i.hasNext();) {
 			RefAssocRawAttributes incomingRawRef = (RefAssocRawAttributes) i.next();
 			String incomingRefID = incomingRawRef.getRefId();
-            //logger.logcInfo("IncomingRefID: " + incomingRefID, false);
+
 			// if incomingRefId is not a JNumber and is not in the set of
 			// pubMed IDs associated with the allele, create association
-			//System.out.println("RefID: " + incomingRefID + " for existingAlleleKey: " + existingAlleleKey);
 			if (!incomingRefID.startsWith("J:") && !existingPubMedIDSet.contains(incomingRefID)) {
-                //logger.logcInfo("IncomingRefID does not start with J: and existingPubMedIDSet does not contain: " + incomingRefID, false);
-				//System.out.println("Adding incomingRefId: " + incomingRefID);
-				RefAssocRawAttributes newRawRef = new RefAssocRawAttributes();
+                RefAssocRawAttributes newRawRef = new RefAssocRawAttributes();
 				newRawRef.setMgiType(new Integer(MGITypeConstants.ALLELE));
 				newRawRef.setRefId(incomingRefID);
 				newRawRef.setRefAssocType(new Integer(MGIRefAssocTypeConstants.ALLELE_SEQUENCE));
@@ -471,7 +469,10 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 			}
 		}
 	}
-
+	/**
+	 * Loads sets of allele symbols and synonyms from the database
+	 * @throws MGIException
+	 */
 	private void initSymbolSets() throws MGIException {
 
 		// initialize the symbol set

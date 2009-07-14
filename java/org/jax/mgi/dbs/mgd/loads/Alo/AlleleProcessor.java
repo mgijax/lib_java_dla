@@ -21,10 +21,8 @@ import org.jax.mgi.shr.exception.MGIException;
  * <LI>a configurator
  * <LI>a logger
  * <LI>ALOLoaderAbstractFactory  
- * <LI>AlleleLookup
  * <LI>AlleleMutantCellLineProcessor
  * <LI>AlleleResolver 
- * <LI>MolecularNoteProcessor
  * <LI>AlleleMutationResolver
  * <LI>SeqRefAssocProcessor
  * </UL>
@@ -45,16 +43,11 @@ public abstract class AlleleProcessor{
     // Factory from which we get some objects
     protected ALOLoaderAbstractFactory factory;
 
-    // used to determine if an allele is in the database 
-    //protected AlleleLookup or FullCachedLookup or ??? alleleLookup;
-    
     // resolves raw allele attributes to a state
     protected AlleleResolver alleleResolver;
     
     // Creates allele to mutant cell line association DAOs
     protected AlleleMutantCellLineProcessor alleleMclProcessor;
-    
-    // MolecularNoteProcessor noteProcesseor;
     
     // creates molecular mutation DAOs
     protected AlleleMutationProcessor mutationProcessor;
@@ -71,74 +64,70 @@ public abstract class AlleleProcessor{
 
     public AlleleProcessor() 
 	    throws MGIException {
-	config = new ALOLoadCfg();
+        config = new ALOLoadCfg();
         logger = DLALogger.getInstance();
         factory = ALOLoaderAbstractFactory.getFactory();
-    // subclasses now get their own alleleLookup
-	// alleleLookup = factory.getAlleleLookup();
-	alleleMclProcessor = new AlleleMutantCellLineProcessor();
-	alleleResolver = new AlleleResolver();
-	// molecularNoteProcessor = new MolecularNoteProcessor();
-	mutationProcessor = new AlleleMutationProcessor();
-	refAssocProcessor = new SeqRefAssocProcessor();
+        alleleMclProcessor = new AlleleMutantCellLineProcessor();
+        alleleResolver = new AlleleResolver();
+        mutationProcessor = new AlleleMutationProcessor();
+        refAssocProcessor = new SeqRefAssocProcessor();
     }
 
     /**
-   * subclasses implement this method to accomplish any preprocessing tasks
-   */
+     * subclasses implement this method to accomplish any preprocessing tasks
+     */
     public abstract void preprocess()
             throws MGIException;
 
-  /**
-   * subclasses implement this method to process raw allele attributes
-   * returns the Integer allele key of the processed allele, which may be
-   * new or existing in the database
-   */
+    /**
+    * subclasses implement this method to process raw allele attributes
+    * returns the Integer allele key of the processed allele, which may be
+    * new or existing in the database
+    */
 
-   public abstract Integer process(ALORawInput aloInput, ALO resolvedALO, 
-	HashSet objects1, HashSet objects2) 
-	throws MGIException;
+    public abstract Integer process(ALORawInput aloInput, ALO resolvedALO,
+    HashSet objects1, HashSet objects2)
+    throws MGIException;
 
-   /**
-   * subclasses implement this method to accomplish any postprocessing tasks
-   */
+    /**
+    * subclasses implement this method to accomplish any postprocessing tasks
+    */
     public abstract void postprocess()
             throws MGIException;
 
-  /**
-   * Processes MGI ID for an allele
-   * All ALOs need to create MGI IDs - handy to have a seperate method to
-   * call at the very last so we don't waste MGI IDs
-   * @param resolvedALO - the ALO object to which will will add resolved
-   *         reference associations
-   * @throws MGIException if error creating an ACC_AccessionSatate
-   */
+    /**
+    * Processes MGI ID for an allele
+    * All ALOs need to create MGI IDs - handy to have a seperate method to
+    * call at the very last so we don't waste MGI IDs
+    * @param resolvedALO - the ALO object to which will will add resolved
+    *         reference associations
+    * @throws MGIException if error creating an ACC_AccessionSatate
+    */
     public void processAlleleMGIID(ALO resolvedALO) throws MGIException {
 
-	if(resolvedALO.getAlleleDAO() == null) {
-	    return;
-	}
-	    
-	// get allele key
-	Integer alleleKey = resolvedALO.getAlleleDAO().getKey().getKey();
-	
-	// Get an ACC_AccessionState object that contains a new MGI ID
-	ACC_AccessionState state = AccessionLib.getNextAccState();
+        if(resolvedALO.getAlleleDAO() == null) {
+            return;
+        }
 
-	// Split the accession ID into its prefix and numeric parts.
-	Vector vParts = AccessionLib.splitAccID(state.getAccID());
+        // get allele key
+        Integer alleleKey = resolvedALO.getAlleleDAO().getKey().getKey();
 
-	// Set any remaining required attributes of the ACC_AccessionState
-	// object
-	state.setPrefixPart((String)vParts.get(0));
-	state.setNumericPart((Integer)vParts.get(1));
+        // Get an ACC_AccessionState object that contains a new MGI ID
+        ACC_AccessionState state = AccessionLib.getNextAccState();
 
-	state.setLogicalDBKey(new Integer(LogicalDBConstants.MGI));
-	state.setObjectKey(alleleKey);
-	state.setMGITypeKey(new Integer(MGITypeConstants.ALLELE));
-	state.setPrivateVal(Boolean.FALSE);
-	state.setPreferred(Boolean.TRUE);
-	resolvedALO.addAccession(state);
+        // Split the accession ID into its prefix and numeric parts.
+        Vector vParts = AccessionLib.splitAccID(state.getAccID());
+
+        // Set any remaining required attributes of the ACC_AccessionState
+        // object
+        state.setPrefixPart((String)vParts.get(0));
+        state.setNumericPart((Integer)vParts.get(1));
+        state.setLogicalDBKey(new Integer(LogicalDBConstants.MGI));
+        state.setObjectKey(alleleKey);
+        state.setMGITypeKey(new Integer(MGITypeConstants.ALLELE));
+        state.setPrivateVal(Boolean.FALSE);
+        state.setPreferred(Boolean.TRUE);
+        resolvedALO.addAccession(state);
     }
 }
 

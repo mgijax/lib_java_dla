@@ -21,10 +21,10 @@ public class AlleleMutantCellLineResolver {
       * @return An ALL_Allele_CellLineState
       */
     public ALL_Allele_CellLineState resolve(Integer mutantCellLineKey,
-		Integer alleleKey) {
+            Integer alleleKey) {
         ALL_Allele_CellLineState state = new ALL_Allele_CellLineState();
     	state.setMutantCellLineKey(mutantCellLineKey);
-	state.setAlleleKey(alleleKey);
+        state.setAlleleKey(alleleKey);
         return state;
     }
 }

@@ -57,7 +57,7 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
   }
 
   /**
-   * look up the allele key to get a set of Mutant Cell Lines
+   * look up an allele key to get a set of Mutant Cell Lines
    * @param alleleKey the allele key to look up
    * @return HashSet of MutantCellLine objects
    * @throws CacheException thrown if there is an error accessing the cache
@@ -73,35 +73,31 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
       return (HashSet)super.lookupNullsOk(alleleKey);
   }
 
-  /**
-   * get the full initialization query which is called by the CacheStrategy
-   * class when performing cache initialization
-   * @assumes nothing
-   * @effects nothing
-   * @return the full initialization query
-   */
-  public String getFullInitQuery() {
-    return new String("SELECT  aac._Allele_key, a.accID, a._logicalDB_key, " +
-	"ldb.name as ldbName, c._CellLine_key, c.cellLine, " +
-	"c._CellLine_Type_key, v.term as cellLineType, c._Strain_key, " +
-	"s.strain, c._Derivation_key, c.isMutant " +
-	"FROM ACC_Accession a, ALL_CellLine c, ALL_Allele_CellLine aac, VOC_Term v, " +
-	"PRB_Strain s, ACC_LogicalDB ldb " +
-	"WHERE a._MGIType_key =  " + MGITypeConstants.CELLLINE + " " +
-	"and a._LogicalDB_key = ldb._LogicalDB_key " +
-	"and a._Object_key = c._CellLine_key " +
-	"and c._CellLine_key = aac._MutantCellLine_Key " +
-	"and c.isMutant = 1 " +
-	"and c._CellLine_Type_key = v._Term_key " +
-	"and c._Strain_key = s._Strain_key " +
-	"ORDER BY aac._Allele_key");
-  }
+    /**
+    * get the full initialization query which is called by the CacheStrategy
+    * class when performing cache initialization
+    * @return the full initialization query
+    */
+    public String getFullInitQuery() {
+        return new String("SELECT  aac._Allele_key, a.accID, a._logicalDB_key, " +
+        "ldb.name as ldbName, c._CellLine_key, c.cellLine, " +
+        "c._CellLine_Type_key, v.term as cellLineType, c._Strain_key, " +
+        "s.strain, c._Derivation_key, c.isMutant " +
+        "FROM ACC_Accession a, ALL_CellLine c, ALL_Allele_CellLine aac, VOC_Term v, " +
+        "PRB_Strain s, ACC_LogicalDB ldb " +
+        "WHERE a._MGIType_key =  " + MGITypeConstants.CELLLINE + " " +
+        "and a._LogicalDB_key = ldb._LogicalDB_key " +
+        "and a._Object_key = c._CellLine_key " +
+        "and c._CellLine_key = aac._MutantCellLine_Key " +
+        "and c.isMutant = 1 " +
+        "and c._CellLine_Type_key = v._Term_key " +
+        "and c._Strain_key = s._Strain_key " +
+        "ORDER BY aac._Allele_key");
+    }
   
   /**
    * get the RowDataInterpreter which is required by the CacheStrategy to
    * read the results of a database query.
-   * @assumes nothing
-   * @effects nothing
    * @return the partial initialization query
    */
   public RowDataInterpreter getRowDataInterpreter() {
@@ -145,7 +141,7 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
       }
     return new Interpreter();
   }
-  /**
+	/**
      * Simple data object representing a row of data from the query
      */
     class RowData {

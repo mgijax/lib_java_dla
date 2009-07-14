@@ -1,24 +1,15 @@
 package org.jax.mgi.dbs.mgd.loads.Alo;
 
 import org.jax.mgi.dbs.mgd.dao.*;
-//import org.jax.mgi.dbs.mgd.loads.MGI.*;
 import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
 /**
- * An object that represents an allele, its molecular mutation and molecular note.
-
+ * An object that represents a denormalized ALL_Allele object
  * @has
- *   <UL>
- *   <LI>ALL_AlleleDAO
- *   <LI>Set of ALL_MutationDAO
- *   <LI>Map of noteKey to MGINote
- *   <LI>Set of reference keys
- *   </UL>
+ *   Attributes of an ALL_Allele with foreign keys denormalized
  * @does
- *   <UL>
- *   <LI>Provides getters and setters for its attributes
- *   </UL>
+ *   Provides getters and setters for its attributes
  * @company The Jackson Laboratory
  * @author sc
  * @version 1.0
@@ -49,7 +40,7 @@ public class Allele {
     private String transmission = null;
 
     public Allele() throws DLALoggingException {
-	logger = DLALogger.getInstance();
+        logger = DLALogger.getInstance();
     }
     /*
      * Setters
@@ -68,7 +59,7 @@ public class Allele {
     }
     public void setStrainName(String name) {
        strain = name;
-   }
+    }
     public void setInheritModeKey(Integer key) {
 	inheritModeKey = key;
     }
@@ -81,38 +72,38 @@ public class Allele {
     public void setAlleleType(String type) {
 	alleleType = type;
     }
-   public void setAlleleStatusKey(Integer key) {
+    public void setAlleleStatusKey(Integer key) {
        alleleStatusKey = key;
-   }
-   public void setAlleleStatus(String status) {
+    }
+    public void setAlleleStatus(String status) {
        alleleStatus = status;
-   }
-   public void setAlleleSymbol(String symbol) {
+    }
+    public void setAlleleSymbol(String symbol) {
        alleleSymbol = symbol;
-   }
-   public void setAlleleName(String name) {
+    }
+    public void setAlleleName(String name) {
        alleleName = name;
-   }
-   public void setIsWildType(Boolean b) {
+    }
+    public void setIsWildType(Boolean b) {
        isWildType = b;
-   }
-   public void setIsExtinct(Boolean b) {
+    }
+    public void setIsExtinct(Boolean b) {
        isExtinct = b;
-   }
-   public void setIsMixed(Boolean isMixed) {
+    }
+    public void setIsMixed(Boolean isMixed) {
        this.isMixed = isMixed;
-   }
-   public void setTransmissionKey(Integer key) {
+    }
+    public void setTransmissionKey(Integer key) {
        transmissionKey = key;
-   }
-   public void setTransmission(String t) {
+    }
+    public void setTransmission(String t) {
        transmission = t;
-   }
+    }
 
     /*
-     * Getters
-     *
-     */
+    * Getters
+    *
+    */
     public Integer getAlleleKey() {
 	return alleleKey;
     }
@@ -168,32 +159,32 @@ public class Allele {
         return transmission;
     }
     /**
-     * @assumes all non-null database attributes are set
-     */
-      public ALL_AlleleState getState() {
-	  ALL_AlleleState state = new ALL_AlleleState();
-	  
-	  state.setMarkerKey(markerKey);
-	  state.setStrainKey(strainKey);
-	  state.setModeKey(inheritModeKey);
-	  state.setAlleleTypeKey(alleleTypeKey);
-	  state.setAlleleStatusKey(alleleStatusKey);
-	  state.setSymbol(alleleSymbol);
-	  state.setName(alleleName);
-	  state.setIsWildType(isWildType);
-	  state.setIsExtinct(isExtinct);
-	  state.setIsMixed(isMixed);
-	  state.setTransmissionKey(transmissionKey);
-	  return state;
-      }
+    * @assumes all non-null database attributes are set
+    */
+    public ALL_AlleleState getState() {
+        ALL_AlleleState state = new ALL_AlleleState();
+
+        state.setMarkerKey(markerKey);
+        state.setStrainKey(strainKey);
+        state.setModeKey(inheritModeKey);
+        state.setAlleleTypeKey(alleleTypeKey);
+        state.setAlleleStatusKey(alleleStatusKey);
+        state.setSymbol(alleleSymbol);
+        state.setName(alleleName);
+        state.setIsWildType(isWildType);
+        state.setIsExtinct(isExtinct);
+        state.setIsMixed(isMixed);
+        state.setTransmissionKey(transmissionKey);
+        return state;
+    }
 
     /**
-     * compares values of attributes between this Derivation instance and
-     * another Derivation instance
+     * compares values of attributes between this Allele instance and
+     * another Allele instance
      * @assumes So we may correctly label attributes when reporting the 
      *           assumption is that the current instance represents 
-     *           incoming derivation values and 'fromDB' represents
-     *           a derivation in the database. 
+     *           incoming allele values and 'fromDB' represents
+     *           an allele in the database.
      * @assumes Null attributes have been converted to 0 (zero) for Integers
      *          and 'null' for Strings
      * @param fromDB the allele instance, from the database, to compare to
@@ -276,24 +267,25 @@ public class Allele {
       }
 
     }
+
     public void reset() {
-	alleleKey = null;
-	markerKey = null;
-	markerSymbol = null;
-	strainKey = null;
-	strain = null;
-	inheritModeKey = null;
-	inheritMode = null;
-	alleleTypeKey = null;
-	alleleType = null;
-	alleleStatusKey = null;
-	alleleStatus = null;
-	alleleSymbol = null;
-	alleleName = null;
-	isWildType = null;
-	isExtinct = null;
-	isMixed = null;
-	transmissionKey = null;
-	transmission = null;
+        alleleKey = null;
+        markerKey = null;
+        markerSymbol = null;
+        strainKey = null;
+        strain = null;
+        inheritModeKey = null;
+        inheritMode = null;
+        alleleTypeKey = null;
+        alleleType = null;
+        alleleStatusKey = null;
+        alleleStatus = null;
+        alleleSymbol = null;
+        alleleName = null;
+        isWildType = null;
+        isExtinct = null;
+        isMixed = null;
+        transmissionKey = null;
+        transmission = null;
     }
 }

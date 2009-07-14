@@ -28,8 +28,6 @@ public class MGINoteRawAttributes {
      
      /**
      * set the note attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param note the text of the note
      */
 
@@ -37,8 +35,6 @@ public class MGINoteRawAttributes {
 
     /**
      * set the note MGI Type attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param mgiType the MGI Type of the note e.g. ALL_Allele
      */
 
@@ -46,8 +42,6 @@ public class MGINoteRawAttributes {
 
     /**
      * set note type attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param noteType the note type e.g. Allele Molecular Mutation note
      */
 
@@ -58,36 +52,28 @@ public class MGINoteRawAttributes {
     
     /**
      * get the note attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getNoteD () { return note; }
 
     /**
      * get the MGI Type attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getMGIType () { return mgiType; }
 
     /**
      * get the note type attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getNoteType () { return noteType; }
     
     /**
      * set all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
      */
     
     public void reset() {
-	note = null;
+		note = null;
         mgiType = null;
         noteType = null;
         

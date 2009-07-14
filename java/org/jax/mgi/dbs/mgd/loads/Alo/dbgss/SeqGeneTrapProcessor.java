@@ -1,6 +1,5 @@
 package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
-import org.jax.mgi.dbs.mgd.loads.Alo.dbgss.DBGSSGeneTrapALO;
 import org.jax.mgi.dbs.mgd.dao.ACC_AccessionState;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapDAO;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapState;
@@ -14,13 +13,12 @@ import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dla.loader.alo.ALOResolvingException;
-import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
  * an object that processes raw gene trap sequence information. 
  * Determines, if possible, object identity in the database, reporting 
- * differences in incoming information with respect to the dta in the database.
+ * differences in incoming information with respect to the data in the database.
  * @has
  * <UL>
  * <LI>SeqGeneTrapLookupBySeqKey
@@ -41,8 +39,6 @@ public class SeqGeneTrapProcessor {
     private SeqTagIdLookupBySeqKey seqTagIdLookup;
     private SeqGeneTrapResolver seqGeneTrapResolver;
     private AccAttributeResolver accResolver;
-    
-    private DLALogger logger;
 
     /** construct a SeqGeneTrapProcessor */
     public SeqGeneTrapProcessor() throws MGIException {

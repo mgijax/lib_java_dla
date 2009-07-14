@@ -7,8 +7,7 @@ import org.jax.mgi.dbs.mgd.dao.*;
 
 /**
  * An object that represents a resolved note i.e. an MGI_NoteDAO and a set of
- * corresponding MGI_NoteChunkDAOs
- * object 
+ * corresponding MGI_NoteChunkDAOs objects
  * @has
  *   <UL>
  *   <LI>MGI_NoteDAO

@@ -1,7 +1,7 @@
 package org.jax.mgi.dbs.mgd.loads.Alo;
 
 /**
- * An object that represents raw values needed to create a ALL_CellLineState object
+ * An object that represents raw values needed to create a ALL_CellLineState 
  * including an accID for creating a ACC_AccessionState for a cell line
  * @has
  *   <UL>
@@ -35,8 +35,6 @@ public class CellLineRawAttributes {
      
      /**
      * set the cellLine attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param cellLine the cellLine name
      */
 
@@ -44,8 +42,6 @@ public class CellLineRawAttributes {
 
     /**
      * set the type attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param type the cell line type
      */
 
@@ -53,18 +49,14 @@ public class CellLineRawAttributes {
 
     /**
      * set the strain attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param strain the cell line strain
      */
 
     public void setStrain (String strain) { this.strain = strain; }
 
     /**
-     * set the mode attribute
-     * @assumes Nothing
-     * @effects Nothing
-     * @param mode allele inheritance mode
+     * set the derivation attribute
+     * @param raw Derivation raw attributes
      */
 
     public void setDerivation (DerivationRawAttributes raw) { 
@@ -73,8 +65,6 @@ public class CellLineRawAttributes {
 
     /**
      * set the isMutant attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param  isMutant true if mutant cell line
      */
 
@@ -82,8 +72,6 @@ public class CellLineRawAttributes {
 
     /**
      * set the cellLineID attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param cellLineID ID to be associated via the accession table
      */
 
@@ -93,8 +81,6 @@ public class CellLineRawAttributes {
 
     /**
      * set the cellLineID logicalDB attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param ldb logicalDB with which to associate 'cellLineID' 
      * via the accession table
      */
@@ -104,73 +90,58 @@ public class CellLineRawAttributes {
     
     /**
      * get the cellLine attribute
-     * @assumes Nothing
-     * @effects Nothing
+
      */
 
     public String getCellLine () { return cellLine; }
 
     /**
      * get the cell line type attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getType () { return type; }
 
         /**
      * get the cell line strain attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getStrain () { return strain; }
     
     /**
      * get the derivation attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public DerivationRawAttributes getDerivation () { return  rawDerivation; }
 
     /**
      * get the isMutant attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public Boolean getIsMutant () { return isMutant; }
 
     /**
      * get the cell line ID attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getCellLineID() { return cellLineID; }
     
     /**
      * get the logicalDB attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getLogicalDB() { return logicalDB; }
 
      /**
      * set all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
      */
     
     public void reset() {
-	cellLine = null;
+        cellLine = null;
         type = null;
-	strain = null;
+        strain = null;
         rawDerivation = null;
         isMutant = null;
         cellLineID = null;
-	logicalDB = null;
+        logicalDB = null;
     }
 }

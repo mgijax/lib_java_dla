@@ -12,9 +12,10 @@ import org.jax.mgi.shr.dbutils.DBException;
  * An object that manages a set of DAOs representing an Allele Like Object.
  * @has
  *   <UL>
- *   <LI>ALL_AlleleDAO
+ *   <LI>ALL_AlleleDAO ate)
  *   <LI>Set of ACC_AccessionDAO's for the allele MGI ID and any other ids
  *	     needed by a particular load
+ *   <LI>Set of ALL_CellLineDAO's
  *   <LI>Set of ALL_MutationDAOs for molecular mutations
  *   <LI>MGI_Note - contains DAOs for a molecular note
  *   <LI>Set of MGI_ReferenceAssocDAOs - load reference, other references
@@ -23,14 +24,14 @@ import org.jax.mgi.shr.dbutils.DBException;
  *   </UL>
  * @does
  *  <UL>
- *   <LI>creates DAO objects for allele, allele MGI ID,
+ *   <LI>creates DAO objects for allele, allele MGI ID, mutant cell lines
  *       allele mutations, allele molecular notes, allele reference
  *       associations and any other reference associations required by a
  *       load, and allele sequence association
- *   <LI>Updates some allele attributes, currently just molecular notes.
- *   <LI>Adds an allele, allele MGI ID, allele mutations, allele molecular
- *       notes, ALO reference associations, and allele sequence associations
- *       to a database
+ *   <LI>Updates some ALO attributes, currently just mutant cell lines.
+ *   <LI>Adds an allele, allele MGI ID, mutant cell lines, allele mutations,
+ *		allele molecular notes, ALO reference associations, and allele
+ *		sequence associations to a database
  *   <LI>Provides methods to get DAOs
  *   </UL>
  * @company The Jackson Laboratory
@@ -72,9 +73,6 @@ public class ALO {
 	// sequence association for this allele
 	private SEQ_Allele_AssocDAO seqAlleleDAO = null;
 
-	// The sequence gene trap information
-	private SEQ_GeneTrapDAO seqGeneTrapDAO;
-
     // True if this is an ALo found to be in the database and has updates
     // Added for gene traps for logging whether a  ALO is updated or new
     private Boolean isUpdate = Boolean.FALSE;
@@ -106,7 +104,6 @@ public class ALO {
 
 	/**
 	 * adds a molecular mutation DAO to the set of ALO mutations
-	 * @effects Queries a database for the next Accession key
 	 * @param state the state object from which to create the DAO
 	 * @return ALL_AlleleMutationDAO for convenient access e.g. to get the key
 	 * @throws ConfigException if error creating the DAO object
@@ -198,27 +195,20 @@ public class ALO {
 	}
 
 	/**
-	 * adds a cell line DAO to the set of ALO cell lines to be updated
-	 * @effects Queries a database for the next cell line key
-	 * @param state the state object from which to create the DAO
-	 * @return ALL_CellLineDAO for convenient access e.g. to get the key
-	 * @throws ConfigException if error creating the DAO object
-	 * @throws DBException if error creating the DAO object
+	 * adds a  cell line DAO to the set of ALO cell lines to be updated
+	 * @param dao ALL_CellLineDAO to add to the update set
 	 */
-	public void addCellLineUpdate(ALL_CellLineDAO dao)
-			throws ConfigException, DBException {
-
+	public void addCellLineUpdate(ALL_CellLineDAO dao) {
 		cellLineUpdateDAOs.add(dao);
 	}
 	
 	/**
 	 * adds a allele to cell line association DAO to the set of associations
 	 * for this ALO
-	 * @effects Queries a database for the next cell line key
+	 * @effects Queries a database for the next association key
 	 * @param state the state object from which to create the DAO
 	 * @throws ConfigException if error creating the DAO object
 	 * @throws DBException if error creating the DAO object
-	 * @note no real reason to return a ALL_Allele_CellLineDAO, so we don't
 	 */
 	public void addAlleleCellLine(ALL_Allele_CellLineState state)
 			throws ConfigException, DBException {
@@ -228,7 +218,7 @@ public class ALO {
 
 	/**
 	 * Adds reference association DAO to the list of ALO ref associations
-	 * @effects Queries a database for the next accession key
+	 * @effects Queries a database for the next association key
 	 * @param state the state object from which to create the DAO
 	 * @return MGI_Reference_AssocDAO for convenient access e.g. to get the key
 	 * @throws ConfigException if error creating the DAO object
@@ -244,11 +234,11 @@ public class ALO {
 
 	/**
 	 * sets the seq allele association
-	 * @effects Queries a database for the next accession key
+	 * @effects Queries a database for the next association key
 	 * @param state the state object from which to create the DAO
+	 * @return SEQ_Allele_AssocDAO although probably no need for access to it
 	 * @throws ConfigException if error creating the DAO object
 	 * @throws DBException if error creating the DAO object
-	 * @note no real reason to return a SEQ_Allele_AssocDAO, so we don't
 	 */
 	public SEQ_Allele_AssocDAO setSeqAlleleAssociation(SEQ_Allele_AssocState state)
 			throws ConfigException, DBException {
@@ -350,8 +340,7 @@ public class ALO {
 		return seqAlleleDAO;
 	}
     /**
-     * Set whether this is an ALO update
-     * @param b true if this ALO represents updates to an existing ALO
+     * Get whether this is an ALO update
      */
     public Boolean getIsUpdate() {
         return isUpdate;
@@ -361,12 +350,14 @@ public class ALO {
 	 * Determines the stream methods for and passes to those methods each of
 	 * its DAO objects.
 	 * Inserts the allele
+	 * Inserts allele mutations
 	 * Inserts cell lines
+	 * Updates cell Lines
+	 * Inserts allele cell line associations
 	 * Inserts accessions
-	 * Inserts molecular note
+	 * Inserts molecular notes
 	 * Inserts reference associations
 	 * Inserts seq allele associations
-	 * @assumes Nothing
 	 * @effects Performs database Inserts, updates, and deletes.
 	 * @throws DBException if error inserting, updating, or deleting in the
 	 * database
@@ -432,11 +423,6 @@ public class ALO {
 			stream.insert(seqAlleleDAO);
 		}
 
-		// insert seq gene trap objects
-		if (seqGeneTrapDAO != null) {
-			//System.out.println("stream.insert(seqGeneTrapDAO)");
-			stream.insert(seqGeneTrapDAO);
-		}
 	}
 }
 

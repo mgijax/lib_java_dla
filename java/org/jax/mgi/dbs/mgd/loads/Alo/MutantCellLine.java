@@ -6,6 +6,21 @@ import org.jax.mgi.dbs.mgd.dao.ALL_CellLineState;
 import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 
+/**
+ * An object that represents a denormalized ALL_CellLine object representing a
+ * mutant cell line
+ * @has set of mutant attributes for a ALL_CellLine
+ *   
+ * @does
+ *   <UL>
+ *   <LI>Provides getters and setters for its attributes
+ *   <LI>Provides compare method to compare itself to another
+ *       instance of itself, reporting differences
+ *   </UL>
+ * @company The Jackson Laboratory
+ * @author sc
+ * @version 1.0
+ */
 public class MutantCellLine {
 
 	private DLALogger logger;
@@ -84,15 +99,15 @@ public class MutantCellLine {
 	public void setCreationDate(Timestamp cd) {
 	    this.creationDate = cd;
 	}
-        public void setModificationDate(Timestamp md) {
-            this.modificationDate = md;
-        }
-        public void setCreatedByKey(Integer cbk) {
-            this.createdByKey = cbk;
-        }
-        public void setModifiedByKey(Integer mbk) {
-            this.modifiedByKey = mbk;
-        }
+	public void setModificationDate(Timestamp md) {
+		this.modificationDate = md;
+	}
+	public void setCreatedByKey(Integer cbk) {
+		this.createdByKey = cbk;
+	}
+	public void setModifiedByKey(Integer mbk) {
+		this.modifiedByKey = mbk;
+	}
 
 	/*
 	 * getters

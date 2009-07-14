@@ -53,24 +53,24 @@ public class AlleleMutationResolver {
       * @return An ALL_Allele_MutationState
       */
     public ALL_Allele_MutationState resolve(String mutation,
-		Integer alleleKey) throws DBException, CacheException,
-		ConfigException, ALOResolvingException {
-	Integer mutKey = null;
-	try {
-	    mutKey = mutationKeyLookup.lookup(mutation);
-	} catch (KeyNotFoundException e) {
-	   ALOResolvingException resE = new ALOResolvingException();
-	   resE.bindRecordString("Mutation/" + mutation);
-	   throw resE;
-	} catch (TranslationException e) { // this vocab does not have a trans
+        Integer alleleKey) throws DBException, CacheException,
+            ConfigException, ALOResolvingException {
+        Integer mutKey = null;
+        try {
+            mutKey = mutationKeyLookup.lookup(mutation);
+        } catch (KeyNotFoundException e) {
            ALOResolvingException resE = new ALOResolvingException();
            resE.bindRecordString("Mutation/" + mutation);
            throw resE;
+        } catch (TranslationException e) { // this vocab does not have a trans
+               ALOResolvingException resE = new ALOResolvingException();
+               resE.bindRecordString("Mutation/" + mutation);
+               throw resE;
         }
 
         ALL_Allele_MutationState state = new ALL_Allele_MutationState();
-	state.setAlleleKey(alleleKey);
-	state.setMutationKey(mutKey);
+        state.setAlleleKey(alleleKey);
+        state.setMutationKey(mutKey);
         return state;
     }
 }

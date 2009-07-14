@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.sql.Timestamp;
 
 /**
- * An object that processes Gene Trap allele sequence information from a 
+ * An object that processes dbGSS Gene Trap allele sequence information from a
  * DBGSSGeneTrapinput object by resolving sequence attributes to DAOs 
  * @has
  * <UL>
@@ -59,7 +59,7 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
     private HashMap seqKeysAlreadyProcessed;
 
 	// writes out sequence keys of all GSS sequence processed for downstream
-	// updating to ACTIVE status, if necessary
+	// updating to ACTIVE status, when necessary
     private BufferedWriter seqKeyWriter;
 
 	// lookup symbol for marker key for reporting
@@ -67,6 +67,7 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 
 	// lookup symbol for allele key for reporting
 	private AlleleSymbolLookupByKey alleleSymbolLookup;
+
     /**
      * Constructs a DBGSSGeneTrapAlleleSequenceProcessor
      * @throws MGIException
@@ -90,6 +91,14 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 		alleleSymbolLookup = new AlleleSymbolLookupByKey();
 	}
 
+    /**
+    * calls the superclass preprocess method then writes sequence key to file
+    * @param aloInput DBGSSGeneTrapRawInput object in ALORawInput clothing -
+    *       a set of raw attributes to resolve and add to the database
+    * @param resolvedALO - the ALO object to which will will add resolved
+    *         sequence information
+    * @throws MGIException if IOException caught
+    */
     public void preprocess(ALORawInput aloInput, ALO resolvedALO)
         throws MGIException {
         super.preprocess(aloInput, resolvedALO);
@@ -101,7 +110,7 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
     }
   /**
    * Processes DBGSS Gene Trap allele sequence information, creating associations
-   * where the allele is new, and adding associations where necessary when the
+   * where the allele is new, and adding associations. as necessary. when the
    * allele is in the database
    * @param aloInput DBGSSGeneTrapRawInput object in ALORawInput clothing - 
    *       a set of raw attributes to resolve and add to the database
@@ -118,11 +127,11 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
    *         translated attributes
    * @throws KeyNotFoundException - doesnt throw, lookup returns null
    */
-    public void process(ALORawInput aloInput, ALO resolvedALO, Integer incomingAlleleKey) 
-	throws  ALOResolvingException, CacheException, DBException, 
-	    KeyNotFoundException, ConfigException, TranslationException, 
-		DLALoggingException, RepeatALOException, 
-		SeqAssocWithMarkerException, SeqAssocWithAlleleException {
+    public void process(ALORawInput aloInput, ALO resolvedALO, 
+            Integer incomingAlleleKey) throws  ALOResolvingException,
+            CacheException, DBException, KeyNotFoundException, ConfigException,
+            TranslationException, DLALoggingException, RepeatALOException,
+            SeqAssocWithMarkerException, SeqAssocWithAlleleException {
 	
 	// cast the ALORawInput  to a DBGSSGeneTrapRawInput
 	DBGSSGeneTrapRawInput gtAloInput = (DBGSSGeneTrapRawInput)aloInput;
@@ -138,20 +147,17 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	 */
 	Timestamp incomingSeqrecordDate = (gtAloInput).
 	    getSeqRecordDate();
-	//logger.logcInfo("DBGSSAlleleSequenceProcessor incomingSeqRecordDate: " + 
-	  //  incomingSeqrecordDate, false);
+	
 	Timestamp alreadyProcessedDate = (Timestamp)seqKeysAlreadyProcessed.
 		get(sequenceKey);
-	//logger.logcInfo("DBGSSAlleleSequenceProcessor alreadyProcessedDate: " + 
-	  //  alreadyProcessedDate, false);
+	
 	if (alreadyProcessedDate != null) {
 	    if(incomingSeqrecordDate.after(alreadyProcessedDate)) {
-		//logger.logcInfo("repeat " + gtAloInput.
-		  //  getSequenceAssociation().getSeqID(), false);
-		RepeatALOException e =  new RepeatALOException();
-		e.bindRecordString(" Sequence ID " + gtAloInput.
-		    getSequenceAssociation().getSeqID());
-		throw e;
+		
+            RepeatALOException e =  new RepeatALOException();
+            e.bindRecordString(" Sequence ID " + gtAloInput.
+                getSequenceAssociation().getSeqID());
+            throw e;
 	    }
 	}
 	else {
@@ -198,8 +204,8 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	
 	/**
 	 * if there is no allele DAO in the resolved DAO object then the allele 
-	 * we are processing is in the database; note the parameter 'incomingAlleleKey'
-	 * may represent a new allele
+	 * we are processing is in the database; note the parameter 
+     * 'incomingAlleleKey' may represent a new allele
 	 */
 	
 	if (gtResolvedALO.getAlleleDAO() == null) {
@@ -229,14 +235,14 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 			if (seqIsAssocWithAllele.equals(Boolean.TRUE)) {
 				message = "Sequence ID " + gtAloInput.
 				getSequenceAssociation().getSeqID() + " IS associated with " +
-					"current allele symbol " +  incomingAlleleSymbol + ", and also" +
-				" associated with the following allele(s): " + b.toString();
+				"current allele symbol " +  incomingAlleleSymbol + ", and" +
+				" also associated with the following allele(s): " + b.toString();
 			}
 			else {
 				message = "Sequence ID " + gtAloInput.
 				getSequenceAssociation().getSeqID() + " is NOT associated with " +
-					"current allele symbol " +  incomingAlleleSymbol + ", but is" +
-				" associated with the following allele(s): " + b.toString();
+                    "current allele symbol " +  incomingAlleleSymbol + ", but is" +
+                    " associated with the following allele(s): " + b.toString();
 			}
 			// throw exception to go on to next
 			SeqAssocWithAlleleException e = new SeqAssocWithAlleleException();
@@ -267,7 +273,8 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	 */
 	if (createAssoc.equals(Boolean.TRUE)) {
 	    String jNum = gtAloInput.getSequenceAssociation().getJNum();
-	    String assocQualifier = gtAloInput.getSequenceAssociation().getQualifier();
+	    String assocQualifier = gtAloInput.getSequenceAssociation().
+                getQualifier();
 	    SEQ_Allele_AssocState state = seqAlleleResolver.resolve(
 		incomingAlleleKey, sequenceKey, assocQualifier, jNum);
 	    gtResolvedALO.setSeqAlleleAssociation(state);
@@ -276,8 +283,7 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	/**
 	 * Now resolve the seq gene trap
 	 */
-	//System.out.println(" seqGTProcessor.process(gtAloInput, sequenceKey,  gtResolvedALO)");
-	seqGTProcessor.process(gtAloInput, sequenceKey, 
+    seqGTProcessor.process(gtAloInput, sequenceKey,
 	    gtResolvedALO);	
     } 
     

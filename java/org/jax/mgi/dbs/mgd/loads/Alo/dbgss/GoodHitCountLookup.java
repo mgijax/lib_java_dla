@@ -75,7 +75,7 @@ public class GoodHitCountLookup {
     /**
    * lookup the number of good hits counts for a seqID
    * @param seqID
-   * @returns number of good hit counts, null if no hits
+   * @return number of good hit counts, null if no hits
    */
     public Integer lookup(String seqID) {
 	return (Integer)cache.get(seqID);

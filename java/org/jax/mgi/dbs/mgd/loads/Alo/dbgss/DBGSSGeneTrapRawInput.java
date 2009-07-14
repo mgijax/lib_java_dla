@@ -40,8 +40,6 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
     
     /**
      * set the raw gene trap sequence attributes
-     * @assumes Nothing
-     * @effects Nothing
      * @param seqGT the raw gene trap sequence ingo
      */
 
@@ -50,9 +48,7 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
     }
      /**
      * set the raw seqtagId to sequence association
-     * @assumes Nothing
-     * @effects Nothing
-     * @param seqGT the raw gene trap sequence ingo
+     * @param seqTagAcc sequence tag id accession object
      */
 
     public void setSeqTagAccession (AccessionRawAttributes seqTagAcc) {
@@ -60,8 +56,6 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
     }  
     /**
      * set sequence record date
-     * @assumes Nothing
-     * @effects Nothing
      * @param seqRecordDate the sequence record date
      */
 
@@ -70,8 +64,6 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
     
     /**
      * get the raw gene trap sequence attributes
-     * @assumes Nothing
-     * @effects Nothing
      * @return SeqGeneTrapRawAttributes
      */
 
@@ -81,8 +73,6 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
 
     /**
      * get the seq tag ID accession
-     * @assumes Nothing
-     * @effects Nothing
      * @return AccessionRawAttributes
      */
 
@@ -92,8 +82,6 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
     
      /**
      * get sequence record date 
-     * @assumes Nothing
-     * @effects Nothing
      * @return sequence record date
      */
 
@@ -103,13 +91,13 @@ public class DBGSSGeneTrapRawInput extends ALORawInput {
     
     /**
      * clears Vectors and sets other objects to null
-     * @assumes Nothing
-     * @effects Nothing
+	 * @Override ALOInput.reset()
      */
 
     public void reset() {
-	super.reset();
-	seqGT = null;
-	seqRecordDate = null;
+		super.reset();
+		seqGT = null;
+		seqTagAcc = null;
+		seqRecordDate = null;
     }
 }

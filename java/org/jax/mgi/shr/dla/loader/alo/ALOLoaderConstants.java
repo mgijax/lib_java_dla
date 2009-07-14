@@ -6,7 +6,6 @@ package org.jax.mgi.shr.dla.loader.alo;
 * <UL>
 * <LI> Constant definitions for ALO Loaders
 * </UL>
-* @does Nothing
 * @company The Jackson Laboratory
 * @author sc
 * @version 1.0

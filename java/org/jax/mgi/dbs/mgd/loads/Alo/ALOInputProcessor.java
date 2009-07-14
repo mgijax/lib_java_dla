@@ -15,9 +15,9 @@ import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.exception.MGIException;
 
 /**
- * An object that processes ALORawInput objects, one at a time, by resolving,
- * determining object identity in the database, and adding and updating ALO 
- * in a database
+ * An object that processes ALORawInput objects, one at a time, by resolving
+ * them to ALO objects, determining object identity in the database,
+ * and adding and updating in a database
  * @has
  * <UL>
  * <LI>a logger
@@ -32,7 +32,7 @@ import org.jax.mgi.shr.exception.MGIException;
  * </UL>
  * @does
  * <UL>
- * <LI>resolves ALORawInput attributes to DAOs
+ * <LI>resolves ALORawInput attributes to an ALO (container of DAOs )
  * <LI>determines, if possible, object identity in the database
  * <LI>reports differences in incoming information with respect to the 
  *     data in the database
@@ -53,18 +53,17 @@ public class ALOInputProcessor {
 
 	// logger for the load
 	protected DLALogger logger;
+
 	// Factory from which is obtained specific instances of processors
 	ALOLoaderAbstractFactory factory;
 
 	// name of the jobtream
 	protected String jobStreamName;
 
-	// current number of alos processed i.e. added, updated or determined to
-	// be the same as in the database
-
     // current number of ALOs added (new)
 	int newCtr = 0;
-    // current number of ALOs found to be in the database; may or may not be updated
+
+    // current number of ALOs found in the database; may or may not be updated
     int existingCtr = 0;
 
 	// processors
@@ -104,7 +103,6 @@ public class ALOInputProcessor {
 	 * Processes ALORawInput by passing it and an ALO object to specific
 	 * processors which resolve specific attributes to States and place them
 	 * in the ALO. Executes the ALO by calling its sendToStream() method.
-	 * @assumes Nothing
 	 * @effects queries and inserts into a database
 	 * @param aloInput ALORawInput object - a set of raw attributes to resolve
 	 * and add to the database
@@ -141,12 +139,9 @@ public class ALOInputProcessor {
 		Integer alleleKey = null;
 
 		if (alleleSeqProcessor != null) {
-			//System.out.println("ALOInputProcessor calling alleleSeqProcessor.preprocess");
 			alleleSeqProcessor.preprocess(aloInput, incomingALO);
 		}
 		if (mclProcessor != null) {
-			//System.out.println("ALOInputProcessor calling mclProcessor.process");
-
 			// existingMclKeySet - keys of the mutant cell lines in input found
 			// in the database
 			existingMclKeySet = mclProcessor.process(aloInput, incomingALO);
@@ -154,9 +149,6 @@ public class ALOInputProcessor {
 			// set of resolved MutantCellLine objects processed by last call to
 			// mclProcessor.process() -  represents new and existing MCLs
 			HashSet incomingMCLs = mclProcessor.getCurrentIncomingMCLs();
-
-			//System.out.println("ALOInputProcessor existingMclKeySet: " + existingMclKeySet.toString());
-			//System.out.println("ALOInputProcessor calling alleleProcessor.process");
 
 			// alleleKey - a new or existing allele key representing the current
 			// allele we are processing
@@ -167,24 +159,21 @@ public class ALOInputProcessor {
 			//alleleProcessor.process(aloInput, incomingALO);
 		}
 		if (alleleSeqProcessor != null) {
-			//logger.logcInfo("ALOInputProcessor calling alleleSeqProcessor.process", false);
 			alleleSeqProcessor.process(aloInput, incomingALO, alleleKey);
 		}
 
 		//create allele MGI ID
-		//System.out.println("ALOInputProcessor calling alleleProcessor.processAlleleMGIID");
 		alleleProcessor.processAlleleMGIID(incomingALO);
 
 		// send the ALO to the SQL Stream
-		//System.out.println("ALOInputProcessor calling incomingALO.sendToStream");
 		incomingALO.sendToStream();
+
         if(incomingALO.getIsUpdate().equals(Boolean.TRUE)) {
             existingCtr++;
         }
         else {
 		    newCtr++;
         }
-	//System.out.println("processedCtr: " + processedCtr);
 	}
 
     public void postprocess() throws MGIException {
@@ -194,8 +183,6 @@ public class ALOInputProcessor {
     }
 	/**
 	 * Gets counts of ALOs created
-	 * @assumes nothing
-	 * @effects nothing
 	 * @return number of ALOs created
 	 */
 	
@@ -205,8 +192,6 @@ public class ALOInputProcessor {
     
     /**
 	 * Gets counts of ALOs found to be in the database (existing) 
-	 * @assumes nothing
-	 * @effects nothing
 	 * @return number of ALOs found to be in the database
 	 */
     public int getExistingCount() {

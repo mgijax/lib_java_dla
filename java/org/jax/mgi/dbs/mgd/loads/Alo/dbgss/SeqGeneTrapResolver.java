@@ -38,7 +38,6 @@ public class SeqGeneTrapResolver {
 
     /**
      * Constructs a SeqGeneTrapResolver
-     * @assumes Nothing
      * @effects queries a database to load each lookup cache
      * @throws MGIException if
      * -translation error creating or using strain lookup
@@ -57,19 +56,18 @@ public class SeqGeneTrapResolver {
         tagMethodLookup = new VocabKeyLookup(
 	    VocabularyTypeConstants.SEQ_TAG_METHOD, CacheConstants.FULL_CACHE,
 		CacheConstants.FULL_CACHE);
-	vectorEndLookup = new VocabKeyLookup(
+        vectorEndLookup = new VocabKeyLookup(
 	    VocabularyTypeConstants.GT_VECTOR_END, CacheConstants.FULL_CACHE,
 		CacheConstants.FULL_CACHE);
-	reverseComplimentLookup = new VocabKeyLookup(
+        reverseComplimentLookup = new VocabKeyLookup(
 	    VocabularyTypeConstants.REVERSE_COMP, CacheConstants.FULL_CACHE, 
 		CacheConstants.FULL_CACHE);
-	hitCountLookup = new GoodHitCountLookup();
+        hitCountLookup = new GoodHitCountLookup();
     }
 
     /**
       * resolves a set of attributes to a SEQ_GeneTrapState
       * @assumes Point Coordinate is not set
-      * @effects Nothing
       * @param raw SeqGeneTrapRawAttributes object to resolve
       * @param  seqKey 
       * @return SEQ_GeneTrapState
@@ -84,74 +82,74 @@ public class SeqGeneTrapResolver {
 	    Integer seqKey ) throws  DBException, CacheException, 
 		ConfigException, ALOResolvingException  {
 
-	// get raw attributes and make sure they are not null
-	String t = raw.getSeqTagMethod();
-	String v = raw.getVectorEnd();
-	String r = raw.getReverseComp();
-	String s = raw.getSeqID();
-	// none of these values may be null
-	if (seqKey == null || t == null || v == null || r == null) {
-	    ALOResolvingException e = new ALOResolvingException();
-	    e.bindRecordString("SeqGeneTrapResolver one or more attributes null:  " +
-		"seqKey,seqTagMethod,vectorEnd,reverseComp/" + seqKey + "," +
-		t + "," + v + "," + r);
-	    throw e;
-	}
-	
-	// start building the state object
-	SEQ_GeneTrapState state = new SEQ_GeneTrapState();
-	
-	// set the sequence key
-	state.setSequenceKey(seqKey);
-	
-	// set the goodHitCount - currently interpreter sets to zero
-	Integer goodHitCount = hitCountLookup.lookup(s);
-	if (goodHitCount == null) {
-	    goodHitCount = new Integer(0);
-	}    
-	state.setGoodHitCount(goodHitCount);
-	
-	// resolve and set the sequence tag method
-	try {
-	    state.setTagMethodKey(tagMethodLookup.lookup(t));
-	} catch (KeyNotFoundException e) {
-	    ALOResolvingException re = new ALOResolvingException();
-	    re.bindRecordString("SeqGeneTrapResolver seqTagMethod/" + t);
-	    throw re;
-	} catch (TranslationException e) { // not actually thrown, lookup has
-					   // no translator
-	    ALOResolvingException re = new ALOResolvingException();
-	    re.bindRecordString("SeqGeneTrapResolver seqTagMethod/" + t);
-	    throw re;
-	}
-	
-	// resolve and set the vector end
-	try {
-	state.setVectorEndKey(vectorEndLookup.lookup(v));
-	} catch (KeyNotFoundException e) {
-	    ALOResolvingException re = new ALOResolvingException();
-	    re.bindRecordString("SeqGeneTrapResolver vectorEnd/" + v);
-	    throw re;
-	} catch (TranslationException e) { // not actually thrown, lookup has
-					   // no translator
-	    ALOResolvingException re = new ALOResolvingException();
-	    re.bindRecordString("SeqGeneTrapResolver vectorEnd/" + v);
-	    throw re;
-	}
-	
-	// resolve and set the reverse complement
-	try {
-	    state.setReverseCompKey(reverseComplimentLookup.lookup(r));
-	} catch (KeyNotFoundException e) {
-	    ALOResolvingException re = new ALOResolvingException();
-	    re.bindRecordString("SeqGeneTrapResolver reverseComp/" + r);
-	    throw re;
-	} catch (TranslationException e) { // not actually thrown, lookup has
-					   // no translator
-	    ALOResolvingException re = new ALOResolvingException();
-	    re.bindRecordString("SeqGeneTrapResolver reverseComp/" + r);
-	    throw re;
-	}
+        // get raw attributes and make sure they are not null
+        String t = raw.getSeqTagMethod();
+        String v = raw.getVectorEnd();
+        String r = raw.getReverseComp();
+        String s = raw.getSeqID();
+        // none of these values may be null
+        if (seqKey == null || t == null || v == null || r == null) {
+            ALOResolvingException e = new ALOResolvingException();
+            e.bindRecordString("SeqGeneTrapResolver one or more attributes null:  " +
+            "seqKey,seqTagMethod,vectorEnd,reverseComp/" + seqKey + "," +
+            t + "," + v + "," + r);
+            throw e;
+        }
+
+        // start building the state object
+        SEQ_GeneTrapState state = new SEQ_GeneTrapState();
+
+        // set the sequence key
+        state.setSequenceKey(seqKey);
+
+        // set the goodHitCount - currently interpreter sets to zero
+        Integer goodHitCount = hitCountLookup.lookup(s);
+        if (goodHitCount == null) {
+            goodHitCount = new Integer(0);
+        }
+        state.setGoodHitCount(goodHitCount);
+
+        // resolve and set the sequence tag method
+        try {
+            state.setTagMethodKey(tagMethodLookup.lookup(t));
+        } catch (KeyNotFoundException e) {
+            ALOResolvingException re = new ALOResolvingException();
+            re.bindRecordString("SeqGeneTrapResolver seqTagMethod/" + t);
+            throw re;
+        } catch (TranslationException e) { // not actually thrown, lookup has
+                           // no translator
+            ALOResolvingException re = new ALOResolvingException();
+            re.bindRecordString("SeqGeneTrapResolver seqTagMethod/" + t);
+            throw re;
+        }
+
+        // resolve and set the vector end
+        try {
+            state.setVectorEndKey(vectorEndLookup.lookup(v));
+        } catch (KeyNotFoundException e) {
+            ALOResolvingException re = new ALOResolvingException();
+            re.bindRecordString("SeqGeneTrapResolver vectorEnd/" + v);
+            throw re;
+        } catch (TranslationException e) { // not actually thrown, lookup has
+                           // no translator
+            ALOResolvingException re = new ALOResolvingException();
+            re.bindRecordString("SeqGeneTrapResolver vectorEnd/" + v);
+            throw re;
+        }
+
+        // resolve and set the reverse complement
+        try {
+            state.setReverseCompKey(reverseComplimentLookup.lookup(r));
+        } catch (KeyNotFoundException e) {
+            ALOResolvingException re = new ALOResolvingException();
+            re.bindRecordString("SeqGeneTrapResolver reverseComp/" + r);
+            throw re;
+        } catch (TranslationException e) { // not actually thrown, lookup has
+                           // no translator
+            ALOResolvingException re = new ALOResolvingException();
+            re.bindRecordString("SeqGeneTrapResolver reverseComp/" + r);
+            throw re;
+        }
           
 	return state;
     }

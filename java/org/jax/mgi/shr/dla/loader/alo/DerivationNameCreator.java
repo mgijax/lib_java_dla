@@ -8,7 +8,6 @@ import org.jax.mgi.shr.dbutils.DBException;
 /**
  * An interface which defines the method to create a Derivation name
  * from a Derivation object
- * @has nothing
  * @does provides an interface for creating a Derivation Name
  * @author sc
  */

@@ -75,8 +75,6 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
   /**
    * get the full initialization query which is called by the CacheStrategy
    * class when performing cache initialization
-   * @assumes nothing
-   * @effects nothing
    * @return the full initialization query
    */
   public String getFullInitQuery() {
@@ -99,8 +97,6 @@ public class MutantCellLineLookupByCellLineID extends FullCachedLookup {
   /**
    * get the RowDataInterpreter which is required by the CacheStrategy to
    * read the results of a database query.
-   * @assumes nothing
-   * @effects nothing
    * @return the partial initialization query
    */
   public RowDataInterpreter getRowDataInterpreter() {

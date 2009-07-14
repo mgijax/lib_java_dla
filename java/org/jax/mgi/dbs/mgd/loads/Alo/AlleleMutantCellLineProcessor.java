@@ -25,8 +25,8 @@ public class AlleleMutantCellLineProcessor {
      */
 
     public AlleleMutantCellLineProcessor() 
-	    throws MGIException {
-	alleleMCLResolver = new AlleleMutantCellLineResolver();
+            throws MGIException {
+        alleleMCLResolver = new AlleleMutantCellLineResolver();
     }
 
   /**
@@ -38,10 +38,10 @@ public class AlleleMutantCellLineProcessor {
    */
 
    public void process(Integer mutantCellLineKey, ALO resolvedALO) throws
-	    ConfigException, DBException {
-	Integer alleleKey = resolvedALO.getAlleleDAO().getKey().getKey();
-	ALL_Allele_CellLineState state = alleleMCLResolver.resolve(
-	    mutantCellLineKey, alleleKey);
-	resolvedALO.addAlleleCellLine(state);
+            ConfigException, DBException {
+        Integer alleleKey = resolvedALO.getAlleleDAO().getKey().getKey();
+        ALL_Allele_CellLineState state = alleleMCLResolver.resolve(
+            mutantCellLineKey, alleleKey);
+        resolvedALO.addAlleleCellLine(state);
    }   
 }

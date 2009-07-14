@@ -46,8 +46,6 @@ public class AlleleRawAttributes {
  
      /**
      * set the list of marker MGI IDs
-     * @assumes Nothing
-     * @effects Nothing
      * @param markerMgiIDs set of markers for this allele 
      */
 
@@ -55,11 +53,9 @@ public class AlleleRawAttributes {
 	this.markerMgiIDs = markerMgiIDs; }
 
      /**
-     * set a single marker MGI IDs
-     * @assumes Nothing
-     * @effects Nothing
-     * @param markerMgiID a marker for this allele
-     */
+      * set a single marker MGI IDs
+      * @param markerMgiID a marker for this allele
+      */
 
     public void setMarker (String markerMgiID) {
         this.markerMgiIDs.add(markerMgiID);
@@ -67,8 +63,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the strain attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param strain the strain of this allele
      */
 
@@ -76,17 +70,13 @@ public class AlleleRawAttributes {
 
     /**
      * set the inheritance mode attribute
-     * @assumes Nothing
-     * @effects Nothing
-     * @param mode allele inheritance mode
+     * @param inheritMode allele inheritance mode
      */
 
     public void setInheritMode (String inheritMode) { this.inheritMode = inheritMode; }
 
     /**
      * set the type attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param  type allele type
      */
 
@@ -94,8 +84,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the status attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param status  allele status
      */
 
@@ -103,8 +91,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the symbol attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param symbol the allele symbol
      */
 
@@ -112,8 +98,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the name attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param name the allele name
      */
 
@@ -121,8 +105,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the isWildType attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param isWildType true if this is a wild type allele
      */
 
@@ -132,8 +114,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the isExtinct attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param isExtinct  true if this allele is extinct
      * this sequence
      */
@@ -144,16 +124,12 @@ public class AlleleRawAttributes {
 
     /**
      * set the isMixed attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param isMixed  true if cell line is mixed
      */
 
     public void setIsMixed (Boolean isMixed) { this.isMixed = isMixed; }
     /**
      * set the transmission attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param transmission attribute
      */
 
@@ -163,8 +139,6 @@ public class AlleleRawAttributes {
 
     /**
      * set the objectIdentity attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param objectIdentity - how to determine if this allele is in the 
      * database for example by MGI ID or symbol
      */
@@ -175,116 +149,91 @@ public class AlleleRawAttributes {
 
     /**
      * get the set of marker mgiIDs for this allele
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public HashSet getMarkers () { return markerMgiIDs; }
 
     /**
      * get the strain attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getStrain () { return strain; }
 
     /**
      * get the inheritance mode attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getInheritMode () { return  inheritMode; }
 
     /**
      * get the type attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getType () { return type; }
 
     /**
      * get the status attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getStatus () { return status; }
 
     /**
      * get the symbol attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getSymbol () { return symbol; }
 
     /**
      * get the name organisms attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getName () { return name; }
 
     /**
      * get the isWildType attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public Boolean getIsWildType () { return isWildType; }
 
     /**
      * get the isExtinct attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public Boolean getIsExtinct () { return isExtinct; }
 
     /**
      * get the isMixed attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public Boolean getIsMixed () { return isMixed; }
 
     /**
      * get the transmission attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getTransmission () { return transmission; }
     /**
      * get the objectIdentity attribute
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public String getObjectIdentity () { return objectIdentity; }
 
      /**
      * set all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
      */
 
     public void reset() {
-	markerMgiIDs = null;
-	strain = null;
-	inheritMode = null;
-	type = null;
-	status = null;
-	symbol = null;
-	name = null;
-	isWildType = null;
-	isExtinct = null;
-	isMixed = null;
-	objectIdentity = null;
+        markerMgiIDs = null;
+        strain = null;
+        inheritMode = null;
+        type = null;
+        status = null;
+        symbol = null;
+        name = null;
+        isWildType = null;
+        isExtinct = null;
+        isMixed = null;
+        transmission = null;
+        objectIdentity = null;
     }
 }

@@ -4,8 +4,6 @@ import org.jax.mgi.shr.exception.MGIException;
 /**
  * An MGIException which indicates a sequence tag id which should have a vector
  * end component, but does not.
- * @has nothing
- * @does nothing
  * @company Jackson Laboratory
  * @author sc
  * @version 1.0

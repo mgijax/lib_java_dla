@@ -1,6 +1,5 @@
 package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
-import org.jax.mgi.dbs.mgd.loads.Alo.*;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapDAO;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapState;
 import org.jax.mgi.dbs.mgd.loads.Alo.ALO;
@@ -69,15 +68,14 @@ public class DBGSSGeneTrapALO extends ALO {
      * get copy of sequence genetrap information
      */
     public SEQ_GeneTrapDAO getSeqGeneTrapDAO() {
-        return (SEQ_GeneTrapDAO)seqGeneTrapDAO.clone();
+        return seqGeneTrapDAO;
     }
     /**
      * Determines the stream methods for and passes to those methods each of
      * its DAO objects.
      * Inserts the sequence gene trap information
-     * @assumes Nothing
      * @effects Performs database Inserts, updates, and deletes.
-     * @override to send SEQ_GeneTrapDAO to stream
+     * @Override to send SEQ_GeneTrapDAO to stream
      * @throws DBException if error inserting, updating, or deleting in the
      * database
      */

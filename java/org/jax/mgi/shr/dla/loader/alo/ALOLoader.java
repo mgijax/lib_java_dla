@@ -16,7 +16,6 @@ import org.jax.mgi.shr.exception.MGIException;
 /**
  * @is an object that processes ALO input and resolves raw ALO values to MGI 
  *     values to create ALO objects in a database
- *
  * @has 
  * <UL>
  * <LI>See superclass
@@ -45,7 +44,7 @@ public class ALOLoader extends DLALoader {
 	private ALOLoadCfg loadCfg;
 
 	// write out records repeated in the input
-	BufferedWriter repeatWriter;
+	private BufferedWriter repeatWriter;
 	// count of ALO records which are repeated in the input
 	private int repeatALOCt = 0;
 
@@ -58,12 +57,11 @@ public class ALOLoader extends DLALoader {
 	// total processing time for the load
 	private double totalProcessTime = 0;
 
-	// debug
+	// memory debug
 	Runtime runTime = Runtime.getRuntime();
 
 	/**
 	 * This load has no preprocessing
-	 * @assumes nothing
 	 * @effects noting
 	 * @throws MGIException if errors occur during preprocessing
 	 */
@@ -166,8 +164,6 @@ public class ALOLoader extends DLALoader {
 	/**
 	 * close resources, update ACC_AccessionMax, report processed and
 	 * added counts
-	 * @assumes nothing
-	 * @effects nothing
 	 * @throws MGIException if errors occur during preprocessing
 	 */
 	protected void postprocess() throws MGIException {

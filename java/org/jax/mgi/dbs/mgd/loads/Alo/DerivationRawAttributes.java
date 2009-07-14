@@ -2,7 +2,7 @@ package org.jax.mgi.dbs.mgd.loads.Alo;
 
 /**
  * An object that represents raw values needed to find  
- * ALL_Allele_DerivationState object in the database
+ * ALL_Allele_Derivation object in the database
  * @has
  *   <UL>
  *   <LI> set of raw attributes
@@ -39,21 +39,17 @@ public class DerivationRawAttributes {
     private String jNum = null;
     
  
-     /**
-     * set the name attribute
-     * @assumes Nothing
-     * @effects Nothing
-     * @param name cell line library  name or null
-     */
+    /**
+    * set the name attribute
+    * @param name cell line library  name or null
+    */
 
     public void setName (String name) { this.name = name; }
 
     /**
-     * set the description attribute
-     * @assumes Nothing
-     * @effects Nothing
-     * @param description cell line library description 
-     */
+    * set the description attribute
+    * @param description cell line library description
+    */
 
     public void setDescription (String description) { 
 	this.description = description; 
@@ -61,8 +57,6 @@ public class DerivationRawAttributes {
 
     /**
      * set the vectorName attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param vectorName derivation vector name
      */
 
@@ -72,8 +66,6 @@ public class DerivationRawAttributes {
 
     /**
      * set the vectorType attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param  vectorType allele vectorType
      */
 
@@ -83,8 +75,6 @@ public class DerivationRawAttributes {
 
     /**
      * set the parentCellLine attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param parentCellLine  parent cell line
      */
 
@@ -94,8 +84,6 @@ public class DerivationRawAttributes {
 
     /**
      * set the parentCellLine strain
-     * @assumes Nothing
-     * @effects Nothing
      * @param strain  parent cell line strain
      */
 
@@ -105,8 +93,6 @@ public class DerivationRawAttributes {
     
     /**
      * set the type attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param type the derivation type
      */
 
@@ -116,8 +102,6 @@ public class DerivationRawAttributes {
 
     /**
      * set the creator attribute
-     * @assumes Nothing
-     * @effects Nothing
      * @param creator the derivation creator
      */
 
@@ -127,9 +111,7 @@ public class DerivationRawAttributes {
 
     /**
      * set the JNumber for this derivation 
-     * @assumes Nothing
-     * @effects Nothing
-     * @param reference derivation reference
+     * @param jNum derivation reference
      */
 
     public void setReference (String jNum) {
@@ -140,72 +122,63 @@ public class DerivationRawAttributes {
 
     /**
      * get the derivation name attribute
-     * @assumes Nothing
-     * @effects Nothing
+	 * @return derivation name
      */
 
     public String getName () { return name; }
 
     /**
      * get the derivation description attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return derivation description
      */
 
     public String getDescription () { return description; }
 
     /**
      * get the vector name attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return vector name
      */
 
     public String getVectorName () { return  vectorName; }
 
     /**
      * get the vector type attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return vector type
      */
 
     public String getVectorType () { return vectorType; }
 
     /**
      * get the parent cell line attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @@return parent cell line name
      */
 
     public String getParentCellLine() { return parentCellLine; }
 
     /**
      * get the parent cell line strain attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return parent cell line strain
      */
 
     public String getParentCellLineStrain() { return parentCellLineStrain; }
     
     /**
      * get the derivation type attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return derivation type
      */
 
     public String getDerivationType() { return derivationType; }
 
     /**
      * get the derivation creator attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return derivation creator
      */
 
     public String getCreator () { return creator; }
 
     /**
      * get the derivation jNumber attribute
-     * @assumes Nothing
-     * @effects Nothing
+     * @return derivation reference
      */
 
     public String getJNum () { return jNum; }
@@ -213,9 +186,7 @@ public class DerivationRawAttributes {
     
     
      /**
-     * set all attributes to null
-     * @assumes Nothing
-     * @effects Nothing
+     * reset the instance - set all attributes to null
      */
 
     public void reset() {
@@ -224,6 +195,7 @@ public class DerivationRawAttributes {
 	vectorName = null;
 	vectorType = null;
 	parentCellLine = null;
+	parentCellLineStrain = null;
 	derivationType = null;
 	creator = null;
 	jNum = null;

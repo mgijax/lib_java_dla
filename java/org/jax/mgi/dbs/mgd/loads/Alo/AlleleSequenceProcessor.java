@@ -2,11 +2,7 @@ package org.jax.mgi.dbs.mgd.loads.Alo;
 
 import org.jax.mgi.dbs.mgd.lookup.MarkerKeyLookupBySeqKey;
 import org.jax.mgi.dbs.mgd.lookup.SequenceKeyLookupBySeqID;
-import org.jax.mgi.dbs.mgd.lookup.TranslationException;
-import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.config.ALOLoadCfg;
-import org.jax.mgi.shr.config.ConfigException;
-import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.dla.input.alo.ALORawInput;
 import org.jax.mgi.shr.dla.loader.alo.SequenceNotInDatabaseException;
 import org.jax.mgi.shr.dla.log.DLALogger;
@@ -55,22 +51,22 @@ public abstract class AlleleSequenceProcessor {
      */
 
     public AlleleSequenceProcessor()
-	    throws MGIException {
+            throws MGIException {
         logger = DLALogger.getInstance();
         config = new ALOLoadCfg();
-	alleleLookup = new AlleleLookupBySeqKey();
-	alleleLookup.initCache();
-	seqAlleleResolver = new SeqAlleleAssocResolver();
+        alleleLookup = new AlleleLookupBySeqKey();
+        alleleLookup.initCache();
+        seqAlleleResolver = new SeqAlleleAssocResolver();
 
-	factory = ALOLoaderAbstractFactory.getFactory();
-	sequenceLookup = factory.getSequenceKeyLookupBySeqID();
-	markerLookup = factory.getMarkerKeyLookupBySeqKey();
+        factory = ALOLoaderAbstractFactory.getFactory();
+        sequenceLookup = factory.getSequenceKeyLookupBySeqID();
+        markerLookup = factory.getMarkerKeyLookupBySeqKey();
     }
     public void setSequenceKey(Integer s) {
-   	sequenceKey = s;
+        sequenceKey = s;
     }
     public Integer getSequencekey() {
-	return sequenceKey;
+        return sequenceKey;
     }
      /**
      * does preprocessing tasks
@@ -79,19 +75,15 @@ public abstract class AlleleSequenceProcessor {
      */
     public void preprocess(ALORawInput aloInput, ALO resolvedALO) 
 	   throws MGIException  {
-	String seqID = aloInput.getSequenceAssociation().getSeqID();
-	this.sequenceKey = sequenceLookup.lookup(seqID);
-	//logger.logcInfo("AlleleSequenceProcessor SEQID: " + seqID + 
-	  //  " SEQUENCE_KEY: " + sequenceKey, false);
-	if(this.sequenceKey == null) {
-	    SequenceNotInDatabaseException e = 
-		new SequenceNotInDatabaseException();
-	    e.bindRecordString(seqID);
-	    throw e;
-	}
+        String seqID = aloInput.getSequenceAssociation().getSeqID();
+        this.sequenceKey = sequenceLookup.lookup(seqID);
+        if(this.sequenceKey == null) {
+            SequenceNotInDatabaseException e =
+            new SequenceNotInDatabaseException();
+            e.bindRecordString(seqID);
+            throw e;
+        }
     }
-
-
 
   /**
    * 
@@ -99,22 +91,25 @@ public abstract class AlleleSequenceProcessor {
    * and add to the database
    * @param resolvedALO - the ALO object to which will will add resolved
    *         sequence information
-    * @param allele key of the allele sequence association we are processing
+    * @param alleleKey of the allele sequence association we are processing
    * @throws ALOResolvingException if errors resolving derivation or mutant
    *         cell line attributes
-   * @throws CacheException if errors accessing a Lookup cache
-   * @throws DBException if errors adding to LazyCached lookups
-   * @throws ConfigException if resolvers have errors accessing configuration
-   * @throws TranslationException if resolvers have issues resolving translated
+   * @throws MGIException if errors
+   * <UL>
+   * <LI>accessing a Lookup cache
+   * <LI>adding to LazyCached lookups
+   * <LI>if resolvers have errors accessing configuration
+   * <LI> if resolvers have issues resolving translated
    *         attributes
+   * </OL
    */
 
-   public abstract void process(ALORawInput aloInput, ALO resolvedALO, Integer alleleKey) 
-	throws  MGIException;
+   public abstract void process(ALORawInput aloInput, ALO resolvedALO,
+        Integer alleleKey)
+                throws  MGIException;
 
     /**
    * subclasses implement this method to accomplish any post processing tasks
    */
-   public abstract void postprocess() throws
-       MGIException;
+   public abstract void postprocess() throws MGIException;
 }

@@ -6,7 +6,6 @@ package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 * <UL>
 * <LI> Constant definitions for DBGSS Gene Trap Loader
 * </UL>
-* @does Nothing
 * @company The Jackson Laboratory
 * @author sc
 * @version 1.0

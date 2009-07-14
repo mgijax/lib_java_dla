@@ -4,7 +4,6 @@ import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
-import org.jax.mgi.shr.dla.loader.alo.ALOResolvingException;
 import org.jax.mgi.shr.dla.loader.alo.DerivationNameCreator;
 import org.jax.mgi.shr.dla.loader.alo.DerivationNameCreatorException;
 import org.jax.mgi.shr.dla.loader.alo.DerivationProcessorException;
@@ -58,20 +57,20 @@ public class DerivationProcessor {
 
     /** construct a DerivationProcessor */
     public DerivationProcessor() throws MGIException {
-	factory = ALOLoaderAbstractFactory.getFactory();
-	nameCreator = factory.getDerivationNameCreator();
-	resolver = new DerivationResolver();
-	lookup = new DerivationLookupByName();
-	logger = DLALogger.getInstance();
+		factory = ALOLoaderAbstractFactory.getFactory();
+		nameCreator = factory.getDerivationNameCreator();
+		resolver = new DerivationResolver();
+		lookup = new DerivationLookupByName();
+		logger = DLALogger.getInstance();
     }
 
   /**
    * Find a derivation object in the database and return its database key
    * resolve incoming derivation attributes and compare to those found in
    * the database
-   * @param rawInput - cell line raw attributes  which contain derivation
+   * @param mutCellLineRaw - cell line raw attributes  which contain derivation
    *         raw attributes
-   * @returns Derivation object from the database
+   * @return Derivation object from the database
    * @throws CacheException if error accessing lookup cache
    * @throws DBException if error using lookup 
    * @throws TranslationException if error accessing the translation cache
