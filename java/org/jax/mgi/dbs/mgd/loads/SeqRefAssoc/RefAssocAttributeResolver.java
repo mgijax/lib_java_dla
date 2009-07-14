@@ -3,14 +3,12 @@ package org.jax.mgi.dbs.mgd.loads.SeqRefAssoc;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
-import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.dbs.mgd.lookup.AccessionLookup;
 import org.jax.mgi.dbs.mgd.lookup.JNumberLookup;
 import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.AccessionLib;
-//import org.jax.mgi.shr.dla.seqloader.*;
 
 /**
  * An object that resolves a RefAssocRawAttributes object to a
@@ -41,7 +39,6 @@ public class RefAssocAttributeResolver {
     /**
      * Constructs a RefAssociationResolver object by creating the necessary
      * lookups
-     * @assumes Nothing
      * @effects Queries a database to load the lookup caches (full cache)
      * @throws CacheException if problem creating a lookup
      * @throws ConfigException if problem creating a lookup
@@ -59,23 +56,19 @@ public class RefAssocAttributeResolver {
      * resolves RefAssocRawAttribute object to a MGI_Reference_AssocState
      * @assumes refLogicalDB is for pubmed, or MGI;
      * return null MGI_Reference_AssocState otherwise
-     * @effects Nothing
      * @param raw the RefAssocRawAttributes object to be resolved
      * @param objectKey The object key with which to associate the reference
-     * @param refLogicalDB - logicalDB key for the reference
      * @return an MGI_ReferenceAssocState which may be null if the reference is
      *         not in MGI
      * @throws CacheException if error using lookup
      * @throws DBException if error using lookup
-     * @throws KeyNotFoundException - doesn't actually throw this because the
      * lookup has an option to return null instead, and we are using this option.
      */
 
     public MGI_Reference_AssocState resolveAttributes(
                 RefAssocRawAttributes raw,
                 Integer objectKey)
-                //int refLogicalDB)
-                throws KeyNotFoundException, DBException, CacheException {
+                throws DBException, CacheException {
         // the reference key with which to create a state
         Integer refKey = null;
         // the state we are building

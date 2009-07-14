@@ -4,7 +4,10 @@ import org.jax.mgi.shr.config.CoordLoadCfg;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
+import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
+import org.jax.mgi.dbs.mgd.lookup.CoordMapFeatureKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.MGITypeLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.dbs.mgd.dao.MAP_Coord_FeatureState;
@@ -17,10 +20,12 @@ import org.jax.mgi.shr.dla.input.CoordinateInput;
 import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.dla.loader.coord.CoordloaderException;
+import org.jax.mgi.shr.dla.loader.coord.CoordloaderConstants;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.SQLDataManager;
 import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.dbs.SchemaConstants;
+import org.jax.mgi.shr.dla.loader.coord.CoordInDatabaseException;
 
 /**
  * An object that resolves raw date and creates map collection, a coordinate map
@@ -29,8 +34,10 @@ import org.jax.mgi.dbs.SchemaConstants;
  *   <UL>
  *   <LI>a logger
  *   <LI>a configurator
- *   <LI>a CoordMapCollectionKeyLookup to lookup the collections key for the coordinate
- *   <LI>CoordMapProcessor to determine/create the coordinate map for the coordinate
+ *   <LI>a CoordMapCollectionKeyLookup to lookup the collections key 
+ *	 for the coordinate
+ *   <LI>CoordMapProcessor to determine/create the coordinate map for the 
+ * 	 coordinate
  *   <LI>CoordMapFeatureResolver to resolve map features
  *   </UL>
  * @does
@@ -70,6 +77,15 @@ public class CoordinateInputProcessor {
     // a coordinate Exception Factory
     private CoordloaderExceptionFactory eFactory;
     
+    // load mode - e.g. delete_reload or add
+    private String loadMode;
+    
+    // look up a Map Feature objectId to get a Map Feature key for a given collection
+    private CoordMapFeatureKeyLookup featureLookup;
+    
+    // get the collection key when in add mode
+    // private CoordMapCollectionKeyLookup collectionLookup;
+    
     DLALogger logger;
     /**
      * Constructs a CoordinateInputProcessor
@@ -90,15 +106,23 @@ public class CoordinateInputProcessor {
         coordCfg = new CoordLoadCfg();
         collectionName = coordCfg.getMapCollectionName();
         collectionAbbrev = coordCfg.getMapCollectionAbbrev();
+	loadMode = coordCfg.getLoadMode();
 
         // set collection abbreviation to the name value if not configured
         if(collectionAbbrev == null || collectionAbbrev.equals("")) {
                 collectionAbbrev = collectionName;
         }
+	//collectionLookup =  new CoordMapCollectionKeyLookup();
+	
         // create an instance of a CoordMapProcessor from configuration
         mapProcessor = (CoordMapProcessor)coordCfg.getMapProcessorClass();
-
+	Integer mgiTypeKey = new MGITypeLookup().lookup(
+            coordCfg.getFeatureMGIType());
         featureResolver = new CoordMapFeatureResolver();
+	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE)) {
+	    featureLookup = new CoordMapFeatureKeyLookup(collectionName, 
+		mgiTypeKey);
+	}
 	logger = DLALogger.getInstance();
     }
     /**
@@ -110,11 +134,11 @@ public class CoordinateInputProcessor {
      * @throws ConfigException if error creating new collection
      * @throws DBException if error creating new collection
      */
-    public void preprocess() throws CoordloaderException, ConfigException,
+    /*public void preprocess() throws CoordloaderException, ConfigException,
         DBException {
         deleteCoordinates();
-        createCollection();
-    }
+        createCollection(null);
+    }*/
 
      /**
      * Adds a Coordinate Collection, Coordinate Maps for the Collections and
@@ -132,7 +156,8 @@ public class CoordinateInputProcessor {
      */
 
     public void processInput(CoordinateInput input) throws ConfigException,
-            KeyNotFoundException, DBException, CacheException, TranslationException {
+            KeyNotFoundException, DBException, CacheException, 
+	    TranslationException, CoordInDatabaseException {
         // the compound DAO object we are building
         Coordinate coordinate = new Coordinate(mgdStream);
 
@@ -140,11 +165,21 @@ public class CoordinateInputProcessor {
         Integer mapKey = mapProcessor.process(
                 input.getCoordMapRawAttributes(), coordinate);
 
+	// get Feature Raw attributes
+	CoordMapFeatureRawAttributes featureRaw = 
+	    input.getCoordMapFeatureRawAttributes();
+	String objectID = featureRaw.getObjectId();
+	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) && 
+	    featureLookup.lookup(objectID) != null) {
+	    CoordInDatabaseException e = new CoordInDatabaseException();
+	    e.bindRecordString(objectID);
+	    throw e;
+	}
         // resolve the feature
-	MAP_Coord_FeatureState state; 
+	MAP_Coord_FeatureState state;
 	try {
             state = featureResolver.resolve(
-            input.getCoordMapFeatureRawAttributes(), mapKey);
+            featureRaw, mapKey);
 	}
 	catch (KeyNotFoundException e) {
 	    logger.logcInfo(e.getMessage(), true);
@@ -167,7 +202,7 @@ public class CoordinateInputProcessor {
      *         a delete.
      */
 
-     private void deleteCoordinates() throws CoordloaderException{
+     public void deleteCoordinates() throws CoordloaderException{
 
        String spCall = "MAP_deleteByCollection '" + collectionName + "'";
        try {
@@ -184,25 +219,32 @@ public class CoordinateInputProcessor {
 
     /**
      * Creates a collection object and sets the collection key in the map processor
+     * @param collectionKey collectionKey to set or if null create a new collection
      * @throws DBException if errors creating or inserting collection DAO
      * @throws ConfigException if error collection DAO
      */
-    private void createCollection () throws  DBException, ConfigException {
-            // create the state
-            MAP_Coord_CollectionState collection = new MAP_Coord_CollectionState();
+   public void createCollection (Integer collectionKey) throws DBException, ConfigException {
+	
+        if (collectionKey != null) {
+	    this.collectionKey = collectionKey;
+	    mapProcessor.setCollectionKey(collectionKey);
+	    return;
+	}
+	// otherwise create a new collection
+	MAP_Coord_CollectionState collection = new MAP_Coord_CollectionState();
 
-            // set the collection name and abbreviation
-            collection.setName(collectionName);
-            collection.setAbbreviation(collectionAbbrev);
+	// set the collection name and abbreviation
+	collection.setName(collectionName);
+	collection.setAbbreviation(collectionAbbrev);
 
-            // create the dao
-            MAP_Coord_CollectionDAO dao = new MAP_Coord_CollectionDAO(collection);
+	// create the dao
+	MAP_Coord_CollectionDAO dao = new MAP_Coord_CollectionDAO(collection);
 
-            // get the collection key from the dao
-            collectionKey = dao.getKey().getKey();
+	// get the collection key from the dao
+	collectionKey = dao.getKey().getKey();
 
-            // insert the collection
-            mgdStream.insert(dao);
+	// insert the collection
+	mgdStream.insert(dao);
         // we have to explicitly set the collection key in the CoordMapProcessor
         // because it is configured; Configurator does not take parameters
         mapProcessor.setCollectionKey(collectionKey);

@@ -127,6 +127,8 @@ public abstract class DLALoader {
   private DLALoaderExceptionFactory dlaExceptionFactory =
       new DLALoaderExceptionFactory();
 
+  // debug
+	Runtime runTime = Runtime.getRuntime();
   /**
    * A DLASystemExit object for managing application exiting as specified
    * within the DLA standards
@@ -189,50 +191,51 @@ public abstract class DLALoader {
       String[] qcTables = this.dlaConfig.getTruncateQCTables();
 
       try {
-              logger.logdInfo("Performing load initialization", true);
-              if (loadTables != null)
-                  DLALoaderHelper.truncateTables(loadTables,
-                      this.loadDBMgr.getDBSchema(),
-                      logger);
-              if (qcTables != null)
-                  DLALoaderHelper.truncateTables(qcTables,
-                      this.qcDBMgr.getDBSchema(),
-                      logger);
-              initialize();
+		  logger.logdInfo("FreeMem Prior to DLALoader initialization: " + runTime.freeMemory(), false);
+		  logger.logdInfo("Performing load initialization", true);
+		  if (loadTables != null)
+			  DLALoaderHelper.truncateTables(loadTables,
+				  this.loadDBMgr.getDBSchema(),
+				  logger);
+		  if (qcTables != null)
+			  DLALoaderHelper.truncateTables(qcTables,
+				  this.qcDBMgr.getDBSchema(),
+				  logger);
+		  initialize();
       }
       catch (Exception e) {
-              DLALoaderException e2 = (DLALoaderException)
-                  dlaExceptionFactory.getException(InitException, e);
-              throw e2;
+		  DLALoaderException e2 = (DLALoaderException)
+			  dlaExceptionFactory.getException(InitException, e);
+		  throw e2;
       }
       try {
-              logger.logdInfo("Performing load pre processing", true);
-              preprocess();
+		  logger.logdInfo("Performing load pre processing", true);
+		  preprocess();
       }
       catch (Exception e) {
-              DLALoaderException e2 = (DLALoaderException)
-                  dlaExceptionFactory.getException(PreProcessException, e);
-              throw e2;
+		  DLALoaderException e2 = (DLALoaderException)
+			  dlaExceptionFactory.getException(PreProcessException, e);
+		  throw e2;
       }
       try {
-              logger.logdInfo("Performing load processing", true);
-              run();
+		  logger.logdInfo("Performing load processing", true);
+		  run();
       }
       catch (Exception e) {
-              DLALoaderException e2 = (DLALoaderException)
-                  dlaExceptionFactory.getException(RunException, e);
-              throw e2;
+		  DLALoaderException e2 = (DLALoaderException)
+			  dlaExceptionFactory.getException(RunException, e);
+		  throw e2;
       }
       try {
-              logger.logdInfo("Performing post processing", true);
-              postprocess();
-              qcDBMgr.closeResources();
-              loadDBMgr.closeResources();
+		  logger.logdInfo("Performing post processing", true);
+		  postprocess();
+		  qcDBMgr.closeResources();
+		  loadDBMgr.closeResources();
       }
       catch (Exception e) {
-              DLALoaderException e2 = (DLALoaderException)
-                  dlaExceptionFactory.getException(PostProcessException, e);
-              throw e2;
+		  DLALoaderException e2 = (DLALoaderException)
+			  dlaExceptionFactory.getException(PostProcessException, e);
+		  throw e2;
       }
 
       OutputManager.close();

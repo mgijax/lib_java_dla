@@ -5,9 +5,6 @@ import org.jax.mgi.dbs.mgd.dao.MGI_Reference_AssocState;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.cache.CacheException;
-import org.jax.mgi.shr.cache.KeyNotFoundException;
-
-
 
 /**
  * An object that resolves PubMed RefAssocRawAttributes
@@ -62,11 +59,10 @@ public class SeqRefAssocProcessor {
      *         association attributes. This object may be null.
      * @throws CacheException if error resolving references
      * @throws DBException if error resolving references
-     * @throws KeyNotFoundException if error resolving references
      */
     public MGI_Reference_AssocState process(
         RefAssocRawAttributes rawRef, Integer objectKey)
-        throws KeyNotFoundException, DBException, CacheException
+        throws DBException, CacheException
     {
 
         // reset state

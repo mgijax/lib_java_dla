@@ -53,8 +53,8 @@ public class PointCoordSelector {
 	        // if strand == "+"
 	        else {
 		    pointCoord = larger;
-		}    
-	    }
+            }
+        }
 	    // if vector end is DOWNSTREAM
 	    else {
 		if (strand.equals("-")) {

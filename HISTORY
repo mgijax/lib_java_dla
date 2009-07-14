@@ -1,7 +1,110 @@
+TAG: lib_java_dla-4-3-0-1
+DATE: 07/14/2009
+STAFF: sc
+CHANGES: Merge tr7493 to trunk 
+
+TAG: lib_java_dla-gtlf-13
+DATE: 07/14/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 7
+1) In line documentation
+
+TAG: lib_java_dla-gtlf-12
+DATE: 07/08/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 7
+1) DBGSSGeneTrapAlleleProcessor - added reporting of MCL ldb
+   in CellLineIDInAlleleNomenException
+
+TAG: lib_java_dla-gtlf-11
+DATE: 07/01/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 6
+1) DBGSSGeneTrapAlleleSequenceProcessor, set sequences processed
+   filewriter to 'append' 
+
+TAG: lib_java_dla-gtlf-10
+DATE: 06/23/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 6
+1) Support for updating sequences from deleted to active:
+a) GeneTrapLoadCfg - added get method for SEQUENCES_PROCESSED
+b) DBGSSGeneTrapAlleleSequenceProcessor 
+- added BufferedWriter to write out sequence keys processed
+- implemented postprocess to close writer
+c) DBGSSGeneTrapAlleleProcessor - added empty implementation of
+  preprocess and postprocess
+d) AlleleSequenceProcessor - added abstract postprocess method
+e) AlleleProcessor - added abstract pre and post process methods
+f) ALOInputProcessor - added postprocess method which calls other
+  processor postprocess methods
+g) ALOLoader.java - call ALOInputProcessor.postprocess
+
+2) indentation updates
+a) DLALoader 
+b) DBGSSGeneTrapAlleleSequenceProcessor
+
+3) reporting
+a) DBGSSGeneTrapAlleleSequenceProcessor - added call to lookups 
+ to resolve allele/marker keys to symbols for reporting
+
+4) MCL object identity
+a) MutantCellLineProcessor - use logicalDB, not creator
+  for object identity
+b) MutantCellLineLookupByCellLineID - update query to use logicalDB
+ instead of creator
+
+TAG: lib_java_dla-gtlf-9
+DATE: 06/23/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 5
+1) fix to package statements in some classes
+2) DBGSSGeneTrapAlleleProcessor - Use cell line id AND creator for 
+   object identity in the database
+3) MutantCellLineLookupByCellLineID = use cell line id AND creator
+   as lookup key
+
+TAG: lib_java_dla-gtlf-8
+DATE: 06/19/2009
+STAFF: sc
+CHANGES: TR7493 - Post DevBuild 5
+1) DBGSSGeneTrapInterpreter - load ref assoc type changed to allele original
+
+TAG: lib_java_dla-gtlf-7
+TAG: lib_java_dla-gtlf-6
+TAG: lib_java_dla-gtlf-5
+TAG: lib_java_dla-gtlf-4
+DATE: 06/17/2009
+STAFF: sc
+CHANGES: TR7493 - Post Dev Build 5
+1) moved all genetrapload java classes here
+
+TAG: lib_java_dla-gtlf-3
+DATE: 03/13/2009
+STAFF: sc
+CHANGES: TR7493
+1) GBFormatInterpreter - fixed bug whereby the comment instance
+    variable was not getting reset (new StringBuffer) and each
+    new comment was getting appended 
+
+TAG: lib_java_dla-gtlf-2
+TAG: lib_java_dla-gtlf-1
+DATE: 03/13/2009
+STAFF: sc
+CHANGES: TR7493
+1) CoordinateInputProcessor - updated for load mode
+2) CoordInDatabaseException - added to support add load mode
+3) CoordloaderConstants - added to support load mode
+4) RefAssocAttributeResolver and SeqRefAssocProcessor - 
+	removed throw of KeyNotFoundException, doesn't throw it
+5) CoordLoadCfg -  added COORD_LOAD_MODE
+6) CoordLoader - updated for load mode
+7) VectorEndExtractor, removed
+
 TAG: lib_java_dla-gtlf-BP
 DATE: 03/13/2009
 STAFF: sc
-CHANGES:
+CHANGES: TR7493
 
 TAG: lib_java_dla-4-1-2-2
 DATE: 10/19/2008

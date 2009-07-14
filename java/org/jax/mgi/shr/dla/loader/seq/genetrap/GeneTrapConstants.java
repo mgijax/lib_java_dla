@@ -9,7 +9,6 @@ package org.jax.mgi.shr.dla.loader.seq.genetrap;
 *       <LI> Gene trap providers
 *   </UL>
 *   </UL>
-* @does Nothing
 * @company The Jackson Laboratory
 * @author sc
 * @version 1.0
