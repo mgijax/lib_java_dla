@@ -1,3 +1,10 @@
+TAG: lib_java_dla-4-3-0-2
+DATE: 07/14/2009
+STAFF: sc
+CHANGES: TR7493 Alpha
+1) DBGSSGeneTrapInterpreter - set reverse compliment to no for
+   TIGEM sequences
+
 TAG: lib_java_dla-4-3-0-1
 DATE: 07/14/2009
 STAFF: sc

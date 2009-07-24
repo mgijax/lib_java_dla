@@ -648,7 +648,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 		// if TIGM 'no' all others 'yes' 
 		String reverseComp = "yes";
-		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
+				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM)) {
 			reverseComp = "no";
 		}
 		seqGTRaw.setIsReverseComp(reverseComp);
