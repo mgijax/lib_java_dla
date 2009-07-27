@@ -1,3 +1,16 @@
+TAG: lib_java_dla-4-3-0-3
+DATE: 07/27/2009
+STAFF: sc
+CHANGES: TR7493 Alpha
+1) fix bug which is creating new MAP_Coordinate objects
+   when one already exists in ADD mode
+   a) CoordMapProcessor - replaced setCollectionKey with initCollection 
+      method which also creates the collection cache removed creation 
+      of collection cache from constructor - we don't have a collection 
+	key at this point because the subclass is defined in configuration
+        therefore cannot take a parameter
+   b) CoordinateInputProcessor call mapProcessor.initCollection(collectionKey);
+
 TAG: lib_java_dla-4-3-0-2
 DATE: 07/14/2009
 STAFF: sc

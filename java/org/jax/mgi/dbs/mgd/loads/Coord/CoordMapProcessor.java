@@ -12,11 +12,13 @@ import org.jax.mgi.shr.dla.loader.coord.*;
 
 /**
  * A base class that provides attributes common to all CoordMapProcessors
- * @abstract defines the process, setMGITypeKey, and setCollectionKey method
+ * @abstract defines the process and setMGITypeKey method
  * signatures.
- * @notes since the name of the subclass is configured, an instance of which is created by the
- * Configuration class, it cannot take constructor parameters therefore
- * we provide the abstract methods setMGITypeKey, and setCollectionKey method
+ * @notes since the name of the subclass is configured, an instance of which is 
+ * created by the Configuration class, it cannot take constructor parameters
+ * therefore we provide the abstract method setMGITypeKey. In addition
+ * only the creator of this class know what collection so we implement the
+ * initCollection method
  * @has
  * <UL>
  * <LI>CoordMapKeyCache full cache loaded with maps from this loads collection
@@ -46,7 +48,7 @@ public abstract class CoordMapProcessor {
     protected CoordMapResolver resolver;
 
     /**
-      * Constructs a CoordMapProcessor
+      * Constructs a CoordMapProcessor with a null collection key
       * @throws ConfigException thrown if there is an error creating configurator
       * @throws DBException thrown if there is an error creating the cache or resolver
       * @throws CacheException thrown if there is an error creating the cache or resolver
@@ -56,10 +58,26 @@ public abstract class CoordMapProcessor {
     public CoordMapProcessor() throws ConfigException,
         DBException, CacheException, TranslationException {
         coordCfg = new CoordLoadCfg();
-        setMGITypeKey();
-        cache = new CoordMapKeyCache(collectionKey, coordCfg.getMapVersion(),MGITypeKey);
+		setMGITypeKey();
         resolver = new CoordMapResolver();
     }
+	
+
+	/**
+	 * sets the collection key and initializes the collection cache; only the
+	 * creator of a CoordMapProcessor knows which Collection
+	 * @param collKey
+	 * @throws org.jax.mgi.shr.dbutils.DBException
+	 * @throws org.jax.mgi.shr.cache.CacheException
+	 * @throws org.jax.mgi.shr.config.ConfigException
+	 */
+
+	public void initCollection(Integer collKey)
+		throws DBException, CacheException, ConfigException {
+
+		this.collectionKey = collKey;
+		cache = new CoordMapKeyCache(collectionKey, coordCfg.getMapVersion(),MGITypeKey);
+	}
     /**
       * method provided for subclasses to implement map processing
       * to get an existing map key or create a new map
@@ -80,12 +98,7 @@ public abstract class CoordMapProcessor {
         throws CacheException, DBException, KeyNotFoundException,
         ConfigException, TranslationException;
 
-    /**
-     * The following two methods exist because an instance of a subclass is
-     * created by a Configurator and cannot take parameters. setMTIType is absract
-     * because only the subclass knows the MGIType. setCollectionKey is implemented
-     * because only the creator of the subclass knows which collection.
-     */
+    
 
     /**
      * method provided for subclasses to set their particular MGIType, this
@@ -94,11 +107,5 @@ public abstract class CoordMapProcessor {
      */
     public abstract void setMGITypeKey();
 
-    /**
-     *  set the collection key for this processors
-     * @param collKey collection key
-     */
-    public void setCollectionKey(Integer collKey) {
-        collectionKey = collKey;
-    }
+    
 }

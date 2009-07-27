@@ -97,7 +97,7 @@ public class CoordLoader extends DLALoader {
      */
     public void initialize() throws MGIException {
         loadCfg = new CoordLoadCfg();
-	loadMode = loadCfg.getLoadMode();
+		loadMode = loadCfg.getLoadMode();
         processMultiples = loadCfg.getCoordRepeatsOk();
         collectionLookup =  new CoordMapCollectionKeyLookup();
 	
@@ -160,7 +160,7 @@ public class CoordLoader extends DLALoader {
 	
 	if (loadMode.equals(CoordloaderConstants.DELETE_RELOAD_MODE)) {
 	    // delete collection, maps, features (coordinates)
-            coordProcessor.deleteCoordinates();
+        coordProcessor.deleteCoordinates();
 	    // create new collection
 	    coordProcessor.createCollection(null);
 	}
@@ -197,47 +197,47 @@ public class CoordLoader extends DLALoader {
 
        // iterate thru the records and process them
        while(iterator.hasNext()) {
-	   totalProcessedCtr++;
-           if (totalProcessedCtr  > 0 && totalProcessedCtr % 100 == 0) {
-               logger.logdInfo("Processed " + totalProcessedCtr + " input records", false);
-           }
-           // get the next CoordinateInput object
-           input = (CoordinateInput)iterator.next();
-	   String currentObjectID = input.getCoordMapFeatureRawAttributes().
-                       getObjectId();
-           logger.logdDebug(currentObjectID, false);
+		   totalProcessedCtr++;
+		   if (totalProcessedCtr  > 0 && totalProcessedCtr % 100 == 0) {
+			   logger.logdInfo("Processed " + totalProcessedCtr + " input records", false);
+		   }
+		   // get the next CoordinateInput object
+		   input = (CoordinateInput)iterator.next();
+		   String currentObjectID = input.getCoordMapFeatureRawAttributes().
+					   getObjectId();
+		   logger.logdDebug(currentObjectID, false);
 
-	   // if we are not loading multiple coordinates per object, write
-	   // them out to a file
-           if (processMultiples.equals("false")) {
-               try {
-                   // determine if we've already processed this object
-                   if (coordIdsAlreadyProcessed.contains(currentObjectID)) {
-                       // we have an object with multiple coordinates; 
-		       // count it, write it out, go on to next record in input
-                       totalMultiplesCtr++;
-                       multipleObjectWriter.write(input.
-                                             getCoordMapFeatureRawAttributes().
-                                             getRecord() + "\n");
-                       logger.logdDebug("Object has multiple coordinates/re: " + currentObjectID);
-                       continue;
-                   }
-                   else {
-                       // add the coordinate id to the set we have processed
-                       coordIdsAlreadyProcessed.add(currentObjectID);
-                   }
-               }
-               catch (IOException e) {
-                   throw new MGIException(e.getMessage());
-               }
-           }
-	   try {
-	       coordProcessor.processInput(input);
-	       totalLoadedCtr++;
-	   } catch (CoordInDatabaseException e) {
-		logger.logcInfo("Coordinate already in database for object: " + 
-		    currentObjectID, false);
-	   }
+		   // if we are not loading multiple coordinates per object, write
+		   // them out to a file
+		   if (processMultiples.equals("false")) {
+			   try {
+				   // determine if we've already processed this object
+				   if (coordIdsAlreadyProcessed.contains(currentObjectID)) {
+					   // we have an object with multiple coordinates;
+			   // count it, write it out, go on to next record in input
+					   totalMultiplesCtr++;
+					   multipleObjectWriter.write(input.
+											 getCoordMapFeatureRawAttributes().
+											 getRecord() + "\n");
+					   logger.logdDebug("Object has multiple coordinates/re: " + currentObjectID);
+					   continue;
+				   }
+				   else {
+					   // add the coordinate id to the set we have processed
+					   coordIdsAlreadyProcessed.add(currentObjectID);
+				   }
+			   }
+			   catch (IOException e) {
+				   throw new MGIException(e.getMessage());
+			   }
+		   }
+		   try {
+			   coordProcessor.processInput(input);
+			   totalLoadedCtr++;
+		   } catch (CoordInDatabaseException e) {
+			logger.logcInfo("Coordinate already in database for object: " +
+				currentObjectID, false);
+		   }
        }
        loadStopWatch.stop();
        totalProcessTime = loadStopWatch.time();

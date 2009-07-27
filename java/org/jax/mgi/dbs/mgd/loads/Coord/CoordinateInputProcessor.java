@@ -106,24 +106,24 @@ public class CoordinateInputProcessor {
         coordCfg = new CoordLoadCfg();
         collectionName = coordCfg.getMapCollectionName();
         collectionAbbrev = coordCfg.getMapCollectionAbbrev();
-	loadMode = coordCfg.getLoadMode();
+		loadMode = coordCfg.getLoadMode();
 
         // set collection abbreviation to the name value if not configured
         if(collectionAbbrev == null || collectionAbbrev.equals("")) {
                 collectionAbbrev = collectionName;
         }
-	//collectionLookup =  new CoordMapCollectionKeyLookup();
+		//collectionLookup =  new CoordMapCollectionKeyLookup();
 	
         // create an instance of a CoordMapProcessor from configuration
         mapProcessor = (CoordMapProcessor)coordCfg.getMapProcessorClass();
-	Integer mgiTypeKey = new MGITypeLookup().lookup(
+		Integer mgiTypeKey = new MGITypeLookup().lookup(
             coordCfg.getFeatureMGIType());
         featureResolver = new CoordMapFeatureResolver();
-	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE)) {
-	    featureLookup = new CoordMapFeatureKeyLookup(collectionName, 
-		mgiTypeKey);
-	}
-	logger = DLALogger.getInstance();
+		if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE)) {
+			featureLookup = new CoordMapFeatureKeyLookup(collectionName,
+			mgiTypeKey);
+		}
+		logger = DLALogger.getInstance();
     }
     /**
      * deletes the collection, all coordinate maps and features for the
@@ -165,26 +165,26 @@ public class CoordinateInputProcessor {
         Integer mapKey = mapProcessor.process(
                 input.getCoordMapRawAttributes(), coordinate);
 
-	// get Feature Raw attributes
-	CoordMapFeatureRawAttributes featureRaw = 
-	    input.getCoordMapFeatureRawAttributes();
-	String objectID = featureRaw.getObjectId();
-	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) && 
-	    featureLookup.lookup(objectID) != null) {
-	    CoordInDatabaseException e = new CoordInDatabaseException();
-	    e.bindRecordString(objectID);
-	    throw e;
-	}
-        // resolve the feature
-	MAP_Coord_FeatureState state;
-	try {
-            state = featureResolver.resolve(
-            featureRaw, mapKey);
-	}
-	catch (KeyNotFoundException e) {
-	    logger.logcInfo(e.getMessage(), true);
-    	    return;
-	}
+		// get Feature Raw attributes
+		CoordMapFeatureRawAttributes featureRaw =
+			input.getCoordMapFeatureRawAttributes();
+		String objectID = featureRaw.getObjectId();
+		if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) &&
+			featureLookup.lookup(objectID) != null) {
+			CoordInDatabaseException e = new CoordInDatabaseException();
+			e.bindRecordString(objectID);
+			throw e;
+		}
+			// resolve the feature
+		MAP_Coord_FeatureState state;
+		try {
+				state = featureResolver.resolve(
+				featureRaw, mapKey);
+		}
+		catch (KeyNotFoundException e) {
+			logger.logcInfo(e.getMessage(), true);
+				return;
+		}
 
         // set the feature in the coordMap object
         coordinate.setCoordMapFeatureState(state);
@@ -223,30 +223,33 @@ public class CoordinateInputProcessor {
      * @throws DBException if errors creating or inserting collection DAO
      * @throws ConfigException if error collection DAO
      */
-   public void createCollection (Integer collectionKey) throws DBException, ConfigException {
+   public void createCollection (Integer collectionKey) throws DBException,
+		   CacheException, ConfigException {
 	
         if (collectionKey != null) {
-	    this.collectionKey = collectionKey;
-	    mapProcessor.setCollectionKey(collectionKey);
-	    return;
+			this.collectionKey = collectionKey;
+			
+			mapProcessor.initCollection(collectionKey);
+			return;
+		}
+		// otherwise create a new collection
+		MAP_Coord_CollectionState collection = new MAP_Coord_CollectionState();
+
+		// set the collection name and abbreviation
+		collection.setName(collectionName);
+		collection.setAbbreviation(collectionAbbrev);
+
+		// create the dao
+		MAP_Coord_CollectionDAO dao = new MAP_Coord_CollectionDAO(collection);
+
+		// get the collection key from the dao
+		collectionKey = dao.getKey().getKey();
+
+		// insert the collection
+		mgdStream.insert(dao);
+		// we have to explicitly set the collection key in the CoordMapProcessor
+		// because it is configured; Configurator does not take parameter
+
+		mapProcessor.initCollection(collectionKey);
 	}
-	// otherwise create a new collection
-	MAP_Coord_CollectionState collection = new MAP_Coord_CollectionState();
-
-	// set the collection name and abbreviation
-	collection.setName(collectionName);
-	collection.setAbbreviation(collectionAbbrev);
-
-	// create the dao
-	MAP_Coord_CollectionDAO dao = new MAP_Coord_CollectionDAO(collection);
-
-	// get the collection key from the dao
-	collectionKey = dao.getKey().getKey();
-
-	// insert the collection
-	mgdStream.insert(dao);
-        // we have to explicitly set the collection key in the CoordMapProcessor
-        // because it is configured; Configurator does not take parameters
-        mapProcessor.setCollectionKey(collectionKey);
-    }
 }

@@ -60,7 +60,7 @@ public class ChromosomeCoordMapProcessor extends CoordMapProcessor {
      */
 
     public void setMGITypeKey() {
-        MGITypeKey = new Integer(MGITypeConstants.CHROMOSOME);
+		MGITypeKey = new Integer(MGITypeConstants.CHROMOSOME);
     }
 
     /**
@@ -80,6 +80,7 @@ public class ChromosomeCoordMapProcessor extends CoordMapProcessor {
      * @throws TranslationException - if translation errors resolving
      * @throws KeyNotFoundException
      */
+
 
     public Integer process(CoordMapRawAttributes rawAttr, Coordinate coordinate)
            throws CacheException, DBException, KeyNotFoundException,
