@@ -48,7 +48,9 @@ public class ALOLoader extends DLALoader {
 	// count of ALO records which are repeated in the input
 	private int repeatALOCt = 0;
 
-	// count of ALO records with errors
+    // write out records skipped because couldn't be resolved
+    private BufferedWriter unresolvedWriter;
+	// count of ALO records with resolving errors
 	private int errorCt = 0;
 
 	// current number of valid ALOs looked at
@@ -73,21 +75,28 @@ public class ALOLoader extends DLALoader {
 	 * @throws MGIException if errors occur during initialization
 	 */
 	public void initialize() throws MGIException {
-		loadCfg = new ALOLoadCfg();
+   		loadCfg = new ALOLoadCfg();
 		//System.out.println("Initializing ALOLoader");
 		factory = ALOLoaderAbstractFactory.getFactory();
 		if (factory == null) {
 			throw new MGIException("Invalid LOAD_PROVIDER configuration setting");
 		}
+        //System.out.println("Getting data iterator");
 		iterator = factory.getDataIterator();
+        //System.out.println("Initializing ALOInputProcessor");
 		processor = new ALOInputProcessor(loadStream);
 		try {
+            //System.out.println("Creating repeatWriter");
 			// writes records repeated in the input
 			repeatWriter = new BufferedWriter(new FileWriter(loadCfg.getRepeatFileName()));
+            //System.out.println("Creating unresolved writer");
+            // writes records  with errors so they may be processed later
+            unresolvedWriter = new BufferedWriter(new FileWriter(loadCfg.getUnresolvedRecordFileName()));
 		} catch (IOException e) {
 			MGIException e1 = new MGIException(e.getMessage());
 			throw e1;
 		}
+        //System.out.println("Initializing curator log");
 		logger.logcInfo("Initializing curator log", true);
 	}
 
@@ -125,31 +134,76 @@ public class ALOLoader extends DLALoader {
 				}
 			} catch (ALOResolvingException e) {
 				errorCt++;
-				logger.logcInfo(e.getMessage(), false);
-			} catch (DerivationProcessorException e) {
+                logger.logcInfo(e.getMessage(), false);
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+            } catch (DerivationProcessorException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (DerivationNameCreatorException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (DerivationNameCreatorException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (SeqAssocWithAlleleException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (SeqAssocWithAlleleException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (SeqAssocWithMarkerException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (SeqAssocWithMarkerException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (MutantCellLineAlleleException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (MutantCellLineAlleleException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (SequenceNotInDatabaseException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (SequenceNotInDatabaseException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (CellLineIDInAlleleNomenException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (CellLineIDInAlleleNomenException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
-			} catch (AlleleMutationProcessorException e) {
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
+        } catch (AlleleMutationProcessorException e) {
 				errorCt++;
 				logger.logcInfo(e.getMessage(), false);
+                try {
+                    unresolvedWriter.write(rawInput.getInputRecord() + ALOLoaderConstants.CRT);
+                } catch (IOException e1) {
+					throw new MGIException(e1.getMessage());
+				}
 			}
 
 			inputRcdCt++;
@@ -167,7 +221,7 @@ public class ALOLoader extends DLALoader {
 	 * @throws MGIException if errors occur during preprocessing
 	 */
 	protected void postprocess() throws MGIException {
-        System.out.println("Postprocessing ALOLoader");
+        //System.out.println("Postprocessing ALOLoader");
         processor.postprocess();
 		
         // executes bcp and any sql script
@@ -175,6 +229,7 @@ public class ALOLoader extends DLALoader {
 		try {
 			// close repeat writer
 			repeatWriter.close();
+            unresolvedWriter.close();
 		} catch (IOException e) {
 			throw new MGIException(e.getMessage());
 		}
@@ -196,14 +251,16 @@ public class ALOLoader extends DLALoader {
 		logger.logdInfo("Total ALOs added: " + newCt, false);
         logger.logdInfo("Total ALOs in database (may have been updated): " + existingCt, false);
 		logger.logdInfo("Total ALOs repeated in the input: " + repeatALOCt, false);
-		logger.logdInfo("Total ALOs Not Loaded. Discrepancies written to curator " +
+		logger.logdInfo("Total ALOs Not Loaded. Sequences written to " +
+                "Unresolved file, discrepancies written to curator " +
 				"log: " + errorCt, false);
 
 		logger.logpInfo("Total input records processed: " + inputRcdCt, false);
         logger.logpInfo("Total ALOs added: " + newCt, false);
 		logger.logpInfo("Total ALOs in database (may have been updated): " + existingCt, false);
 		logger.logpInfo("Total ALOs repeated in the input: " + repeatALOCt, false);
-		logger.logpInfo("Total ALOs Not Loaded. Discrepancies written to curator " +
+		logger.logpInfo("Total ALOs Not Loaded. Sequences written to " +
+                "Unresolved file, discrepancies written to curator " +
 				"log: " + errorCt, false);
 	}
 }

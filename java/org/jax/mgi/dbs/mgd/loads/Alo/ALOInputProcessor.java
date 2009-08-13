@@ -90,12 +90,15 @@ public class ALOInputProcessor {
 
 		// configurator to lookup logicalDB
 		config = new ALOLoadCfg();
-
+        //System.out.println("ALOInputProcessor getting factory");
 		factory = ALOLoaderAbstractFactory.getFactory();
 
 		jobStreamName = config.getJobstreamName();
+        //System.out.println("ALOInputProcessor getting MCLProcessor from factory");
 		mclProcessor = factory.getMCLProcessor();
+        //System.out.println("ALOInputProcessor getting AlleleProcessor from factory");
 		alleleProcessor = factory.getAlleleProcessor();
+        //System.out.println("ALOInputProcessor getting AlleleSeqProcessor from factory");
 		alleleSeqProcessor = factory.getAlleleSequenceProcessor();
 	}
 
@@ -177,7 +180,7 @@ public class ALOInputProcessor {
 	}
 
     public void postprocess() throws MGIException {
-		System.out.println("Postprocessing ALOInputProcessor");
+		//System.out.println("Postprocessing ALOInputProcessor");
         alleleProcessor.postprocess();
         alleleSeqProcessor.postprocess();
     }

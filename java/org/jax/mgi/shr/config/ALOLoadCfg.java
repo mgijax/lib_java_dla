@@ -109,6 +109,14 @@ public class ALOLoadCfg extends Configurator {
 	public String getRepeatFileName() throws ConfigException {
 		return getConfigString("REPEAT_FILE_NAME");
 	}
+/**
+	 * Gets name file which to write records which did not resolve
+	 * @return The name of the repeated allele record output file
+	 * @throws ConfigException if "UNRESOLVED_FILE_NAME" not found in configuration
+	 */
+	public String getUnresolvedRecordFileName() throws ConfigException {
+		return getConfigString("UNRESOLVED_FILE_NAME");
+	}
 
 	/**
 	 * Gets the Jobstream name
