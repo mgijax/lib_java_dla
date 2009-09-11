@@ -13,7 +13,7 @@ package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
 public class DBGSSGeneTrapLoaderConstants {
    
-    // provider badnames
+    // creator badnames
     public static final String BAYGENOMICS = "BayGenomics";
     public static final String SIGTR = 
 	"Sanger Institute Gene Trap Resource - SIGTR";
@@ -26,6 +26,8 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String GGTC = "GGTC";
     public static final String TIGM = 
 	"Richard H. Finnell at Texas Institute for Genomic Medicine";
+    public static final String EUCOMM =
+            "European Conditional Mouse Mutagenesis Program (EUCOMM)";
     
     // reverse complement values
     public static final String REVERSE_COMP_TRUE = "yes";
@@ -37,6 +39,7 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String IGTC_SEQ_LDB = "IGTC";
     public static final String LEXICON_SEQ_LDB = "Lexicon Genetics";
     public static final String TIGM_SEQ_LDB = "TIGM";
+    public static final String EUCOMM_SEQ_LDB = "EUCOMM-GTtag";
     
     // cell line ID association to cell line logical db names
     public static final String TIGM_CL_LDB = "TIGM Cell Line";
@@ -49,12 +52,15 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String TIGEM_LDB = "TIGEM";
     public static final String EGTC_LDB = "EGTC";
     public static final String GGTC_LDB = "GGTC";
+    public static final String EUCOMM_CL_LDB = "EUCOMM-GTcellline";
     
-    // sequence tag method bad names in lower case (i.e. how they are in dbGSS
+    // sequence tag method bad names in lower case (i.e. how they are in dbGSS)
     public static final String INVERSEPCR = "inverse pcr";
     public static final String PLASMRESCUE = "plasmid rescue";
     public static final String SPLINK5 = "5'splinkerette pcr";
     public static final String SPLINK3 = "3'splinkerette pcr";
+    public static final String SPLINK5_EUCOMM = "5spk";
+    public static final String SPLINK3_EUCOMM = "3spk";
     public static final String RACE5_1 = "5' race";
     public static final String RACE3_1 = "3' race";
     public static final String RACE5_2 = "5'race";
