@@ -633,7 +633,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		String seqType = sequenceRaw.getType();
 
 		String seqTagMethod = getSeqTagMethod(seqInput, seqTagID);
-                + seqTagID + " seqTagMethod" + seqTagMethod);
 		KeyValue kv = veClExtractor.extract(seqTagID, this.rawCreator,
 				seqTagMethod, seqType);
 
