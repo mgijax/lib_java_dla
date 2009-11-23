@@ -1,6 +1,9 @@
 package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
 import org.jax.mgi.shr.cache.KeyValue;
+import org.jax.mgi.shr.stringutil.StringLib;
+
+import java.util.ArrayList;
 
 /**
  * determines the vector_end of a sequence tag
@@ -15,18 +18,22 @@ import org.jax.mgi.shr.cache.KeyValue;
 public class VectorEndCellLineIDExtractor {
     
     // TIGM vector end values from sequence tag id
-    private static String TIGM_HMF = "HMF";
-    private static String TIGM_BBF = "BBF";
-    private static String TIGM_HMR = "HMR";
-    private static String TIGM_BBR = "BBR";
+    private static final String TIGM_HMF = "HMF";
+    private static final String TIGM_BBF = "BBF";
+    private static final String TIGM_HMR = "HMR";
+    private static final String TIGM_BBR = "BBR";
    
     // ESDB vector end values from sequence tag id
-    private static String ESDB_NL = "-NL";
-    private static String ESDB_NR = "-NR";
+    private static final String ESDB_NL = "-NL";
+    private static final String ESDB_NR = "-NR";
     
     // GGTC vector end values from sequence tag id
-    private static String GGTC_5S = "5S";
-    private static String GGTC_3S = "3S";
+    private static final String GGTC_5S = "5S";
+    private static final String GGTC_3S = "3S";
+
+    // EUCOMM vector end values from sequence tag id
+    private static final String EUCOMM_5 = "5SPK";
+    private static final String EUCOMM_3 = "3SPK";
 
 
      /**
@@ -62,17 +69,19 @@ public class VectorEndCellLineIDExtractor {
 		    clIdToVectorEnd = processTIGM(seqTagId, seqTagMethod); 
 	    }
 	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.ESDB)) {
-		clIdToVectorEnd = processESDB(seqTagId, seqTagMethod);
+            clIdToVectorEnd = processESDB(seqTagId, seqTagMethod);
 	    }
 	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.GGTC)) {
-		clIdToVectorEnd = processGGTC(seqTagId, seqTagMethod);
+            clIdToVectorEnd = processGGTC(seqTagId, seqTagMethod);
 	    }
 	    else if  (creatorName.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
 		// EGTC DNA seq with no vector end specified
-		//System.out.println("EGTC");
-	   	clIdToVectorEnd = new KeyValue(seqTagId, 
+            clIdToVectorEnd = new KeyValue(seqTagId,
 		    DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED);
 	    }
+        else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+           clIdToVectorEnd = processEUCOMM(seqTagId);
+        }
 	}
 	return clIdToVectorEnd;
     }
@@ -82,7 +91,7 @@ public class VectorEndCellLineIDExtractor {
      * @param seqTagId - the sequence tag id from which to determine the vector
      * end information
      * @param seqTagMethod - the sequence tag method
-     * @return vector end or null
+     * @return KeyValue containing cellLineId and vector end
 	 * @throws NoVectorEndException if seqTagId contains no vector end
      * @note example of TIGM sequence tag id: IST10126BBR1
      */
@@ -104,7 +113,6 @@ public class VectorEndCellLineIDExtractor {
 
              ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
              index = seqTagId.indexOf(TIGM_BBF);
-              //System.out.println("In TIGM_BBF vector end is " + ve + " index is " + index);
              }
              else if (seqTagId.indexOf(TIGM_BBR) != -1) {
              ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
@@ -127,7 +135,7 @@ public class VectorEndCellLineIDExtractor {
      * @param seqTagId - the sequence tag id from which to determine the vector
      * end information
      * @param seqTagMethod - the sequence tag method
-     * @returns vector end or null 
+     * @returns KeyValue containing cellLineId and vector end
      * @note examples of ESDB sequence tag id:
      * <UL>
      * <LI> PST2612-NR, PST2612-NR
@@ -140,16 +148,16 @@ public class VectorEndCellLineIDExtractor {
         if (seqTagMethod.toLowerCase().equals(
             DBGSSGeneTrapLoaderConstants.PLASMRESCUE)) {
             if(seqTagId.indexOf(ESDB_NL) != -1) {
-            ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
-            index = seqTagId.indexOf(ESDB_NL);
+                ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+                index = seqTagId.indexOf(ESDB_NL);
             }
             else if (seqTagId.indexOf(ESDB_NR) != -1) {
                 ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
-            index = seqTagId.indexOf(ESDB_NR);
+                index = seqTagId.indexOf(ESDB_NR);
             }
             else if (seqTagId.indexOf("-") != -1) {
-            ve = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
-            index = seqTagId.indexOf("-");
+                ve = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
+                index = seqTagId.indexOf("-");
             }
         }
         if (ve == null) {
@@ -165,7 +173,8 @@ public class VectorEndCellLineIDExtractor {
      * @param seqTagId - the sequence tag id from which to determine the vector
      * end information
      * @param seqTagMethod - the sequence tag method
-     * @returns vector end or null 
+     * @returns KeyValue containing cellLineId and vector end
+     * @throws NoVectorEndException if seqTagId contains no vector end
      * @note example of GGTC sequence tag id: 3SP126F08
      */
     private KeyValue processGGTC(String seqTagId, String seqTagMethod) 
@@ -190,5 +199,35 @@ public class VectorEndCellLineIDExtractor {
         }
             String cellLineId = seqTagId.substring(index + 2);
             return new KeyValue(cellLineId, ve);
+    }
+    /**
+     * Determines vector end information for EUCOMM
+     * @throws 
+     * @param seqTagId - the sequence tag id from which to determine the vector
+     * end information
+     * @param seqTagMethod - the sequence tag method
+     * @returns KeyValue containing cellLineId and vector end
+     * @throws NoVectorEndException if seqTagMethod contains no vector end
+     * @note example of EUCOMM sequence tag id: EUCE0163h02.q1ka5SPK
+     *       from this we get cell line id: EUCE0163h02 and upstream
+     *       vector end 
+     */
+    private KeyValue processEUCOMM(String seqTagId)
+            throws NoVectorEndException {
+        String cellLineId = (String)(StringLib.split(seqTagId, ".")).get(0);
+        String ve = null;
+        if (seqTagId.indexOf(EUCOMM_3) != -1) {
+            ve = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+        }
+        else if (seqTagId.indexOf(EUCOMM_5) != -1) {
+
+            ve = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+        }
+        if (ve == null ) {
+            NoVectorEndException e = new NoVectorEndException();
+            e.bindRecordString(seqTagId);
+            throw e;
+        }
+        return new KeyValue(cellLineId, ve);
     }
 }

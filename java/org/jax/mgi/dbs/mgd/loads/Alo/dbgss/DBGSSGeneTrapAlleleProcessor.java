@@ -7,9 +7,11 @@ import org.jax.mgi.dbs.mgd.loads.Alo.*;
 import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.*;
 import org.jax.mgi.dbs.mgd.loads.Alo.AlleleLookupByMutantCellLineKey;
 import org.jax.mgi.dbs.mgd.lookup.PubMedIDLookupByAlleleKey;
+import org.jax.mgi.dbs.mgd.lookup.LabNameAndCodeLookupByRawCreator;
 import org.jax.mgi.dbs.mgd.query.AlleleSymbolQuery;
 import org.jax.mgi.dbs.mgd.query.AlleleSynonymQuery;
 import org.jax.mgi.shr.cache.CacheException;
+import org.jax.mgi.shr.cache.KeyValue;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DataIterator;
 import org.jax.mgi.shr.dbutils.DBException;
@@ -20,6 +22,7 @@ import org.jax.mgi.shr.exception.MGIException;
 
 import java.util.Iterator;
 import java.util.HashSet;
+//import java.util.Collection;
 
 /**
  * An object that processes dbGSS Gene Trap allele information by resolving
@@ -45,6 +48,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	private PubMedIDLookupByAlleleKey pubMedLookup;
 	private HashSet alleleSymbolsInDB;
 	private HashSet alleleSynonymsInDB;
+	private LabNameAndCodeLookupByRawCreator labCodeLookup;
 
 	/**
 	 * Constructs a DBGSSGeneTrapAlleleProcessor
@@ -59,6 +63,18 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		alleleLookup.initCache();
 		mclLookup = new MutantCellLineLookupByAlleleKey();
 		pubMedLookup = new PubMedIDLookupByAlleleKey();
+		labCodeLookup = 
+		    new LabNameAndCodeLookupByRawCreator();
+		labCodeLookup.initCache();
+		//logger.logdInfo("labCodeLookupKeys: " + labCodeLookup.getCache().keySet().toString(), false);
+        //System.out.println("labCodeLookupKeys: " + labCodeLookup.getCache().keySet().toString());
+        //Collection values = labCodeLookup.getCache().values();
+        /*for (Iterator i = values.iterator();i.hasNext();) {
+                KeyValue kv = (KeyValue)i.next();
+                logger.logdInfo("Key: " + kv.getKey() + " Value: " + kv.getValue(), false);
+                System.out.println("Key: " + kv.getKey() + " Value: " + kv.getValue());
+        }*/
+		
 		initSymbolSets();
 	}
 
@@ -159,7 +175,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 *              which was found in the database.NOTE: this my NOT the same
 	 *              as the cell line associated with the Allele if the allele is
 	 *              found to be in the database
-     * @assumes one MCL per allele
+	 * @assumes one MCL per allele
 	 * @return Integer alleleKey of the processed allele - may be new or existing
 	 *   in the database
 	 * @throws ALOResolvingException if errors resolving derivation or mutant
@@ -168,8 +184,8 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * @throws CacheException if errors accessing a Lookup cache
 	 * @throws DBException if errors adding to LazyCached lookups
 	 * @throws ConfigException if resolvers have errors accessing configuration
-     * @throws CellLineIDInAlleleNomenException if MCL ID found in allele
-     *          symbol or synonym
+	 * @throws CellLineIDInAlleleNomenException if MCL ID found in allele
+	 *          symbol or synonym
 	 */
 	private Integer processAlleleWithNewMCL(ALORawInput aloInput, ALO resolvedALO)
 			throws DBException, CacheException, ConfigException, DLALoggingException,
@@ -185,42 +201,51 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		Integer alleleStrainKey = clDAO.getState().getStrainKey();
 		
 		// if this method is called we know there is only one cl in the set; get
-        // it. Also get the LDB name for reporting when wefind the mcl ID in
-        // allele nomen because it may be same MCL id, but a different
+		// it. Also get the LDB name for reporting when wefind the mcl ID in
+		// allele nomen because it may be same MCL id, but a different
 		// ldb (MCL ID/LDB is object identity for MCL in database). When
 		// the MCL ID is in the allele nomen, a MCL and Allele will not be
 		// created by the load. A Curator will need to create them. 
 		CellLineRawAttributes cl = (CellLineRawAttributes)aloInput.
 				getCellLines().iterator().next();
 		String ldbName = cl.getLogicalDB();
-
+		String rawCreator = cl.getDerivation().getCreator();
+		//logger.logdInfo("Raw Creator: " + rawCreator, false);
+		//System.out.println("Raw Creator: " + rawCreator);
+		//rawCreator = rawCreator.toLowerCase();
+		//logger.logdInfo("Raw Creator lower: " + rawCreator, false);
+        //System.out.println("Raw Creator lower: " + rawCreator);
+		KeyValue kv = labCodeLookup.lookup(rawCreator);
+		String labCode = (String)kv.getValue();
 		// check for mclID in allele nomenclature
-        // search for this exact string in allele synonym
+		// search for this exact string in allele synonym
 		String mclID = clDAO.getState().getCellLine();
 
-        // search for this string in allele symbol AND synonym
-        String nomenString = "(" + mclID + ")";
-        // The symbols which contain "(mclID)"
-        StringBuffer mclIdInSymbol = new StringBuffer();
-        // the synonyms which contain "(mclID)" or ARE mclID
-        StringBuffer mclIdInSynonym = new StringBuffer();
+		// search for mclID and lab code in allele symbol AND synonym
+		String nomenString = "(" + mclID + ")";
+		// The symbols which contain "(mclID)"
+		StringBuffer mclIdInSymbol = new StringBuffer();
+		// the synonyms which contain "(mclID)" or ARE mclID
+		StringBuffer mclIdInSynonym = new StringBuffer();
 
-        // check all allele symbols
+		// check all allele symbols
 		for (Iterator i = alleleSymbolsInDB.iterator(); i.hasNext();) {
 			String symbol = (String) i.next();
 			// if "(mclID)" found in symbol, report and skip
-			if (symbol.indexOf(nomenString) != -1 ) {
+			if (symbol.indexOf(nomenString) != -1 && 
+			    symbol.indexOf(labCode) != -1) {
 				mclIdInSymbol.append(symbol);
                 mclIdInSymbol.append(" ");
 			}
 		}
-        // check all allele synonyms
+		// check all allele synonyms
 		for (Iterator i = alleleSynonymsInDB.iterator(); i.hasNext();) {
 			String synonym = (String) i.next();
 			// if mcl ID is the synonym, or  "(mclID)" found in synonym report and skip
-			if (synonym.indexOf(nomenString) != -1 || synonym.equals(mclID)) {
-                mclIdInSynonym.append(synonym);
-                mclIdInSynonym.append(" ");
+			if ( (synonym.indexOf(nomenString) != -1 && 
+			    synonym.indexOf(labCode) != -1) || synonym.equals(mclID)) {
+			    mclIdInSynonym.append(synonym);
+			    mclIdInSynonym.append(" ");
 			}
 		}
         // report both symbols and synonyms
