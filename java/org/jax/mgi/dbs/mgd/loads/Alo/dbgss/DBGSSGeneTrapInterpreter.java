@@ -644,11 +644,10 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		seqGTRaw.setVectorEnd(vectorEnd);
 		seqGTRaw.setGoodHitCount(new Integer(0));
 
-		// if TIGM 'no' all others 'yes' 
+		// if TIGEM or EUCOMM 'no' all others 'yes' 
 		String reverseComp = "yes";
-		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM) ||
-                this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
 			reverseComp = "no";
 		}
 		seqGTRaw.setIsReverseComp(reverseComp);
