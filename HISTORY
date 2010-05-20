@@ -1,3 +1,10 @@
+TAG: lib_java_dla-4-3-4-1
+DATE: 05/20/2010
+STAFF: dbm
+CHANGES:
+1) shr/config/HTMLFormatterCfg.java; change shire to lindon for
+   DEFAULT_WEBURL definition (TR10039)
+
 TAG: lib_java_dla-tr9978-BP
 DATE: 12/08/2009
 STAFF:  sc
