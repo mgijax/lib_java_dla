@@ -21,7 +21,7 @@ import org.jax.mgi.shr.config.ConfigException;
 
 public class HTMLFormatterCfg extends Configurator {
 
-  private String DEFAULT_WEBURL = "shire.informatics.jax.org";
+  private String DEFAULT_WEBURL = "lindon.informatics.jax.org";
 
 
   /**
