@@ -192,6 +192,7 @@ public class Allele {
     public void compare (Allele fromDB) {
 	// if incoming attribute (this) not "null", and database attribute 
 	// different than incoming attribute, then report
+	/* commented out per Richard 8/12/2010
 	String dbMarkerSymbol = fromDB.getMarkerSymbol();
 	if (markerSymbol != null && dbMarkerSymbol != null && 
 	        !markerSymbol.equals(dbMarkerSymbol)) {
@@ -259,12 +260,19 @@ public class Allele {
 		dbIsExtinct, false);
 	 }
 	  Boolean dbIsMixed = fromDB.getIsMixed();
-      // isMixed may be null, so check, incoming gene trap alleles will always
-      // be false 
-      if (isMixed != null && dbIsMixed != null && !isMixed.equals(dbIsMixed)) {
-        logger.logcInfo("ALLELE_COMPARE: allSymbol=" + alleleSymbol +
-            " IncomingIsMixed=" + isMixed + " dbIsMixed=" + dbIsMixed, false);
-      }
+	// isMixed may be null, so check, incoming gene trap alleles will always
+	// be false 
+	if (isMixed != null && dbIsMixed != null && !isMixed.equals(dbIsMixed)) {
+	logger.logcInfo("ALLELE_COMPARE: allSymbol=" + alleleSymbol +
+	    " IncomingIsMixed=" + isMixed + " dbIsMixed=" + dbIsMixed, false);
+	}
+	*/
+        String dbAlleleName = fromDB.getAlleleName();
+        if (!alleleName.equals("null") && !alleleName.equals(dbAlleleName)) {
+            logger.logcInfo("ALLELE_COMPARE: alleleSymbol=" + alleleSymbol +
+                " alleleName=" + alleleName + " dbAlleleName=" +
+                dbAlleleName, false);
+        }
 
     }
 

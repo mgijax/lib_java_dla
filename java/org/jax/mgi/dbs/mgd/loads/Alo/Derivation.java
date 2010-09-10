@@ -306,9 +306,9 @@ public class Derivation {
                 dbDescription, false);
         }
         String dbVectorName = fromDB.getVectorName();
-
-        if (!vectorName.equals("null") &&
-        !vectorName.equals(dbVectorName) ) {
+	
+        if (!vectorName.toLowerCase().equals("null") &&
+        !vectorName.toLowerCase().equals(dbVectorName.toLowerCase()) ) {
         logger.logcInfo("DERIV_COMPARE: IncomingMutCL=" + mutCellLine +
         " vectorName=" + vectorName + " dbVectorName=" +
             dbVectorName, false);
@@ -319,6 +319,7 @@ public class Derivation {
         " vectorType=" + vectorType + " dbVectorType=" +
             dbVectorType, false);
         }
+	/* comment out per Richard 8/12/2010
         String dbParentCellLine = fromDB.getParentCellLine();
         if (!parentCellLine.equals("null") &&
         !parentCellLine.equals(dbParentCellLine) ) {
@@ -333,6 +334,7 @@ public class Derivation {
                 " parentStrain=" + parentStrain +
                     " dbParentStrain=" + dbParentStrain, false);
         }
+	*/
         String dbDerivationType = fromDB.getDerivationType();
         if (!derivationType.equals("null") &&
         !derivationType.equals(dbDerivationType)) {

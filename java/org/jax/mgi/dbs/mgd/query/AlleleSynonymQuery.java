@@ -11,9 +11,9 @@ import org.jax.mgi.shr.dbutils.RowReference;
 import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 
 /**
- * is an extension of ObjectQuery for specifically getting Allele synonym data
- * from the database. 
- * @has SQLDtaManager
+ * is an extension of ObjectQuery for specifically getting Gene Trapped Allele 
+ * synonym data from the database. 
+ * @has SQLDataManager
  * @does runs the query and creates the MGIMarker objects from the query
  * results and sets all the instance attributes and "bucketizable" attributes
  * for these objects
@@ -49,7 +49,7 @@ public class AlleleSynonymQuery extends ObjectQuery
 
 
     /**
-     * Get the query string for querying preferred MGI markers
+     * Get the query string for querying for gene trapped allele synonyms
      * @assumes Nothing
      * @effects Nothing
      * @return The query string
@@ -58,12 +58,15 @@ public class AlleleSynonymQuery extends ObjectQuery
     public String getQuery()
     {
         /**
-         * gets mouse marker information from MGD
-         * includes interim and official nomenclature only
+         * gets gene trapped allele synonyms
          */
+
         String stmt = "select synonym " +
-            "from MGI_Synonym " +
-            "where _MGIType_key = " + MGITypeConstants.ALLELE;
+	    "from MGI_Synonym s, ALL_Allele a " +
+	    "where s._MGIType_key =  " + MGITypeConstants.ALLELE +
+	    " and s._Object_key = a._Allele_key " +
+	    "and a._Allele_Type_key = 847121";
+
         return stmt;
     }
 

@@ -1,3 +1,22 @@
+TAG: lib_java_dla-tr10312-1
+DATE: 09/10/2010
+STAFF: sc
+CHANGES: 
+1) Allele.java - commented out all allele 
+ comparisons except name
+2) Derivation.java - commented out parent cell line
+	and parent strain comparisons, do vector comparison
+	in lower case
+3) AlleleSynonymQuery - add only synonyms of alleles of type gene trap
+4) DBGSSGeneTrapLoaderConstants - added raw creators and cl/seqTag ldbs for
+   WURST, RULEY, ISHIDA_1, ISHIDA_2
+5) DBGSSGeneTrapInterpreter -
+a) removed space after 'Contact:'  in CONTACT_EXPRESSION, strip out leading
+   space later (Ishida doesn't have space)
+b) Add parsing for new 'Wurst' sequences mapping them to GGTC
+c) Add parsing for new Ruley creator
+d) Add parsing for TWO formats for new creator Ishida
+
 TAG: lib_java_dla-tr10312-BP
 DATE: 09/10/2010
 STAFF: sc

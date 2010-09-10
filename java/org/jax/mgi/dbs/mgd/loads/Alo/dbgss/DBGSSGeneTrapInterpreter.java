@@ -89,7 +89,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 	// expression string, pattern, and matcher to find the contact
 	// section of a GenBank format COMMENT section
-	private static final String CONTACT_EXPRESSION = "Contact: ([\\s\\S]*?)\\n";
+	private static final String CONTACT_EXPRESSION = "Contact:([\\s\\S]*?)\\n";
 	private Pattern contactPattern;
 	private Matcher contactMatcher;
 
@@ -243,7 +243,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			} else {
 				contactMatcher = contactPattern.matcher(record);
 				if (contactMatcher.find() == true) {
-					String s = contactMatcher.group(1);
+					String s = contactMatcher.group(1).trim();
 					if (s.equals(TIGM_EXPRESSION)) {
 						isGT = true;
 					}
@@ -592,26 +592,42 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		SequenceRawAttributes sequenceRaw = seqInput.getSeq();
 		String seqTagID = null;
 		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.BAYGENOMICS) ||
-
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.SIGTR) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.GGTC) ||
-                this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.SIGTR) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.GGTC) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
 			seqTagID = getDefinitionSeqTagID(seqInput);
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.CMHD) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ESDB) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.LEXICON) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
-                this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ESDB) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.LEXICON) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
 			seqTagID = sequenceRaw.getCloneId();
-            
-		} else {
+                } else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2)) {
+		   /*
+ 		    * /note="GSS name: NAISTrap_15v1012;
+                    * Vector: pUPAT-3ic"
+		    */
+		    String note = seqInput.getSeq().getNote();
+		    if (note != null) {
+			String[] tokens1 = note.split(":");
+			String t = tokens1[1];
+			String[] tokens2 = t.split(";");
+			seqTagID = tokens2[1].trim();
+		    }
+
+		} 
+		if (seqTagID == null) {
 			// not a gene trap we are interested in, superclass interpret
 			// method only throw RecordFormatException, so we use it here
 			RecordFormatException e = new RecordFormatException();
 			e.bindRecord("Gene Trap creator: " + this.rawCreator + " seqId: " +
-					seqInput.getPrimaryAcc().getAccID());
+			seqInput.getPrimaryAcc().getAccID());
 			throw e;
 		}
 		
@@ -631,14 +647,50 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// create and set sequence allele association raw attributes
 		SeqGeneTrapRawAttributes seqGTRaw = new SeqGeneTrapRawAttributes();
 		String seqType = sequenceRaw.getType();
-
+		String cellLineID = null;
+		String vectorEnd = null;
 		String seqTagMethod = getSeqTagMethod(seqInput, seqTagID);
-		KeyValue kv = veClExtractor.extract(seqTagID, this.rawCreator,
-				seqTagMethod, seqType);
+		/** 
+		 * we don't use the veClExtractor for Ruley because you can't get
+		 * the cell line id from the seqTagID for RNA sequences and Vector end
+		 * is always downstream for DNA
+		 *
+		 * Example 1 RNA, the cell line id is not in the sequence tag id
+		 * LOCUS       CZ169606                 214 bp    mRNA    linear   GSS 18-MAY-2010
+		 * DEFINITION  PSTVUpb6f9 VU.pGTR1.3.1 Mus musculus cDNA clone b3p3g11 similar to
+		 * /clone="b3p3g11"
+		 *
+		 * Example 2 DNA
+		 * LOCUS       DX977440                 258 bp    DNA     linear   GSS 18-MAY-2010
+		 * DEFINITION  PSTVUb3p3g11fs VU.fsGTR1.3.1 Mus musculus genomic clone b3p3g11
+		 * /clone="b3p3g11"
+		 *
+		 * Nor do we use it for ISHIDA_2 because cell line id does not come from the 
+		 * seqTagId
+		 */ 
 
-		String cellLineID = (String) kv.getKey();
-		String vectorEnd = (String) kv.getValue();
-				seqGTRaw.setSeqID(seqInput.getPrimaryAcc().getAccID());
+		
+		if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY)) {
+		    cellLineID = sequenceRaw.getCloneId();
+		    if (seqType.indexOf("DNA") >= 0) {
+			vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+		    }
+		    else {
+			vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
+		    }
+		}
+		else if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2 )) {
+		    cellLineID = sequenceRaw.getCloneId();
+		    vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
+		}
+		else {
+		    KeyValue kv = veClExtractor.extract(seqTagID, this.rawCreator,
+				    seqTagMethod, seqType);
+
+		    cellLineID = (String) kv.getKey();
+		    vectorEnd = (String) kv.getValue();
+		}
+		seqGTRaw.setSeqID(seqInput.getPrimaryAcc().getAccID());
 		seqGTRaw.setSeqTagMethod(seqTagMethod);
 		seqGTRaw.setSeqTagID(seqTagID);
 		seqGTRaw.setVectorEnd(vectorEnd);
@@ -669,7 +721,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			return DBGSSGeneTrapLoaderConstants.SIGTR_LDB;
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM)) {
 			return DBGSSGeneTrapLoaderConstants.TIGEM_LDB;
-		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.GGTC)) {
+		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.GGTC) || 
+			this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST)) {
 			return DBGSSGeneTrapLoaderConstants.GGTC_LDB;
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.CMHD)) {
 			return DBGSSGeneTrapLoaderConstants.CMHD_LDB;
@@ -680,8 +733,13 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
 			return DBGSSGeneTrapLoaderConstants.FHCRC_LDB;
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
-            return DBGSSGeneTrapLoaderConstants.EUCOMM_CL_LDB;
-        } else {
+			return DBGSSGeneTrapLoaderConstants.EUCOMM_CL_LDB;
+		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA) ||
+			this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2)) {
+                        return DBGSSGeneTrapLoaderConstants.ISHIDA_CL_LDB;
+		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY)) {
+			return DBGSSGeneTrapLoaderConstants.RULEY_CL_LDB;
+		} else {
 			// unknown Gene Trap Creator (this will be caught prior to
 			// getting here)
 			RecordFormatException e = new RecordFormatException();
@@ -705,8 +763,13 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			logicalDB = DBGSSGeneTrapLoaderConstants.TIGM_SEQ_LDB;
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.LEXICON)) {
 			logicalDB = DBGSSGeneTrapLoaderConstants.LEXICON_SEQ_LDB;
-        } else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
-            logicalDB = DBGSSGeneTrapLoaderConstants.EUCOMM_SEQ_LDB;
+		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+			logicalDB = DBGSSGeneTrapLoaderConstants.EUCOMM_SEQ_LDB;
+		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY)) {
+			logicalDB = DBGSSGeneTrapLoaderConstants.RULEY_SEQ_LDB;
+		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA) ||
+			this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2)) {
+                        logicalDB = DBGSSGeneTrapLoaderConstants.ISHIDA_SEQ_LDB;
 		} else {
 			logicalDB = DBGSSGeneTrapLoaderConstants.IGTC_SEQ_LDB;
 		}
@@ -721,35 +784,35 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 	/**
 	 * parse sequence tag method from a SequenceInput object, based on creator)
-     * @param seqInput - Raw Sequence Data from a GenBank Gene Trap sequence rcd
+	 * @param seqInput - Raw Sequence Data from a GenBank Gene Trap sequence rcd
 	 * @return - The sequence tag method
 	 * @throws 
 	 * Example from CW020141:
 	 * COMMENT     Contact: Stanford WL
-        Institute of Biomaterials & Biomedical Engineering
-        University of Toronto
-        407 Rosebrugh Bldg., 4 Taddle Creek Rd., Toronto, Ontario, Canada
-        M5S 3G9
-        Tel: 416 946 8379
-        Fax: 416 978 4317
-        Email: william.stanford@utoronto.ca
-        Gen-SD5 Gene trap insertion. The sequence tag is generated by 3'
-        race. The ES cell line harboring this insertion of the target gene
-        is available through the following web site:
-        http://pokey.ibme.utoronto.ca/sequence_report.php?id=145B3.
-        Class: Gene Trap.
+	    Institute of Biomaterials & Biomedical Engineering
+	    University of Toronto
+	    407 Rosebrugh Bldg., 4 Taddle Creek Rd., Toronto, Ontario, Canada
+	    M5S 3G9
+	    Tel: 416 946 8379
+	    Fax: 416 978 4317
+	    Email: william.stanford@utoronto.ca
+	    Gen-SD5 Gene trap insertion. The sequence tag is generated by 3'
+	    race. The ES cell line harboring this insertion of the target gene
+	    is available through the following web site:
+	    http://pokey.ibme.utoronto.ca/sequence_report.php?id=145B3.
+	    Class: Gene Trap.
 	 * Example from TIGM EF806801
 	 * /note="strain origin confirmed on the basis of 110 genetic
-        markers distributed across 19 autosomes and the X
-        chromosome (Charles River Laboratories); sequence tags are
-        derived from genomic sequence by inverse PCR (IPCR) and
-        represent the gene-trap vector insertion site; sequence
-        reads represent either the upstream (F) or downstream (R)
-        vector-genomic junction, amplified from circularized
-        genomic DNA"
-     * Example seqTag ID from EUCOMM
-     * EUCG0003e02.p1k3SPK
-     * seqTag method is last 4 characters of seqTagID
+	    markers distributed across 19 autosomes and the X
+	    chromosome (Charles River Laboratories); sequence tags are
+	    derived from genomic sequence by inverse PCR (IPCR) and
+	    represent the gene-trap vector insertion site; sequence
+	    reads represent either the upstream (F) or downstream (R)
+	    vector-genomic junction, amplified from circularized
+	    genomic DNA"
+	 * Example seqTag ID from EUCOMM
+	 * EUCG0003e02.p1k3SPK
+	 * seqTag method is last 4 characters of seqTagID
 	 */
 	private String getSeqTagMethod(SequenceInput seqInput, String seqTagID) {
 
@@ -782,6 +845,9 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
                 }
             }
         }
+	else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST)) {
+	    return DBGSSGeneTrapLoaderConstants.RACE5_1;
+	}
         else {
             // all other creators
             String comment = seqInput.getSeq().getComment();
@@ -840,18 +906,27 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			// find the contact, if it exists
 			contactMatcher = contactPattern.matcher(comment);
 			if (contactMatcher.find() == true) {
-				creator = contactMatcher.group(1);
-			} // if we didn't find a contact it is an EGTC gene trap (most likely)
+				creator = contactMatcher.group(1).trim();
+			} // if we didn't find a contact could be EGTC or Ishida
 			// search explicitly for the EGTC contact text
 			else if (comment.indexOf(EGTC_STRING) != -1) {
 				creator = EGTC_STRING;
-			} // creator not found, report it
-			else {
-				logger.logcInfo("Creator not found for seqID: " +
-						seqInput.getPrimaryAcc().getAccID() +
-						" COMMENT: " + comment, false);
-			}
+			} 
 		}
+		if (creator ==  null) { // could be Ishida_2
+		    String record = seqInput.getSeq().getRecord();
+		    if (record != null) {
+			contactMatcher = contactPattern.matcher(record);
+			if (contactMatcher.find() == true) {
+                            creator = contactMatcher.group(1).trim();
+                        }
+		    }
+		}
+		if (creator == null) {
+		    logger.logcInfo("Creator not found for seqID: " +
+			    seqInput.getPrimaryAcc().getAccID(), false);
+		}
+
 		// set instance variable for other methods to use
 		this.rawCreator = creator;
 		return creator;
@@ -863,7 +938,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * @return - the sequence tag id from the DEFINITION section 
 	 * Example from CW020141:
 	 * DEFINITION  CMHD-GT_145B3-3 GTL_R1_Gen-SD5 Mus musculus cDNA clone
-	CMHD-GT_145B3-3 3', mRNA sequence.
+	 * CMHD-GT_145B3-3 3', mRNA sequence.
 	 *
 	 */
 	private String getDefinitionSeqTagID(SequenceInput seqInput) {
@@ -879,6 +954,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			seqTagID = s.nextToken();
 		}
 		// seqTagID will never be null, but it may not be what we want.
+		//System.out.println("getDefinitionSeqTagID returned seqTagID: " + seqTagID);
 		return seqTagID;
 	}
 }

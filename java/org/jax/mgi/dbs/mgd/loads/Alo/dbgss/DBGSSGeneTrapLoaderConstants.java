@@ -28,7 +28,11 @@ public class DBGSSGeneTrapLoaderConstants {
 	"Richard H. Finnell at Texas Institute for Genomic Medicine";
     public static final String EUCOMM =
             "European Conditional Mouse Mutagenesis Program (EUCOMM)";
-    
+    public static final String RULEY = "Ruley HE";
+    public static final String WURST = "Wurst W";
+    public static final String ISHIDA = "Ishida Y";
+    public static final String ISHIDA_2 = "Kaoru Fukami-Kobayashi RIKEN,";
+
     // reverse complement values
     public static final String REVERSE_COMP_TRUE = "yes";
     public static final String REVERSE_COMP_FALSE = "no";
@@ -40,7 +44,9 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String LEXICON_SEQ_LDB = "Lexicon Genetics";
     public static final String TIGM_SEQ_LDB = "TIGM";
     public static final String EUCOMM_SEQ_LDB = "EUCOMM-GTtag";
-    
+    public static final String RULEY_SEQ_LDB = "Ruley HE";
+    public static final String ISHIDA_SEQ_LDB = "Ishida Y";
+
     // cell line ID association to cell line logical db names
     public static final String TIGM_CL_LDB = "TIGM Cell Line";
     public static final String LEXICON_CL_LDB = "Lexicon";
@@ -53,7 +59,9 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String EGTC_LDB = "EGTC";
     public static final String GGTC_LDB = "GGTC";
     public static final String EUCOMM_CL_LDB = "EUCOMM-GTcellline";
-    
+    public static final String RULEY_CL_LDB = "Ruley HE Cell Line";
+    public static final String ISHIDA_CL_LDB = "Ishida Y Cell Line";
+
     // sequence tag method bad names in lower case (i.e. how they are in dbGSS)
     public static final String INVERSEPCR = "inverse pcr";
     public static final String PLASMRESCUE = "plasmid rescue";
@@ -67,7 +75,7 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String RACE3_2 = "3'race";
     public static final String ADAPTORPCR = "adaptor-mediated pcr";
     public static final String LIGATIONPCR = "ligation-mediated pcr";
-
+    
     // vector end
     public static String UPSTREAM = "upstream";
     public static String DOWNSTREAM = "downstream";

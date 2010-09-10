@@ -69,19 +69,19 @@ public class VectorEndCellLineIDExtractor {
 		    clIdToVectorEnd = processTIGM(seqTagId, seqTagMethod); 
 	    }
 	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.ESDB)) {
-            clIdToVectorEnd = processESDB(seqTagId, seqTagMethod);
+		clIdToVectorEnd = processESDB(seqTagId, seqTagMethod);
 	    }
 	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.GGTC)) {
-            clIdToVectorEnd = processGGTC(seqTagId, seqTagMethod);
+		clIdToVectorEnd = processGGTC(seqTagId, seqTagMethod);
 	    }
 	    else if  (creatorName.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
 		// EGTC DNA seq with no vector end specified
-            clIdToVectorEnd = new KeyValue(seqTagId,
-		    DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED);
+		clIdToVectorEnd = new KeyValue(seqTagId,
+			DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED);
 	    }
-        else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
-           clIdToVectorEnd = processEUCOMM(seqTagId);
-        }
+	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+	       clIdToVectorEnd = processEUCOMM(seqTagId);
+	    }
 	}
 	return clIdToVectorEnd;
     }
