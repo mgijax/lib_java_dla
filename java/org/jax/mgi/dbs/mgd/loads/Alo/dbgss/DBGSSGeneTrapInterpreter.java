@@ -652,8 +652,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		String seqTagMethod = getSeqTagMethod(seqInput, seqTagID);
 		/** 
 		 * we don't use the veClExtractor for Ruley because you can't get
-		 * the cell line id from the seqTagID for RNA sequences and Vector end
-		 * is always downstream for DNA
+		 * the cell line id from the seqTagID for RNA sequences 
 		 *
 		 * Example 1 RNA, the cell line id is not in the sequence tag id
 		 * LOCUS       CZ169606                 214 bp    mRNA    linear   GSS 18-MAY-2010
@@ -673,9 +672,16 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY)) {
 		    cellLineID = sequenceRaw.getCloneId();
 		    if (seqType.indexOf("DNA") >= 0) {
-			vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+			// if last two chars are 'fs' it is downstream'
+			int endIndex = seqTagID.length() -1;
+			if ( (seqTagID.substring(endIndex -1, endIndex)).equals("fs") ) {
+			    vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+			} 
+			else {
+			    vectorEnd = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+			}
 		    }
-		    else {
+		    else { // It's an RNA
 			vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
 		    }
 		}
