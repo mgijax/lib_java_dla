@@ -673,8 +673,10 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		    cellLineID = sequenceRaw.getCloneId();
 		    if (seqType.indexOf("DNA") >= 0) {
 			// if last two chars are 'fs' it is downstream'
-			int endIndex = seqTagID.length() -1;
-			if ( (seqTagID.substring(endIndex -1, endIndex)).equals("fs") ) {
+			int endIndex = seqTagID.length();
+			int startIndex = endIndex - 2;
+			String subStr = seqTagID.substring(startIndex, endIndex);
+			if ( subStr.equals("fs") ) {
 			    vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
 			} 
 			else {
