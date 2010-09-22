@@ -1,3 +1,8 @@
+TAG: lib_java_dla-4-4-0-2
+DATE: 09/22/2010
+STAFF: sc
+CHANGES: DBGSSGeneTrapAlleleProcessor - fixed bug whereby existing allele references get repeated.
+
 TAG: lib_java_dla-4-4-0-1
 DATE: 09/22/2010
 STAFF: sc

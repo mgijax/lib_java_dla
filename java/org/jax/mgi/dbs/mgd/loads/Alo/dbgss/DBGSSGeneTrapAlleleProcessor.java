@@ -472,7 +472,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
         
 		// get incoming references
 		HashSet rawRefs = aloInput.getReferenceAssociations();
-        //logger.logcInfo("ExistingPubMedIDSet: " + existingPubMedIDSet.toString(), false);
+		//logger.logcInfo("ExistingPubMedIDSet: " + existingPubMedIDSet.toString(), false);
 		for (Iterator i = rawRefs.iterator(); i.hasNext();) {
 			RefAssocRawAttributes incomingRawRef = (RefAssocRawAttributes) i.next();
 			String incomingRefID = incomingRawRef.getRefId();
@@ -480,17 +480,23 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 			// if incomingRefId is not a JNumber and is not in the set of
 			// pubMed IDs associated with the allele, create association
 			if (!incomingRefID.startsWith("J:") && !existingPubMedIDSet.contains(incomingRefID)) {
-                RefAssocRawAttributes newRawRef = new RefAssocRawAttributes();
-				newRawRef.setMgiType(new Integer(MGITypeConstants.ALLELE));
-				newRawRef.setRefId(incomingRefID);
-				newRawRef.setRefAssocType(new Integer(MGIRefAssocTypeConstants.ALLELE_SEQUENCE));
-				MGI_Reference_AssocState refState =
-						refAssocProcessor.process(newRawRef, existingAlleleKey);
-				if (refState != null) {
-					resolvedALO.addRefAssociation(refState);
-				}
-                // just in case same reference listed twice in sequence record
-                existingPubMedIDSet.add(incomingRefID);
+			    RefAssocRawAttributes newRawRef = new RefAssocRawAttributes();
+			    newRawRef.setMgiType(new Integer(MGITypeConstants.ALLELE));
+			    newRawRef.setRefId(incomingRefID);
+			    newRawRef.setRefAssocType(new Integer(MGIRefAssocTypeConstants.ALLELE_SEQUENCE));
+			    MGI_Reference_AssocState refState =
+					    refAssocProcessor.process(newRawRef, existingAlleleKey);
+			    if (refState != null) {
+				    resolvedALO.addRefAssociation(refState);
+				    // Add the reference to the lookup cache; we may have more than one
+				    // sequence tag in the input representing a single allele already in 
+				    // the database. Example: CZ169816/CZ169616/b3p1a6
+				    //Map pmIDMap = pubMedLookup.getCache();
+				    pubMedLookup.getCache().put(existingAlleleKey, incomingRefID);
+				    
+			    }
+			    // just in case same reference listed twice in sequence record
+			    existingPubMedIDSet.add(incomingRefID);
 			}
 		}
 	}
