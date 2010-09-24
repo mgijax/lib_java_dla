@@ -22,6 +22,7 @@ import org.jax.mgi.shr.exception.MGIException;
 
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Map;
 //import java.util.Collection;
 
 /**
@@ -46,6 +47,8 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	private AlleleLookupByMutantCellLineKey alleleLookup;
 	private MutantCellLineLookupByAlleleKey mclLookup;
 	private PubMedIDLookupByAlleleKey pubMedLookup;
+	// we'll get the cache from pubMedLookup and use it instead
+	private Map pubMedMap;
 	private HashSet alleleSymbolsInDB;
 	private HashSet alleleSynonymsInDB;
 	private LabNameAndCodeLookupByRawCreator labCodeLookup;
@@ -63,6 +66,9 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		alleleLookup.initCache();
 		mclLookup = new MutantCellLineLookupByAlleleKey();
 		pubMedLookup = new PubMedIDLookupByAlleleKey();
+		pubMedLookup.initCache();
+		// get the cache from the pubMedLookup
+		pubMedMap = pubMedLookup.getCache();
 		labCodeLookup = 
 		    new LabNameAndCodeLookupByRawCreator();
 		labCodeLookup.initCache();
@@ -468,8 +474,9 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
 		// get references associated with allele in database, if none
 		// HashSet will be empty set
-		HashSet existingPubMedIDSet = pubMedLookup.lookup(existingAlleleKey);
-        
+		//HashSet existingPubMedIDSet = pubMedLookup.lookup(existingAlleleKey);
+		HashSet existingPubMedIDSet = (HashSet)pubMedMap.get(existingAlleleKey);
+		
 		// get incoming references
 		HashSet rawRefs = aloInput.getReferenceAssociations();
 		//logger.logcInfo("ExistingPubMedIDSet: " + existingPubMedIDSet.toString(), false);
@@ -479,7 +486,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
 			// if incomingRefId is not a JNumber and is not in the set of
 			// pubMed IDs associated with the allele, create association
-			if (!incomingRefID.startsWith("J:") && !existingPubMedIDSet.contains(incomingRefID)) {
+			if (!incomingRefID.startsWith("J:") && existingPubMedIDSet != null && !existingPubMedIDSet.contains(incomingRefID)) {
 			    RefAssocRawAttributes newRawRef = new RefAssocRawAttributes();
 			    newRawRef.setMgiType(new Integer(MGITypeConstants.ALLELE));
 			    newRawRef.setRefId(incomingRefID);
@@ -491,8 +498,9 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 				    // Add the reference to the lookup cache; we may have more than one
 				    // sequence tag in the input representing a single allele already in 
 				    // the database. Example: CZ169816/CZ169616/b3p1a6
-				    //Map pmIDMap = pubMedLookup.getCache();
-				    pubMedLookup.getCache().put(existingAlleleKey, incomingRefID);
+				    // add the ID to the lookup in case we see it again in the input.
+				    existingPubMedIDSet.add(incomingRefID);
+				    pubMedMap.put(existingAlleleKey, existingPubMedIDSet);
 				    
 			    }
 			    // just in case same reference listed twice in sequence record
