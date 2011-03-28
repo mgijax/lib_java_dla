@@ -292,8 +292,14 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// get the creator - see the getCreator method
 		String creator = getCreator(seqInput);
 		derivRaw.setCreator(creator);
-		// source qualifier example: /clone_lib="GTL_R1_Gen-SD5"
-		derivRaw.setName(sequenceRaw.getLibrary());
+		String rawDerivName = (sequenceRaw.getLibrary());
+		// 3/15/11 must parse everything except EGTC. All other prepended LIBGSS_999999
+		// example: "LIBGSS_009449 GTL_R1_pGT1"
+		if (! this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
+		     rawDerivName = rawDerivName.substring(14);
+		}
+		//System.out.println("rawDerivName: " + rawDerivName);
+		derivRaw.setName(rawDerivName);
 		// source qualifier example: /cell_line="R1"
 		String parentCellLine = sequenceRaw.getCellLine();
 		if (parentCellLine == null) {

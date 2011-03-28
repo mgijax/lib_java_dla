@@ -82,10 +82,80 @@ public class VectorEndCellLineIDExtractor {
 	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
 	       clIdToVectorEnd = processEUCOMM(seqTagId);
 	    }
+	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.CMHD)) {
+            // where cellLineID == CMHD-GT_107A10-3
+            // id = 107A10
+            clIdToVectorEnd = processCMHD(seqTagId);
+
+	    }
+	    else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
+		// where cellLineID == FHCRC-GT-S15-9G1
+		// id = S15-9G1
+		clIdToVectorEnd = processFHCRC(seqTagId);
+	    }
+	 } // RNA
+	else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.CMHD)) {
+	    // where cellLineID == CMHD-GT_107A10-3
+	    // id = 107A10
+	    clIdToVectorEnd = processCMHD(seqTagId);
+	    
 	}
+	else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
+	    // where cellLineID == FHCRC-GT-S15-9G1
+	    // id = S15-9G1
+	    clIdToVectorEnd = processFHCRC(seqTagId);
+	}
+
+	//System.out.println("In extract seqTagId: " + seqTagId);
+	
+	//System.out.println("In extract clIdToVectorEnd.getKey: " + clIdToVectorEnd.getKey());
+	//System.out.println("In extract clIdToVectorEnd.getValue: " + clIdToVectorEnd.getValue());
 	return clIdToVectorEnd;
     }
-   	
+   
+     /**
+     * Determines cell line ID for CMHD
+     * @param seqTagId - the sequence tag id from which to determine 
+     * cell line ID
+     * @return KeyValue containing cellLineId and vector end
+         * @throws NoVectorEndException if seqTagId can't be parsed
+     * @note example of CMHD sequence tag ID: CMHD-GT_111.1G4-3 
+     * where cell line id is 111.1G4 OR
+     *     CMHD_GT_139A2-3 where cell  line id is 139A2
+     */
+    private KeyValue processCMHD(String seqTagId)
+            throws NoVectorEndException {
+	String ve = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
+
+	// Strip off 'CMHD-GT_'
+        String temp = seqTagId.substring(8);
+	//System.out.println("temp: " + temp);
+	int index = temp.indexOf("-");
+        String cellLineId = temp.substring(0, index);
+	//System.out.println("cellLineId: " +cellLineId);
+        return new KeyValue(cellLineId, ve);
+    }
+
+     /**
+     * Determines cell line ID for FHCRC
+     * @param seqTagId - the sequence tag id from which to determine
+     * cell line ID
+     * @return KeyValue containing cellLineId and vector end
+         * @throws NoVectorEndException if seqTagId can't be parsed
+     * @note example of CMHD sequence tag ID:  FHCRC-GT-S15-9G1  where
+     * cell line id is S15-9G1 OR
+     * FHCRC-GT-S7-5G1_ where cell line id is S7-5G1_
+     */
+    private KeyValue processFHCRC(String seqTagId)
+            throws NoVectorEndException {
+        String ve = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
+
+        // Strip off 'FHCRC-GT-'
+        String cellLineId = seqTagId.substring(9);
+        return new KeyValue(cellLineId, ve);
+    }
+
+	
      /**
      * Determines vector end information for TIGM
      * @param seqTagId - the sequence tag id from which to determine the vector
@@ -231,3 +301,4 @@ public class VectorEndCellLineIDExtractor {
         return new KeyValue(cellLineId, ve);
     }
 }
+

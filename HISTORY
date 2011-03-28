@@ -1,3 +1,11 @@
+TAG: lib_java_dla-4-4-1-1
+DATE: 03/27/2011
+STAFF: sc
+CHANGES: TR10594 - MCL ID correction for CMHD and FHCRC Gene Traps
+1) DBGSSGeneTrapInterpreter - parse out 'LIBGSS_999999' from 
+	clone_lib value
+2) VectorEndCellLineIDExtractor - add processFHCRC and processFHCRC methods
+	to properly determine dell line id
 TAG: lib_java_dla-4-4-0-3
 TAG: lib_java_dla-4-4-0-2
 DATE: 09/22/2010
