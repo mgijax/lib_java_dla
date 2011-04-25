@@ -1,3 +1,13 @@
+TAG: lib_java_dla-4-4-1-2
+DATE: 04/25/2011
+STAFF: sc
+CHANGES: TR10594/10656
+1) DBGSSGeneTrapInterpreter, VectorEndCellLineIDExtractor - 
+   reorganized to use sequence tag method
+   rather than sequence type to determine vector end
+2) DBGSSGeneTrapLoaderConstants - added FLANKING_5 and FLANKING_3
+    to determine EGTC vector end
+
 TAG: lib_java_dla-4-4-1-1
 DATE: 03/27/2011
 STAFF: sc

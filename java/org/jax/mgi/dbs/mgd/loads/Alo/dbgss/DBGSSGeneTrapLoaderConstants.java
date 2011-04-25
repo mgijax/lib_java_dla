@@ -82,6 +82,10 @@ public class DBGSSGeneTrapLoaderConstants {
     public static String NOT_SPECIFIED = "Not Specified";
     public static String NOT_APPLICABLE = "Not Applicable";
 
+    // to determine EGTC vector end
+    public static String FLANKING_5= "5'-flanking";
+    public static String FLANKING_3= "3'-flanking";
+
     // strand
     public static String STRAND_PLUS = "+";
     public static String STRAND_MINUS = "-";

@@ -184,6 +184,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// interpret the cell line; this also interprets the cell line derivation
 		// sequence gene trap info and creates a AccessionRawAttributes for the 
 		// seqTagId to sequence association
+		logger.logcInfo("calling interpretCellLine", false);
 		interpretCellLine(seqInput, gtInput);
 
 		// interpret the allele 
@@ -295,7 +296,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		String rawDerivName = (sequenceRaw.getLibrary());
 		// 3/15/11 must parse everything except EGTC. All other prepended LIBGSS_999999
 		// example: "LIBGSS_009449 GTL_R1_pGT1"
-		if (! this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
+		//if (! this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
+		if(rawDerivName != null && rawDerivName.indexOf("LIBGSS") > -1) {
 		     rawDerivName = rawDerivName.substring(14);
 		}
 		//System.out.println("rawDerivName: " + rawDerivName);
@@ -365,6 +367,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 
 		// vector name still not found, set it to "Not Specified" and report
+		// EUCOMM and Lexicon
 		if (vectorName == null) {
 			vectorName = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
 		}
@@ -386,10 +389,10 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private void interpretCellLine(
 			SequenceInput seqInput, DBGSSGeneTrapRawInput gtInput)
 			throws RecordFormatException {
-
+		logger.logcInfo("In interpretCellLine", false);
 		// create an empty cell line raw attributes object
 		CellLineRawAttributes cellLineRaw = new CellLineRawAttributes();
-
+		logger.logcInfo("Calling interpretDerivation", false);
 		// determine the derivation for this cell line
 		cellLineRaw.setDerivation(interpretDerivation(seqInput));
 
@@ -398,6 +401,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// interpretSeqGeneTrap method splits these two pieces out (it needs
 		// the vector end) and returns the cell line ID
 		try {
+			logger.logcInfo("Calling interpretSeqGeneTrap", false);
 			this.mutantCellLineID = interpretSeqGeneTrap(seqInput, gtInput);
 		} catch (NoVectorEndException e) {
 			RecordFormatException rfE = new RecordFormatException();
@@ -409,6 +413,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		cellLineRaw.setCellLine(this.mutantCellLineID);
 
 		// determine cellLineID logicalDB
+		logger.logcInfo("Calling interpretCellLineLogicalDB", false);
 		String ldb = interpretCellLineLogicalDB(seqInput);
 		cellLineRaw.setLogicalDB(ldb);
 
@@ -611,7 +616,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ESDB) ||
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.LEXICON) ||
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
-		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2) ||
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
 			seqTagID = sequenceRaw.getCloneId();
                 } else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2)) {
@@ -626,7 +630,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			String[] tokens2 = t.split(";");
 			seqTagID = tokens2[1].trim();
 		    }
-
 		} 
 		if (seqTagID == null) {
 			// not a gene trap we are interested in, superclass interpret
@@ -657,46 +660,76 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		String vectorEnd = null;
 		String seqTagMethod = getSeqTagMethod(seqInput, seqTagID);
 		/** 
-		 * we don't use the veClExtractor for Ruley because you can't get
-		 * the cell line id from the seqTagID for RNA sequences 
-		 *
-		 * Example 1 RNA, the cell line id is not in the sequence tag id
-		 * LOCUS       CZ169606                 214 bp    mRNA    linear   GSS 18-MAY-2010
-		 * DEFINITION  PSTVUpb6f9 VU.pGTR1.3.1 Mus musculus cDNA clone b3p3g11 similar to
-		 * /clone="b3p3g11"
-		 *
-		 * Example 2 DNA
-		 * LOCUS       DX977440                 258 bp    DNA     linear   GSS 18-MAY-2010
-		 * DEFINITION  PSTVUb3p3g11fs VU.fsGTR1.3.1 Mus musculus genomic clone b3p3g11
-		 * /clone="b3p3g11"
-		 *
-		 * Nor do we use it for ISHIDA_2 because cell line id does not come from the 
-		 * seqTagId
-		 */ 
+                 * If creator is Ruley get the cell line ID; it can't be found in the seqTagId
+                 *  sequence examples: 
+                 *  DNA - DX977440 ("ligation-mediated PCR', 'Downstream') 
+		 *  DNA - CL440621 ("plasmid rescue', 'Upstream')
+                 *  RNA - CL943680 ("3' RACE", 'Not Applicable')
+                 */
 
-		
 		if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY)) {
 		    cellLineID = sequenceRaw.getCloneId();
-		    if (seqType.indexOf("DNA") >= 0) {
-			// if last two chars are 'fs' it is downstream'
-			int endIndex = seqTagID.length();
-			int startIndex = endIndex - 2;
-			String subStr = seqTagID.substring(startIndex, endIndex);
-			if ( subStr.equals("fs") ) {
-			    vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
-			} 
-			else {
-			    vectorEnd = DBGSSGeneTrapLoaderConstants.UPSTREAM;
-			}
-		    }
-		    else { // It's an RNA
-			vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
-		    }
-		}
+                    // if RNA-based sequence tag method set vector end to 'Not Applicable'
+                    if ( seqTagMethod.equals(DBGSSGeneTrapLoaderConstants.RACE5_1 ) ||
+                            seqTagMethod.equals(DBGSSGeneTrapLoaderConstants.RACE3_1 ) ||
+                            seqTagMethod.equals(DBGSSGeneTrapLoaderConstants.RACE5_2 ) ||
+                            seqTagMethod.equals(DBGSSGeneTrapLoaderConstants.RACE3_2 )) {
+                        vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
+                    }
+                    else { // It's DNA-based sequence tag method.
+                        // if last two chars are 'fs' it is downstream, otherwise upstream
+                        int endIndex = seqTagID.length();
+                        int startIndex = endIndex - 2;
+                        String subStr = seqTagID.substring(startIndex, endIndex);
+                        if ( subStr.equals("fs") ) {
+                            vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+                        }
+                        else {
+                            vectorEnd = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+                        }
+                    }
+                }
+		// if creator is Ishida (2) get the cell line ID; it can't be found in the seqTagId
+                // sequence example: DE990894 (3' RACE)
 		else if ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA_2 )) {
+		    // cellLine ID cannot be determined from sequence tag ID is from
 		    cellLineID = sequenceRaw.getCloneId();
+
+		    // all are RNA-based sequence tag method
 		    vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
 		}
+		else if  ( this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EGTC)) {
+		    cellLineID = seqTagID;
+		    vectorEnd = null;
+		    // Determine vector end
+
+		    // RNA based seqTagMethod
+		    if ( seqTagMethod.equals(DBGSSGeneTrapLoaderConstants.RACE5_1 ) ||
+			     seqTagMethod.equals(DBGSSGeneTrapLoaderConstants.RACE5_2 ) ) {
+			vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_APPLICABLE;
+		    }
+		    else {	// DNA based seqTagMethod
+			String comment = seqInput.getSeq().getComment();
+			if (comment != null) {
+			    String[] c = comment.toLowerCase().split("\n");
+			    comment = StringLib.join(c, " ");
+			    if (comment.indexOf(DBGSSGeneTrapLoaderConstants.FLANKING_3) != -1) {
+				vectorEnd = DBGSSGeneTrapLoaderConstants.DOWNSTREAM;
+			    }
+			    else if (comment.indexOf(DBGSSGeneTrapLoaderConstants.FLANKING_5) != -1) {
+				vectorEnd = DBGSSGeneTrapLoaderConstants.UPSTREAM;
+			    } 
+			    else {
+				vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
+			    }
+			}
+		    }
+		    // NULL COMMENT section
+		    if (vectorEnd == null) {
+			 vectorEnd = DBGSSGeneTrapLoaderConstants.NOT_SPECIFIED;
+		    }
+                }
+		// not Ruley or Ishida or EGTC, use the VectorEndCellLineIDExtractor
 		else {
 		    KeyValue kv = veClExtractor.extract(seqTagID, this.rawCreator,
 				    seqTagMethod, seqType);
@@ -859,6 +892,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
                 }
             }
         }
+	// sc 4/4/2011, this case seems to be obsolote now. Looks like raw creator
+        // Wurst W was changed to GGTC in GenBank.
 	else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST)) {
 	    return DBGSSGeneTrapLoaderConstants.RACE5_1;
 	}
@@ -883,6 +918,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 		// sequence tag method not found, report it and return nullS
 		if (method == null) {
+			 // sc 4/4/2011, null case not handled by caller - need to fix
 			logger.logcInfo("Sequence Tag Method not found for seqID: " +
 					seqInput.getPrimaryAcc().getAccID(), false);
 			return method;
