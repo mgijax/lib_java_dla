@@ -65,11 +65,11 @@ public class AlleleLookupBySeqKey extends FullCachedLookup {
      * caches
      * @throws DBException thrown if there is an error accessing the database
      */
-    public HashSet lookup(Integer seqKey)
+    public HashMap lookup(Integer seqKey)
     throws CacheException, DBException, KeyNotFoundException {
-        HashSet alleles = (HashSet)super.lookupNullsOk(seqKey);
+        HashMap alleles = (HashMap)super.lookupNullsOk(seqKey);
         if (alleles == null){
-            alleles = new HashSet();
+            alleles = new HashMap();
         }
             return alleles;
     }
@@ -84,30 +84,9 @@ public class AlleleLookupBySeqKey extends FullCachedLookup {
             "SELECT distinct " + 
 	    "s._Sequence_key, " +
 	    "a._Allele_key, " +
-	    "a._Marker_key, " +
-	    "a.markerSymbol, " + 
-	    "a._Strain_key, " +
-	    "a.strain, " +
-	    "inheritModeKey = a._Mode_key, " +
-	    "inheritMode = v1.term, " + 
-	    "a._Allele_Type_key, " + 
-	    "alleleType = v2.term, " +
-	    "a._Allele_Status_key, " + 
-	    "alleleStatus = v3.term, " +
-	    "alleleSymbol = a.symbol, " +
-	    "alleleName = a.name, " +
-	    "a.isWildType, " +
-	    "a.isExtinct, " +
-	    "a.isMixed, " +
-	    "a._Transmission_key, " +
-            "transmission = v4.term " +
-	    "FROM All_Allele_View a, SEQ_Allele_Assoc s, VOC_term v1, " + 
-	    "VOC_Term v2, VOC_Term v3, VOC_Term v4 " +
+	    "a.symbol as alleleSymbol " +
+	    "FROM All_Allele a, SEQ_Allele_Assoc s " + 
 	    "WHERE a._Allele_key = s._Allele_key " +
-	    "and a._Mode_key = v1._Term_key " +
-	    "and a._Allele_Type_key = v2._Term_key " +
-	    "and a._Allele_Status_key = v3._Term_key " +
-	    "and a._Transmission_key = v4._Term_key " +
 	    "order by s._Sequence_key";
 
         return sql;
@@ -133,48 +112,14 @@ public class AlleleLookupBySeqKey extends FullCachedLookup {
             public Object interpretRows(Vector v) throws InterpretException {
                 // the sequence Key
                 Integer seqKey = ((RowData)v.get(0)).seqKey;
-                Allele currentAllele = null;
-                HashSet alleleSet = new HashSet();
-
+		HashMap alleles = new HashMap();
                 // get an iterator over the vector representing the alleles
                 // may be multiple for this sequence
                 for (Iterator i = v.iterator();i.hasNext(); ) {
                     RowData row = (RowData)i.next();
-                    // create a new Allele
-                    currentAllele = createAlleleObject(row);
-                    alleleSet.add(currentAllele);
+		    alleles.put(row.alleleKey, row.alleleSymbol);
                 }
-               return new KeyValue(seqKey, alleleSet);
-            }
-            public Allele createAlleleObject(RowData row)
-                    throws InterpretException {
-
-                Allele allele = null;
-                try {
-                    allele = new Allele();
-                }  catch (DLALoggingException e) {
-                    throw new InterpretException (
-                    "AlleleLookupBySeqKey " + e.getMessage());
-                }
-                allele.setAlleleKey(row.alleleKey);
-                allele.setMarkerKey(row.markerKey);
-                allele.setMarkerSymbol(row.markerSymbol);
-                allele.setStrainKey(row.alleleStrainKey);
-                allele.setStrainName(row.alleleStrain);
-                allele.setInheritModeKey(row.inheritModeKey);
-                allele.setInheritMode(row.inheritMode);
-                allele.setAlleleTypeKey(row.alleleTypeKey);
-                allele.setAlleleType(row.alleleType);
-                allele.setAlleleStatusKey(row.alleleStatusKey);
-                allele.setAlleleStatus(row.alleleStatus);
-                allele.setAlleleSymbol(row.alleleSymbol);
-                allele.setAlleleName(row.alleleName);
-                allele.setIsWildType(row.isWildType);
-                allele.setIsExtinct(row.isExtinct);
-                allele.setIsMixed(row.isMixed);
-                allele.setTransmissionKey(row.transmissionKey);
-                allele.setTransmission(row.transmission);
-                return allele;
+               return new KeyValue(seqKey, alleles);
             }
 
             /**
@@ -196,23 +141,7 @@ public class AlleleLookupBySeqKey extends FullCachedLookup {
              class RowData {
                 protected Integer seqKey;
                 protected Integer alleleKey;
-                protected Integer markerKey;
-                protected String markerSymbol;
-                protected Integer alleleStrainKey;
-                protected String alleleStrain;
-                protected Integer inheritModeKey;
-                protected String inheritMode;
-                protected Integer alleleTypeKey;
-                protected String alleleType;
-                protected Integer alleleStatusKey;
-                protected String alleleStatus;
                 protected String alleleSymbol;
-                protected String alleleName;
-                protected Boolean isWildType;
-                protected Boolean isExtinct;
-                protected Boolean isMixed;
-                protected Integer transmissionKey;
-                        protected String transmission;
 
                 /**
                  * Constructs a RowData object from a RowReference
@@ -224,23 +153,7 @@ public class AlleleLookupBySeqKey extends FullCachedLookup {
                 public RowData(RowReference row) throws DBException {
                     seqKey = row.getInt(1);
                     alleleKey = row.getInt(2);
-                    markerKey = row.getInt(3);
-                    markerSymbol = row.getString(4);
-                    alleleStrainKey = row.getInt(5);
-                    alleleStrain = row.getString(6);
-                    inheritModeKey = row.getInt(7);
-                    inheritMode = row.getString(8);
-                    alleleTypeKey = row.getInt(9);
-                    alleleType = row.getString(10);
-                    alleleStatusKey = row.getInt(11);
-                    alleleStatus = row.getString(12);
-                    alleleSymbol = row.getString(13);
-                    alleleName = row.getString(14);
-                    isWildType = row.getBoolean(15);
-                    isExtinct = row.getBoolean(16);
-                    isMixed = row.getBoolean(17);
-                    transmissionKey = row.getInt(18);
-                    transmission = row.getString(19);
+                    alleleSymbol = row.getString(3);
                 }
             }
         }

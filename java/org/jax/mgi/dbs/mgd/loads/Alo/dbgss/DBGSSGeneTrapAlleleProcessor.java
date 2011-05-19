@@ -21,9 +21,9 @@ import org.jax.mgi.shr.dla.log.DLALoggingException;
 import org.jax.mgi.shr.exception.MGIException;
 
 import java.util.Iterator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-//import java.util.Collection;
 
 /**
  * An object that processes dbGSS Gene Trap allele information by resolving
@@ -388,7 +388,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		 * this one plus other(s)) then report
 		 */
 		// find MCL(s) associated with the allele in the database
-		HashSet dbMCLs = mclLookup.lookup(existingAlleleKey);
+		HashMap dbMCLs = mclLookup.lookup(existingAlleleKey);
 
 		// gather and report the set of MCLs associated with the allele in the database
 		// other than the incoming MCL
@@ -399,14 +399,15 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// should be only one MCL i.e. the incoming one from which we determined
 		// this allele
 		if (dbMCLs.size() > 1) {
-			for (Iterator i = dbMCLs.iterator(); i.hasNext();) {
-				MutantCellLine dbMCL = (MutantCellLine) i.next();
-				String dbCellLineName = dbMCL.getCellLine();
-				if (!dbCellLineName.equals(incomingCellLineName)) {
-					mclDiffReport.append(" : ");
-					mclDiffReport.append(dbCellLineName);
-					somethingToReport = Boolean.TRUE;
-				}
+			Iterator i = dbMCLs.keySet().iterator();
+			while (i.hasNext()) {
+			    Integer dbMclKey = (Integer)i.next();
+			    String dbCellLineName = (String)dbMCLs.get(dbMclKey);
+			    if (!dbCellLineName.equals(incomingCellLineName)) {
+				mclDiffReport.append(" : ");
+				mclDiffReport.append(dbCellLineName);
+				somethingToReport = Boolean.TRUE;
+			    }
 			}
 		}
 

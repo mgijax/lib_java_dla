@@ -2,6 +2,7 @@ package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapDAO;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapKey;
 import org.jax.mgi.dbs.mgd.loads.Alo.ALO;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.dbutils.DBException;
@@ -58,10 +59,10 @@ public class DBGSSGeneTrapALO extends ALO {
      * @throws DBException if error creating the DAO object
      */
 
-    public void setSeqGeneTrap(SEQ_GeneTrapState state)
+    public void setSeqGeneTrap(SEQ_GeneTrapState state, SEQ_GeneTrapKey key)
         throws ConfigException, DBException {
 	//System.out.println("setSeqGeneTrap(SEQ_GeneTrapState state)");
-        seqGeneTrapDAO = new SEQ_GeneTrapDAO(state);
+        seqGeneTrapDAO = new SEQ_GeneTrapDAO(key, state);
     }
 
     /**

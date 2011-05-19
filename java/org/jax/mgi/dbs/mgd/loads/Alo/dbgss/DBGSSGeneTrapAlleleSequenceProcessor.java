@@ -192,8 +192,8 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	 * with this sequence
 	 */
 	// get the set of alleles associated with this sequence
-	HashSet alleles = alleleLookup.lookup(sequenceKey);
-	
+	HashMap dbAlleles = alleleLookup.lookup(sequenceKey);
+
 	// The string for reporting alleles associated with this sequence, other
 	// than the allele we are processing
 	StringBuffer b = new StringBuffer();
@@ -205,23 +205,26 @@ public class DBGSSGeneTrapAlleleSequenceProcessor
 	/**
 	 * if there is no allele DAO in the resolved DAO object then the allele 
 	 * we are processing is in the database; note the parameter 
-     * 'incomingAlleleKey' may represent a new allele
+	 * 'incomingAlleleKey' may represent a new allele
 	 */
 	
 	if (gtResolvedALO.getAlleleDAO() == null) {
 	    // iterate through the allele keys associated with this sequence in 
 	    // the database; determine if any are not the current sequence
-	    for (Iterator i = alleles.iterator();i.hasNext();) {
-			Allele currentDBAllele = (Allele)i.next();
-			Integer alleleKeyAssocWithSeq = currentDBAllele.getAlleleKey();
+	      Iterator i = dbAlleles.keySet().iterator();
+	      while (i.hasNext()) {
+			//Allele currentDBAllele = (Allele)i.next();
+			//Integer alleleKeyAssocWithSeq = currentDBAllele.getAlleleKey();
+			Integer alleleKeyAssocWithSeq = (Integer)i.next();
 			if (incomingAlleleKey.equals(alleleKeyAssocWithSeq)) {
 				// this sequence is associated already with the allele in the db
 				seqIsAssocWithAllele = Boolean.TRUE;
 			} else {
 				// this sequence is associated with different allele in the db
-				String s = currentDBAllele.getAlleleSymbol();
+				//String s = currentDBAllele.getAlleleSymbol();
+				String s = (String)dbAlleles.get(alleleKeyAssocWithSeq);
 				b.append(s);
-				b.append(", ");
+				b.append(" ");
 			}
 	    }
 	

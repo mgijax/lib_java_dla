@@ -3,6 +3,7 @@ package org.jax.mgi.dbs.mgd.loads.Alo.dbgss;
 import org.jax.mgi.dbs.mgd.dao.ACC_AccessionState;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapDAO;
 import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapState;
+import org.jax.mgi.dbs.mgd.dao.SEQ_GeneTrapKey;
 import org.jax.mgi.dbs.mgd.loads.Acc.AccAttributeResolver;
 import org.jax.mgi.dbs.mgd.loads.Acc.AccessionRawAttributes;
 import org.jax.mgi.dbs.mgd.lookup.SeqGeneTrapDAOLookupBySeqKey;
@@ -83,7 +84,7 @@ public class SeqGeneTrapProcessor {
 	if (dbDAO == null) {
 	    // add state to resolved ALO
 	    //System.out.println("SeqGeneTrapProcessor.process: resolvedALO.setSeqGeneTrap(state) ");
-	    resolvedALO.setSeqGeneTrap(state);
+	    resolvedALO.setSeqGeneTrap(state, new SEQ_GeneTrapKey(seqKey));
 	}
 	// associate seqTagId with sequence if not already associated
 	String incomingID = raw.getSeqTagID();

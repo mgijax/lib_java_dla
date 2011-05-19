@@ -99,9 +99,6 @@ public class SeqGeneTrapResolver {
         // start building the state object
         SEQ_GeneTrapState state = new SEQ_GeneTrapState();
 
-        // set the sequence key
-        state.setSequenceKey(seqKey);
-
         // set the goodHitCount - currently interpreter sets to zero
         Integer goodHitCount = hitCountLookup.lookup(s);
         if (goodHitCount == null) {

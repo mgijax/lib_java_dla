@@ -184,7 +184,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// interpret the cell line; this also interprets the cell line derivation
 		// sequence gene trap info and creates a AccessionRawAttributes for the 
 		// seqTagId to sequence association
-		logger.logcInfo("calling interpretCellLine", false);
 		interpretCellLine(seqInput, gtInput);
 
 		// interpret the allele 
@@ -389,10 +388,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private void interpretCellLine(
 			SequenceInput seqInput, DBGSSGeneTrapRawInput gtInput)
 			throws RecordFormatException {
-		logger.logcInfo("In interpretCellLine", false);
 		// create an empty cell line raw attributes object
 		CellLineRawAttributes cellLineRaw = new CellLineRawAttributes();
-		logger.logcInfo("Calling interpretDerivation", false);
 		// determine the derivation for this cell line
 		cellLineRaw.setDerivation(interpretDerivation(seqInput));
 
@@ -401,7 +398,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// interpretSeqGeneTrap method splits these two pieces out (it needs
 		// the vector end) and returns the cell line ID
 		try {
-			logger.logcInfo("Calling interpretSeqGeneTrap", false);
 			this.mutantCellLineID = interpretSeqGeneTrap(seqInput, gtInput);
 		} catch (NoVectorEndException e) {
 			RecordFormatException rfE = new RecordFormatException();
@@ -413,7 +409,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		cellLineRaw.setCellLine(this.mutantCellLineID);
 
 		// determine cellLineID logicalDB
-		logger.logcInfo("Calling interpretCellLineLogicalDB", false);
 		String ldb = interpretCellLineLogicalDB(seqInput);
 		cellLineRaw.setLogicalDB(ldb);
 

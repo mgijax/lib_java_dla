@@ -1,7 +1,6 @@
 package org.jax.mgi.dbs.mgd.loads.Alo;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -59,7 +58,7 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
   /**
    * look up an allele key to get a set of Mutant Cell Lines
    * @param alleleKey the allele key to look up
-   * @return HashSet of MutantCellLine objects
+   * @return HashMap of Mutant Cell Line keys and names
    * @throws CacheException thrown if there is an error accessing the cache
    * @throws CacheException thrown if there is an error accessing the cache
    * @throws DBException thrown if there is an error accessing the
@@ -67,10 +66,10 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
    * @throws ConfigException thrown if there is an error accessing the
    * configuration file
    */
-  public HashSet lookup(Integer alleleKey) throws CacheException,
+  public HashMap lookup(Integer alleleKey) throws CacheException,
       DBException, ConfigException {
       
-      return (HashSet)super.lookupNullsOk(alleleKey);
+      return (HashMap)super.lookupNullsOk(alleleKey);
   }
 
     /**
@@ -79,19 +78,10 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
     * @return the full initialization query
     */
     public String getFullInitQuery() {
-        return new String("SELECT  aac._Allele_key, a.accID, a._logicalDB_key, " +
-        "ldb.name as ldbName, c._CellLine_key, c.cellLine, " +
-        "c._CellLine_Type_key, v.term as cellLineType, c._Strain_key, " +
-        "s.strain, c._Derivation_key, c.isMutant " +
-        "FROM ACC_Accession a, ALL_CellLine c, ALL_Allele_CellLine aac, VOC_Term v, " +
-        "PRB_Strain s, ACC_LogicalDB ldb " +
-        "WHERE a._MGIType_key =  " + MGITypeConstants.CELLLINE + " " +
-        "and a._LogicalDB_key = ldb._LogicalDB_key " +
-        "and a._Object_key = c._CellLine_key " +
-        "and c._CellLine_key = aac._MutantCellLine_Key " +
+        return new String("SELECT  aac._Allele_key, c._CellLine_key, c.cellLine " +
+        "FROM ALL_CellLine c, ALL_Allele_CellLine aac " +
+        "where c._CellLine_key = aac._MutantCellLine_Key " +
         "and c.isMutant = 1 " +
-        "and c._CellLine_Type_key = v._Term_key " +
-        "and c._Strain_key = s._Strain_key " +
         "ORDER BY aac._Allele_key");
     }
   
@@ -112,65 +102,29 @@ public class MutantCellLineLookupByAlleleKey extends FullCachedLookup {
 	    return ref.getInt(1);
 	  }
 	  public Object interpretRows(Vector v) throws InterpretException {
-	    RowData rd = (RowData)v.get(0);
-	    Integer alleleKey = rd.alleleKey;
-	    HashSet MCLSet = new HashSet();
+	    Integer alleleKey =  ((RowData)v.get(0)).alleleKey;
+	    HashMap MCLMap = new HashMap();
 	    for (Iterator i = v.iterator(); i.hasNext();) {
-		rd = (RowData)i.next();
-		 MutantCellLine mcl = null;
-		try {
-		    mcl = new MutantCellLine();
-		} catch (DLALoggingException e) {
-		    throw new InterpretException (
-			"MutantCellLineLookupByCellLineID " + e.getMessage());
-		}
-		mcl.setAccID(rd.cellLineID);
-		mcl.setLdbKey(rd.ldbKey);
-		mcl.setLdbName(rd.ldbName);
-		mcl.setMCLKey(rd.mclKey);
-		mcl.setCellLine(rd.cellLine);
-		mcl.setCellLineTypeKey(rd.cellLineTypeKey);
-		mcl.setCellLineType(rd.cellLineType);
-		mcl.setStrainKey(rd.strainKey);
-		mcl.setStrain(rd.strain);
-		mcl.setDerivationKey(rd.derivationKey);
-		mcl.setIsMutant(rd.isMutant);		
+		RowData rd = (RowData)i.next();
+		MCLMap.put(rd.mclKey, rd.cellLine);
 	    }
-	    return new KeyValue(alleleKey, MCLSet);
+	    return new KeyValue(alleleKey, MCLMap);
 	}
       }
     return new Interpreter();
   }
-	/**
+    /**
      * Simple data object representing a row of data from the query
      */
     class RowData {
 	protected Integer alleleKey = null;
-	protected String cellLineID = null;
-	protected Integer ldbKey = null;
-	protected String ldbName = null;
 	protected Integer mclKey = null;
 	protected String cellLine = null;
-	protected Integer cellLineTypeKey = null;
-	protected String cellLineType = null;
-	protected Integer strainKey = null;
-	protected String strain = null;
-	protected Integer derivationKey = null;
-	protected Boolean isMutant = null;
 	
         public RowData (RowReference row) throws DBException {
 	    alleleKey = row.getInt(1);
-            cellLineID = row.getString(2);
-            ldbKey = row.getInt(3);
-	    ldbName = row.getString(4);
-	    mclKey = row.getInt(5);
-	    cellLine = row.getString(6);
-	    cellLineTypeKey = row.getInt(7);
-	    cellLineType = row.getString(8);
-	    strainKey =row.getInt(9);
-	    strain = row.getString(10);
-	    derivationKey = row.getInt(11);
-	    isMutant = row.getBoolean(12);
+	    mclKey = row.getInt(2);
+	    cellLine = row.getString(3);
         }
     }	
 }
