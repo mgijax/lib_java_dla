@@ -856,71 +856,75 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * EUCG0003e02.p1k3SPK
 	 * seqTag method is last 4 characters of seqTagID
 	 */
-	private String getSeqTagMethod(SequenceInput seqInput, String seqTagID) {
+	private String getSeqTagMethod(SequenceInput seqInput, String seqTagID) 
+	    throws RecordFormatException {
 
-		String method = null;
+	    String method = null;
 
-        if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
-            String note = seqInput.getSeq().getNote();
-            if (note != null) {
-                String[] n = note.toLowerCase().split("\n");
-                note = StringLib.join(n, " ");
-                // iterate through all the possible values for sequence tag method
-                for (Iterator i = seqTagMethodBadNames.iterator(); i.hasNext();) {
-                    String m = ((String) i.next()).toLowerCase();
-                    // if we find one set in DBGSSGeneTrapRawInput object and break
-                    if (note.indexOf(m) != -1) {
-                        method = m;
-                        break;
-                    }
-                }
-            }
-        }
-        else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
-            String s = (seqTagID.substring(seqTagID.length() - 4)).toLowerCase();
-            for (Iterator i = seqTagMethodBadNames.iterator(); i.hasNext();) {
-                String m = ((String) i.next()).toLowerCase();
-                // if we find a match set method and break
-                if (s.indexOf(m) != -1) {
-                    method = m;
-                    break;
-                }
-            }
-        }
-	// sc 4/4/2011, this case seems to be obsolote now. Looks like raw creator
-        // Wurst W was changed to GGTC in GenBank.
-	else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST)) {
-	    return DBGSSGeneTrapLoaderConstants.RACE5_1;
-	}
-        else {
-            // all other creators
-            String comment = seqInput.getSeq().getComment();
-            if (comment != null) {
-                String[] c = comment.toLowerCase().split("\n");
-                comment = StringLib.join(c, " ");
-
-                // iterate through all the possible dbgss values for sequence tag method
-                for (Iterator i = seqTagMethodBadNames.iterator(); i.hasNext();) {
-                    String m = ((String) i.next()).toLowerCase();
-                    // if we find one set in DBGSSGeneTrapRawInput object and break
-                    if (comment.indexOf(m) != -1) {
-                        method = m;
-                        break;
-                    }
-                }
-            }
-        }
-
-		// sequence tag method not found, report it and return nullS
-		if (method == null) {
-			 // sc 4/4/2011, null case not handled by caller - need to fix
-			logger.logcInfo("Sequence Tag Method not found for seqID: " +
-					seqInput.getPrimaryAcc().getAccID(), false);
-			return method;
+	    if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+		String note = seqInput.getSeq().getNote();
+		if (note != null) {
+		    String[] n = note.toLowerCase().split("\n");
+		    note = StringLib.join(n, " ");
+		    // iterate through all the possible values for sequence tag method
+		    for (Iterator i = seqTagMethodBadNames.iterator(); i.hasNext();) {
+			String m = ((String) i.next()).toLowerCase();
+			// if we find one set in DBGSSGeneTrapRawInput object and break
+			if (note.indexOf(m) != -1) {
+			    method = m;
+			    break;
+			}
+		    }
 		}
+	    }
+	    else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+		String s = (seqTagID.substring(seqTagID.length() - 4)).toLowerCase();
+		for (Iterator i = seqTagMethodBadNames.iterator(); i.hasNext();) {
+		    String m = ((String) i.next()).toLowerCase();
+		    // if we find a match set method and break
+		    if (s.indexOf(m) != -1) {
+			method = m;
+			break;
+		    }
+		}
+	    }
+	    // sc 4/4/2011, this case seems to be obsolote now. Looks like raw creator
+	    // Wurst W was changed to GGTC in GenBank.
+	    else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST)) {
+		return DBGSSGeneTrapLoaderConstants.RACE5_1;
+	    }
+	    else {
+		// all other creators
+		String comment = seqInput.getSeq().getComment();
+		if (comment != null) {
+		    String[] c = comment.toLowerCase().split("\n");
+		    comment = StringLib.join(c, " ");
 
-		// return method resolved to MGI term
-		return (String) seqTagMethodMap.get(method);
+		    // iterate through all the possible dbgss values for sequence tag method
+		    for (Iterator i = seqTagMethodBadNames.iterator(); i.hasNext();) {
+			String m = ((String) i.next()).toLowerCase();
+			// if we find one set in DBGSSGeneTrapRawInput object and break
+			if (comment.indexOf(m) != -1) {
+			    method = m;
+			    break;
+			}
+		    }
+		}
+	    }
+
+	    // sequence tag method not found, report it and return nullS
+	    if (method == null) {
+		     // sc 4/4/2011, null case not handled by caller - need to fix
+		    logger.logcInfo("Sequence Tag Method not found for seqID: " +
+				    seqInput.getPrimaryAcc().getAccID(), false);
+		    RecordFormatException rfE = new RecordFormatException();
+		    rfE.bindRecord("seqTagMethod not found for seqTagId/creator: " + seqTagID + "/" + 
+			this.rawCreator);
+		    throw rfE;
+	    }
+
+	    // return method resolved to MGI term
+	    return (String) seqTagMethodMap.get(method);
 
 	}
 
