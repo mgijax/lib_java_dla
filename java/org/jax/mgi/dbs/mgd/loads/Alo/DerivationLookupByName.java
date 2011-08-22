@@ -33,6 +33,7 @@ import org.jax.mgi.shr.dla.log.DLALoggingException;
  *       given a derivation name
  * @company The Jackson Laboratory
  * @author sc
+ * 8/11 - moved translator to constructor from lookup
  * @version 1.0
  */
 
@@ -59,7 +60,7 @@ public class DerivationLookupByName extends FullCachedLookup {
      * database
      */
     public DerivationLookupByName ()
-        throws  CacheException, ConfigException, DBException {
+        throws  CacheException, ConfigException, DBException, TranslationException {
         super(SQLDataManagerFactory.getShared(SchemaConstants.MGD));
         // since cache is static make sure you do not reinit
         if (!hasBeenInitialized) {
@@ -67,6 +68,8 @@ public class DerivationLookupByName extends FullCachedLookup {
         }
         hasBeenInitialized = true;
         derivationLookupByKey = new DerivationLookupByKey();
+	translator = new Translator(TranslationTypeConstants.DERIVATION,
+            CacheConstants.FULL_CACHE);
     }
 
  /**
@@ -106,14 +109,8 @@ public class DerivationLookupByName extends FullCachedLookup {
     * database
     */
     public Derivation lookup (String name) 
-        throws DBException, CacheException, ConfigException,
+        throws DBException, CacheException, ConfigException, 
             TranslationException {
-        // since a Translator is not obtained until this method is called,
-        // we need to check for null
-        if (translator == null){
-          translator = new Translator(TranslationTypeConstants.DERIVATION,
-            CacheConstants.FULL_CACHE);
-        }
         // do a translation of the name and expect null if term is not found.
         // if the name translates to a key then we use DerivationLookupByKey
             // to get the Derivation, if it doesn't translate, we use the cache

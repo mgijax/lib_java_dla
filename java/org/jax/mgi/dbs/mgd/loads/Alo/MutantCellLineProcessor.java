@@ -33,7 +33,7 @@ import org.jax.mgi.shr.exception.MGIException;
  * <UL>
  * <LI>a logger
  * <LI>ALOLoaderAbstractFactory  
- * <LI>MutantCellLineLookupByCellLineID
+ * <LI>MCLKeyLookupByCellLineID
  * <LI>DerivationProcessor
  * <LI>AccAttributeResolver - for associating the cell line ID w/cell line
  * <LI>Set of mutant cell line IDs already processed
@@ -60,8 +60,8 @@ public class MutantCellLineProcessor {
 	private ALOLoaderAbstractFactory factory;
 	// resolve raw MCL to cell line state
 	private MutantCellLineResolver mclResolver;
-	// resolve a mutant cell line id to a ALL_CellLineDAO
-	private MutantCellLineLookupByCellLineID mclLookupByID;
+	// resolve a mutant cell line id to a MCL Key
+	private MCLKeyLookupByCellLineID mclLookupByID;
 	// finds a derivation in the database and qc's incoming vs db attributes
 	private DerivationProcessor derivProcessor;
 	// resolves raw accession attributes to accession state
@@ -87,7 +87,7 @@ public class MutantCellLineProcessor {
 		config = new ALOLoadCfg();
 		factory = ALOLoaderAbstractFactory.getFactory();
 		mclResolver = new MutantCellLineResolver();
-		mclLookupByID = new MutantCellLineLookupByCellLineID();
+		mclLookupByID = new MCLKeyLookupByCellLineID();
 		derivProcessor = new DerivationProcessor();
 		accResolver = new AccAttributeResolver();
 		mclIdsAlreadyProcessed = new HashSet();
@@ -105,6 +105,7 @@ public class MutantCellLineProcessor {
 	 * and add to the database
 	 * @param resolvedALO - the ALO object to which will will add resolved
 	 *         cell line information
+	 * @returns HashSet of mcl keys
 	 * @throws RepeatALOException to indicate repeated mutant cell line in
 	 *   the input
 	 * @throws DerivationProcessorException if cannot find a derivation in the db
@@ -134,7 +135,6 @@ public class MutantCellLineProcessor {
 		for (Iterator i = rawSet.iterator(); i.hasNext();) {
 			CellLineRawAttributes mclRaw = (CellLineRawAttributes) i.next();
 			String accID = mclRaw.getCellLineID();
-			//System.out.println("MutantCellLineProcessor.process: accID: " + accID);
 			// if we have already seen this mutant cell line ID in the input
 			// skip this record
 			if (mclIdsAlreadyProcessed.contains(accID)) {
@@ -145,7 +145,6 @@ public class MutantCellLineProcessor {
 			// find a derivation object in the database for this MCL
 			Derivation derivation = null;
 			try {
-				//System.out.println("MutantCellLineProcessor.process: calling derivProcessor.process(mclRaw)");
 				derivation = derivProcessor.process(mclRaw);
 			} catch (DerivationProcessorException e) {
 				e.bindRecordString(" Mutant Cell Line ID " + accID);
@@ -167,42 +166,23 @@ public class MutantCellLineProcessor {
 			//logger.logcInfo("lookupKey: " + lookupKey.toString(), false);
 			// lookup the mutant cell line ID in  the database
 			try {
-			//logger.logcInfo("MutantCellLineProcessor looking up MCL/creator: " + lookupKey, false);
-				MutantCellLine dbMCL = mclLookupByID.lookup(lookupKey.toString());
-				// if we get here we've found it in the database:
-				// add it to the set of existing MCLs to return
-				existingMCLKeySet.add(dbMCL.getMCLKey());
-				Integer dbDerivKey = dbMCL.getDerivationKey();
-				// Update the MCL derivation if configured to do so
-				if (updateMCLDerivation.equals(Boolean.TRUE) &&
-				    ! incomingDerivKey.equals(dbDerivKey)) {
-					ALL_CellLineState state = dbMCL.getState();
-					state.setDerivationKey(incomingDerivKey);
-					state.setModifiedByKey(userKey);
-					Integer key = dbMCL.getMCLKey();
-					ALL_CellLineDAO dao = new ALL_CellLineDAO(
-							new ALL_CellLineKey(key), state);
-					resolvedALO.addCellLineUpdate(dao);
-					logger.logcInfo("Updating MCL derivation from " +
-					    dbDerivKey + " to " + incomingDerivKey, false);
-				}
-				// compare incoming mutant cell line to one found in database
-				// do this after updating any derivations
-				incomingMCL.compare(dbMCL);
+			    Integer dbMCL = mclLookupByID.lookup(lookupKey.toString());
+			    // if we get here we've found it in the database:
+			    // add it to the set of existing MCLs to return
+			    existingMCLKeySet.add(dbMCL);
 
 			} catch (KeyNotFoundException e) {
-				// if we don't find a mutant cell line in the database we create
-				// a new one, set the resolved MCL state in the ALO
-				// System.out.println("MutantCellLineProcessor.process adding MCL to ALO");
-				mclIdsAlreadyProcessed.add(accID);
-				ALL_CellLineDAO mclDAO = resolvedALO.addCellLine(
-						incomingMCL.getState());
-				Integer mclKey = mclDAO.getKey().getKey();
-				
-				ACC_AccessionState accState = createMCLAccessionState(mclKey, accID, ldbKey);
-				// set in resolved ALO
-				resolvedALO.addAccession(accState);
-			}
+			    // if we don't find a mutant cell line in the database we create
+			    // a new one, set the resolved MCL state in the ALO
+			    mclIdsAlreadyProcessed.add(accID);
+			    ALL_CellLineDAO mclDAO = resolvedALO.addCellLine(
+					    incomingMCL.getState());
+			    Integer mclKey = mclDAO.getKey().getKey();
+			    
+			    ACC_AccessionState accState = createMCLAccessionState(mclKey, accID, ldbKey);
+			    // set in resolved ALO
+			    resolvedALO.addAccession(accState);
+		    }
 		}
 		return existingMCLKeySet;
 	}

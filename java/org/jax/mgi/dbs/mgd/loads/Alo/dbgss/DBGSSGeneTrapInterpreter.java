@@ -94,8 +94,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private Matcher contactMatcher;
 
 	// String expression to determine a TIGM gene trap from the Contact line
-	private static final String TIGM_EXPRESSION =
-			"Richard H. Finnell at Texas Institute for Genomic Medicine";
+	private static final String TIGM_EXPRESSION = DBGSSGeneTrapLoaderConstants.TIGM;
 
 	// expression string, pattern, and matcher to find the Vector name
 	// from a GenBank format source note section
@@ -176,22 +175,18 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		// call superclass to parse the record and get config
 		seqInput = (SequenceInput) super.interpret(rcd);
 		logger.logcInfo("SEQID: " + seqInput.getPrimaryAcc().getAccID(), false);
-
+		
 		// gene trap input object; the object we create from
 		// further parsing of SequenceInput object attributes
 		DBGSSGeneTrapRawInput gtInput = new DBGSSGeneTrapRawInput();
-
 		// interpret the cell line; this also interprets the cell line derivation
 		// sequence gene trap info and creates a AccessionRawAttributes for the 
 		// seqTagId to sequence association
 		interpretCellLine(seqInput, gtInput);
-
 		// interpret the allele 
 		interpretAllele(seqInput, gtInput);
-
 		// interpret the allele references
 		interpretReferenceAssocs(seqInput, gtInput);
-
 		// interpret the sequence to allele associations
 		interpretSeqAlleleAssoc(seqInput, gtInput);
 
@@ -330,8 +325,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	 * Example from AB187228 (EGTC): Cell line ID: 21-7 Gene trap Vector: pU-21
 	 * Example from EF806820 (TIGM - from the 2nd source section in the 
 	 * record for for just the LTR):
-     * source          1..30
-     *      /organism="Gene trapping vector VICTR76"
+	 * source          1..30
+	 *      /organism="Gene trapping vector VICTR76"
 	 */
 	private String getVectorName(SequenceInput seqInput, String creator)
 			throws RecordFormatException {
@@ -341,7 +336,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 		// put if/else here, was doing both as TIGM would not be found in note
 		// so would then check 2ndary source
-		if (note != null && !creator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+		if (note != null && !creator.equals(DBGSSGeneTrapLoaderConstants.TIGM) &&
+			!creator.equals(DBGSSGeneTrapLoaderConstants.TIGM_2)) {
 			// remove \n in note
 			String[] n = note.split("\n");
 			note = StringLib.join(n, " ");
@@ -593,6 +589,9 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		 * cell line id and cell line name are the same. 
 		 * the sequence tag ID is parsed from two different places in the dbGSS
 		 * record depending on creator. 
+		 * TIGM_2 added 7/2011 as new sequences use definition not '/clone='
+		 * There are still original TIGM which will be resubmitted, but don't
+		 * know if they'll update the entire record or just reverse complement
 		 */
 		// create and set sequence allele association raw attributes
 		SequenceRawAttributes sequenceRaw = seqInput.getSeq();
@@ -604,6 +603,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.RULEY) ||
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.WURST) ||
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.ISHIDA) ||
+                    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM_2) ||
 		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.FHCRC)) {
 			seqTagID = getDefinitionSeqTagID(seqInput);
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.CMHD) ||
@@ -738,11 +738,10 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		seqGTRaw.setVectorEnd(vectorEnd);
 		seqGTRaw.setGoodHitCount(new Integer(0));
 
-		// if TIGM 'no' all others 'yes' 
+		// if TIGEM or EUCOMM 'no' all others 'yes' 
 		String reverseComp = "yes";
-		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
-				this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM) ||
-                this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
+		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGEM) ||
+		    this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.EUCOMM)) {
 			reverseComp = "no";
 		}
 		seqGTRaw.setIsReverseComp(reverseComp);
@@ -753,7 +752,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private String interpretCellLineLogicalDB(SequenceInput seqInput)
 			throws RecordFormatException {
 
-		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
+			this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM_2)) {
 			return DBGSSGeneTrapLoaderConstants.TIGM_CL_LDB;
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.LEXICON)) {
 			return DBGSSGeneTrapLoaderConstants.LEXICON_CL_LDB;
@@ -801,7 +801,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	private void interpretSeqTagIdAccession(String seqTagID,
 			DBGSSGeneTrapRawInput gtInput) {
 		String logicalDB = null;
-		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+		if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
+			this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM_2)) {
 			logicalDB = DBGSSGeneTrapLoaderConstants.TIGM_SEQ_LDB;
 		} else if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.LEXICON)) {
 			logicalDB = DBGSSGeneTrapLoaderConstants.LEXICON_SEQ_LDB;
@@ -861,7 +862,8 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 
 	    String method = null;
 
-	    if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+	    if (this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
+		this.rawCreator.equals(DBGSSGeneTrapLoaderConstants.TIGM_2)) {
 		String note = seqInput.getSeq().getNote();
 		if (note != null) {
 		    String[] n = note.toLowerCase().split("\n");

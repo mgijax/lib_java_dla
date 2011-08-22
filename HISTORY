@@ -1,3 +1,28 @@
+TAG: lib_java_dla-4-4-1-6
+DATE: 08/22/2011
+STAFF: sc
+CHANGES: Merge tr9978 to trunk
+    and changes to reduce memory footprint, and bug fix in
+    DBGSSGeneTrapAlleleProcessor
+1) New classes: 
+a) AlleleData - used for representing existing allele in database instead
+   of the bigger Allele class
+b) MCLKeyLookupByCellLineID.java - used to return a MCL Key for use by 
+    DBGSSGeneTrapAlleleProcessor instead of MutantCellLineLookupByCellLineID
+    no longer doing MCL attribute comparisons which weren't being used.
+2) AlleleLookupByMutantCellLineKey.java - Creates AlleleData object instead
+   of Allele object; AlleleData represents existing allele info we want to  QC
+3) DerivationLookupByName - moved translator creation to constructor from lookup method.
+4) MutantCellLineProcessor -Updated to use MCLKeyLookupByCellLineID and removed 
+   comparisons btwn existing and new alleles and MCLs
+5) DBGSSGeneTrapAlleleProcessor - Updated to use AlleleData and do smaller set 
+   of comparisons btwn alleles in the db and alleles in the input. More efficiently
+   look for mcl ID in allele nomen. 
+6) DBGSSGeneTrapInterpreter - Added support for TIGM_2 which is the contact  used for 
+   the new set of TIGM sequences. TIGM now reverse complements.
+7) DBGSSGeneTrapLoaderConstants - added TIGM_2
+8) VectorEndCellLineIDExtractor - added TIGM_2 support
+
 TAG: lib_java_dla-4-4-1-5
 DATE: 06/3/2011
 STAFF: sc
@@ -86,6 +111,18 @@ STAFF: dbm
 CHANGES:
 1) shr/config/HTMLFormatterCfg.java; change shire to lindon for
    DEFAULT_WEBURL definition (TR10039)
+
+TAG: lib_java_dla-tr9978-2
+DATE: 12/16/2009
+STAFF:  sc
+CHANGES:
+1) Added Gene Trap UML subdirectories this is unrelated to this branch.
+
+TAG: lib_java_dla-tr9978-1
+DATE: 12/08/2009
+STAFF:  sc
+CHANGES:
+1) DBGSSGeneTrapInterpreter - set TIGM to isReverseComplimented = 'yes'
 
 TAG: lib_java_dla-tr9978-BP
 DATE: 12/08/2009

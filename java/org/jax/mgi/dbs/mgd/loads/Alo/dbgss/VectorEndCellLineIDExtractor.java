@@ -82,7 +82,8 @@ public class VectorEndCellLineIDExtractor {
 	else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.GGTC)) {
             return processGGTC(seqTagId, seqTagMethod);
         }
-        else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.TIGM)) {
+        else if (creatorName.equals(DBGSSGeneTrapLoaderConstants.TIGM) ||
+		creatorName.equals(DBGSSGeneTrapLoaderConstants.TIGM_2)) {
             return processTIGM(seqTagId);
         }
 	else {

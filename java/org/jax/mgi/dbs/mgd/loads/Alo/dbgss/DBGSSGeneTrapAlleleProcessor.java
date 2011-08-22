@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * An object that processes dbGSS Gene Trap allele information by resolving
@@ -41,6 +43,9 @@ import java.util.Map;
  * @company The Jackson Laboratory
  * @author sc
  * @version 1.0
+ * 8/11 sc - changed allele*InDB from HashSet to HashMap, mapping mcl ID to list of 
+ * allele symbols/synonyms that contain that ID to avoid iterating over  the whole
+ * set each time
  */
 public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
@@ -49,8 +54,8 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	private PubMedIDLookupByAlleleKey pubMedLookup;
 	// we'll get the cache from pubMedLookup and use it instead
 	private Map pubMedMap;
-	private HashSet alleleSymbolsInDB;
-	private HashSet alleleSynonymsInDB;
+	private HashMap alleleSymbolsInDB;
+	private HashMap alleleSynonymsInDB;
 	private LabNameAndCodeLookupByRawCreator labCodeLookup;
 
 	/**
@@ -72,16 +77,8 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		labCodeLookup = 
 		    new LabNameAndCodeLookupByRawCreator();
 		labCodeLookup.initCache();
-		//logger.logdInfo("labCodeLookupKeys: " + labCodeLookup.getCache().keySet().toString(), false);
-        //System.out.println("labCodeLookupKeys: " + labCodeLookup.getCache().keySet().toString());
-        //Collection values = labCodeLookup.getCache().values();
-        /*for (Iterator i = values.iterator();i.hasNext();) {
-                KeyValue kv = (KeyValue)i.next();
-                logger.logdInfo("Key: " + kv.getKey() + " Value: " + kv.getValue(), false);
-                System.out.println("Key: " + kv.getKey() + " Value: " + kv.getValue());
-        }*/
 		
-		initSymbolSets();
+		initSymbolMaps();
 	}
 
     /**
@@ -103,7 +100,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * @param incomingMCLs - the set of incoming MCL objects. For gene traps 
 	 *  This is a set of one. If MCL found in the database (i.e. existingMCLKeys
 	 *  has a value) then we compare the incoming attributes with that in the
-     *  database
+	 *  database
 	 * @return Integer alleleKey of the processed allele - may be new or existing
 	 *   in the database
 	 * @assumes mutant cell lines have already been resolved, i.e. existing MCL
@@ -216,73 +213,69 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 				getCellLines().iterator().next();
 		String ldbName = cl.getLogicalDB();
 		String rawCreator = cl.getDerivation().getCreator();
-		//logger.logdInfo("Raw Creator: " + rawCreator, false);
-		//System.out.println("Raw Creator: " + rawCreator);
-		//rawCreator = rawCreator.toLowerCase();
-		//logger.logdInfo("Raw Creator lower: " + rawCreator, false);
-        //System.out.println("Raw Creator lower: " + rawCreator);
 		KeyValue kv = labCodeLookup.lookup(rawCreator);
 		String labCode = (String)kv.getValue();
+
 		// check for mclID in allele nomenclature
 		// search for this exact string in allele synonym
 		String mclID = clDAO.getState().getCellLine();
-
-		// search for mclID and lab code in allele symbol AND synonym
 		String nomenString = "(" + mclID + ")";
+
 		// The symbols which contain "(mclID)"
 		StringBuffer mclIdInSymbol = new StringBuffer();
 		// the synonyms which contain "(mclID)" or ARE mclID
 		StringBuffer mclIdInSynonym = new StringBuffer();
 
-		// check all allele symbols
-		for (Iterator i = alleleSymbolsInDB.iterator(); i.hasNext();) {
-			String symbol = (String) i.next();
-			// if "(mclID)" found in symbol, report and skip
-			if (symbol.indexOf(nomenString) != -1 && 
-			    symbol.indexOf(labCode) != -1) {
-				mclIdInSymbol.append(symbol);
-                mclIdInSymbol.append(" ");
-			}
+		// get allele symbols in which are found the mcl ID
+		HashSet symbols = (HashSet)alleleSymbolsInDB.get(nomenString);
+		if(symbols != null) {
+		     for (Iterator i = symbols.iterator(); i.hasNext();) {
+			mclIdInSymbol.append((String) i.next());
+			mclIdInSymbol.append(" ");
+		    }
 		}
-		// check all allele synonyms
-		for (Iterator i = alleleSynonymsInDB.iterator(); i.hasNext();) {
+
+		// get allele synonyms in which are found the mcl ID
+		HashSet synonyms = (HashSet)alleleSynonymsInDB.get(nomenString);
+		if(synonyms != null) {
+                     for (Iterator i = symbols.iterator(); i.hasNext();) {
 			String synonym = (String) i.next();
-			// if mcl ID is the synonym, or  "(mclID)" found in synonym report and skip
-			if ( (synonym.indexOf(nomenString) != -1 && 
-			    synonym.indexOf(labCode) != -1) || synonym.equals(mclID)) {
-			    mclIdInSynonym.append(synonym);
+			if (synonym.indexOf(labCode) != -1 || synonym.equals(mclID)) {
+			    mclIdInSynonym.append((String) i.next());
 			    mclIdInSynonym.append(" ");
 			}
-		}
-        // report both symbols and synonyms
-        if (mclIdInSymbol.length()!= 0 && mclIdInSynonym.length() != 0) {
-            CellLineIDInAlleleNomenException e =
-                        new CellLineIDInAlleleNomenException();
-			e.bindRecordString("MCL ID: " + mclID + " LDB Name: " + ldbName +
-					" ALLELE SYMBOLS: " + mclIdInSymbol.toString() +
-					" ALLELE SYNONYMS: " + mclIdInSynonym.toString());
-			throw e;
-        }
-        // Just synonyms, report them
-        else if (mclIdInSynonym.length() != 0) {
-            CellLineIDInAlleleNomenException e = new
-                CellLineIDInAlleleNomenException();
-			e.bindRecordString("MCL ID: " + mclID +
-					" LDB Name: " + ldbName +
-					" ALLELE SYNONYMS: " + mclIdInSynonym.toString());
-			throw e;
-        }
-        // Just symbols, report them
-        else if (mclIdInSymbol.length()!= 0) {
-            CellLineIDInAlleleNomenException e =
-                        new CellLineIDInAlleleNomenException();
-			e.bindRecordString("MCL ID: " + mclID +
-					" LDB Name: " + ldbName +
-					" ALLELE SYMBOLS: " + mclIdInSymbol.toString());
-            throw e;
-        }
+		    }
+                }
 
-        // mclID was not found in allele nomenclature, so continue ...
+		// report both symbols and synonyms
+		if (mclIdInSymbol.length()!= 0 && mclIdInSynonym.length() != 0) {
+		    CellLineIDInAlleleNomenException e =
+				new CellLineIDInAlleleNomenException();
+				e.bindRecordString("MCL ID: " + mclID + " LDB Name: " + ldbName +
+						" ALLELE SYMBOLS: " + mclIdInSymbol.toString() +
+						" ALLELE SYNONYMS: " + mclIdInSynonym.toString());
+				throw e;
+		}
+		// Just synonyms, report them
+		else if (mclIdInSynonym.length() != 0) {
+		    CellLineIDInAlleleNomenException e = new
+			CellLineIDInAlleleNomenException();
+				e.bindRecordString("MCL ID: " + mclID +
+						" LDB Name: " + ldbName +
+						" ALLELE SYNONYMS: " + mclIdInSynonym.toString());
+				throw e;
+		}
+		// Just symbols, report them
+		else if (mclIdInSymbol.length()!= 0) {
+		    CellLineIDInAlleleNomenException e =
+				new CellLineIDInAlleleNomenException();
+				e.bindRecordString("MCL ID: " + mclID +
+						" LDB Name: " + ldbName +
+						" ALLELE SYMBOLS: " + mclIdInSymbol.toString());
+		    throw e;
+		}
+
+		// mclID was not found in allele nomenclature, so continue ...
         
 		// resolve allele and set in resolvedALO
 		Allele allele = alleleResolver.resolve(aloInput.getAllele(), alleleStrainKey);
@@ -299,7 +292,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 
 		// process molecular mutation associations
 		HashSet mutations = aloInput.getMutations();
-    	mutationProcessor.processMutationForNewAllele(mutations, resolvedALO);
+		mutationProcessor.processMutationForNewAllele(mutations, resolvedALO);
 
 		// process all reference associations
 		processReferencesForNewAllele(aloInput, resolvedALO, alleleKey);
@@ -321,7 +314,7 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 *              which was found in the database.NOTE: this my NOT the same
 	 *              as the cell line associated with the Allele if the allele is
 	 *              found to be in the database
-     * @param incomingMCL the incoming MCL resolved
+	 * @param incomingMCL the incoming MCL resolved
 	 * @assumes all parameters are not null
 	 * @throws ALOResolvingException if errors resolving derivation or mutant
 	 *         cell line attributes
@@ -357,11 +350,11 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 			// get the set of alleles as a string
 			StringBuffer assocAlleles = new StringBuffer();
 			for (Iterator i = dbAlleles.iterator(); i.hasNext();) {
-				Allele a = (Allele) i.next();
-				String s = a.getAlleleSymbol();
-				assocAlleles.append(s);
-				assocAlleles.append(" ");
-			}
+                                AlleleData a = (AlleleData) i.next();
+                                String s = a.getAlleleSymbol();
+                                assocAlleles.append(s);
+                                assocAlleles.append(" ");
+                        }
 			e.bindRecordString("MCL Key: " + existingMCLKey +
 					" associated " + " with multiple alleles in the database: " +
 					assocAlleles.toString());
@@ -369,19 +362,20 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		}
 
 		// from here down we assume the incoming allele is in the database
-		Allele existingAllele = (Allele) dbAlleles.iterator().next();
-        resolvedALO.setIsUpdate(Boolean.TRUE);
+		// this is a set of 1
+		AlleleData existingAllele = (AlleleData)dbAlleles.iterator().next();
+        	resolvedALO.setIsUpdate(Boolean.TRUE);
 		Integer existingAlleleKey = existingAllele.getAlleleKey();
 		String symbol = existingAllele.getAlleleSymbol();
 
-        /**
+		/**
 		 * resolve incoming allele so we may compare to allele in the database
 		 * Note, dbGSS gene trap alleles have same strain as Derivation (i.e.
 		 * parent cell lin, this is why we pass existingAllele.getStrainKey()
 		 */
 		Allele incomingAllele = alleleResolver.resolve(aloInput.getAllele(),
 				existingAllele.getStrainKey());
-		incomingAllele.compare(existingAllele);
+		//incomingAllele.compare(existingAllele);
 
 		/**
 		 * if there are > 1 cell lines associated with this allele in the db (i.e.
@@ -422,7 +416,6 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 				existingAlleleKey, symbol, resolvedALO);
 		// compare reference associations, create new, report any in db
 		// not in input
-		//System.out.println("Calling processRefrencesForExsitingAllele SeqID " + aloInput.getSequenceAssociation().getSeqID());
 		processReferencesForExistingAllele(aloInput, resolvedALO,
 				existingAlleleKey);
 
@@ -446,7 +439,6 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// resolve references and set in resolvedALO; RefAssocProcessor is an old
 		// class which takes one raw instance and returns a state - this is diff
 		// erent paradigm than new processors for the ALO load
-        //logger.logcInfo("In processReferencesForNewAllele", false);
 		HashSet rawRefs = aloInput.getReferenceAssociations();
 		for (Iterator i = rawRefs.iterator(); i.hasNext();) {
 			RefAssocRawAttributes rawRef = (RefAssocRawAttributes) i.next();
@@ -513,22 +505,55 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 	 * Loads sets of allele symbols and synonyms from the database
 	 * @throws MGIException
 	 */
-	private void initSymbolSets() throws MGIException {
+	private void initSymbolMaps() throws MGIException {
+		// Compile regular expression
+		String patternStr = "(\\(.*)\\)";
+		Pattern pattern = Pattern.compile(patternStr);
 
 		// initialize the symbol set
-		alleleSymbolsInDB = new HashSet();
+		alleleSymbolsInDB = new HashMap();
 		AlleleSymbolQuery symbolQuery = new AlleleSymbolQuery();
 		DataIterator i = symbolQuery.execute();
+		String symbol = null;
 		while (i.hasNext()) {
-			this.alleleSymbolsInDB.add((String) i.next());
+		    symbol = (String) i.next(); 
+		    Matcher matcher = pattern.matcher(symbol);
+		    if(matcher.find() == true) {
+			String match = matcher.group();
+			if(!alleleSymbolsInDB.containsKey(match)) {
+				HashSet s = new HashSet();
+				s.add(symbol);
+				alleleSymbolsInDB.put(match, s);
+			}
+			else {
+			    HashSet s =  (HashSet)alleleSymbolsInDB.get(match);
+			    s.add(symbol);
+			    alleleSymbolsInDB.put(match, s);
+			}
+		    }
 		}
 
 		// initialize the synonym set
-		alleleSynonymsInDB = new HashSet();
+		alleleSynonymsInDB = new HashMap();
 		AlleleSynonymQuery synonymQuery = new AlleleSynonymQuery();
 		i = synonymQuery.execute();
+		String synonym = null;
 		while (i.hasNext()) {
-			this.alleleSynonymsInDB.add((String) i.next());
+		    synonym = (String) i.next();
+                    Matcher matcher = pattern.matcher(synonym);
+                    if(matcher.find() == true) {
+                        String match = matcher.group();
+                        if(!alleleSynonymsInDB.containsKey(match)) {
+                                HashSet s = new HashSet();
+                                s.add(synonym);
+                                alleleSynonymsInDB.put(match, s);
+                        }
+                        else {
+                            HashSet s =  (HashSet)alleleSynonymsInDB.get(match);
+                            s.add(synonym);
+                            alleleSynonymsInDB.put(match, s);
+                        }
+                    }
 		}
 	}
 }

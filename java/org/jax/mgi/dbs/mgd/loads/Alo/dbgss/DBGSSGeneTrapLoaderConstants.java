@@ -26,6 +26,7 @@ public class DBGSSGeneTrapLoaderConstants {
     public static final String GGTC = "GGTC";
     public static final String TIGM = 
 	"Richard H. Finnell at Texas Institute for Genomic Medicine";
+    public static final String TIGM_2 = "Michael P. McLeod";
     public static final String EUCOMM =
             "European Conditional Mouse Mutagenesis Program (EUCOMM)";
     public static final String RULEY = "Ruley HE";
