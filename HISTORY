@@ -1,3 +1,9 @@
+TAG: lib_java_dla-4-4-1-7
+DATE: 09/10/2011
+STAFF: sc
+CHANGES: TR9978
+1) bug in DBGSSGeneTrapAlleleProcessor comparing mcl ID to synonyms
+
 TAG: lib_java_dla-4-4-1-6
 DATE: 08/22/2011
 STAFF: sc

@@ -238,10 +238,10 @@ public class DBGSSGeneTrapAlleleProcessor extends AlleleProcessor {
 		// get allele synonyms in which are found the mcl ID
 		HashSet synonyms = (HashSet)alleleSynonymsInDB.get(nomenString);
 		if(synonyms != null) {
-                     for (Iterator i = symbols.iterator(); i.hasNext();) {
+                     for (Iterator i = synonyms.iterator(); i.hasNext();) {
 			String synonym = (String) i.next();
 			if (synonym.indexOf(labCode) != -1 || synonym.equals(mclID)) {
-			    mclIdInSynonym.append((String) i.next());
+			    mclIdInSynonym.append(synonym);
 			    mclIdInSynonym.append(" ");
 			}
 		    }
