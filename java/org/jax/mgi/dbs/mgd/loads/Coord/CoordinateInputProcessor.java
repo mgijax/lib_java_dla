@@ -7,6 +7,7 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.dbs.mgd.lookup.CoordMapFeatureKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.FeatureKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.MGITypeLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.exception.MGIException;
@@ -80,11 +81,14 @@ public class CoordinateInputProcessor {
     // a coordinate Exception Factory
     private CoordloaderExceptionFactory eFactory;
     
-    // load mode - e.g. delete_reload or add
+    // load mode - e.g. delete_reload, delete reload by object or add
     private String loadMode;
     
-    // lookup a Map Feature objectId to get Map Feature key for given collection
-    private CoordMapFeatureKeyLookup featureLookup;
+    // lookup a objectId of a given MGI type for given collection
+    private CoordMapFeatureKeyLookup cmFeatureLookup;
+
+    // lookup a object ID of a given MGI type regardless of collection
+    private FeatureKeyLookup featureLookup;
 
     DLALogger logger;
     /**
@@ -108,7 +112,7 @@ public class CoordinateInputProcessor {
         collectionName = coordCfg.getMapCollectionName();
         collectionAbbrev = coordCfg.getMapCollectionAbbrev();
 	loadMode = coordCfg.getLoadMode();
-	System.out.println("load mode: " + loadMode);
+	//System.out.println("load mode: " + loadMode);
 	sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         // set collection abbreviation to the name value if not configured
         if(collectionAbbrev == null || collectionAbbrev.equals("")) {
@@ -120,13 +124,16 @@ public class CoordinateInputProcessor {
 	Integer mgiTypeKey = new MGITypeLookup().lookup(
             coordCfg.getFeatureMGIType());
         featureResolver = new CoordMapFeatureResolver();
-	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) || 
-		loadMode.equals(CoordloaderConstants.DR_BY_OBJECT_MODE )) {
-	    System.out.println("Lookup collection: " + collectionName);
-	    System.out.println("Lookup mgiTypeKey: " + mgiTypeKey.toString());
+	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) ) {
+	    //System.out.println("ADD Load Mode Lookup collection: " + collectionName);
+	    //System.out.println("ADD Load Mode Lookup mgiTypeKey: " + mgiTypeKey.toString());
 	    
-	    featureLookup = new CoordMapFeatureKeyLookup(
+	    cmFeatureLookup = new CoordMapFeatureKeyLookup(
 		collectionName, mgiTypeKey);
+	}
+	else if (loadMode.equals(CoordloaderConstants.DR_BY_OBJECT_MODE )) {
+	    featureLookup = new FeatureKeyLookup(mgiTypeKey);
+            //System.out.println("DR_BY_OBJECT Load Mode Lookup mgiTypeKey: " + mgiTypeKey.toString());
 	}
 	logger = DLALogger.getInstance();
     }
@@ -157,11 +164,11 @@ public class CoordinateInputProcessor {
         String objectID = featureRaw.getObjectId();
 
        /**
-         * delete coordinates if feature is in the database for this collection
+         * delete coordinates if feature is in the database 
          * (DR_BY_OBJECT_MODE only)
          */
-	    if (loadMode.equals(CoordloaderConstants.DR_BY_OBJECT_MODE)) {
-		// DEBUG start
+	if (loadMode.equals(CoordloaderConstants.DR_BY_OBJECT_MODE)) {
+	    /* DEBUG start
 	    Integer [] featureKey = featureLookup.lookup(objectID);
 	    if (featureKey == null) {
 		System.out.println("featureKey not in database");
@@ -172,17 +179,17 @@ public class CoordinateInputProcessor {
 		}
 	    }
 	    // DEBUG end
-
+	    */
             if (featureLookup.lookup(objectID) != null) {
-		System.out.println("Deleting " + objectID);
+		//System.out.println("Deleting " + objectID);
 		deleteByObject(objectID);
 	    } 
 
 	    // if we are deleting and not reloading, the only raw attribute
 	    // is the objectID; if any other attribute empty, just return
-	    System.out.println("startcoord '" + featureRaw.getStartCoord() + "'");
+	    //System.out.println("startcoord '" + featureRaw.getStartCoord() + "'");
 	    if (featureRaw.getStartCoord().equals("")) {
-		System.out.println("in delete by object mode and start coord is empty");
+		//System.out.println("in delete by object mode and start coord is empty");
 		return; 
 	    }
         }
@@ -194,7 +201,7 @@ public class CoordinateInputProcessor {
          */
 
         if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) &&
-            featureLookup.lookup(objectID) != null) {
+            cmFeatureLookup.lookup(objectID) != null) {
                 CoordInDatabaseException e =
                     new CoordInDatabaseException();
                 e.bindRecordString(objectID);
