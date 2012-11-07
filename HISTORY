@@ -1,3 +1,17 @@
+TAG: lib_java_dla-5-1-1-1
+DATE: 11/07/2012
+STAFF: dbm
+CHANGES:
+C4AM/B38 release
+
+TAG: lib_java_dla-tr7106-1
+DATE: 05/24/2012
+STAFF: sc
+CHANGES: Update to add reload_by_object 
+1) CoordinateInputProcessor.java 
+2) Coordloader.java 
+3) CoordloaderConstants.java
+
 TAG: lib_java_dla-tr7106-BP
 DATE: 05/24/2012
 STAFF: sc
