@@ -20,5 +20,6 @@ public class CoordloaderConstants {
     // load mode constants
     public static final String ADD_LOAD_MODE = "add";
     public static final String DELETE_RELOAD_MODE = "delete_reload";
+    public static final String DR_BY_OBJECT_MODE = "reload_by_object";
 }
 

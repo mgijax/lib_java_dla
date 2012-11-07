@@ -7,6 +7,7 @@ import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.lookup.TranslationException;
 import org.jax.mgi.dbs.mgd.lookup.CoordMapFeatureKeyLookup;
+import org.jax.mgi.dbs.mgd.lookup.FeatureKeyLookup;
 import org.jax.mgi.dbs.mgd.lookup.MGITypeLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.exception.MGIException;
@@ -44,7 +45,7 @@ import org.jax.mgi.shr.dla.loader.coord.CoordInDatabaseException;
  *   <UL>
  *   <LI>deletes existing collection, map, and features for a collection
  *   <LI>gets or creates the collection and the map for a coordinate
- *   >LI>creates a coordinate
+ *   <LI>creates a coordinate
  *   <LI>
  *   </UL>
  * @company The Jackson Laboratory
@@ -68,24 +69,27 @@ public class CoordinateInputProcessor {
     // gets existing or creates the coordinate map for the coordinate
     private CoordMapProcessor mapProcessor;
 
-    // resolves CoordMapFeatureRqwAttributes to a MAP_Coord_FeatureState
+    // resolves CoordMapFeatureRawAttributes to a MAP_Coord_FeatureState
     private CoordMapFeatureResolver featureResolver;
 
     // a stream for handling MGD DAO objects
     private SQLStream mgdStream;
 
+    // for doing deletes
+    private SQLDataManager sqlMgr;
+
     // a coordinate Exception Factory
     private CoordloaderExceptionFactory eFactory;
     
-    // load mode - e.g. delete_reload or add
+    // load mode - e.g. delete_reload, delete reload by object or add
     private String loadMode;
     
-    // look up a Map Feature objectId to get a Map Feature key for a given collection
-    private CoordMapFeatureKeyLookup featureLookup;
-    
-    // get the collection key when in add mode
-    // private CoordMapCollectionKeyLookup collectionLookup;
-    
+    // lookup a objectId of a given MGI type for given collection
+    private CoordMapFeatureKeyLookup cmFeatureLookup;
+
+    // lookup a object ID of a given MGI type regardless of collection
+    private FeatureKeyLookup featureLookup;
+
     DLALogger logger;
     /**
      * Constructs a CoordinateInputProcessor
@@ -98,47 +102,41 @@ public class CoordinateInputProcessor {
      * @throws KeyNotFoundException if error creating CoordMapFeatureResolver
      */
 
-    public CoordinateInputProcessor(SQLStream stream) throws DBException, CacheException,
-        ConfigException, KeyNotFoundException, DLALoggingException {
+    public CoordinateInputProcessor(SQLStream stream) throws DBException, 
+	    CacheException, ConfigException, KeyNotFoundException, 
+	    DLALoggingException {
 
         mgdStream = stream;
         eFactory = new CoordloaderExceptionFactory();
         coordCfg = new CoordLoadCfg();
         collectionName = coordCfg.getMapCollectionName();
         collectionAbbrev = coordCfg.getMapCollectionAbbrev();
-		loadMode = coordCfg.getLoadMode();
-
+	loadMode = coordCfg.getLoadMode();
+	//System.out.println("load mode: " + loadMode);
+	sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
         // set collection abbreviation to the name value if not configured
         if(collectionAbbrev == null || collectionAbbrev.equals("")) {
-                collectionAbbrev = collectionName;
+	    collectionAbbrev = collectionName;
         }
-		//collectionLookup =  new CoordMapCollectionKeyLookup();
 	
         // create an instance of a CoordMapProcessor from configuration
         mapProcessor = (CoordMapProcessor)coordCfg.getMapProcessorClass();
-		Integer mgiTypeKey = new MGITypeLookup().lookup(
+	Integer mgiTypeKey = new MGITypeLookup().lookup(
             coordCfg.getFeatureMGIType());
         featureResolver = new CoordMapFeatureResolver();
-		if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE)) {
-			featureLookup = new CoordMapFeatureKeyLookup(collectionName,
-			mgiTypeKey);
-		}
-		logger = DLALogger.getInstance();
+	if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) ) {
+	    //System.out.println("ADD Load Mode Lookup collection: " + collectionName);
+	    //System.out.println("ADD Load Mode Lookup mgiTypeKey: " + mgiTypeKey.toString());
+	    
+	    cmFeatureLookup = new CoordMapFeatureKeyLookup(
+		collectionName, mgiTypeKey);
+	}
+	else if (loadMode.equals(CoordloaderConstants.DR_BY_OBJECT_MODE )) {
+	    featureLookup = new FeatureKeyLookup(mgiTypeKey);
+            //System.out.println("DR_BY_OBJECT Load Mode Lookup mgiTypeKey: " + mgiTypeKey.toString());
+	}
+	logger = DLALogger.getInstance();
     }
-    /**
-     * deletes the collection, all coordinate maps and features for the
-     * collection. Creates a new collection object and sets the collection key
-     * in the map processor
-     * @throws CoordloaderException if error deleting collectin and associated
-     *    maps and features
-     * @throws ConfigException if error creating new collection
-     * @throws DBException if error creating new collection
-     */
-    /*public void preprocess() throws CoordloaderException, ConfigException,
-        DBException {
-        deleteCoordinates();
-        createCollection(null);
-    }*/
 
      /**
      * Adds a Coordinate Collection, Coordinate Maps for the Collections and
@@ -147,7 +145,7 @@ public class CoordinateInputProcessor {
      * @effects queries and inserts into a database
      * @param input CoordinateInput object - a set of raw attributes to resolve
      *        and add to the database
-     * @throws KeyNotFoundException if erros processing  map or resolving feature
+     * @throws KeyNotFoundException if error processing map or resolving feature
      * @throws DBException if erros creating  map object, resolving feature,
      *      or executing the stream
      * @throws CacheException if errors creating map object or resolving feature
@@ -158,35 +156,81 @@ public class CoordinateInputProcessor {
     public void processInput(CoordinateInput input) throws ConfigException,
             KeyNotFoundException, DBException, CacheException, 
 	    TranslationException, CoordInDatabaseException {
+
+	// get Feature Raw attributes
+        CoordMapFeatureRawAttributes featureRaw =
+                input.getCoordMapFeatureRawAttributes();
+
+        String objectID = featureRaw.getObjectId();
+
+       /**
+         * delete coordinates if feature is in the database 
+         * (DR_BY_OBJECT_MODE only)
+         */
+	if (loadMode.equals(CoordloaderConstants.DR_BY_OBJECT_MODE)) {
+	    /* DEBUG start
+	    Integer [] featureKey = featureLookup.lookup(objectID);
+	    if (featureKey == null) {
+		System.out.println("featureKey not in database");
+	    }
+	    else {
+		for (int i=0; i< featureKey.length; i++) {
+		    System.out.println("featureKey: " + featureKey[i]);
+		}
+	    }
+	    // DEBUG end
+	    */
+            if (featureLookup.lookup(objectID) != null) {
+		//System.out.println("Deleting " + objectID);
+		deleteByObject(objectID);
+	    } 
+
+	    // if we are deleting and not reloading, the only raw attribute
+	    // is the objectID; if any other attribute empty, just return
+	    //System.out.println("startcoord '" + featureRaw.getStartCoord() + "'");
+	    if (featureRaw.getStartCoord().equals("")) {
+		//System.out.println("in delete by object mode and start coord is empty");
+		return; 
+	    }
+        }
+
+
+        /**
+         * Bail (skip) if feature is in the database for this collection
+         * (ADD_LOAD_MODE only)
+         */
+
+        if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) &&
+            cmFeatureLookup.lookup(objectID) != null) {
+                CoordInDatabaseException e =
+                    new CoordInDatabaseException();
+                e.bindRecordString(objectID);
+                throw e;
+        }
+
+
+	/**
+         * now resolve the feature
+	 */
         // the compound DAO object we are building
         Coordinate coordinate = new Coordinate(mgdStream);
 
         // get a map key
         Integer mapKey = mapProcessor.process(
-                input.getCoordMapRawAttributes(), coordinate);
+            input.getCoordMapRawAttributes(), coordinate);
 
-		// get Feature Raw attributes
-		CoordMapFeatureRawAttributes featureRaw =
-			input.getCoordMapFeatureRawAttributes();
-		String objectID = featureRaw.getObjectId();
-		if (loadMode.equals(CoordloaderConstants.ADD_LOAD_MODE) &&
-			featureLookup.lookup(objectID) != null) {
-			CoordInDatabaseException e = new CoordInDatabaseException();
-			e.bindRecordString(objectID);
-			throw e;
-		}
-			// resolve the feature
-		MAP_Coord_FeatureState state;
-		try {
-				state = featureResolver.resolve(
-				featureRaw, mapKey);
-		}
-		catch (KeyNotFoundException e) {
-			logger.logcInfo(e.getMessage(), true);
-				return;
-		}
+	MAP_Coord_FeatureState state;
 
-        // set the feature in the coordMap object
+	try {
+	    state = featureResolver.resolve(
+	    featureRaw, mapKey);
+	}
+	catch (KeyNotFoundException e) {
+	    logger.logcInfo(e.getMessage(), true);
+	    return;
+	}
+
+	// set the feature in the coordMap object
         coordinate.setCoordMapFeatureState(state);
 
         // send the CoordinateMap object to its stream
@@ -194,7 +238,7 @@ public class CoordinateInputProcessor {
     }
 
     /**
-     * deletes the coordinate collection, all coordinate maps and features for the
+     * deletes the coordinate collection, all coord maps and features for the
      * collection
      * @assumes Nothing
      * @effects deletes records from a database
@@ -202,54 +246,73 @@ public class CoordinateInputProcessor {
      *         a delete.
      */
 
-     public void deleteCoordinates() throws CoordloaderException{
+    public void deleteCoordinates() throws CoordloaderException{
 
-       String spCall = "MAP_deleteByCollection '" + collectionName + "'";
-       try {
-         SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(SchemaConstants.MGD);
-         sqlMgr.executeSimpleProc(spCall);
-       }
-       catch (MGIException e) {
-         CoordloaderException e1 =
-             (CoordloaderException) eFactory.getException(
-          CoordloaderExceptionFactory.ProcessDeletesErr, e);
-         throw e1;
-       }
-     }
+	String spCall = "MAP_deleteByCollection '" + collectionName + "'";
+	try {
+            SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(
+		SchemaConstants.MGD);
+            sqlMgr.executeSimpleProc(spCall);
+        }
+        catch (MGIException e) {
+	    CoordloaderException e1 =
+		(CoordloaderException) eFactory.getException(
+		    CoordloaderExceptionFactory.ProcessDeletesErr, e);
+	    throw e1;
+        }
+    }
 
     /**
-     * Creates a collection object and sets the collection key in the map processor
-     * @param collectionKey collectionKey to set or if null create a new collection
+     * Creates a collection object and sets the coll key in the map processor
+     * @param collectionKey collectionKey to set; if null new collection made
      * @throws DBException if errors creating or inserting collection DAO
      * @throws ConfigException if error collection DAO
      */
-   public void createCollection (Integer collectionKey) throws DBException,
+    public void createCollection (Integer collectionKey) throws DBException,
 		   CacheException, ConfigException {
 	
         if (collectionKey != null) {
-			this.collectionKey = collectionKey;
-			
-			mapProcessor.initCollection(collectionKey);
-			return;
-		}
-		// otherwise create a new collection
-		MAP_Coord_CollectionState collection = new MAP_Coord_CollectionState();
-
-		// set the collection name and abbreviation
-		collection.setName(collectionName);
-		collection.setAbbreviation(collectionAbbrev);
-
-		// create the dao
-		MAP_Coord_CollectionDAO dao = new MAP_Coord_CollectionDAO(collection);
-
-		// get the collection key from the dao
-		collectionKey = dao.getKey().getKey();
-
-		// insert the collection
-		mgdStream.insert(dao);
-		// we have to explicitly set the collection key in the CoordMapProcessor
-		// because it is configured; Configurator does not take parameter
-
-		mapProcessor.initCollection(collectionKey);
+	    this.collectionKey = collectionKey;
+	    
+	    mapProcessor.initCollection(collectionKey);
+		return;
 	}
+	// otherwise create a new collection
+	MAP_Coord_CollectionState collection = 
+		new MAP_Coord_CollectionState();
+
+	// set the collection name and abbreviation
+	collection.setName(collectionName);
+	collection.setAbbreviation(collectionAbbrev);
+
+	// create the dao
+	MAP_Coord_CollectionDAO dao = new MAP_Coord_CollectionDAO(collection);
+
+	// get the collection key from the dao
+	collectionKey = dao.getKey().getKey();
+
+	// insert the collection
+	mgdStream.insert(dao);
+
+	// we have to explicitly set the collection key in the CoordMapProcessor
+	// because it is configured; Configurator does not take parameter
+	mapProcessor.initCollection(collectionKey);
+    }
+    /**
+     * deletes the features for the object ID
+     * @assumes objectID is not null and featureLookup returns a featureKey
+     * @effects deletes all features from the database for objectID
+     * @throws  DBException if errors using lookup
+     * @throws CacheException if errors using lookup
+     */
+    private void deleteByObject (String objectID) throws DBException,
+        CacheException {
+	String del = "delete from MAP_Coord_Feature where _Feature_key = ";
+        Integer[] featureKeys = (Integer[])featureLookup.lookup(objectID);
+	for (int i = 0; i < featureKeys.length; i++) {
+	    Integer key = featureKeys[i];
+	    sqlMgr.executeUpdate( del + key.toString());
+	}
+    }
+
 }
