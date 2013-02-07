@@ -8,7 +8,7 @@
    -->
    <property environment="env"/>
    <property name="jar.name" value="dla"/>
-   <property name="classpath" value="${env.MGI_JAVALIB}/core.jar:${env.MGI_JAVALIB}/dbsmgd.jar:${env.MGI_JAVALIB}/dbsrdr.jar:${env.JUNIT}"/>
+   <property name="classpath" value="${env.CLASSPATH}:${env.MGI_JAVALIB}/core.jar:${env.MGI_JAVALIB}/dbsmgd.jar:${env.MGI_JAVALIB}/dbsrdr.jar:${env.JUNIT}"/>
 
    <!-- Import the universal targets.
    -->
