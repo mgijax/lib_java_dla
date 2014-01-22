@@ -248,10 +248,12 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
 
        // create MGI_AttributeHistory on the sequence type if stream is
        // using bcp
+       /**
        if(mgdStream.isBCP()) {
            MGI_AttributeHistoryState typeHistoryState = new
                MGI_AttributeHistoryState();
        }
+       **/
 
        // resolve primary accession attributes and set the accession state
        // in the Sequence

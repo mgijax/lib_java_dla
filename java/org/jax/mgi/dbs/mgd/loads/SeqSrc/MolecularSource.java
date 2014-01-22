@@ -5,13 +5,10 @@ import org.jax.mgi.dbs.mgd.MGITypeConstants;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceDAO;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceState;
 import org.jax.mgi.dbs.mgd.dao.PRB_SourceKey;
-import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryDAO;
-import org.jax.mgi.dbs.mgd.dao.MGI_AttributeHistoryState;
 import org.jax.mgi.shr.dbutils.dao.SQLStream;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
 import org.jax.mgi.shr.exception.MGIException;
-import org.jax.mgi.dbs.mgd.hist.PRB_SourceAttrHistory;
 
 /**
  * An object which represents a molecular source
@@ -65,12 +62,6 @@ public class MolecularSource
   protected Boolean curatedEditedAge = null;
 
   /**
-   * the class for checking MolecularSource attribute history
-   */
-  protected PRB_SourceAttrHistory history = null;
-
-
-  /**
    * the delimiter to use within the toString method
    */
   private static final String DELIMITER = ".";
@@ -91,7 +82,6 @@ public class MolecularSource
       MSExceptionFactory.AlreadyOnSQLStream;
   private static String AlreadyInDatabase =
       MSExceptionFactory.AlreadyInDatabase;
-  private static String AttrHistoryErr = MSExceptionFactory.AttrHistoryErr;
   private static String NoKeyFound = MSExceptionFactory.NoKeyFound;
 
 
@@ -370,30 +360,6 @@ public class MolecularSource
     if (!this.getCuratorEdited().booleanValue())
         return false;
 
-    /**
-     * check instance variable first to see if it has been set
-     */
-    if (this.curatedEditedTissue == null)
-    {
-        /**
-         * get history and set instance variable
-         */
-        try
-        {
-            if (history == null)
-                history = new PRB_SourceAttrHistory();
-            this.curatedEditedTissue =
-                new Boolean(history.isTissueCurated(this.getMSKey()));
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 =
-                (MSException)eFactory.getException(AttrHistoryErr, e);
-            e2.bind("tissue");
-            throw e2;
-        }
-    }
     return this.curatedEditedTissue.booleanValue();
   }
 
@@ -414,32 +380,6 @@ public class MolecularSource
     if (!this.getCuratorEdited().booleanValue())
         return false;
 
-    /**
-     * check instance variable first to see if it has been set
-     */
-    if (this.curatedEditedAge == null)
-    {
-        /**
-         * get history and set instance variable
-         */
-        try
-        {
-            if (history == null)
-                history = new PRB_SourceAttrHistory();
-            this.curatedEditedAge =
-                new Boolean(history.isAgeCurated(this.getMSKey()));
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 =
-                (MSException)eFactory.getException(AttrHistoryErr, e);
-            e2.bind("age");
-            throw e2;
-        }
-
-
-    }
     return this.curatedEditedAge.booleanValue();
 
   }
@@ -461,32 +401,6 @@ public class MolecularSource
     if (!this.getCuratorEdited().booleanValue())
         return false;
 
-    /**
-     * check instance variable first to see if it has been set
-     */
-    if (this.curatedEditedCellLine == null)
-    {
-        /**
-         * get history and set instance variable
-         */
-        try
-        {
-            if (history == null)
-                history = new PRB_SourceAttrHistory();
-            this.curatedEditedCellLine =
-                new Boolean(history.isCellLineCurated(this.getMSKey()));
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 =
-                (MSException)eFactory.getException(AttrHistoryErr, e);
-            e2.bind("cellLine");
-            throw e2;
-        }
-
-
-    }
     return this.curatedEditedCellLine.booleanValue();
 
   }
@@ -508,32 +422,6 @@ public class MolecularSource
     if (!this.getCuratorEdited().booleanValue())
         return false;
 
-    /**
-     * check instance variable first to see if it has been set
-     */
-    if (this.curatedEditedStrain == null)
-    {
-        /**
-         * get history and set instance variable
-         */
-        try
-        {
-            if (history == null)
-                history = new PRB_SourceAttrHistory();
-            this.curatedEditedStrain =
-                new Boolean(history.isStrainCurated(this.getMSKey()));
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 =
-                (MSException)eFactory.getException(AttrHistoryErr, e);
-            e2.bind("strain");
-            throw e2;
-        }
-
-
-    }
     return this.curatedEditedStrain.booleanValue();
 
   }
@@ -555,32 +443,6 @@ public class MolecularSource
     if (!this.getCuratorEdited().booleanValue())
         return false;
 
-    /**
-     * check instance variable first to see if it has been set
-     */
-    if (this.curatedEditedGender == null)
-    {
-        /**
-         * get history and set instance variable
-         */
-        try
-        {
-            if (history == null)
-                history = new PRB_SourceAttrHistory();
-            this.curatedEditedGender =
-                new Boolean(history.isGenderCurated(this.getMSKey()));
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 =
-                (MSException)eFactory.getException(AttrHistoryErr, e);
-            e2.bind("gender");
-            throw e2;
-        }
-
-
-    }
     return this.curatedEditedGender.booleanValue();
 
   }
@@ -602,31 +464,6 @@ public class MolecularSource
     if (!this.getCuratorEdited().booleanValue())
         return false;
 
-    /**
-     * check instance variable first to see if it has been set
-     */
-    if (this.curatedEditedOrganism == null)
-    {
-        /**
-         * get history and set instance variable
-         */
-        try
-        {
-            if (history == null)
-                history = new PRB_SourceAttrHistory();
-            this.curatedEditedOrganism =
-                new Boolean(history.isOrganismCurated(this.getMSKey()));
-        }
-        catch (MGIException e)
-        {
-            MSExceptionFactory eFactory = new MSExceptionFactory();
-            MSException e2 =
-                (MSException)eFactory.getException(AttrHistoryErr, e);
-            e2.bind("organism");
-            throw e2;
-        }
-
-    }
     return this.curatedEditedOrganism.booleanValue();
 
   }
@@ -668,59 +505,9 @@ public class MolecularSource
     }
     else
       stream.insert(new PRB_SourceDAO(key, state));
+
     this.isInBatch = true;
-    /**
-     * triggers are in place in the database to update records in the
-     * MGI_AttributeHistory table when new records are inserted into the
-     * PRB_Source table. If this stream uses a BCPStrategy for doing inserts,
-     * then records will have be added to the MGI_AttributeHistory table
-     * at this point since the insert triggers will not get fired
-     */
-    if (stream.isBCP())
-    {
-      MGI_AttributeHistoryState state = new MGI_AttributeHistoryState();
-      state.setMGITypeKey(new Integer(MGITypeConstants.SOURCE));
-      state.setObjectKey(this.key.getKey());
 
-      state.setColumnName(MGD.prb_source._segmenttype_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._vector_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._organism_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._strain_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._tissue_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._cellline_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._gender_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source._refs_key);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source.name);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source.description);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source.age);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source.agemin);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-
-      state.setColumnName(MGD.prb_source.agemax);
-      stream.insert(new MGI_AttributeHistoryDAO(state));
-    }
   }
 
 

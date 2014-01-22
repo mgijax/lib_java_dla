@@ -12,28 +12,18 @@ import org.jax.mgi.dbs.mgd.lookup.VocabTermLookup;
 import org.jax.mgi.shr.cache.KeyNotFoundException;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.dbs.mgd.LogicalDBConstants;
-import org.jax.mgi.dbs.mgd.hist.Seq_SequenceAttrHistory;
 import org.jax.mgi.shr.dla.loader.seq.SeqloaderConstants;
 
 import java.sql.Timestamp;
 
 /**
  * An object that updates a SEQ_SequenceState representing an existing sequence
- *     and an MGI_AttributeHistoryState object representing the sequence type
- *     attribute history in preparation for a database update based on input
- *     sequence values
- * @has
- *   <UL>
- *   <LI> A SeqAttrHistory object for determining if updates allowed on sequence
- *        type
- *   </UL>
+ *     preparation for a database update based on input sequence values
  * @does
  *   <UL>
  *   <LI>>Updates a SEQ_SequenceState representing an existing sequence from
  *        a SEQ_SequenceState representing the updated sequence. Knows which
  *        attributes may be updated.
- *   <LI>Updates a MGI_AttributeHistoryState representing the sequence type
- *       attributes history
  *   </UL>
  * @company The Jackson Laboratory
  * @author sc
@@ -41,9 +31,6 @@ import java.sql.Timestamp;
  */
 
 public class SequenceRawUpdater {
-    // object to determine the attribute History of a SEQ_Sequence
-    // presently history is tracked for sequence type
-    Seq_SequenceAttrHistory attrHistory;
 
     // an instance of the load logger
     DLALogger logger;
@@ -90,10 +77,9 @@ public class SequenceRawUpdater {
      * constructs a SequenceUpdater
      * @assumes Nothing
      * @effects Queries a database
-     * @throws DBException if error creating Seq_SequenceAttrHistory,
-     * or a LogicalDBLookup object
+     * @throws DBException if error creating a LogicalDBLookup object
      * @throws ConfigException if error creating a SequenceLoadCfg object,
-     *         a Seq_SequenceAttrHistory object, a LogicalDBLookup, or getting
+     *         a LogicalDBLookup, or getting
      *         the logicalDB from the SequenceLoadCfg object
      * @throws CacheException if error creating a LogicalDBLookup
      * @throws KeyNotFoundException if logicalDB is not configured
@@ -103,7 +89,6 @@ public class SequenceRawUpdater {
     private SequenceRawUpdater()
         throws DBException,  DLALoggingException, ConfigException,
             KeyNotFoundException, CacheException {
-        attrHistory = new Seq_SequenceAttrHistory();
         logger = DLALogger.getInstance();
         loadCfg = new SequenceLoadCfg();
         logicalDBLookup = new LogicalDBLookup();
