@@ -3,6 +3,8 @@ DATE: 01/22/2014
 STAFF: sc, lec
 CHANGES:
 1) TR11573 SP/TR sequence load updates
+   EMBLFormatInterpreter - determine SWISS-PROT or TrEMBL in the isValid
+     method
 2) TR11555 Ensembl GM and removal of usage of MGI_AttributeHistory
    from sequence loads
 

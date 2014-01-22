@@ -141,15 +141,18 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     public boolean isValid(String record) {
 	boolean isProvider = false;
 	boolean isT = isTrembl(record);
-	if (provider.equals("TrEMBL") && isT) {
-	    isProvider = true;
+	if (provider.equals("TrEMBL")) {
+	    if (isT == true) {
+	        isProvider = true;
+	    }
 	}
 	else { // provider is SWISS-PROT
 	    if (isT == false) {
 		isProvider = true;
 	    } 
 	}
-        return (organismChecker.checkOrganism(record) && isProvider);
+	boolean valid = organismChecker.checkOrganism(record) && isProvider;
+	return (valid);
     }
 
     /**
