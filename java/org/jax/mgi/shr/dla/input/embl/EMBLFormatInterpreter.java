@@ -1,6 +1,7 @@
 package org.jax.mgi.shr.dla.input.embl;
 
 import java.util.*;
+import java.util.regex.*;
 import java.sql.Timestamp;
 
 import org.jax.mgi.shr.config.ConfigException;
@@ -91,6 +92,20 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
     private StringBuffer osSection;
     private StringBuffer rxSection;
 
+    /** vars for determining provider
+     * starts with 'ID'
+     * match all whitespace, all non-whitespace
+     * match zero or more times
+     * until ';'
+     * SWISS-PROT:
+     * ID   1433B_MOUSE             Reviewed;         246 AA.
+     * TrEMBL:
+     * ID   A0A4V6_MOUSE            Unreviewed;       136 AA.
+     */
+    private static final String ID_EXPRESSION = "^ID([\\s\\S]*?);";
+    private Matcher orgMatcher;
+    private Pattern orgPattern = Pattern.compile(ID_EXPRESSION, Pattern.MULTILINE);
+
     /**
     * Constructs a EMBL FormatInterpreter
     * @assumes Nothing
@@ -113,16 +128,31 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
       }
 
     /**
-     * Determines whether this sequence is for an organism we want to load
+     * Determines whether this sequence is for an organism and provider
+     * we want to load
      * @assumes Nothing
      * @effects Nothing
      * @param record A EMBL format sequence record
-     * @return true if organism of the sequence is an organism we want to load
+     * @return true if organism of the sequence is an organism we want to load and
+     *   is the correct provider
      * @throws Nothing
      */
 
     public boolean isValid(String record) {
-        return (organismChecker.checkOrganism(record));
+	boolean isProvider = false;
+	boolean isT = isTrembl(record);
+	if (provider.equals("TrEMBL")) {
+	    if (isT == true) {
+	        isProvider = true;
+	    }
+	}
+	else { // provider is SWISS-PROT
+	    if (isT == false) {
+		isProvider = true;
+	    } 
+	}
+	boolean valid = organismChecker.checkOrganism(record) && isProvider;
+	return (valid);
     }
 
     /**
@@ -659,4 +689,15 @@ public class EMBLFormatInterpreter extends SequenceInterpreter {
             sequenceInput.addSecondary(seqid);
         }
     }
+    protected boolean isTrembl(String record) {
+	boolean isTrembl = false;
+	orgMatcher = orgPattern.matcher(record);
+	if (orgMatcher.find() == true) {
+	    if(orgMatcher.group(1).indexOf("Unreviewed") != -1) {
+		isTrembl = true;
+	    }
+	}
+	return isTrembl;
+    }
+
 }

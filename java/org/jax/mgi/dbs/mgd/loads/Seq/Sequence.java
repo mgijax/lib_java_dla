@@ -623,6 +623,7 @@ public class Sequence {
                 stream.insert((SEQ_Source_AssocDAO)i.next());
             }
             // If bcp trigger won't add when adding sequence
+	    /**
             if (stream.isBCP()) {
                 MGI_AttributeHistoryState typeHistoryState =
                     new MGI_AttributeHistoryState();
@@ -633,6 +634,7 @@ public class Sequence {
                     MGD.seq_sequence._sequencetype_key);
                 stream.insert(new MGI_AttributeHistoryDAO(typeHistoryState));
             }
+	    **/
         }
         // Existing sequence that needs updating - update it
         else if (isChangedSequence || isChangedRawSequence) {

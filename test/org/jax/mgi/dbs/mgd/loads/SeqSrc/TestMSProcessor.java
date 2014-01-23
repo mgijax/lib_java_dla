@@ -182,10 +182,6 @@ public class TestMSProcessor
      */
     public void testExistingSeqWithChangedSrcCuratorEdited() throws Exception
     {
-      sqlMgr.executeUpdate("delete MGI_AttributeHistory where _object_key = -40");
-      sqlMgr.executeUpdate("insert into MGI_AttributeHistory values (" +
-                           "-40, 5, '_CellLine_key', 1060, 1060, getDate(), " +
-                           "getDate())");
       sqlMgr.executeUpdate("update prb_source set isCuratorEdited = 1 where _source_key = -40");
       Integer C30 = this.cellLineLookup.lookup("C30");
       String sql = "select * from prb_source where _source_key " +
@@ -200,7 +196,6 @@ public class TestMSProcessor
       msProcessor.processExistingSeqSrc(accid, seqKey, null, raw);
       nav = sqlMgr.executeQuery(sql);
       assertTrue(!nav.next()); // assure record was not edited
-      sqlMgr.executeUpdate("delete MGI_AttributeHistory where _object_key = -40");
       // check qc tables
       sql = "select count(*) from QC_MS_AttrEdit " +
             "where _jobstream_key = " + jobkey;

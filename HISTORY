@@ -1,3 +1,28 @@
+TAG: lib_java_dla-5-1-7-1
+DATE: 01/23/2014
+STAFF: sc, lec
+CHANGES: merge tr11573 changes to trunk
+
+TAG: lib_java_dla-tr11573-?
+DATE: 01/22/2014
+STAFF: sc, lec
+CHANGES:
+1) TR11573 SP/TR sequence load updates
+   EMBLFormatInterpreter - determine SWISS-PROT or TrEMBL in the isValid
+     method
+2) TR11555 Ensembl GM and removal of usage of MGI_AttributeHistory
+   from sequence loads
+
+test/org/jax/mgi/dbs/mgd/loads/SeqSrc/TestMSAttrHistory.java : remove
+test/org/jax/mgi/dbs/mgd/loads/SeqSrc/TestMSAttrResolver.java : remove
+java/org/jax/mgi/dbs/mgd/loads/Seq/Sequence.java
+java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceInputProcessor.java
+java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceRawUpdater.java
+java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceUpdater.java
+java/org/jax/mgi/dbs/mgd/loads/SeqSrc/MolecularSource.java
+UML-ALOLoad : remove
+UML-dbGSSGeneTrapLoad : remove
+
 TAG: lib_java_dla-tr11573-BP
 DATE: 01/22/2014
 STAFF: sc
