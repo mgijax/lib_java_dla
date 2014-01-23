@@ -15,7 +15,8 @@ java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceInputProcessor.java
 java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceRawUpdater.java
 java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceUpdater.java
 java/org/jax/mgi/dbs/mgd/loads/SeqSrc/MolecularSource.java
-
+UML-ALOLoad : remove
+UML-dbGSSGeneTrapLoad : remove
 
 TAG: lib_java_dla-tr11573-BP
 DATE: 01/22/2014
