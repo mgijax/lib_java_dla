@@ -1,4 +1,12 @@
-TAG: lib_java_dla-5-1-7-?
+TAG: lib_java_dla-5-1-7-2
+DATE: 01/27/2014
+STAFF: sc, lec
+1) removed code that had been commented out for MGI_AttributeHistory removal
+
+java/org/jax/mgi/dbs/mgd/loads/Seq/Sequence.java
+java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceInputProcessor.java
+java/org/jax/mgi/dbs/mgd/loads/Seq/SequenceLookup.java
+
 TAG: lib_java_dla-5-1-7-1
 DATE: 01/23/2014
 STAFF: sc, lec
