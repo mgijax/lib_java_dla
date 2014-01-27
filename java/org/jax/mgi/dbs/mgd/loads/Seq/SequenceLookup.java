@@ -204,7 +204,6 @@ public class SequenceLookup {
             MGD.seq_sequence._name + " s,  " +
             MGD.seq_sequence_raw._name + " sr,  " +
             MGD.acc_accession._name + " aa " +
-            //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
@@ -351,7 +350,6 @@ public class SequenceLookup {
             MGD.seq_sequence._name + " s,  " +
             MGD.seq_sequence_raw._name + " sr,  " +
             MGD.acc_accession._name + " aa " +
-            //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +
@@ -620,7 +618,6 @@ public class SequenceLookup {
             MGD.seq_source_assoc._name + " sa, " +
             MGD.seq_sequence._name + " s, " +
             MGD.seq_sequence_raw._name + " sr  " +
-            //MGD.mgi_attributehistory._name + " his " +
             " WHERE s." + MGD.seq_sequence._sequence_key + " = " +
             " a." + MGD.acc_accession._object_key +
             " AND s." + MGD.seq_sequence._sequence_key + " = " +

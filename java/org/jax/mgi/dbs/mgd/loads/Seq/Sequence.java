@@ -610,7 +610,6 @@ public class Sequence {
     public void sendToStream() throws DBException {
         Iterator i;
         // New sequence - insert it with its accession and source associations
-        // if bcp insert MGI_AttributeHistory
         if(isNewSequence) {
             stream.insert(sequenceDAO);
             stream.insert(sequence_RawDAO);
@@ -622,19 +621,6 @@ public class Sequence {
             while(i.hasNext()) {
                 stream.insert((SEQ_Source_AssocDAO)i.next());
             }
-            // If bcp trigger won't add when adding sequence
-	    /**
-            if (stream.isBCP()) {
-                MGI_AttributeHistoryState typeHistoryState =
-                    new MGI_AttributeHistoryState();
-                typeHistoryState.setObjectKey(sequenceDAO.getKey().getKey());
-                typeHistoryState.setMGITypeKey(
-                    new Integer(MGITypeConstants.SEQUENCE));
-                typeHistoryState.setColumnName(
-                    MGD.seq_sequence._sequencetype_key);
-                stream.insert(new MGI_AttributeHistoryDAO(typeHistoryState));
-            }
-	    **/
         }
         // Existing sequence that needs updating - update it
         else if (isChangedSequence || isChangedRawSequence) {
