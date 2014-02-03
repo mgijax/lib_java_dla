@@ -31,6 +31,8 @@ public class Allele {
     private String alleleType = null;
     private Integer alleleStatusKey = null;
     private String alleleStatus = null;
+    private Integer collectionKey = null;
+    private String collection = null;
     private String alleleSymbol = null;
     private String alleleName = null;
     private Boolean isWildType = null;
@@ -78,6 +80,13 @@ public class Allele {
     public void setAlleleStatus(String status) {
        alleleStatus = status;
     }
+    public void setCollectionKey(Integer key) {
+       collectionKey = key;
+    }
+    public void setCollection(String c) {
+       collection = c;
+    }
+
     public void setAlleleSymbol(String symbol) {
        alleleSymbol = symbol;
     }
@@ -137,6 +146,12 @@ public class Allele {
     public String getAlleleStatus() {
 	return alleleStatus;
     }
+    public Integer getCollectionKey() {
+        return collectionKey;
+    }
+    public String getCollection() {
+        return collection;
+    }
     public String getAlleleSymbol() {
 	return alleleSymbol;
     }
@@ -169,6 +184,7 @@ public class Allele {
         state.setModeKey(inheritModeKey);
         state.setAlleleTypeKey(alleleTypeKey);
         state.setAlleleStatusKey(alleleStatusKey);
+	state.setCollectionKey(collectionKey);
         state.setSymbol(alleleSymbol);
         state.setName(alleleName);
         state.setIsWildType(isWildType);

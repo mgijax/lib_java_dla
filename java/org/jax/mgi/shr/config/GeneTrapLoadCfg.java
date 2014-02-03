@@ -64,4 +64,13 @@ public class GeneTrapLoadCfg extends ALOLoadCfg {
      public String getSeqFile() throws ConfigException {
          return getConfigString("SEQUENCES_PROCESSED");
      }
+     /**
+      * Gets the allele collection for gene traps
+      * @return the name of the collection
+      * @throws ConfigException if "COLLECTION" not found in configuration
+      */
+     public String getCollection() throws ConfigException {
+         return getConfigString("COLLECTION");
+     }
+
 }

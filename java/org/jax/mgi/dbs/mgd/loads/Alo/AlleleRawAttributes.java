@@ -41,6 +41,8 @@ public class AlleleRawAttributes {
     private Boolean isMixed = null;
     // allele transmission e.g. germ line/chimera
     private String transmission = null;
+    // allele collection 
+    private String collection = null;
     // how to determine if this allele is in the database e.g. MGI ID or symbol
     private String objectIdentity = null;
  
@@ -128,6 +130,7 @@ public class AlleleRawAttributes {
      */
 
     public void setIsMixed (Boolean isMixed) { this.isMixed = isMixed; }
+
     /**
      * set the transmission attribute
      * @param transmission attribute
@@ -135,6 +138,15 @@ public class AlleleRawAttributes {
 
     public void setTransmission (String transmission) { 
 	this.transmission = transmission; 
+    }
+
+    /**
+     * set the collection attribute
+     * @param collection attribute
+     */
+
+    public void setCollection (String collection) {
+        this.collection = collection;
     }
 
     /**
@@ -212,6 +224,14 @@ public class AlleleRawAttributes {
      */
 
     public String getTransmission () { return transmission; }
+
+
+    /**
+     * get the collection attribute
+     */
+
+    public String getCollection () { return collection; }
+
     /**
      * get the objectIdentity attribute
      */
