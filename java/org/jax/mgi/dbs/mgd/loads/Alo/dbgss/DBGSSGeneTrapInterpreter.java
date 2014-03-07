@@ -59,6 +59,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 	String alleleInheritMode;
 	String alleleType;
 	String alleleStatus;
+	String alleleCollection;
 	String cellLineDerivType;
 	String molecularMutation;
 	String cellLineType;
@@ -138,6 +139,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		alleleInheritMode = config.getAlleleInheritMode();
 		alleleType = config.getAlleleType();
 		alleleStatus = config.getAlleleStatus();
+		alleleCollection = config.getCollection();
 		cellLineDerivType = config.getCellLineDerivType();
 		molecularMutation = config.getMolecularMutation();
 		cellLineType = config.getCellLineType();
@@ -294,7 +296,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		if(rawDerivName != null && rawDerivName.indexOf("LIBGSS") > -1) {
 		     rawDerivName = rawDerivName.substring(14);
 		}
-		//System.out.println("rawDerivName: " + rawDerivName);
 		derivRaw.setName(rawDerivName);
 		// source qualifier example: /cell_line="R1"
 		String parentCellLine = sequenceRaw.getCellLine();
@@ -446,6 +447,7 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 		rawAllele.setInheritMode(alleleInheritMode);
 		rawAllele.setType(alleleType);
 		rawAllele.setStatus(alleleStatus);
+		rawAllele.setCollection(alleleCollection);
 		rawAllele.setIsWildType(Boolean.FALSE);
 		rawAllele.setIsExtinct(Boolean.FALSE);
 		gtInput.setAllele(rawAllele);
@@ -1005,7 +1007,6 @@ public class DBGSSGeneTrapInterpreter extends GBFormatInterpreter {
 			seqTagID = s.nextToken();
 		}
 		// seqTagID will never be null, but it may not be what we want.
-		//System.out.println("getDefinitionSeqTagID returned seqTagID: " + seqTagID);
 		return seqTagID;
 	}
 }

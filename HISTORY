@@ -1,3 +1,21 @@
+TAG: lib_java_dla-5-1-8-1
+DATE: 03/07/2014
+STAFF: lec
+CHANGES:
+1) merge trunk from branch tr11515
+
+TAG: lib_java_dla-tr11515-1
+DATE: 02/03/2014
+STAFF: sc
+CHANGES:
+1) Allele.java - added collection and collection key, get/set methods for each
+2) AlleleRawAttributes.java - added collection and get/set methods
+3) AlleleResolver.java - added collectionKey, resolve collection to 
+    collectionKey using new VocabKeyLookup, set collectionKey in Allele object
+4) DBGSSGeneTrapInterpreter.java - added getting collection from config and setting in 
+    AlleleRawAttributes object
+5) GeneTrapLoadCfg.java - added getCollection method
+
 TAG: lib_java_dla-tr11515-BP
 DATE: 01/29/2014
 STAFF: sc

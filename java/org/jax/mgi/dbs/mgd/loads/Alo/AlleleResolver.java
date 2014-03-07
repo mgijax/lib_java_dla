@@ -34,6 +34,7 @@ public class AlleleResolver {
     private VocabKeyLookup typeKeyLookup;
     private VocabKeyLookup statusKeyLookup;
     private VocabKeyLookup transmissionKeyLookup;
+    private VocabKeyLookup collectionKeyLookup;
     private StrainKeyLookup strainKeyLookup;
     private StrainNameLookup strainNameLookup;
 
@@ -62,6 +63,9 @@ public class AlleleResolver {
         transmissionKeyLookup = new VocabKeyLookup(
                 VocabularyTypeConstants.ALLELE_TRANS,
             CacheConstants.FULL_CACHE, CacheConstants.FULL_CACHE);
+  	collectionKeyLookup = new VocabKeyLookup(
+                VocabularyTypeConstants.ALLELE_COLLECTION,
+	    CacheConstants.FULL_CACHE, CacheConstants.FULL_CACHE);
         strainKeyLookup = new StrainKeyLookup();
         strainNameLookup = new StrainNameLookup();
         strainNameLookup.initCache();
@@ -125,6 +129,7 @@ public class AlleleResolver {
         Integer typeKey = null;
         Integer statusKey = null;
         Integer transmissionKey = null;
+	Integer collectionKey = null;
 
         // resolve strain
         try {
@@ -195,6 +200,25 @@ public class AlleleResolver {
                 rawAllele.getTransmission());
               throw resE;
         }
+
+	
+        // resolve collection
+        try {
+            collectionKey = collectionKeyLookup.lookup(
+            rawAllele.getCollection());
+        } catch (KeyNotFoundException e) {
+              ALOResolvingException resE = new ALOResolvingException();
+              resE.bindRecordString("Allele Collection/" +
+                rawAllele.getCollection());
+              throw resE;
+        } catch (TranslationException e) { // won't happen, no translator
+                                                  //for this vocab
+              ALOResolvingException resE = new ALOResolvingException();
+              resE.bindRecordString("Allele Collection/" +
+                rawAllele.getCollection());
+              throw resE;
+        }
+
         Allele allele = new Allele();
 
         // allele key remains null
@@ -216,6 +240,8 @@ public class AlleleResolver {
         allele.setIsExtinct(rawAllele.getIsExtinct());
         allele.setTransmissionKey(transmissionKey);
         allele.setTransmission(rawAllele.getTransmission());
+	allele.setCollectionKey(collectionKey);
+	allele.setCollection(rawAllele.getCollection());
         return allele;
     }
 }
