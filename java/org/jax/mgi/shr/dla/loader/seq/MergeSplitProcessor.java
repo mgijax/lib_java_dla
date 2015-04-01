@@ -45,14 +45,14 @@ import org.jax.mgi.shr.dla.input.SequenceInput;
  *            MGI sequence(s) (References, Molecular Segments, Markers) to the new
  *            sequence
  *        <LI>Make the primary seqid (and the secondary seqid(s) )of the merged
- *            MGI sequence a secondary seqid of the ‘new’ Sequence
+ *            MGI sequence a secondary seqid of the "new" Sequence
  *        <LI>Mark the MGI Sequence as deleted
  *      </UL>
  *   <LI>Process splits by:
  *     <UL>
- *       <LI>setting the MGI sequence status to ‘split'.
+ *       <LI>setting the MGI sequence status to "split".
  *       <LI>Make the primary seqid (and the secondary seqid(s) )of the split
- *           MGI sequence secondary seqid(s) of the ‘new’ Sequence
+ *           MGI sequence secondary seqid(s) of the "new" Sequence
  *       <LI>only curators can move associations and mark the split sequence as
  *           deleted
  *     </UL>
