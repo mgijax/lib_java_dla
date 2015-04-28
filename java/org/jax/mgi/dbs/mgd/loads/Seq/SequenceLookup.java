@@ -260,14 +260,14 @@ public class SequenceLookup {
             " as ACC_creation_date, " +
             " a." + MGD.acc_accession.modification_date +
             " as ACC_modification_date, " +
-            " RefAssoc_Assoc_key=null, " +
-            MGD.mgi_reference_assoc._refs_key + "=null, " +
-            " RefAssoc_Object_key=null, " +
-            MGD.mgi_reference_assoc._refassoctype_key + "=null, " +
-            " RefAssoc_CreatedBy_key=null, " +
-            " RefAssoc_ModifiedBy_key=null, " +
-            " RefAssoc_creation_date=null, " +
-            " RefAssoc_modification_date=null, " +
+            " null as RefAssoc_Assoc_key, " +
+            " null as " + MGD.mgi_reference_assoc._refs_key + 
+            " null as RefAssoc_Object_key, " +
+            " null as " + MGD.mgi_reference_assoc._refassoctype_key + 
+            " null as RefAssoc_CreatedBy_key, " +
+            " null as RefAssoc_ModifiedBy_key, " +
+            " null as RefAssoc_creation_date, " +
+            " null as RefAssoc_modification_date, " +
             " sa." + MGD.seq_source_assoc._assoc_key +
             " as SeqSrc_Assoc_key, " +
             " sa." + MGD.seq_source_assoc._sequence_key +
@@ -468,19 +468,19 @@ public class SequenceLookup {
             " as SEQ_creation_date, " +
             " s." + MGD.seq_sequence.modification_date +
             " as SEQ_modification_date, " +
-            " ACC2_Accession_key=null, " +
-            " ACC2_accId=null, " +
-            " ACC2_prefixPart=null, " +
-            " ACC2_numericPart=null, " +
-            " ACC2_LogicalDB_key=null, " +
-            " ACC2_Object_key=null, " +
-            " ACC2_MGIType_key=null, " +
-            " ACC2_private=0, " +
-            " ACC2_preferred=0, " +
-            " ACC2_CreatedBy_key=null, " +
-            " ACC2_ModifiedBy_key=null, " +
-            " ACC2_creation_date=null, " +
-            " ACC2_modification_date=null " +
+            " null as ACC2_Accession_key, " +
+            " null as ACC2_accId, " +
+            " null as ACC2_prefixPart, " +
+            " null as ACC2_numericPart, " +
+            " null as ACC2_LogicalDB_key, " +
+            " null as ACC2_Object_key, " +
+            " null as ACC2_MGIType_key, " +
+            " 0 as ACC2_private, " +
+            " 0 as ACC2_preferred, " +
+            " null as ACC2_CreatedBy_key, " +
+            " null as ACC2_ModifiedBy_key, " +
+            " null as ACC2_creation_date, " +
+            " null as ACC2_modification_date " +
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.mgi_reference_assoc._name + " m, " +
@@ -542,14 +542,14 @@ public class SequenceLookup {
             " as ACC_creation_date, " +
             " a." + MGD.acc_accession.modification_date +
             " as ACC_modification_date, " +
-            " RefAssoc_Assoc_key=null, " +
-            MGD.mgi_reference_assoc._refs_key + " =null, " +
-            " RefAssoc_Object_key=null, " +
-            MGD.mgi_reference_assoc._refassoctype_key + " =null, " +
-            " RefAssoc_CreatedBy_key=null, " +
-            " RefAssoc_ModifiedBy_key=null, " +
-            " RefAssoc_creation_date=null, " +
-            " RefAssoc_modification_date=null, " +
+            " null as RefAssoc_Assoc_key, " +
+            " null as " + MGD.mgi_reference_assoc._refs_key + 
+            " null as RefAssoc_Object_key, " +
+            " null as " + MGD.mgi_reference_assoc._refassoctype_key + 
+            " null as RefAssoc_CreatedBy_key, " +
+            " null as RefAssoc_ModifiedBy_key, " +
+            " null as RefAssoc_creation_date, " +
+            " null as RefAssoc_modification_date, " +
             " sa." + MGD.seq_source_assoc._assoc_key +
             " as SeqSrc_Assoc_key, " +
             " sa." + MGD.seq_source_assoc._sequence_key +
@@ -600,19 +600,19 @@ public class SequenceLookup {
             " as SEQ_creation_date, " +
             " s." + MGD.seq_sequence.modification_date +
             " as SEQ_modification_date, " +
-            " ACC2_Accession_key=null, " +
-            " ACC2_accId=null, " +
-            " ACC2_prefixPart=null, " +
-            " ACC2_numericPart=null, " +
-            " ACC2_LogicalDB_key=null, " +
-            " ACC2_Object_key=null, " +
-            " ACC2_MGIType_key=null, " +
-            " ACC2_private=0, " +
-            " ACC2_preferred=0, " +
-            " ACC2_CreatedBy_key=null, " +
-            " ACC2_ModifiedBy_key=null, " +
-            " ACC2_creation_date=null, " +
-            " ACC2_modification_date=null " +
+            " null as ACC2_Accession_key, " +
+            " null as ACC2_accId, " +
+            " null as ACC2_prefixPart, " +
+            " null as ACC2_numericPart, " +
+            " null as ACC2_LogicalDB_key, " +
+            " null as ACC2_Object_key, " +
+            " null as ACC2_MGIType_key, " +
+            " 0 as ACC2_private, " +
+            " 0 as ACC2_preferred, " +
+            " null as ACC2_CreatedBy_key, " +
+            " null as ACC2_ModifiedBy_key, " +
+            " null as ACC2_creation_date, " +
+            " null as ACC2_modification_date " +
             " FROM " +
             MGD.acc_accession._name + " a, " +
             MGD.seq_source_assoc._name + " sa, " +
