@@ -645,7 +645,7 @@ public class SequenceLookup {
             " s." +  MGD.seq_sequence._sequence_key +
             " AND mr." + MGD.mgi_reference_assoc._refassoctype_key + " = " +
             MGIRefAssocTypeConstants.PROVIDER + ") " +
-        " order by " + MGD.seq_sequence._sequence_key;
+        " order by SEQ_Sequence_key";
 
         // create one query
         private String query = query1 + query2 + query3 + query4;
