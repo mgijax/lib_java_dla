@@ -261,9 +261,9 @@ public class SequenceLookup {
             " a." + MGD.acc_accession.modification_date +
             " as ACC_modification_date, " +
             " null as RefAssoc_Assoc_key, " +
-            " null as " + MGD.mgi_reference_assoc._refs_key + 
+            " null as " + MGD.mgi_reference_assoc._refs_key + ", " +
             " null as RefAssoc_Object_key, " +
-            " null as " + MGD.mgi_reference_assoc._refassoctype_key + 
+            " null as " + MGD.mgi_reference_assoc._refassoctype_key + ", " + 
             " null as RefAssoc_CreatedBy_key, " +
             " null as RefAssoc_ModifiedBy_key, " +
             " null as RefAssoc_creation_date, " +
@@ -543,9 +543,9 @@ public class SequenceLookup {
             " a." + MGD.acc_accession.modification_date +
             " as ACC_modification_date, " +
             " null as RefAssoc_Assoc_key, " +
-            " null as " + MGD.mgi_reference_assoc._refs_key + 
+            " null as " + MGD.mgi_reference_assoc._refs_key + ", " + 
             " null as RefAssoc_Object_key, " +
-            " null as " + MGD.mgi_reference_assoc._refassoctype_key + 
+            " null as " + MGD.mgi_reference_assoc._refassoctype_key + ", " +
             " null as RefAssoc_CreatedBy_key, " +
             " null as RefAssoc_ModifiedBy_key, " +
             " null as RefAssoc_creation_date, " +
