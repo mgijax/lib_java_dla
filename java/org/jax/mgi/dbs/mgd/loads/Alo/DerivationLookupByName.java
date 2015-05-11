@@ -85,8 +85,8 @@ public class DerivationLookupByName extends FullCachedLookup {
             "d._DerivationType_key, v3.term as derivType, d._Creator_key, " +
             "v4.term as creator, d._Refs_key, a.accID as Jnum, c._Strain_key, " +
             "s.strain  " +
-            "FROM ALL_CellLine_Derivation d, VOC_Term v1, VOC_Term v2, " +
-            "VOC_Term v3, VOC_Term v4, ALL_CellLine c, PRB_Strain s " +
+            "FROM PRB_Strain s, VOC_Term v1, VOC_Term v2, " +
+            "VOC_Term v3, ALL_CellLine c, ALL_CellLine_Derivation d " +
             "left outer join " +
 		"VOC_Term v4 on " +
 		"v4._term_key = d._Creator_key " +
