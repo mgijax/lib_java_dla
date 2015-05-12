@@ -28,6 +28,7 @@ public class SeqloaderConstants {
     public static final String SLASH = "/";
     public static final String EQUAL = "=";
     public static final String OPEN_PAREN = "(";
+    public static final String CLOSE_PAREN = ")";
     public static final String COMMA = ",";
     public static final String SEMI_COLON = ";";
 
