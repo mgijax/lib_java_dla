@@ -1,3 +1,9 @@
+TAG: lib_java_dla-tr11750-1
+DATE: 06/26/2015
+STAFF: sc
+CHANGES:
+1) Updated PRB_processSeqLoaderSource SP call in MSSeqAssoc.java  
+
 sc - This product was branched for TR11750, not sure when
 
 TAG: lib_java_dla-5-1-8-1

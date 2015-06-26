@@ -188,7 +188,7 @@ public class MSSeqAssoc extends DAO
           throw e2;
         }
 
-        StringBuffer sql =  new StringBuffer("exec PRB_processSeqLoaderSource ");
+        StringBuffer sql =  new StringBuffer("select * from PRB_processSeqLoaderSource ");
 
         sql.append(Converter.toString(this.seqSourceAssocDAO.getKey().
                                       getKey()) + ", ");
