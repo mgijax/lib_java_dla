@@ -1,3 +1,9 @@
+TAG: lib_java_dla-tr11750-2
+DATE: 06/29/2015
+STAFF: sc
+CHANGES:
+1) fixed SP call PRB_processSeqLoaderSource, wrap parameters in parenthesis
+
 TAG: lib_java_dla-tr11750-1
 DATE: 06/26/2015
 STAFF: sc
