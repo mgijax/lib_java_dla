@@ -3,6 +3,20 @@ DATE: 7/1/15
 STAFF: pf
 CHANGES: merging to trunk
 
+TAG: lib_java_dla-tr11750-2
+DATE: 06/29/2015
+STAFF: sc
+CHANGES:
+1) fixed SP call PRB_processSeqLoaderSource, wrap parameters in parenthesis
+
+TAG: lib_java_dla-tr11750-1
+DATE: 06/26/2015
+STAFF: sc
+CHANGES:
+1) Updated PRB_processSeqLoaderSource SP call in MSSeqAssoc.java  
+
+sc - This product was branched for TR11750, not sure when
+
 TAG: lib_java_dla-5-1-8-1
 DATE: 03/07/2014
 STAFF: lec
