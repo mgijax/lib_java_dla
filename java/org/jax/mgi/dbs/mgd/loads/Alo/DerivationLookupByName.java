@@ -79,23 +79,26 @@ public class DerivationLookupByName extends FullCachedLookup {
     public String getFullInitQuery () {
 
         return new String("SELECT d._Derivation_key, d.name, d.description, " +
-            "d._Vector_key, vectorName=v1.term, d._VectorType_key, " +
-            "vecType=v2.term, " +
-            "d._ParentCellLine_key, parentName=c.cellLine, " +
-            "d._DerivationType_key, derivType=v3.term, d._Creator_key, " +
-            "creator=v4.term, d._Refs_key, Jnum=a.accID, c._Strain_key, " +
+            "d._Vector_key, v1.term as vectorName, d._VectorType_key, " +
+            "v2.term as vecType, " +
+            "d._ParentCellLine_key, c.cellLine as parentName, " +
+            "d._DerivationType_key, v3.term as derivType, d._Creator_key, " +
+            "v4.term as creator, d._Refs_key, a.accID as Jnum, c._Strain_key, " +
             "s.strain  " +
-            "FROM ALL_CellLine_Derivation d, VOC_Term v1, VOC_Term v2, " +
-            "VOC_Term v3, VOC_Term v4, ALL_CellLine c, PRB_Strain s, " +
-            "ACC_Accession a " +
-            "WHERE d.name != null " +
+            "FROM PRB_Strain s, VOC_Term v1, VOC_Term v2, " +
+            "VOC_Term v3, ALL_CellLine c, ALL_CellLine_Derivation d " +
+            "left outer join " +
+		"VOC_Term v4 on " +
+		"v4._term_key = d._Creator_key " +
+	    "left outer join " +
+		"ACC_Accession a on " +
+		"a._object_key = d._refs_key " +
+            "WHERE d.name is not null " +
             "AND d._Vector_key = v1._Term_key " +
             "AND d._VectorType_key = v2._Term_key " +
             "AND d._ParentCellLine_key = c._CellLine_key " +
             "AND c._Strain_key = s._Strain_key " +
             "AND d._DerivationType_key = v3._Term_key " +
-            "AND d._Creator_key *= v4._Term_key " +
-            "AND d._Refs_key *= a._Object_key " +
             "AND a._MGIType_key = 1 " +
             "AND a._LogicalDB_key = 1 " +
             "AND a.prefixPart = 'J:'");

@@ -248,11 +248,11 @@ public class CoordinateInputProcessor {
 
     public void deleteCoordinates() throws CoordloaderException{
 
-	String spCall = "MAP_deleteByCollection '" + collectionName + "'";
+	String sql = "delete from MAP_Coord_Collection where name = '" + collectionName + "'";
 	try {
             SQLDataManager sqlMgr = SQLDataManagerFactory.getShared(
 		SchemaConstants.MGD);
-            sqlMgr.executeSimpleProc(spCall);
+            sqlMgr.executeVoid(sql);
         }
         catch (MGIException e) {
 	    CoordloaderException e1 =

@@ -7,6 +7,7 @@ import org.jax.mgi.shr.dbutils.SQLDataManagerFactory;
 import org.jax.mgi.shr.config.SeqDeleterCfg;
 import org.jax.mgi.shr.dla.log.DLALogger;
 import org.jax.mgi.shr.dla.log.DLALoggingException;
+import org.jax.mgi.shr.cache.CacheConstants;
 import org.jax.mgi.shr.cache.CacheException;
 import org.jax.mgi.shr.dbutils.DBException;
 import org.jax.mgi.shr.config.ConfigException;
@@ -317,7 +318,7 @@ public class SeqDeleterProcessor {
        Vector report = new Vector();
        report.add("Total sequences deleted: " + deleteCtr);
        report.add("Total sequences not deleted because statused as " +
-                  "'Split' or 'Not Loaded': " + notDelCtr);
+                  "'Split', 'Not Loaded' or 'Deleted': " + notDelCtr);
        report.add("Reporting Repeated Sequences:");
        report.add("seqId\tcount");
        for (Iterator i = repeatMap.keySet().iterator();i.hasNext();) {

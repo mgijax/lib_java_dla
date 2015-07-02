@@ -45,14 +45,14 @@ import org.jax.mgi.shr.dla.input.SequenceInput;
  *            MGI sequence(s) (References, Molecular Segments, Markers) to the new
  *            sequence
  *        <LI>Make the primary seqid (and the secondary seqid(s) )of the merged
- *            MGI sequence a secondary seqid of the ‘new’ Sequence
+ *            MGI sequence a secondary seqid of the "new" Sequence
  *        <LI>Mark the MGI Sequence as deleted
  *      </UL>
  *   <LI>Process splits by:
  *     <UL>
- *       <LI>setting the MGI sequence status to ‘split'.
+ *       <LI>setting the MGI sequence status to "split".
  *       <LI>Make the primary seqid (and the secondary seqid(s) )of the split
- *           MGI sequence secondary seqid(s) of the ‘new’ Sequence
+ *           MGI sequence secondary seqid(s) of the "new" Sequence
  *       <LI>only curators can move associations and mark the split sequence as
  *           deleted
  *     </UL>
@@ -130,8 +130,8 @@ public class MergeSplitProcessor {
         HashMap secondaryToPrimary = mergeSplitHelper.createHash(mergeSplitSeqs);
         // SEQ_Merge fromSeqid toSeqid
         // SEQ_Split fromSeqid to Seqid
-        String mergeProc = "SEQ_merge ";
-        String splitProc= "SEQ_split ";
+        String mergeProc = "select * from SEQ_merge ";
+        String splitProc= "select * from SEQ_split ";
         for (Iterator mapI = secondaryToPrimary.keySet().iterator();
             mapI.hasNext();) {
                // get the key; a secondary id that is primary in MGI
@@ -150,11 +150,13 @@ public class MergeSplitProcessor {
                        String toSeqid = (String)i.next();
                        String cmd = splitProc +
                            SeqloaderConstants.SPC +
+			   SeqloaderConstants.OPEN_PAREN +
                            SeqloaderConstants.SGL_QUOTE +
                            fromSeqid + SeqloaderConstants.SGL_QUOTE +
                            SeqloaderConstants.COMMA +
                            SeqloaderConstants.SGL_QUOTE + toSeqid +
-                           SeqloaderConstants.SGL_QUOTE;
+                           SeqloaderConstants.SGL_QUOTE +
+			   SeqloaderConstants.CLOSE_PAREN;
                        writer.write(cmd);
                        writer.go();
                        splitCtr++;
@@ -165,11 +167,13 @@ public class MergeSplitProcessor {
                    String toSeqid = (String)currentV.get(0);
                    String cmd = mergeProc +
                        SeqloaderConstants.SPC +
+		       SeqloaderConstants.OPEN_PAREN +
                        SeqloaderConstants.SGL_QUOTE +
                        fromSeqid + SeqloaderConstants.SGL_QUOTE +
                        SeqloaderConstants.COMMA +
                        SeqloaderConstants.SGL_QUOTE + toSeqid +
-                       SeqloaderConstants.SGL_QUOTE;
+                       SeqloaderConstants.SGL_QUOTE +
+		       SeqloaderConstants.CLOSE_PAREN;
                    qcReporter.reportMergedSeqs(fromSeqid, toSeqid);
                    writer.write(cmd);
                    writer.go();

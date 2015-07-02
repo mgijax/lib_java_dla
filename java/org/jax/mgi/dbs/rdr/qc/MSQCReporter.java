@@ -47,7 +47,7 @@ public class MSQCReporter
         throws MSException
     {
         QC_MS_NameConflictState state = new QC_MS_NameConflictState();
-        state.setAccid(accid);
+        state.setAccID(accid);
         state.setLibName1(name);
         state.setLibName2(conflictName);
         try
@@ -126,7 +126,7 @@ public class MSQCReporter
     {
         QC_MS_UnresolvedOrganismState state =
             new QC_MS_UnresolvedOrganismState();
-        state.setAccid(accid);
+        state.setAccID(accid);
         state.setRawOrganism(rawOrganism);
         try
         {

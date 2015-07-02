@@ -165,11 +165,11 @@ public class SequenceInputProcessor implements ProcessSequenceInput  {
 
     public void deleteSequences() throws SeqloaderException {
 
-      String spCall = "SEQ_deleteByCreatedBy " + jobStreamName;
+      String spCall = "select * from SEQ_deleteByCreatedBy('" + jobStreamName + "')";
       try {
         SQLDataManager sqlMgr =
             SQLDataManagerFactory.getShared(SchemaConstants.MGD);
-        sqlMgr.executeSimpleProc(spCall);
+        sqlMgr.execute(spCall);
       }
       catch (MGIException e) {
         SeqloaderException e1 =

@@ -188,8 +188,8 @@ public class MSSeqAssoc extends DAO
           throw e2;
         }
 
-        StringBuffer sql =  new StringBuffer("exec PRB_processSeqLoaderSource ");
-
+        StringBuffer sql =  new StringBuffer("select * from PRB_processSeqLoaderSource ");
+	sql.append("(");
         sql.append(Converter.toString(this.seqSourceAssocDAO.getKey().
                                       getKey()) + ", ");
         sql.append(Converter.toString(this.seqSourceAssocDAO.getState().
@@ -208,6 +208,7 @@ public class MSSeqAssoc extends DAO
                                       getCellLineKey()) + ", ");
         sql.append(Converter.toString(this.prbSourceDAO.getState().
                                       getModifiedByKey()));
+	sql.append(")");
         return new String(sql);
 
     }
