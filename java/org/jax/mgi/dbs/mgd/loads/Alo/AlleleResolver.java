@@ -75,8 +75,6 @@ public class AlleleResolver {
     /**
       * creates a Allele object
       * @param rawAllele - AlleleRawAttributes
-      * @Notes for GTLF (TR7493) marker key attribute is not set, it will be
-      * addedby a cache load from ALL_Marker_Assoc
       * @assumes marker symbol and name is correct in the input i.e. it is the
       * interpreter's responsibility to create correct nomenclature
       * @throws ALOResolvingException if any of the lookups fail to find a key
@@ -110,8 +108,6 @@ public class AlleleResolver {
      * @param rawAllele - AlleleRawAttributes
      * @param strainKey - allele strain, we provide this method to accomodate
      * genetrap/targeted alleles which get their strain from the parent cell line
-     * @Notes GTLF only - marker key attribute is not set, it will be added
-     * by a cache load from ALL_Marker_Assoc
      * @assumes marker symbol and name is correct in the input i.e. it is the
      * interpreter's responsibility to create correct nomenclature
      * @throws ALOResolvingException if any of the lookups fail to find a key
@@ -222,8 +218,6 @@ public class AlleleResolver {
         Allele allele = new Allele();
 
         // allele key remains null
-        // marker key/symbol remains null - this attribute will be added by a
-        // cache load from ALL_Marker_Assoc
 
         allele.setStrainKey(strainKey);
         allele.setStrainName(strain);
