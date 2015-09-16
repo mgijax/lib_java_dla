@@ -7,6 +7,8 @@ import org.jax.mgi.shr.config.SequenceLoadCfg;
 import org.jax.mgi.shr.ioutils.RecordDataIterator;
 import org.jax.mgi.shr.dbutils.ScriptWriter;
 import org.jax.mgi.shr.dbutils.DataIterator;
+import org.jax.mgi.shr.dbutils.dao.BCP_Stream;
+import org.jax.mgi.shr.dbutils.Table;
 import org.jax.mgi.shr.config.ScriptWriterCfg;
 import org.jax.mgi.shr.exception.MGIException;
 import org.jax.mgi.shr.ioutils.RecordFormatException;
@@ -190,6 +192,24 @@ public abstract class SeqLoader extends DLALoader {
                 SeqloaderExceptionFactory.RepeatFileIOException, e);
             throw e1;
         }
+
+	logger.logdInfo("Preprocessing load\n", true);
+
+	// Build a vector that contains a Table object for each table to be
+	// written to in the "load" database.
+	//
+	Vector loadTables = new Vector();
+        loadTables.add(Table.getInstance("SEQ_Sequence", loadDBMgr));
+        loadTables.add(Table.getInstance("SEQ_Sequence_Raw", loadDBMgr));
+        loadTables.add(Table.getInstance("PRB_Source", loadDBMgr));
+        loadTables.add(Table.getInstance("SEQ_Source_Assoc", loadDBMgr));
+        loadTables.add(Table.getInstance("ACC_Accession", loadDBMgr));
+
+	// Initialize writers for each table if a BCP stream if being used.
+	//                                                             
+	if (loadStream.isBCP())
+	    ((BCP_Stream)loadStream).initBCPWriters(loadTables);
+	logger.logdInfo("Finished preprocessing load\n", true);
 
         // init objects needed to process in incremental mode
         if (loadMode.equals(SeqloaderConstants.INCREM_LOAD_MODE)) {
