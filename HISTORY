@@ -1,3 +1,11 @@
+TAG: lib_java_dla-6-0-5-1
+DATE: 07/06/2016
+STAFF: sc
+CHANGES: TR12358 null pointer exception calling MolecularSource.isStrainCurated
+1) Set all curatedEdited* default values to false instead of null
+   cleanup that was done when removing MGI_AttributeHistory table didn't catch this.
+   this part of code not used much, obviously
+
 TAG: lib_java_dla-6-0-2-1
 TAG: lib_java_dla-tr12070-1
 DATE: 12/02/2015

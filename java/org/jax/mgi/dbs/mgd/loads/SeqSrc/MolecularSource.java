@@ -54,12 +54,12 @@ public class MolecularSource
    */
   protected PRB_SourceKey key = null;
 
-  protected Boolean curatedEditedTissue = null;
-  protected Boolean curatedEditedStrain = null;
-  protected Boolean curatedEditedGender = null;
-  protected Boolean curatedEditedCellLine = null;
-  protected Boolean curatedEditedOrganism = null;
-  protected Boolean curatedEditedAge = null;
+  protected Boolean curatedEditedTissue = false;
+  protected Boolean curatedEditedStrain = false;
+  protected Boolean curatedEditedGender = false;
+  protected Boolean curatedEditedCellLine = false;
+  protected Boolean curatedEditedOrganism = false;
+  protected Boolean curatedEditedAge = false;
 
   /**
    * the delimiter to use within the toString method
