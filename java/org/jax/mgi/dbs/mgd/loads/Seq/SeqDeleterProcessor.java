@@ -141,7 +141,8 @@ public class SeqDeleterProcessor {
         // create an accession lookup for this logical DB
         seqIdLookup = new AccessionLookup(logicalDBKey,
                                           MGITypeConstants.SEQUENCE,
-                                          AccessionLib.PREFERRED);
+                                          AccessionLib.PREFERRED,
+					  CacheConstants.LAZY_CACHE);
         // get the configured batch size for the SequenceLookup
         batchSize = new Integer(config.getQueryBatchSize()).intValue();
 
