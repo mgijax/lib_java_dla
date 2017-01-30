@@ -1,7 +1,8 @@
+TAG: lib_java_dla-tr12488-2
 TAG: lib_java_dla-tr12488-1
 DATE: 01/30/2017
 STAFF: sc
-CHANGES: TR12457 -  Genbank seqdeleter running out of memory
+CHANGES: TR12432 Use Ensembl and VEGA version IDs in MGI
 1) MGSFormatInterpreter.java - add handling of versioned ids as primary, un
    versioned as secondary
 
