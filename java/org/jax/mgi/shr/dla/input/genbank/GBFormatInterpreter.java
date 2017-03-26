@@ -63,6 +63,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
     private static String FEATURES = "FEATURES";
     private static String KEYWORDS = "KEYWORDS";
     private static String ORIGIN = "ORIGIN";
+    private static String CONTIG = "CONTIG";
 
     // int constants to indicate the current
     // record section we are looking for
@@ -314,17 +315,19 @@ public class GBFormatInterpreter extends SequenceInterpreter {
         // split the record into lines
         StringTokenizer lineSplitter = new StringTokenizer(rcd, SeqloaderConstants.CRT);
         String line;
-
+	 System.out.println(rcd);
         // iterate through each line getting individual sections of the sequence
         while (lineSplitter.hasMoreTokens()) {
           // be sure to trim each line so String.startsWith works properly
           line = lineSplitter.nextToken().trim();
+	  System.out.println(line);
           // if we are currently looking for the LOCUS line check to see if
           // 'line' is the LOCUS line
           if (currentSection== LOCUS_SECTION) {
             if (line.startsWith(LOCUS)) {
               // get the LOCUS line
               locus = line;
+	      System.out.println("Got LOCUS\n");
               currentSection = DEFINITION_SECTION;
             }
           }
@@ -334,6 +337,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(DEFINITION)) {
               // get the first DEFINITION line
               definition.append(line);
+	  	System.out.println("GOT FIRST DEFINITION\n");
 
               // > 1 def line if first line does not end w/PERIOD
               if (!line.endsWith(SeqloaderConstants.PERIOD)) {
@@ -351,7 +355,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
           else if (currentSection == ANOTHER_DEF_LINE) {
             //get another DEFINITION line
             definition.append(SeqloaderConstants.SPC + line);
-
+	     System.out.println("GOT ANOTHER DEFINITION LINE\n");
             // period indicates last def line
             if (line.endsWith(SeqloaderConstants.PERIOD)) {
               // now we are looking for the ACCESSION line
@@ -364,6 +368,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(ACCESSION)) {
               // get the first ACCESSION line
               accession.append(line + SeqloaderConstants.CRT);
+		System.out.println("GOT ACCESSION\n");
               // now we are looking for another accession line
               currentSection = ANOTHER_ACCESSION_LINE;
             }
@@ -373,12 +378,14 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             // if 'line' is not the VERSION line, it is another accession line
             if (!line.startsWith(VERSION)) {
               accession.append(line + SeqloaderConstants.CRT);
+		System.out.println("GOT ANOTHER ACCESSION LINE\n");
             }
             // if 'line' is the VERSION line get it. Now we are looking for the
             // KEYWORDS line
             else {
               // now we are looking for KEYWORDS
               version = line;
+	      System.out.println("GOT VERSION LINE\n");
               currentSection = KEYWORDS_SECTION;
             }
           }
@@ -386,6 +393,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
              if (line.startsWith(KEYWORDS)) {
                  // get the first keywords line
                  keywords.append(line);
+		System.out.println("GOT A KEYWORDS LINE\n");
                  // > 1 def line if first line does not end w/PERIOD
                  if (!line.endsWith(SeqloaderConstants.PERIOD)) {
                      currentSection = ANOTHER_KEYWORDS_LINE;
@@ -398,6 +406,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
           // if we are currently looking for another keyword line
           else if (currentSection == ANOTHER_KEYWORDS_LINE) {
               keywords.append(SeqloaderConstants.SPC + line);
+		System.out.println("GOT ANOTHER KEYWORDS LINE\n");
               if (line.endsWith(SeqloaderConstants.PERIOD)) {
                   currentSection = ORGANISM_SECTION;
               }
@@ -409,7 +418,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(ORGANISM)) {
               // get the ORGANISM line
               organism = line;
-
+	      System.out.println("GOT ORGANISM LINE\n");
 	      // now we are looking for the first REFERENCE line
               currentSection = REFERENCE_SECTION;
 	    }
@@ -421,12 +430,14 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(REFERENCE)) {
               // get the first REFERENCE line
               reference.append(line + SeqloaderConstants.CRT);
+		System.out.println("GOT REFERENCE LINE\n");
               currentSection = ANOTHER_REFERENCE_LINE;
             }
             // records without references won't have a reference line
             // the next line we want is the COMMENT line
             else if (line.startsWith(COMMENT)) {
 		  comment.append(line  + SeqloaderConstants.CRT);
+		System.out.println("GOT COMMENT LINE\n");
                   currentSection = COMMENT_SECTION;
             }
 	    // added after source section not found when no COMMENT section
@@ -439,6 +450,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 	  // check to see if the 'line' is the COMMENT line
 	      if (line.startsWith(COMMENT)){
                   comment.append(line  + SeqloaderConstants.CRT);
+		System.out.println("GOT ANOTHER COMMENT LINE\n");
                     currentSection = COMMENT_SECTION;
                }
 	       else if (line.startsWith(FEATURES)) {
@@ -446,11 +458,13 @@ public class GBFormatInterpreter extends SequenceInterpreter {
 		}
 		else {
 		    reference.append(line + SeqloaderConstants.CRT);
+		    System.out.println("GOT ANOTHER REFERENCE LINE\n");
 	       }
           }
 	  else if(currentSection == COMMENT_SECTION) {
 		 if (!line.startsWith(FEATURES)) {
 		    comment.append(line  + SeqloaderConstants.CRT);
+		    System.out.println("GOT ANOTHER COMMENT LINE\n");
 		  }
 		  // records without comments won't have a COMMENT line
             	  // the next line we want is the FEATURES line where we will start
@@ -465,7 +479,7 @@ public class GBFormatInterpreter extends SequenceInterpreter {
             if (line.startsWith(SOURCE)) {
               // get the first features source line
               source.append(line + SeqloaderConstants.CRT);
-
+		System.out.println("GOT SOURCE LINE\n");
               // now we are looking for another features source line
               currentSection = ANOTHER_SOURCE_LINE;
             }
@@ -473,27 +487,32 @@ public class GBFormatInterpreter extends SequenceInterpreter {
           // if we are looking for another features source line
           else if (currentSection == ANOTHER_SOURCE_LINE) {
             // get the rest of the FIRST features source section; if we find
-            // the ORIGIN line we are done
-            if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN)) {
+            // the ORIGIN line or the end of record line we are done
+            if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN)  && !line.startsWith(CONTIG) ) {
               source.append(line + SeqloaderConstants.CRT);
+		System.out.println("GOT ANOTHER SOURCE LINE\n");
             }
             // if there is a second feature source section get it
             // added for gene traps 10/01/07
             else if (line.startsWith (SOURCE) ) {
                 secondarySource.append(line + SeqloaderConstants.CRT);
+		System.out.println("GOT SECOND SOURCE LINE\n");
                 currentSection = ANOTHER_SOURCE_LINE2;
             }
             else {
+		System.out.println("BREAKING on line " + line + "\n");
               break;
             }
           }
           else if (currentSection == ANOTHER_SOURCE_LINE2) {
               // get the rest of the SECOND features source section; if we find
               // another source section or the ORIGIN line we are done
-              if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN)) {
+              if (!line.startsWith(SOURCE) && !line.startsWith(ORIGIN) && !line.startsWith(CONTIG)) {
                   secondarySource.append(line + SeqloaderConstants.CRT);
-            }
-            else {
+		  System.out.println("GOT ANOTHER SECOND SOURCE LINE\n");
+              }
+              else {
+		System.out.println("BREAKING\n");
                 break;
             }
           }
