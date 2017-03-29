@@ -46,7 +46,6 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     private String seqQuality;
     private String jNum;
     private String version;
-    private String seqidNoVersion;
     private String organism;
     private String strain;
     private String tissue;
@@ -55,7 +54,6 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     private String cellLine;
 
     private Boolean preferredAcc = Boolean.TRUE;
-    private Boolean notPreferredAcc = Boolean.FALSE;
     private Boolean privateAcc = Boolean.FALSE;
 
     // for seqDate and seqRecordDate
@@ -85,11 +83,8 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
     // raw attributes for a sequences reference, once set-same for all sequences
     private RefAssocRawAttributes rawRefAssoc = new RefAssocRawAttributes();
 
-    // raw attributes for the sequence's primary seqid,reused by calling reset()
+    // raw attributes for the sequence's seqid = reused by calling reset()
     private AccessionRawAttributes rawAcc = new AccessionRawAttributes();
-
-    // raw attributes for the sequence's 2ndary seqid, reused by calling reset()
-    private AccessionRawAttributes rawAcc2 = new AccessionRawAttributes();
 
     /**
      * Constructs a MGSAssemblyFormatInterpreter
@@ -136,8 +131,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         // reset objects - don't reset rawMS, rawRefAssoc, it is same for all sequences
         sequenceInput.reset();
         rawSeq.reset();
-        rawAcc.reset();	
-	rawAcc2.reset();
+        rawAcc.reset();
 
         // get values from the record
         parseRecord(rcd);
@@ -148,10 +142,8 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
         // create a SequenceRawAttributes; set in SequenceInput object
         createRawSequence();
-        // create an AccessionRawAttributes for primary and secondary seqids
-	// set in SequenceInput object
+        // create an AccessionRawAttributes; set in SequenceInput object
         createRawAccession();
-	createRawSecondaryAccession();
 
        return sequenceInput;
    }
@@ -165,9 +157,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
        seqType = sequenceCfg.getSeqType();
        seqQuality = sequenceCfg.getQuality();
        jNum = sequenceCfg.getJnumber();
-       if (provider.equals("NCBI Gene Model")) {
-	   version = sequenceCfg.getReleaseNo();
-       }
+       version = sequenceCfg.getReleaseNo();
        seqDate = sequenceCfg.getReleaseDate();
        // source attributes
        organism = sequenceCfg.getOrganism();
@@ -210,7 +200,7 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
    private void  parseRecord(String rcd) throws RecordFormatException {
        // save the record
        record = rcd;
-       System.out.println(record);
+
        // split record into tokens
        String [] splitLine = rcd.split(SeqloaderConstants.TAB);
        if (splitLine.length != 6) {
@@ -221,28 +211,6 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
         }
         // get the attributes
         seqid = ((String)splitLine[0]).trim();
-	System.out.println("seqid " + seqid);
-	// default seqId with no version number for NCBI
-	seqidNoVersion = "";
-
-	// Ensembl and Vega get version from seqid
-	if (! provider.equals("NCBI Gene Model")){
-	    String [] sArray = seqid.split("\\.");
-	    System.out.println("sArray.length" + new Integer(sArray.length));
-	    for (int i = 0; i <= sArray.length -1; i++) {
-		System.out.println(sArray[i]);
-	    
-	    }
-
-	    seqidNoVersion = sArray[0];
-	    System.out.println(seqidNoVersion);
-
-	    //seqidNoVersion = seqid.split(".")[0];
-	    version = seqid.split("\\.")[1];
-
-	}
-	System.out.println("seqidNoVersion " + seqidNoVersion);
-	System.out.println("version " + version);
         startBP = new Integer( ((String)splitLine[2]).trim() );
         endBP = new Integer( ((String)splitLine[3]).trim() );
         description = ( (String)splitLine[5]).trim();
@@ -286,21 +254,4 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
        rawAcc.setMgiType(seqMGIType);
        sequenceInput.setPrimaryAcc(rawAcc);
    }
-
-   /**
-    * sets secondary accession attributes in the AccessionRawAttributes object
-    * sets the AccessionRawAttributes in the SequenceInput object
-    */
-
-   private void createRawSecondaryAccession() {
-       rawAcc2.setAccid(seqidNoVersion);
-       rawAcc2.setIsPreferred(notPreferredAcc);
-       rawAcc2.setIsPrivate(privateAcc);
-       rawAcc2.setLogicalDB(seqLogicalDB);
-       rawAcc2.setMgiType(seqMGIType);
-       Vector v = new Vector();
-       v.add(rawAcc2);
-       sequenceInput.setSecondary(v);
-   }
-
 }
