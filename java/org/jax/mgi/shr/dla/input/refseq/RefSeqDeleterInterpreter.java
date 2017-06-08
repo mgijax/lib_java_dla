@@ -61,12 +61,9 @@ public class RefSeqDeleterInterpreter   implements RecordDataInterpreter {
     public boolean isValid(String rcd) {
 	ArrayList tokens = StringLib.split(rcd, SeqloaderConstants.TAB);
 	String taxid = ((String)tokens.get(0)).trim();
-	System.out.println(taxid);
 	if ( taxid.equals("10090")) {
-	    System.out.println(true);
 	    return true;
         }
-	System.out.println(false);
 	return false;
     }
 
