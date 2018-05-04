@@ -182,7 +182,7 @@ public class MSResolver {
                 attrResolver = new GBMSAttrResolver();
             }
             else if (logicalDB == LogicalDBConstants.NCBI_GENE ||
-                logicalDB == LogicalDBConstants.ENSEMBL_GENE {
+                logicalDB == LogicalDBConstants.ENSEMBL_GENE) {
                 attrResolver = new GenericMSAttrResolver();
              }
             else {
