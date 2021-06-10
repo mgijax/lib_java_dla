@@ -26,7 +26,8 @@ import org.jax.mgi.shr.config.ConfigException;
 public class PIRSFInputFile extends InputXMLDataFile
 {
 
-    private String TAG =  "iProClassEntry";
+    //private String TAG =  "iProClassEntry";
+    private String TAG =  "entry";
     private String filename = null;
 
     /**
@@ -96,64 +97,97 @@ public class PIRSFInputFile extends InputXMLDataFile
             PIRSFSuperFamily sf = new PIRSFSuperFamily();
             try
             {
-                sf.recordID = it.getAttributeValue(0);
+                int foundID = 0;
+                sf.recordID = it.getAttributeValue(0); // no idea what this is used for. In the new xml it is either TrEMBL or Swiss-Prot
+                //System.out.println(it.getAttributeValue(0));
                 it.nextTag();
                 String store = null;
                 while (it.getState() != it.TAG_END)
                 {
+                    // we only want the first accession, subsequent are secondary
+                    // <accession>A3KML3</accession>
+                    
+                    // get all attribute names and the count of attributes 
+                    String[] atts = it.getAttributeNames();
+                
+                    int attsCt = it.getAttributeCount();
+
 		    //  skip SF5 and SF8 PIRSF terms
 
 		    //  multiple PIRSF tags may exist per record
 		    //  just grab the first one
 
-		    if ("PIRSF_ID".equals(it.getTagName()))
-		    {
-                        if (sf.pirsfID.equals("unset"))
-		        {
-                            store = it.getText();
-                            if (!store.startsWith("PIRSF5") &&
-                                !store.startsWith("PIRSF8"))
-                                sf.pirsfID = store;
+		    //if ("PIRSF_ID".equals(it.getTagName()))
+		    sf.source = "Mus musculus";
+		    if ("dbReference".equals(it.getTagName())) {
+                        //for( int i = 0; i <= atts.length - 1; i++) {
+                        //    System.out.println(atts[i]);
+                        //}
+
+                        if (sf.pirsfID.equals("unset")) {       
+                            //store = it.getText();
+                            // <dbReference type="PIRSF" id="PIRSF000868">
+                            // <property type="entry name" value="14-3-3"/>
+                            // <property type="match status" value="1"/>
+                            // </dbReference>
+                            //  
+                            // <dbReference type="MGI" id="MGI:891963"/>
+                            //
+                            // <dbReference type="RefSeq" id="NP_035869.1">
+                            //
+                            // <dbReference type="GeneID" id="22630"/>   
+                            for (int i = 0; i < attsCt; i++) {
+                                if (atts[i] != null && atts[i].equals("type") && it.getAttributeValue(i).equals("PIRSF")) {
+                                    foundID = 1;
+                                    store = it.getAttributeValue(i+1); // "PIRSF000868"
+                                    if (!store.startsWith("PIRSF5") &&
+                                        !store.startsWith("PIRSF8")) {
+                                        sf.pirsfID = store;
+                                    }
+                                }
+                                else if (atts[i] != null && atts[i].equals("type") && it.getAttributeValue(i).equals("MGI")) {
+                                    if (sf.mgiID.equals("unset")) {
+                                        sf.mgiID  = it.getAttributeValue(i + 1); // "MGI:891963"
+                                    }
+                                }
+                                else if (atts[i] != null && atts[i].equals("type") && it.getAttributeValue(i).equals("RefSeq")) {    
+                                   // translate XXXXXX.v to XXXXX
+                                   store  = it.getAttributeValue(i + 1); // "NP_035869.1"
+                                    if (store.indexOf("\\.") > 0) {
+                                            String[] fields = store.split("\\.");
+                                            if (!fields[0].startsWith("YP"))
+                                                sf.refseqID.add(fields[0]);
+                                        }
+                                    else if (!store.startsWith("YP")) {
+                                        sf.refseqID.add(store);
+                                    }
+                                }
+                                else if (atts[i] != null && atts[i].equals("type") && it.getAttributeValue(i).equals("GeneID")) {
+                                     sf.entrezID = it.getAttributeValue(i + 1); // 22630
+                                }
+                            }
 		        }
                     }
 
-                    else if ("PIRSF_Name".equals(it.getTagName()))
-		    {
-                        if (sf.pirsfName.equals("unset"))
-                            sf.pirsfName = it.getText();
-		    }
 
-                    else if ("MGI_ID".equals(it.getTagName()))
-                        sf.mgiID = "MGI:" + it.getText();
+                    else if (foundID == 1 && "property".equals(it.getTagName()) ) {
+                        String[] props = it.getAttributeNames();
+                        int propsCt = it.getAttributeCount();
+                        for (int i = 0; i < propsCt; i++) {
+                            if (  props[i] != null && props[i].equals("value")) {
+                                sf.pirsfName = it.getAttributeValue(i);
+                                System.out.println("pirsfName: " + sf.pirsfName);
+                                foundID = 0;
+                            }
+                        }
+                    }                                                                                                   
 
-                    else if ("UniProtKB_Accession".equals(it.getTagName()))
+                    // get uniprot accessions <accession>A3KML3</accession>
+                    else if ("accession".equals(it.getTagName())) { 
                         sf.uniprot.add(it.getText());
-
-		    // translate XXXXXX.v to XXXXX
-
-                    else if ("RefSeq".equals(it.getTagName()))
-                    {
-                        store = it.getText();
-                        if (store.indexOf("\\.") > 0)
-                        {
-                            String[] fields = store.split("\\.");
-                            if (!fields[0].startsWith("YP"))
-                                sf.refseqID.add(fields[0]);
-                        }
-                        else if (!store.startsWith("YP"))
-                        {
-                            sf.refseqID.add(store);
-                        }
                     }
-
-                    else if ("Entrez_Gene_ID".equals(it.getTagName()))
-                        sf.entrezID = it.getText();
-
-                    else if ("Source_Organism".equals(it.getTagName()))
-                    {
-                        sf.source = it.getText();
-                        if (!sf.source.equals(TARGET_SOURCE))
-                            return null;
+                    else if("property type".equals(it.getTagName())) {
+                         System.out.println("found property type");
                     }
 
                     it.nextTag();
@@ -166,7 +200,6 @@ public class PIRSFInputFile extends InputXMLDataFile
 
             return sf;
         }
-
     }
 
     /**
