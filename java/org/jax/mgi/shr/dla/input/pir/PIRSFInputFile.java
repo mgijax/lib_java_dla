@@ -176,7 +176,7 @@ public class PIRSFInputFile extends InputXMLDataFile
                         for (int i = 0; i < propsCt; i++) {
                             if (  props[i] != null && props[i].equals("value")) {
                                 sf.pirsfName = it.getAttributeValue(i);
-                                System.out.println("pirsfName: " + sf.pirsfName);
+                                //System.out.println("pirsfName: " + sf.pirsfName);
                                 foundID = 0;
                             }
                         }
