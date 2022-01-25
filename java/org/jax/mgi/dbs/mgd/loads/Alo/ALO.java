@@ -55,9 +55,6 @@ public class ALO {
 	// the molecular notes for this allele
 	private HashSet noteDAOs = new HashSet();
 
-	// the note chunks for the the molecular notes
-	private HashSet noteChunkDAOs = new HashSet();
-
 	// Set of Cell Lines for this allele
 	private HashSet cellLineDAOs = new HashSet();
 
@@ -156,26 +153,6 @@ public class ALO {
 		return dao;
 	}
 
-	/**
-	 * sets the set of molecular note chunks for an ALO
-	 * @param noteChunks ordered set of MGI_NoteChunkState objects
-	 */
-	public void setMolecularNoteChunks(Vector noteChunks) {
-		for (Iterator i = noteChunks.iterator(); i.hasNext();) {
-			noteChunkDAOs.add(new MGI_NoteChunkDAO((MGI_NoteChunkState) i.next()));
-		}
-	}
-
-	/**
-	 * adds a molecular not chunk to set of  molecular note chunks for an ALO
-	 * @param chunk a MGI_NoteChunkState object
-	 * @return MGI_NoteChunkDAO for convenient access e.g. to get the key
-	 */
-	public MGI_NoteChunkDAO addMolecularNoteChunk(MGI_NoteChunkState chunk) {
-		MGI_NoteChunkDAO dao = new MGI_NoteChunkDAO(chunk);
-		noteChunkDAOs.add(dao);
-		return dao;
-	}
 
 	/**
 	 * adds a cell line DAO to the set of ALO cell lines
@@ -281,14 +258,6 @@ public class ALO {
 	public HashSet getMGINoteDAO() {
 		
 		return noteDAOs;
-	}
-
-	/**
-	 * get the set of MGI Note Chunks
-	 */
-	public HashSet getMGINoteChunkDAOs() {
-		
-		return noteChunkDAOs;
 	}
 
 	/**
@@ -406,9 +375,6 @@ public class ALO {
 		for (i = noteDAOs.iterator(); i.hasNext();) {
 
 			stream.insert((MGI_NoteDAO) i.next());
-		}
-		for (i = noteChunkDAOs.iterator(); i.hasNext();) {
-			stream.insert((MGI_NoteChunkDAO) i.next());
 		}
 
 		// insert reference associations

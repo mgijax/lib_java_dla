@@ -22,7 +22,7 @@ import org.jax.mgi.dbs.mgd.loads.SeqRefAssoc.RefAssocRawAttributes;
  *       <LI>Allele MGI ID
  *   </UL>
  *   <LI>A Set of Allele Molecular Mutation Strings
- *   <LI>A MGINoteRawAttributes for Molecular Notes
+ *   <LI>A MGINote for Molecular Notes
  *   <LI>A Set of RefAssocRawAttributes
  *   <UL>
  *     <LI>Load reference
