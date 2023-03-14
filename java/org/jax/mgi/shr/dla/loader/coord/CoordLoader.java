@@ -68,7 +68,6 @@ public class CoordLoader extends DLALoader {
 
     //  cache of seqids of sequence records we have already processed
     private HashSet coordIdsAlreadyProcessed;
-
     
     // true if we are going to load multiple coordinates per object
     private String processMultiples;
