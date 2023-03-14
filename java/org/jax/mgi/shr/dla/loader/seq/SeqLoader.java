@@ -139,6 +139,10 @@ public abstract class SeqLoader extends DLALoader {
     // handles determining and processing merges and splits
     private MergeSplitProcessor mergeSplitProcessor;
 
+    //  true if we are going to load multiple sequences pre object
+    //  3/2023 for true NCBI GM
+    private String processMultiples;
+
     // writer for all repeated input sequences
     private BufferedWriter repeatSeqWriter;
 
@@ -153,6 +157,8 @@ public abstract class SeqLoader extends DLALoader {
     protected void initialize() throws MGIException {
         loadCfg = new SequenceLoadCfg();
         loadMode = loadCfg.getLoadMode();
+
+        processMultiples = loadCfg.getSeqRepeatsOk();
 
         // call subclass method to get an iterator for the input file
         getDataIterator();
@@ -181,16 +187,18 @@ public abstract class SeqLoader extends DLALoader {
         // number of valid sequences WITH processing errors
         errCtr = 0;
 
-        // writes repeated input sequences to a file
-        try {
-            repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
-                getRepeatFileName()));
-        }
-        catch (IOException e) {
-            SeqloaderException e1 =
-                (SeqloaderException) seqEFactory.getException(
-                SeqloaderExceptionFactory.RepeatFileIOException, e);
-            throw e1;
+        if (processMultiples.equals("false")) {
+            // writes repeated input sequences to a file
+            try {
+                repeatSeqWriter = new BufferedWriter(new FileWriter(loadCfg.
+                    getRepeatFileName()));
+            }
+            catch (IOException e) {
+                SeqloaderException e1 =
+                    (SeqloaderException) seqEFactory.getException(
+                    SeqloaderExceptionFactory.RepeatFileIOException, e);
+                throw e1;
+            }
         }
 
 	logger.logdInfo("Preprocessing load\n", true);
@@ -293,13 +301,19 @@ public abstract class SeqLoader extends DLALoader {
                si = (SequenceInput)
                    iterator.next();
                String currentSeqid = si.getPrimaryAcc().getAccID();
-               if (seqIdsAlreadyProcessed.contains(currentSeqid)) {
-                   // we have a repeated sequence; count it, write it out,
-                   // go on to next sequence in the input
-                   seqIdsAlreadyProcessedCtr++;
-                   repeatSeqWriter.write(si.getSeq().getRecord() + SeqloaderConstants.CRT);
-                   logger.logdDebug("Repeat Sequence: " + currentSeqid);
-                   continue;
+
+               // if we are not loading multiple coordinates per object, write
+               // them out to a file
+               if (processMultiples.equals("false")) {
+               
+                   if (seqIdsAlreadyProcessed.contains(currentSeqid)) {
+                       // we have a repeated sequence; count it, write it out,
+                       // go on to next sequence in the input
+                       seqIdsAlreadyProcessedCtr++;
+                       repeatSeqWriter.write(si.getSeq().getRecord() + SeqloaderConstants.CRT);
+                       logger.logdDebug("Repeat Sequence: " + currentSeqid);
+                       continue;
+                   }
                }
                else {
                    // add the seqid to the set we have processed
@@ -392,6 +406,7 @@ public abstract class SeqLoader extends DLALoader {
         logger.logdInfo("SeqLoader beginning post process", true);
         logger.logdInfo("Closing load stream", false);
         this.loadStream.close();
+
         if (loadMode.equals(SeqloaderConstants.INCREM_LOAD_MODE)) {
             logger.logdInfo("Processing Merge/Splits", false);
             this.mergeSplitProcessor.process(mergeSplitWriter);
@@ -399,18 +414,19 @@ public abstract class SeqLoader extends DLALoader {
         }
 
         // close the repeat sequence writer
-        logger.logdInfo("Closing repeat sequence writer", false);
-        try {
-            repeatSeqWriter.close();
-        }
+        if (processMultiples.equals("false")) {
+            logger.logdInfo("Closing repeat sequence writer", false);
+            try {
+                repeatSeqWriter.close();
+            }
 
-        catch (IOException e) {
-            SeqloaderException e1 =
-                (SeqloaderException) seqEFactory.getException(
-                SeqloaderExceptionFactory.RepeatFileIOException, e);
-            throw e1;
+            catch (IOException e) {
+                SeqloaderException e1 =
+                    (SeqloaderException) seqEFactory.getException(
+                    SeqloaderExceptionFactory.RepeatFileIOException, e);
+                throw e1;
+            }
         }
-
         // close the qc reporting stream after all qc reporting done - Note that
         // mergeSplitProcessor does qc reporting
         logger.logdInfo("Closing qc stream", false);
