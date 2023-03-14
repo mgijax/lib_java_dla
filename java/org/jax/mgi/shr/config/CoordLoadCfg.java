@@ -163,7 +163,7 @@ public class CoordLoadCfg extends Configurator {
      *    configuration file
      */
     public String getCoordRepeatsOk() throws ConfigException {
-        return getConfigString("COORD_REPEATS_OK");
+        return getConfigString("COORD_REPEATS_OK", "false");
     }
 
    /**
