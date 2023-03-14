@@ -89,6 +89,17 @@ public class SequenceLoadCfg extends Configurator {
        return getConfigString("SEQ_PROVIDER");
    }
 
+    /**
+    * get the sequence repeat ok value
+    * @return the sequence repeats ok value
+    * @throws ConfigException thrown if "SEQ_REPEATS_OK" not found in
+    * configuration file
+    *
+    */
+    public String getSeqRepeatsOk() throws ConfigException {
+        return getConfigString("SEQ_REPEATS_OK", "false");
+    }
+
    /**
    * Gets the repeat sequence file name
    * @assumes Nothing
