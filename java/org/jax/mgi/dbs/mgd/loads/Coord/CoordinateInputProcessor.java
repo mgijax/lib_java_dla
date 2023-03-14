@@ -215,6 +215,9 @@ public class CoordinateInputProcessor {
         // the compound DAO object we are building
         Coordinate coordinate = new Coordinate(mgdStream);
 
+        // Get map object - used by NCBI gene model only (chromosome)
+        String mapObject = input.getCoordMapRawAttributes().getCoordMapObject();
+
         // get a map key
         Integer mapKey = mapProcessor.process(
             input.getCoordMapRawAttributes(), coordinate);
@@ -223,13 +226,14 @@ public class CoordinateInputProcessor {
 
 	try {
 	    state = featureResolver.resolve(
-	    featureRaw, mapKey);
+	    featureRaw, mapKey, mapObject);
 	}
 	catch (KeyNotFoundException e) {
 	    logger.logcInfo(e.getMessage(), true);
 	    return;
 	}
-
+        logger.logdDebug("MAP_Coord_FeatureState: " + state.toString());
+        
 	// set the feature in the coordMap object
         coordinate.setCoordMapFeatureState(state);
 
