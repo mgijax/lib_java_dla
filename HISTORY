@@ -1,3 +1,10 @@
+TAG: lib_java_dla-6-0-22-?
+DATE: ???
+STAFF:
+CHANGES: CoordinateInputProcessor - must now pass mapObject (chromosome) 
+    as well as mapKey to resolver so it can check chromosome and hook 
+    up coordinates to correct sequence
+
 TAG: lib_java_dla-6-0-18-1
 DATE: 02/21/2022
 STAFF: sc
