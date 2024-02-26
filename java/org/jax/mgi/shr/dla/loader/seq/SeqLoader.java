@@ -115,6 +115,9 @@ public abstract class SeqLoader extends DLALoader {
     //  cache of seqids we have already processed
     private HashSet seqIdsAlreadyProcessed;
 
+    // sequence provider
+    private String seqProvider;
+
     // count of sequence records whose seqids we have already processed
     private int seqIdsAlreadyProcessedCtr;
 
@@ -166,9 +169,13 @@ public abstract class SeqLoader extends DLALoader {
         // create Factory to get seqloader specific exceptions
         seqEFactory = new SeqloaderExceptionFactory();
 
+        // get the provider of the sequences
+        seqProvider =  loadCfg.getProvider();
+        System.out.println("seqProvider: " + seqProvider);
+
         // create resolver to resolvea SequenceRawAttribute object to a SEQ_SequenceState
         seqResolver = new SequenceAttributeResolver();
-
+        
         // create the set for storing seqids we have already processed
         seqIdsAlreadyProcessed = new HashSet();
 
@@ -293,18 +300,25 @@ public abstract class SeqLoader extends DLALoader {
                si = (SequenceInput)
                    iterator.next();
                String currentSeqid = si.getPrimaryAcc().getAccID();
-               if (seqIdsAlreadyProcessed.contains(currentSeqid)) {
-                   // we have a repeated sequence; count it, write it out,
-                   // go on to next sequence in the input
-                   seqIdsAlreadyProcessedCtr++;
-                   repeatSeqWriter.write(si.getSeq().getRecord() + SeqloaderConstants.CRT);
-                   logger.logdDebug("Repeat Sequence: " + currentSeqid);
-                   continue;
-               }
-               else {
-                   // add the seqid to the set we have processed
-                   seqIdsAlreadyProcessed.add(currentSeqid);
-               }
+
+               // for NCBI Gene Model sequences we want to bypass the skipping of
+               // repeated sequences because, for PAR, two NCBI Gene Models can 
+               // share the same ID - there is one model on the X and on the Y
+               
+               if(!seqProvider.equals("NCBI Gene Model")) { 
+                   if (seqIdsAlreadyProcessed.contains(currentSeqid)) {
+                       // we have a repeated sequence; count it, write it out,
+                       // go on to next sequence in the input
+                       seqIdsAlreadyProcessedCtr++;
+                       repeatSeqWriter.write(si.getSeq().getRecord() + SeqloaderConstants.CRT);
+                       logger.logdDebug("Repeat Sequence: " + currentSeqid);
+                       continue;
+                   }
+                   else {
+                       // add the seqid to the set we have processed
+                       seqIdsAlreadyProcessed.add(currentSeqid);
+                   }
+               } 
            }
            catch (IOException e) {
                throw new MGIException(e.getMessage());
