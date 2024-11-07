@@ -89,8 +89,8 @@ public class NCBISequenceLookup extends FullCachedLookup {
 	    "FROM acc_accession a, seq_sequence s " + 
 	    "WHERE a._object_key = s._sequence_key " +
             "AND a._mgitype_key = " + MGITypeConstants.SEQUENCE  +
-            "AND a._logicaldb_key = " + LogicalDBConstants.NCBI_GENE +
-	    "order by a.accid";
+            " AND a._logicaldb_key = " + LogicalDBConstants.NCBI_GENE +
+	    " order by a.accid";
 
         return sql;
     }

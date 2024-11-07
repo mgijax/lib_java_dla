@@ -1,3 +1,12 @@
+TAG: lib_java_dla-6-0-24-1
+DATE: 11/07/2024
+STAFF: lec
+CHANGES:
+e4g/Software upgrades analysis: Postgres 17
+while testing, found//fixed bug
+need a space before the next AND and before the ORDER.
+#       modified:   java/org/jax/mgi/dbs/mgd/loads/Seq/NCBISequenceLookup.java
+
 TAG: lib_java_dla-6-0-23-1
 DATE: 02/26/2024
 STAFF: sc
