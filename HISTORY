@@ -1,3 +1,10 @@
+TAG: lib_java_dla-6-0-25-1
+DATE: 03/12/2025
+STAFF: lec
+CHANGES:
+wts2-1392/e4g-155/ENSEMBL Regulatory 113
+#	modified: java/org/jax/mgi/shr/dla/input/mgs/MGSAssemblyFormatInterpreter.java
+
 TAG: lib_java_dla-6-0-24-1
 DATE: 11/07/2024
 STAFF: lec
