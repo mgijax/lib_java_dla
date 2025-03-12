@@ -203,10 +203,10 @@ public class MGSAssemblyFormatInterpreter extends SequenceInterpreter {
 
        // split record into tokens
        String [] splitLine = rcd.split(SeqloaderConstants.TAB);
-       if (splitLine.length != 6) {
+       if (splitLine.length != 7) {
            RecordFormatException e = new RecordFormatException();
                e.bindRecord("The sequence record is not formatted correctly, " +
-                   "6 tab delimited elements expected.\n" + rcd);
+                   "7 tab delimited elements expected.\n" + rcd);
             throw e;
         }
         // get the attributes
